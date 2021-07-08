@@ -1,7 +1,19 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
-export default function Navbar() {
+type NavbarProperties = {
+	initialSearch?: string;
+	hintText?: string;
+	searchCallback?: NavbarSearchCallback;
+};
+
+export interface NavbarSearchCallback {
+	(search: string): void;
+}
+
+export default function Navbar(properties: NavbarProperties) {
+	const history = useHistory();
+
 	useEffect(() => {
 		let burger = document.getElementsByClassName('navbar-burger')[0] as HTMLElement;
 		if (burger) {
@@ -13,10 +25,33 @@ export default function Navbar() {
 				}
 			});
 		}
-		// if (props.initialSearch !== undefined) {
-		// 	(document.getElementById('search') as HTMLInputElement).value = props.initialSearch;
-		// }
-	}, []);
+		if (properties.initialSearch) {
+			(document.getElementById('search') as HTMLInputElement).value = properties.initialSearch;
+		}
+	}, [properties.initialSearch]);
+
+	const handleKeyPressed = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			let search = (document.getElementById('search') as HTMLInputElement).value;
+			doSearch(search);
+		}
+	};
+
+	const handleSearchClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		let search = (document.getElementById('search') as HTMLInputElement).value;
+		doSearch(search);
+	};
+
+	const doSearch = (search: string) => {
+		if (search.length >= 3) {
+			if (properties.searchCallback) {
+				properties.searchCallback(search);
+			} else {
+				history.push(`/ranking/search/${search}`); //TODO: Check this endpoint
+			}
+		}
+	};
+
 	return (
 		<nav id="navbar" className="navbar has-border" aria-label="main navigation">
 			<div className="container">
@@ -59,22 +94,21 @@ export default function Navbar() {
 						<div className="field has-addons navbar-item">
 							<div className="control is-expanded">
 								<input
-									// onKeyPress={handleKeyPressed}
+									onKeyPress={handleKeyPressed}
 									className="input"
 									size={35}
 									id="search"
 									name="search"
 									defaultValue=""
 									type="search"
-									placeholder="Search Username"
+									placeholder={properties.hintText || 'Search Username'}
 									aria-label="Search"
 								/>
 							</div>
 							<div className="control">
-								<button className="button is-dark has-background-grey-dark">Search</button>
-								{/* <button onClick={handleSearchClick} className="button is-dark has-background-grey-dark">
+								<button onClick={handleSearchClick} className="button is-dark has-background-grey-dark">
 									Search
-								</button> */}
+								</button>
 							</div>
 						</div>
 					</div>
