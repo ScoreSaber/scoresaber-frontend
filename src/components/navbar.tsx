@@ -1,7 +1,22 @@
-import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-export default function Navbar(props: any) {
+export default function Navbar() {
+	useEffect(() => {
+		let burger = document.getElementsByClassName('navbar-burger')[0] as HTMLElement;
+		if (burger) {
+			burger.addEventListener('click', () => {
+				let target = document.getElementById(burger.dataset['target'] || '');
+				burger.classList.toggle('is-active');
+				if (target) {
+					target.classList.toggle('is-active');
+				}
+			});
+		}
+		// if (props.initialSearch !== undefined) {
+		// 	(document.getElementById('search') as HTMLInputElement).value = props.initialSearch;
+		// }
+	}, []);
 	return (
 		<nav id="navbar" className="navbar has-border" aria-label="main navigation">
 			<div className="container">

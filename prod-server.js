@@ -32,6 +32,7 @@ app.get(
         res.send(output);
     })
 );
+
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, '/dist/production/')));
 
