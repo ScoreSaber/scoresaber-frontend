@@ -4,6 +4,7 @@
 	"private": true,
 	"dependencies": {
 		"@types/node": "^12.20.15",
+		"@types/query-string": "^6.3.0",
 		"@types/react": "^17.0.13",
 		"@types/react-dom": "^17.0.8",
 		"axios": "^0.21.1",
@@ -26,6 +27,7 @@
 		"mustache": "^4.2.0",
 		"npm-run-all": "^4.1.5",
 		"parcel": "^2.0.0-beta.2",
+		"query-string": "^7.0.1",
 		"react": "^17.0.2",
 		"react-dark-mode-toggle": "^0.2.0",
 		"react-dom": "^17.0.2",

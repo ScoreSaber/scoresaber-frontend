@@ -13,10 +13,11 @@ import { AppContext, ActionType } from './context';
 import fetch from './utils/fetcher';
 import axios from 'axios';
 import Index from './routes';
+import Rankings from './routes/rankings';
 
 import Footer from './components/footer';
-import { GetTokenResponse } from './responses/AuthResponses';
-import { UserData } from './responses/UserData';
+import { GetTokenResponse } from './entities/AuthResponses';
+import { UserData } from './entities/UserData';
 import { useContext } from 'react';
 
 const ScoreSaber = () => {
@@ -68,6 +69,7 @@ const ScoreSaber = () => {
 			<HelmetProvider>
 				<Router>
 					<Route path="/" exact component={Index} />
+					<Route path="/rankings" exact component={Rankings} />
 					<Footer />
 				</Router>
 			</HelmetProvider>

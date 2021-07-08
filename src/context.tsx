@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, Dispatch } from 'react';
-import { UserData } from './responses/UserData';
+import { UserData } from './entities/UserData';
 
 const initialGlobalState = {
 	user: undefined,
