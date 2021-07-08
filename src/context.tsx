@@ -1,6 +1,9 @@
 import React, { createContext, useReducer, Dispatch } from 'react';
 import { UserData } from './responses/UserData';
 
+const initialGlobalState = {
+	user: undefined,
+};
 export interface GlobalState {
 	user: UserData | undefined;
 }
@@ -8,21 +11,16 @@ export interface GlobalState {
 export enum ActionType {
 	SetUser = 'SET_USER',
 }
-
 interface IAction {
 	type: ActionType;
 	payload: any;
 }
 
-const initialState = {
-	user: undefined,
-};
-
 const AppContext = createContext<{
 	state: GlobalState;
 	dispatch: Dispatch<IAction>;
 }>({
-	state: initialState,
+	state: initialGlobalState,
 	dispatch: () => null,
 });
 
@@ -37,7 +35,7 @@ const mainReducer: React.Reducer<GlobalState, IAction> = (state, action) => {
 };
 
 const AppProvider: React.FC = ({ children }) => {
-	const [state, dispatch] = useReducer<React.Reducer<GlobalState, IAction>>(mainReducer, initialState);
+	const [state, dispatch] = useReducer<React.Reducer<GlobalState, IAction>>(mainReducer, initialGlobalState);
 	return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
 };
 

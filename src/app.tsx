@@ -19,7 +19,7 @@ import { GetTokenResponse } from './responses/AuthResponses';
 import { UserData } from './responses/UserData';
 import { useContext } from 'react';
 
-const App = () => {
+const ScoreSaber = () => {
 	const { dispatch } = useContext(AppContext);
 
 	let attempts: number = 0;
@@ -75,4 +75,4 @@ const App = () => {
 	);
 };
 
-export default App;
+export default ScoreSaber;
