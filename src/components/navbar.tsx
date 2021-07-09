@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export type NavbarProperties = {
 	initialSearch?: string;
@@ -12,8 +12,6 @@ export interface NavbarSearchCallback {
 }
 
 export default function Navbar(properties: NavbarProperties) {
-	const history = useHistory();
-
 	useEffect(() => {
 		let burger = document.getElementsByClassName('navbar-burger')[0] as HTMLElement;
 		if (burger) {

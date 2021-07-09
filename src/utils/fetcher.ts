@@ -2,6 +2,6 @@
 import axios from 'axios';
 
 export default async function (args: any) {
-	const response = await axios.get(args);
-	return response.data;
+   const response = await axios.get(args);
+   return response.data;
 }

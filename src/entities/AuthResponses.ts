@@ -1,3 +1,3 @@
 export interface GetTokenResponse {
-	token: string;
+   token: string;
 }

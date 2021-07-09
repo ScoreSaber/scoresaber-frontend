@@ -21,60 +21,60 @@ import { UserData } from './entities/UserData';
 import { useContext } from 'react';
 
 const ScoreSaber = () => {
-	const { dispatch } = useContext(AppContext);
+   const { dispatch } = useContext(AppContext);
 
-	let attempts: number = 0;
+   let attempts: number = 0;
 
-	const onUserCheckSuccess = async () => {
-		let token = localStorage.getItem('login-token');
-		if (token) {
-			const remoteToken = await axios.get<GetTokenResponse>('/api/auth/getToken');
-			if (remoteToken) {
-				localStorage.setItem('login-token', remoteToken.data.token);
-			}
-		}
-	};
+   const onUserCheckSuccess = async () => {
+      let token = localStorage.getItem('login-token');
+      if (token) {
+         const remoteToken = await axios.get<GetTokenResponse>('/api/auth/getToken');
+         if (remoteToken) {
+            localStorage.setItem('login-token', remoteToken.data.token);
+         }
+      }
+   };
 
-	const onUserCheckError = async () => {
-		if (attempts < 3) {
-			let token = localStorage.getItem('login-token');
-			if (token) {
-				const result = await axios.post('/api/auth/checkToken', { token });
-				if (result.status === 200) {
-					mutate('/api/user/@me');
-					attempts++;
-				}
-			}
-		}
-	};
+   const onUserCheckError = async () => {
+      if (attempts < 3) {
+         let token = localStorage.getItem('login-token');
+         if (token) {
+            const result = await axios.post('/api/auth/checkToken', { token });
+            if (result.status === 200) {
+               mutate('/api/user/@me');
+               attempts++;
+            }
+         }
+      }
+   };
 
-	const { data: user, error } = useSWR<UserData>('/api/user/@me', fetch, {
-		shouldRetryOnError: false,
-		revalidateOnFocus: false,
-		errorRetryCount: 3,
-		onSuccess: onUserCheckSuccess,
-		onError: onUserCheckError,
-	});
+   const { data: user, error } = useSWR<UserData>('/api/user/@me', fetch, {
+      shouldRetryOnError: false,
+      revalidateOnFocus: false,
+      errorRetryCount: 3,
+      onSuccess: onUserCheckSuccess,
+      onError: onUserCheckError,
+   });
 
-	if (user) {
-		dispatch({ type: ActionType.SetUser, payload: user });
-	}
+   if (user) {
+      dispatch({ type: ActionType.SetUser, payload: user });
+   }
 
-	if (error) {
-		dispatch({ type: ActionType.SetUser, payload: undefined });
-	}
+   if (error) {
+      dispatch({ type: ActionType.SetUser, payload: undefined });
+   }
 
-	return (
-		<SWRConfig value={{ fetcher: fetch }}>
-			<HelmetProvider>
-				<Router>
-					<Route path="/" exact component={Index} />
-					<Route path="/rankings" exact component={Rankings} />
-					<Footer />
-				</Router>
-			</HelmetProvider>
-		</SWRConfig>
-	);
+   return (
+      <SWRConfig value={{ fetcher: fetch }}>
+         <HelmetProvider>
+            <Router>
+               <Route path="/" exact component={Index} />
+               <Route path="/rankings" exact component={Rankings} />
+               <Footer />
+            </Router>
+         </HelmetProvider>
+      </SWRConfig>
+   );
 };
 
 export default ScoreSaber;

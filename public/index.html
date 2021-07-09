@@ -1,66 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<replace dis boi />
-		<meta charset="utf-8" />
-		<link rel="shortcut icon" href="favicon.ico" />
-		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
-		<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5" />
-		<link
-			rel="stylesheet"
-			href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-			integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-			crossorigin="anonymous"
-		/>
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>ScoreSaber!</title>
-	</head>
-	<body>
-		<script>
-			(function () {
-				var storageKey = 'darkMode';
-				var classNameDark = 'dark-mode';
-				var classNameLight = 'light-mode';
+   <head>
+      <replace dis boi />
+      <meta charset="utf-8" />
+      <link rel="shortcut icon" href="favicon.ico" />
+      <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+      <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5" />
+      <link
+         rel="stylesheet"
+         href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+         integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+         crossorigin="anonymous"
+      />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>ScoreSaber!</title>
+   </head>
+   <body>
+      <script>
+         (function () {
+            var storageKey = 'darkMode';
+            var classNameDark = 'dark-mode';
+            var classNameLight = 'light-mode';
 
-				function setClassOnDocumentBody(darkMode) {
-					document.body.classList.add(darkMode ? classNameDark : classNameLight);
-					document.body.classList.remove(darkMode ? classNameLight : classNameDark);
-				}
+            function setClassOnDocumentBody(darkMode) {
+               document.body.classList.add(darkMode ? classNameDark : classNameLight);
+               document.body.classList.remove(darkMode ? classNameLight : classNameDark);
+            }
 
-				var preferDarkQuery = '(prefers-color-scheme: dark)';
-				var mql = window.matchMedia(preferDarkQuery);
-				var supportsColorSchemeQuery = mql.media === preferDarkQuery;
-				var localStorageTheme = null;
-				try {
-					localStorageTheme = localStorage.getItem(storageKey);
-				} catch (err) {}
-				var localStorageExists = localStorageTheme !== null;
-				if (localStorageExists) {
-					localStorageTheme = JSON.parse(localStorageTheme);
-				}
+            var preferDarkQuery = '(prefers-color-scheme: dark)';
+            var mql = window.matchMedia(preferDarkQuery);
+            var supportsColorSchemeQuery = mql.media === preferDarkQuery;
+            var localStorageTheme = null;
+            try {
+               localStorageTheme = localStorage.getItem(storageKey);
+            } catch (err) {}
+            var localStorageExists = localStorageTheme !== null;
+            if (localStorageExists) {
+               localStorageTheme = JSON.parse(localStorageTheme);
+            }
 
-				// Determine the source of truth
-				if (localStorageExists) {
-					// source of truth from localStorage
-					setClassOnDocumentBody(localStorageTheme);
-				} else if (supportsColorSchemeQuery) {
-					// source of truth from system
-					setClassOnDocumentBody(mql.matches);
-					localStorage.setItem(storageKey, mql.matches);
-				} else {
-					// source of truth from document.body
-					var isDarkMode = document.body.classList.contains(classNameDark);
-					localStorage.setItem(storageKey, JSON.stringify(isDarkMode));
-				}
-			})();
-			window.addEventListener('load', function () {
-				document.documentElement.style.setProperty('--transitionTime', '1.3s');
-			});
-		</script>
-		<noscript>You need to enable JavaScript to run this app.</noscript>
-		<div id="root"></div>
-		<script defer src="../src/index.tsx"></script>
-	</body>
+            // Determine the source of truth
+            if (localStorageExists) {
+               // source of truth from localStorage
+               setClassOnDocumentBody(localStorageTheme);
+            } else if (supportsColorSchemeQuery) {
+               // source of truth from system
+               setClassOnDocumentBody(mql.matches);
+               localStorage.setItem(storageKey, mql.matches);
+            } else {
+               // source of truth from document.body
+               var isDarkMode = document.body.classList.contains(classNameDark);
+               localStorage.setItem(storageKey, JSON.stringify(isDarkMode));
+            }
+         })();
+         window.addEventListener('load', function () {
+            document.documentElement.style.setProperty('--transitionTime', '1.3s');
+         });
+      </script>
+      <noscript>You need to enable JavaScript to run this app.</noscript>
+      <div id="root"></div>
+      <script defer src="../src/index.tsx"></script>
+   </body>
 </html>
