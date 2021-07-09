@@ -23,6 +23,12 @@ body {
 	margin: 0;
 }
 
+div.is-center {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
 div.notification.is-warning.download {
 	max-width: 512px;
 }

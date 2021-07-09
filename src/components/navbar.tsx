@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-type NavbarProperties = {
+export type NavbarProperties = {
 	initialSearch?: string;
 	hintText?: string;
 	searchCallback?: NavbarSearchCallback;
@@ -43,12 +43,8 @@ export default function Navbar(properties: NavbarProperties) {
 	};
 
 	const doSearch = (search: string) => {
-		if (search.length >= 3) {
-			if (properties.searchCallback) {
-				properties.searchCallback(search);
-			} else {
-				history.push(`/ranking/search/${search}`); //TODO: Check this endpoint
-			}
+		if (properties.searchCallback) {
+			properties.searchCallback(search);
 		}
 	};
 

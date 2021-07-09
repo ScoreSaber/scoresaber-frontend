@@ -14,7 +14,6 @@ export interface Player {
 	banned: boolean;
 	inactive: boolean;
 }
-
 export interface ScoreStats {
 	totalScore: number;
 	totalRankedScore: number;
@@ -22,7 +21,6 @@ export interface ScoreStats {
 	totalPlayCount: number;
 	rankedPlayCount: number;
 }
-
 export interface Badge {
 	description: string;
 	image: string;

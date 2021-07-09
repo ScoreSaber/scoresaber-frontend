@@ -1,14 +1,13 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
-type ErrorProperties = {
+export type ErrorProperties = {
 	message: string;
 };
 
 export default function Error(properties: ErrorProperties) {
 	return (
 		<div>
-			<div>
+			<div className="is-center">
 				{properties.message ? (
 					<div>
 						<p>{properties.message}</p>

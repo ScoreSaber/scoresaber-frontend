@@ -9,30 +9,40 @@ import { Player } from '../entities/PlayerData';
 import BeatLoader from 'react-spinners/BeatLoader';
 import Error from '../components/error';
 import ArrowPagination from '../components/arrow-pagination';
+import RankingPlayerItem from '../components/rankings/player-item';
 import { useHistory, useLocation } from 'react-router-dom';
 
 interface PageRequestParams {
 	search?: string;
 	countries?: string;
-	page: number;
+	page: number | undefined;
 }
 
 export default function Rankings() {
 	const history = useHistory();
 	const parsed = queryString.parse(useLocation().search);
-	const requestParams: PageRequestParams = parsed as unknown as PageRequestParams;
+	const requestParams: PageRequestParams = parsed as unknown as PageRequestParams; // Cause queryString.parse<PageRequestParams> doesn't exist (╯°□°）╯︵ ┻━┻)
 
 	const { data: rankings, error: rankingsError } = useSWR<Player[]>(queryString.stringifyUrl({ url: '/api/players', query: parsed }), fetch);
 
-	const handlePageClick = (page: number) => {
-		console.log(page);
+	const changePage = (page: number) => {
+		requestParams.page = page;
+		updateUrl(requestParams);
 	};
 
 	const handleSearch = (searchTerm: string) => {
 		if (searchTerm === '') {
+			requestParams.search = undefined;
+			changePage(1);
 		} else {
-			//setSearchTerm(searchTerm);
+			requestParams.search = searchTerm;
+			requestParams.page = undefined;
+			updateUrl(requestParams);
 		}
+	};
+
+	const updateUrl = (pageRequestParams: PageRequestParams) => {
+		history.push(`/rankings?${queryString.stringify(pageRequestParams)}`);
 	};
 
 	return (
@@ -60,7 +70,7 @@ export default function Rankings() {
 									{rankingsError && <Error message={rankingsError.message} />}
 									{rankings && !rankingsError ? (
 										<div>
-											<ArrowPagination page={requestParams.page} callback={handlePageClick} maxPages={500} />
+											<ArrowPagination page={requestParams.page} callback={changePage} maxPages={500} />
 											<div className="ranking global">
 												<table className="ranking global">
 													<thead>
@@ -75,17 +85,15 @@ export default function Rankings() {
 													<tbody>
 														{rankings &&
 															rankings.map((player) => {
-																//player.name = entities.decode(player.name);
-																// return <Player key={player.id} player={player} />;
+																return <RankingPlayerItem key={player.id} player={player} />;
 															})}
 													</tbody>
 												</table>
 											</div>
-											<ArrowPagination page={requestParams.page} callback={handlePageClick} maxPages={500} />
-											{/* {pages && !pageError && <ArrowPagination page={page} callback={handlePageClick} maxPages={pages.pages} />} */}
+											<ArrowPagination page={requestParams.page} callback={changePage} maxPages={500} />
 										</div>
 									) : (
-										<div className="sweet-loading">
+										<div className="sweet-loading is-center">
 											<BeatLoader size={15} color={'#22A7F2'} loading={!rankingsError} />
 										</div>
 									)}

@@ -1,5 +1,5 @@
-type PaginationProperties = {
-	page: number;
+export type PaginationProperties = {
+	page: number | undefined;
 	maxPages: number;
 	callback: PageClickCallback;
 };
@@ -9,7 +9,7 @@ export interface PageClickCallback {
 }
 
 export default function ArrowPagination(properties: PaginationProperties) {
-	let page = isNaN(properties.page) ? 1 : parseInt(properties.page.toString());
+	let page = isNaN(properties.page || 1) ? 1 : parseInt(properties.page?.toString() || '1');
 	let maxPages = isNaN(properties.maxPages) ? 1 : parseInt(properties.maxPages.toString());
 	return (
 		<nav className="pagination">

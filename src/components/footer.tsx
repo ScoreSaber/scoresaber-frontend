@@ -1,4 +1,3 @@
-import React from 'react';
 import DarkModeToggler from './dark-toggle';
 export default function Footer() {
 	return (
