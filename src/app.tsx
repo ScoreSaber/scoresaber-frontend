@@ -14,6 +14,7 @@ import fetch from './utils/fetcher';
 import axios from 'axios';
 import Index from './routes';
 import Rankings from './routes/rankings';
+import Team from './routes/team';
 
 import Footer from './components/footer';
 import { GetTokenResponse } from './entities/AuthResponses';
@@ -69,6 +70,7 @@ const ScoreSaber = () => {
          <HelmetProvider>
             <Router>
                <Route path="/" exact component={Index} />
+               <Route path="/team" exact component={Team} />
                <Route path="/rankings" exact component={Rankings} />
                <Footer />
             </Router>
