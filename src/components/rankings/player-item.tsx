@@ -12,10 +12,11 @@ type RankingPlayerItemProperties = {
 export default function RankingPlayerItem(properties: RankingPlayerItemProperties) {
 	const { player } = properties;
 	player.name = decode(player.name);
-	var flagPath = '/images/flags/unknown.png';
+	let flagPath = '/images/flags/unknown.png';
 	if (helpers.isProd()) {
 		flagPath = '/api/static/flags/' + player.country.toLowerCase() + '.png';
 	}
+	let difference = helpers.getGlobalRankWeekDifference(player.histories, player.rank);
 	return (
 		<tr>
 			<td className="picture">
@@ -45,9 +46,21 @@ export default function RankingPlayerItem(properties: RankingPlayerItemPropertie
 				<span className="scoreTop ppLabel">pp</span>
 			</td>
 			<td className="difference">
-				{/* {player.difference > 0 && <span className="difference positive">+{helpersUtil.number_format(player.difference)}</span>}
-				{player.difference < 0 && <span className="difference negative">{helpersUtil.number_format(player.difference)}</span>}
-				{player.difference === 0 && <span className="difference neutral">{helpersUtil.number_format(player.difference)}</span>} */}
+				{difference > 0 && (
+					<span className="difference positive">
+						+<NumberFormat value={difference} displayType={'text'} thousandSeparator={true} />
+					</span>
+				)}
+				{difference < 0 && (
+					<span className="difference negative">
+						<NumberFormat value={difference} displayType={'text'} thousandSeparator={true} />
+					</span>
+				)}
+				{difference === 0 && (
+					<span className="difference neutral">
+						<NumberFormat value={difference} displayType={'text'} thousandSeparator={true} />
+					</span>
+				)}
 			</td>
 		</tr>
 	);

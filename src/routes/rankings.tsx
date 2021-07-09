@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navbar from '../components/navbar';
 import queryString from 'query-string';
 import fetch from '../utils/fetcher';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { Player } from '../entities/PlayerData';
 import BeatLoader from 'react-spinners/BeatLoader';
 import Error from '../components/error';
@@ -65,7 +63,7 @@ export default function Rankings() {
 								</div>
 							</div>
 							<div className="column">
-								<h4 className="title is-4">Global Leaderboards:</h4>
+								<h4 className="title is-4">Player Rankings:</h4>
 								<div className="box has-shadow">
 									{rankingsError && <Error message={rankingsError.message} />}
 									{rankings && !rankingsError ? (

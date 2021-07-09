@@ -70,6 +70,25 @@ export function getDifficultyStyleFromId(difficulty: number): string {
 	}
 }
 
+export function getGlobalRankWeekDifference(history: string, currentRank: number) {
+	if (currentRank === 0) {
+		return 0;
+	}
+	const historyArray = history.split(',');
+	let lastweek: number = 0;
+
+	if (historyArray.length > 6) {
+		lastweek = parseInt(historyArray[historyArray.length - 7]);
+	} else {
+		lastweek = parseInt(historyArray[0]);
+	}
+	if (lastweek === 999999) {
+		return 0;
+	}
+	const difference = lastweek - currentRank;
+	return difference;
+}
+
 export function truncateWithEllipses(text: string, max: number) {
 	return text.substr(0, max - 1) + (text.length > max ? '...' : '');
 }
