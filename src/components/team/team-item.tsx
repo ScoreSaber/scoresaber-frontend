@@ -18,7 +18,7 @@ export default function TeamHeader(properties: TeamItemProperties) {
                   if (removeUmbra && member.Name === 'Umbranox') {
                      return null;
                   } else {
-                     return <TeamMemberItem key={member.Name} position={''} teamMember={member} />;
+                     return <TeamMemberItem key={member.Name} teamMember={member} />;
                   }
                })}
          </div>

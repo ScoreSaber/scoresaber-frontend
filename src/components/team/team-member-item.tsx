@@ -20,10 +20,17 @@ export default function TeamItem(properties: TeamMemberItemProperties) {
             <div className="column">
                <h5 className="title is-6">{teamMember.Name}</h5>
                <h6 className="subtitle">{position}</h6>
-               {teamMember.GitHub && (
-                  <a href={`https://github.com/${teamMember.GitHub}`} target="_blank" rel="noreferrer">
+               {teamMember.Discord && (
+                  <a href={`https://discordapp.com/users/${teamMember.Discord}`} target="_blank" rel="noreferrer">
                      <span className="icon">
-                        <i className="fab fa-github"></i>
+                        <i className="fab fa-discord"></i>
+                     </span>
+                  </a>
+               )}
+               {teamMember.Twitter && (
+                  <a href={`https://twitter.com/${teamMember.Twitter}`} target="_blank" rel="noreferrer">
+                     <span className="icon">
+                        <i className="fab fa-twitter"></i>
                      </span>
                   </a>
                )}
@@ -41,17 +48,10 @@ export default function TeamItem(properties: TeamMemberItemProperties) {
                      </span>
                   </a>
                )}
-               {teamMember.Discord && (
-                  <a href={`https://discordapp.com/users/${teamMember.Discord}`} target="_blank" rel="noreferrer">
+               {teamMember.GitHub && (
+                  <a href={`https://github.com/${teamMember.GitHub}`} target="_blank" rel="noreferrer">
                      <span className="icon">
-                        <i className="fab fa-discord"></i>
-                     </span>
-                  </a>
-               )}
-               {teamMember.Twitter && (
-                  <a href={`https://twitter.com/${teamMember.Twitter}`} target="_blank" rel="noreferrer">
-                     <span className="icon">
-                        <i className="fab fa-twitter"></i>
+                        <i className="fab fa-github"></i>
                      </span>
                   </a>
                )}

@@ -21,12 +21,12 @@ export default function Team() {
                   {team ? (
                      <div>
                         <TeamItem title={'Creator & Project Lead'} teamMembers={team.TeamMembers.Backend} />
-                        <TeamItem title={'PPv3'} teamMembers={team.TeamMembers.PPv3} removeUmbra={true} />
                         <TeamItem title={'Admin'} teamMembers={team.TeamMembers.Admin} removeUmbra={true} />
                         <TeamItem title={'Nomination Assesment Team'} teamMembers={team.TeamMembers.NAT} />
                         <TeamItem title={'Ranking Team'} teamMembers={team.TeamMembers.RT} />
                         <TeamItem title={'Quality Assurance Team'} teamMembers={team.TeamMembers.QAT} />
                         <TeamItem title={'Criteria Assesment Team'} teamMembers={team.TeamMembers.CAT} />
+                        <TeamItem title={'PPv3'} teamMembers={team.TeamMembers.PPv3} removeUmbra={true} />
                      </div>
                   ) : (
                      <div className="sweet-loading is-center">
