@@ -20,8 +20,10 @@ export default function Rankings() {
    const history = useHistory();
    const parsed = queryString.parse(useLocation().search);
    const requestParams: PageRequestParams = parsed as unknown as PageRequestParams; // Cause queryString.parse<PageRequestParams> doesn't exist (╯°□°）╯︵ ┻━┻)
+   const playersPerPage = 50;
 
    const { data: rankings, error: rankingsError } = useSWR<Player[]>(queryString.stringifyUrl({ url: '/api/players', query: parsed }), fetch);
+   const { data: playerCount, error: playerCountError } = useSWR<number>(queryString.stringifyUrl({ url: '/api/players/count', query: parsed }), fetch);
 
    const changePage = (page: number) => {
       requestParams.page = page;
@@ -66,9 +68,9 @@ export default function Rankings() {
                         <h4 className="title is-4">Player Rankings:</h4>
                         <div className="box has-shadow">
                            {rankingsError && <Error message={rankingsError.message} />}
-                           {rankings && !rankingsError ? (
+                           {rankings && playerCount && !rankingsError && !playerCountError ? (
                               <div>
-                                 <ArrowPagination page={requestParams.page} callback={changePage} maxPages={500} />
+                                 <ArrowPagination page={requestParams.page} callback={changePage} maxPages={Math.ceil(playerCount / playersPerPage)} />
                                  <div className="ranking global">
                                     <table className="ranking global">
                                        <thead>
@@ -88,7 +90,7 @@ export default function Rankings() {
                                        </tbody>
                                     </table>
                                  </div>
-                                 <ArrowPagination page={requestParams.page} callback={changePage} maxPages={500} />
+                                 <ArrowPagination page={requestParams.page} callback={changePage} maxPages={Math.ceil(playerCount / playersPerPage)} />
                               </div>
                            ) : (
                               <div className="sweet-loading is-center">
