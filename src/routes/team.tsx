@@ -8,9 +8,6 @@ import BeatLoader from 'react-spinners/BeatLoader';
 
 export default function Team() {
    const { data: team } = useSWR<ScoreSaberTeam>('https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json', fetch);
-   if (team) {
-      console.log(team.TeamMembers);
-   }
    return (
       <div>
          <Navbar />
@@ -23,70 +20,13 @@ export default function Team() {
                   <h1 className="title is-4">The ScoreSaber Team</h1>
                   {team ? (
                      <div>
-                        <h2 className="title is-5">Creator &amp; Project Lead</h2>
-                        <div className="columns is-multiline">
-                           {team &&
-                              team.TeamMembers.Backend.map((member) => {
-                                 return <TeamItem key={member.Name} position={''} teamMember={member} />;
-                              })}
-                        </div>
-                        <h2 className="title is-5">PC Mod</h2>
-                        <div className="columns is-multiline">
-                           {team &&
-                              team.TeamMembers.Mod.map((member) => {
-                                 return <TeamItem key={member.Name} position={''} teamMember={member} />;
-                              })}
-                        </div>
-                        <h2 className="title is-5">PPv3</h2>
-                        <div className="columns is-multiline">
-                           {team &&
-                              team.TeamMembers.PPv3.map((member) => {
-                                 if (member.Name !== 'Umbranox') {
-                                    return <TeamItem key={member.Name} position={''} teamMember={member} />;
-                                 } else {
-                                    return null;
-                                 }
-                              })}
-                        </div>
-                        <h2 className="title is-5">Admin</h2>
-                        <div className="columns is-multiline">
-                           {team &&
-                              team.TeamMembers.Admin.map((member) => {
-                                 if (member.Name != 'Umbranox') {
-                                    return <TeamItem key={member.Name} position={''} teamMember={member} />;
-                                 } else {
-                                    return null;
-                                 }
-                              })}
-                        </div>
-                        <h2 className="title is-5">Nomination Assesment Team</h2>
-                        <div className="columns is-multiline">
-                           {team &&
-                              team.TeamMembers.NAT.map((member) => {
-                                 return <TeamItem key={member.Name} position={''} teamMember={member} />;
-                              })}
-                        </div>
-                        <h2 className="title is-5">Ranking Team</h2>
-                        <div className="columns is-multiline">
-                           {team &&
-                              team.TeamMembers.RT.map((member) => {
-                                 return <TeamItem key={member.Name} position={''} teamMember={member} />;
-                              })}
-                        </div>
-                        <h2 className="title is-5">Quality Assurance Team</h2>
-                        <div className="columns is-multiline">
-                           {team &&
-                              team.TeamMembers.QAT.map((member) => {
-                                 return <TeamItem key={member.Name} position={''} teamMember={member} />;
-                              })}
-                        </div>
-                        <h2 className="title is-5">Criteria Assesment Team</h2>
-                        <div className="columns is-multiline">
-                           {team &&
-                              team.TeamMembers.CAT.map((member) => {
-                                 return <TeamItem key={member.Name} position={''} teamMember={member} />;
-                              })}
-                        </div>
+                        <TeamItem title={'Creator & Project Lead'} teamMembers={team.TeamMembers.Backend} />
+                        <TeamItem title={'PPv3'} teamMembers={team.TeamMembers.PPv3} removeUmbra={true} />
+                        <TeamItem title={'Admin'} teamMembers={team.TeamMembers.Admin} removeUmbra={true} />
+                        <TeamItem title={'Nomination Assesment Team'} teamMembers={team.TeamMembers.NAT} />
+                        <TeamItem title={'Ranking Team'} teamMembers={team.TeamMembers.RT} />
+                        <TeamItem title={'Quality Assurance Team'} teamMembers={team.TeamMembers.QAT} />
+                        <TeamItem title={'Criteria Assesment Team'} teamMembers={team.TeamMembers.CAT} />
                      </div>
                   ) : (
                      <div className="sweet-loading is-center">
