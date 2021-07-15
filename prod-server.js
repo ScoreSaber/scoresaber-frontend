@@ -6,6 +6,7 @@ const asyncHandler = require('express-async-handler');
 const path = require('path');
 const app = express();
 app.use(helmet());
+app.disable('x-powered-by');
 
 const metaTemplate = `<meta property="og:image" content="{{{metaImage}}}" />
 <meta property="og:image:secure_url" content="{{{metaImage}}}" />

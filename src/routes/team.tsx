@@ -26,6 +26,7 @@ export default function Team() {
                         <TeamItem title={'Ranking Team'} teamMembers={team.TeamMembers.RT} />
                         <TeamItem title={'Quality Assurance Team'} teamMembers={team.TeamMembers.QAT} />
                         <TeamItem title={'Criteria Assesment Team'} teamMembers={team.TeamMembers.CAT} />
+                        <TeamItem title={'PC Mod'} teamMembers={team.TeamMembers.Mod} />
                         <TeamItem title={'PPv3'} teamMembers={team.TeamMembers.PPv3} removeUmbra={true} />
                      </div>
                   ) : (
