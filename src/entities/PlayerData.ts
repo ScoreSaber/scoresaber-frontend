@@ -1,3 +1,5 @@
+import { Score, LeaderboardInfo } from './LeaderboardData';
+
 export interface Player {
    id: string;
    name: string;
@@ -13,6 +15,18 @@ export interface Player {
    permissions: number;
    banned: boolean;
    inactive: boolean;
+}
+
+export interface PlayerScore {
+   score: Score;
+   leaderboard: LeaderboardInfo;
+}
+export interface LeaderboardPlayer {
+   playerId: string;
+   name: string;
+   profilePicture: string;
+   country: string;
+   permissions: number;
 }
 export interface ScoreStats {
    totalScore: number;
