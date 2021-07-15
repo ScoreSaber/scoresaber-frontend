@@ -11,12 +11,12 @@ class WindowProperties {
    }
 }
 
-type ChartProperties = {
+type RankChartProperties = {
    currentRank: number;
    histories: string;
 };
 
-export default function Chart(properties: ChartProperties) {
+export default function RankChart(properties: RankChartProperties) {
    const { histories, currentRank } = properties;
    const [windowProperties, setWindowProperties] = useState<WindowProperties | undefined>(undefined);
 
