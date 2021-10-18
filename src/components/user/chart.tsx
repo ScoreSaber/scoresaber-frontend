@@ -116,6 +116,5 @@ export default function RankChart(properties: RankChartProperties) {
          },
       },
    };
-
-   return <Line type="line" data={data} options={options} />;
+   return <Line data={data} options={options} />;
 }

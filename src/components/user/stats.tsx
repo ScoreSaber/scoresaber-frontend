@@ -132,7 +132,7 @@ export default function Stats(properties: StatsProperties) {
                      <NumberFormat value={scoreStats.totalRankedScore} displayType={'text'} thousandSeparator={true} />
                   </li>
                   <li>
-                     <strong>Average Ranked Accuracy:</strong> <NumberFormat value={scoreStats.averageRankedScore} displayType={'text'} thousandSeparator={true} />%
+                     <strong>Average Ranked Accuracy:</strong> <NumberFormat value={scoreStats.averageRankedAccuracy} displayType={'text'} thousandSeparator={true} />%
                   </li>
                   {player.role !== '' && player.role !== null && (
                      <li>

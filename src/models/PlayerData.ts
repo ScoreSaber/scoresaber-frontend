@@ -31,7 +31,7 @@ export interface LeaderboardPlayer {
 export interface ScoreStats {
    totalScore: number;
    totalRankedScore: number;
-   averageRankedScore: number;
+   averageRankedAccuracy: number;
    totalPlayCount: number;
    rankedPlayCount: number;
 }

@@ -5,6 +5,9 @@ const helmet = require('helmet');
 const asyncHandler = require('express-async-handler');
 const path = require('path');
 const app = express();
+const { createProxyMiddleware } = require('http-proxy-middleware');
+app.use('/api', createProxyMiddleware({ target: 'http://localhost:4000' }));
+
 app.use(helmet());
 app.disable('x-powered-by');
 
