@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import Navbar from '../components/navbar';
-import { ScoreSaberTeam } from '../entities/ScoreSaberTeam';
+import { ScoreSaberTeam } from '../models/ScoreSaberTeam';
 import fetch from '../utils/fetcher';
 import useSWR from 'swr';
 import TeamItem from '../components/team/team-item';

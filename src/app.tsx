@@ -17,8 +17,8 @@ import Rankings from './routes/rankings';
 import Team from './routes/team';
 
 import Footer from './components/footer';
-import { GetTokenResponse } from './entities/AuthResponses';
-import { UserData } from './entities/UserData';
+import { GetTokenResponse } from './models/AuthResponses';
+import { UserData } from './models/UserData';
 import { useContext } from 'react';
 
 const ScoreSaber = () => {

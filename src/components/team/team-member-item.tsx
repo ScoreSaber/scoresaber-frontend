@@ -1,4 +1,4 @@
-import { TeamMember } from '../../entities/ScoreSaberTeam';
+import { TeamMember } from '../../models/ScoreSaberTeam';
 
 export type TeamMemberItemProperties = {
    teamMember: TeamMember;

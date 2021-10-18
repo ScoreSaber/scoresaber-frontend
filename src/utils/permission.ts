@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-bitwise */
 
-import { UserData } from '../entities/UserData';
+import { UserData } from '../models/UserData';
 
 // Security permissions:
 export const RT = 1;

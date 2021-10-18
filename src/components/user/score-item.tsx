@@ -1,4 +1,4 @@
-import { PlayerScore } from '../../entities/PlayerData';
+import { PlayerScore } from '../../models/PlayerData';
 import * as helpersUtil from '../../utils/helpers';
 import { Img } from 'react-image';
 import { Link } from 'react-router-dom';

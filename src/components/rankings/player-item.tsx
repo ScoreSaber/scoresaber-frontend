@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Img } from 'react-image';
-import { Player } from '../../entities/PlayerData';
+import { Player } from '../../models/PlayerData';
 import NumberFormat from 'react-number-format';
 import { decode } from 'html-entities';
 import * as helpers from '../../utils/helpers';

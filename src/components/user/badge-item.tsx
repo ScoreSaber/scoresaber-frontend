@@ -1,4 +1,4 @@
-import { Badge } from '../../entities/PlayerData';
+import { Badge } from '../../models/PlayerData';
 import * as helpersUtil from '../../utils/helpers';
 
 type BadgeItemProperties = {

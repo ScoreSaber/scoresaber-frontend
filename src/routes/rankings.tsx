@@ -3,7 +3,7 @@ import Navbar from '../components/navbar';
 import queryString from 'query-string';
 import fetch from '../utils/fetcher';
 import useSWR from 'swr';
-import { Player } from '../entities/PlayerData';
+import { Player } from '../models/PlayerData';
 import BeatLoader from 'react-spinners/BeatLoader';
 import Error from '../components/error';
 import ArrowPagination from '../components/arrow-pagination';

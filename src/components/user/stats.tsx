@@ -1,5 +1,5 @@
-import { Player, ScoreStats } from '../../entities/PlayerData';
-import { UserData } from '../../entities/UserData';
+import { Player, ScoreStats } from '../../models/PlayerData';
+import { UserData } from '../../models/UserData';
 import RankChart from './chart';
 import * as helpersUtil from '../../utils/helpers';
 import { Helmet } from 'react-helmet-async';
