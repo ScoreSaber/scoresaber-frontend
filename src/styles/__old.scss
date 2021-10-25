@@ -1,0 +1,779 @@
+:root {
+   --background: #222;
+   --foreground: #252525;
+   --textColor: #eee;
+   --borderColor: #1a1a1a;
+
+   --ppColour: #8992e8;
+   --alternate: #72a8ff;
+   --transitionTime: 0s;
+}
+
+button.oculus {
+   margin-left: 15px;
+}
+
+html {
+   height: 100%;
+   margin: 0;
+}
+
+body {
+   min-height: 100%;
+   margin: 0;
+}
+
+div.is-center {
+   margin-left: auto;
+   margin-right: auto;
+   text-align: center;
+}
+
+div.team-panel {
+   margin-bottom: 20px;
+}
+
+div.notification.is-warning.download {
+   max-width: 512px;
+}
+
+div.notification.is-info.download {
+   max-width: 512px;
+   background: rgba(32, 156, 238, 0.6);
+}
+
+body.light-mode {
+   background-color: #fcfcfc;
+   transition: background-color var(--transitionTime) ease;
+   transition: background-color var(--transitionTime) ease;
+
+   .footer {
+      background-color: #fcfcfc;
+   }
+
+   .footer {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar-menu {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar.has-border {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .box.has-shadow {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .card {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .footer {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .pagination .button {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar .input {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .btn.btn-raised.btn-primary {
+      transition: background-color var(--transitionTime) ease;
+   }
+   a.navbar-item:hover,
+   a.navbar-item:focus,
+   a.navbar-item.is-active,
+   .navbar-link:hover,
+   .navbar-link:focus,
+   .navbar-link.is-active {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar.has-shadow {
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar.navbar-expand-lg.navbar-light.bg-light {
+      transition: background-color var(--transitionTime) ease;
+   }
+}
+
+.icon.is-medium-small {
+   height: 1.6rem;
+   width: 1.7rem;
+}
+
+.button.profile {
+   margin-left: 7px;
+}
+
+a {
+   transition-duration: 0.15s;
+   transition-property: background-color, color;
+}
+
+ul.pagination-list li {
+   list-style: none;
+}
+
+@media screen and (min-width: 1024px) {
+   .columns.is-desktop.is-flex-reverse {
+      flex-direction: row-reverse;
+   }
+}
+
+.content figure {
+   margin-left: 1em;
+   margin-right: -1em;
+}
+
+.navbar.has-shadow {
+   box-shadow: 0 3px 3px 0px #f5f5f5;
+}
+
+.navbar.has-border {
+   border-bottom: 1px solid #e5e3dd;
+}
+
+.section {
+   padding: 2rem 1.5rem;
+}
+
+.box {
+   box-shadow: 0 8px 20px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+   transition: box-shadow 0.15s;
+}
+
+.box:hover {
+   box-shadow: 5px 15px 25px rgba(50, 50, 93, 0.1), 0 8px 15px rgba(0, 0, 0, 0.07);
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1215px) {
+   .field.has-addons.navbar-item {
+      max-width: 311px;
+   }
+}
+
+@media screen and (min-width: 1216px) and (max-width: 1407px) {
+   .field.has-addons.navbar-item {
+      max-width: 447px;
+   }
+}
+
+@media screen and (min-width: 1408px) {
+   .field.has-addons.navbar-item {
+      max-width: 447px;
+   }
+}
+
+ul.pagination-list li {
+   list-style: none;
+   margin-top: 0.25em;
+}
+
+@media screen and (min-width: 769px) {
+   .rankChart {
+      height: 150px;
+      width: 90%;
+      margin-right: 10%;
+      position: relative;
+   }
+}
+
+@media screen and (max-width: 768px) {
+   .rankChart {
+      height: 150px;
+      width: 90%;
+      margin-left: 5%;
+      margin-right: 5%;
+      position: relative;
+   }
+}
+
+div.ranking {
+   overflow-x: auto;
+}
+
+div.qat {
+   margin-top: 25px;
+}
+
+div.qat.hidden {
+   display: none;
+}
+
+.songImage {
+   margin-top: 5px;
+   border-radius: 15%;
+   width: 64px;
+   height: 64px;
+}
+
+column.sideSongInfos {
+   padding: 6px;
+}
+
+h4.songInfos {
+   margin-top: 9px;
+}
+
+.field.ranking {
+   margin-left: 2px;
+}
+
+.content ul.tab {
+   margin-left: 0em;
+}
+
+@media screen and (min-width: 1024px) {
+   div.ranking.songs {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+   }
+   table.ranking.songs {
+      max-width: 1200px;
+   }
+}
+
+.chartjs-render-monitor {
+   width: 100%;
+   height: 100%;
+}
+
+span.songTop.pp {
+   font-size: 1.1rem;
+   font-style: bold;
+}
+
+span.songTop.pp-global {
+   font-weight: 700;
+}
+
+span.songTop.mapper {
+   font-size: 0.9rem;
+}
+
+span.songBottom.time {
+   font-size: 0.8rem;
+   font-style: italic;
+   color: #6f6f6f;
+}
+
+span.scoreTop.ppValue {
+   color: #6772e5;
+}
+
+span.scoreTop.ppLabel {
+   font-size: 1.1rem;
+   color: #6772e5;
+}
+
+span.scoreTop.ppWeightedValue {
+   font-size: 0.8rem;
+   font-style: italic;
+   color: #6f6f6f;
+}
+
+span.scoreTop.ppWeightedLabel {
+   font-size: 0.9rem;
+}
+
+span.scoreBottom {
+   font-size: 0.8rem;
+   font-style: italic;
+   color: #6f6f6f;
+}
+
+.content ul.pagination-list {
+   max-width: 1000px;
+   margin-left: 0;
+}
+
+.pagination.is-hidden-touch {
+   justify-content: center;
+}
+
+.image.is-60x60 {
+   border-radius: 50%;
+   height: 60px;
+   width: 60px;
+}
+
+.image.rounded {
+   border-radius: 50%;
+}
+
+td.song a {
+   vertical-align: top;
+}
+
+th.song a.span {
+   vertical-align: top;
+}
+
+td.song img {
+   border-radius: 15%;
+   width: 24px;
+   height: 24px;
+   margin-right: 12px;
+}
+
+th.song img {
+   border-radius: 15%;
+   width: 46px;
+   height: 46px;
+   margin-right: 12px;
+}
+
+.difference {
+   text-align: center !important;
+}
+
+table td.pp {
+   text-align: center;
+}
+
+table td.difference {
+   text-align: center;
+}
+
+table th.pp {
+   text-align: center;
+}
+
+table th.difference {
+   text-align: center;
+}
+
+.logo {
+   width: 28px;
+   height: 28px;
+   margin-top: 2px;
+   margin-right: 7px;
+}
+
+.section.is-fullwidth.no-padding {
+   padding-top: 0px;
+   padding-bottom: 0px;
+   padding-right: 0px;
+   padding-left: 0px;
+}
+
+@media screen and (min-width: 769px), print {
+   .hero.is-custom .hero-body {
+      height: 20vw;
+      min-height: 10rem;
+      width: 100%;
+      background-repeat: no-repeat;
+   }
+}
+
+.hero.is-banner {
+   background-image: url('../images/banner.jpg');
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: center center;
+   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.21) !important;
+}
+
+span.difference.positive {
+   color: #42b129;
+}
+
+span.difference.negative {
+   color: #f94022;
+}
+
+span.difference.neutral {
+   color: #363636;
+}
+
+.navbar-burger.is-button {
+   background-color: transparent;
+   border: none;
+   outline: none;
+}
+
+.navbar-burger.is-button.light-mode:hover {
+   background-color: rgba(0, 0, 0, 0.05);
+}
+
+.image.is-96x96.profile {
+   border-radius: 50%;
+}
+
+img.global {
+   border-radius: 50%;
+}
+
+.image.is-badge {
+   border-radius: 7%;
+   margin-top: 5px;
+   margin-left: 8px;
+}
+
+.image.is-badge.first {
+   margin-top: 10px;
+}
+
+.sweet-loading.margin {
+   margin-top: 10px;
+}
+
+.score-container {
+   display: flex;
+}
+
+.score-image-wrapper {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+img.score {
+   width: 46px;
+   height: 46px;
+}
+
+span.expert-plus {
+   color: #8f48db;
+}
+
+span.expert {
+   color: #bf2a42;
+}
+
+span.hard {
+   color: tomato;
+}
+
+span.normal {
+   color: #59b0f4;
+}
+
+span.easy {
+   color: MediumSeaGreen;
+}
+
+table th.pp {
+   text-align: center !important;
+}
+
+table td.pp {
+   text-align: center !important;
+}
+
+table th.rtupvotes {
+   text-align: center !important;
+}
+
+table td.rtupvotes {
+   text-align: center !important;
+}
+
+table th.rtdownvotes {
+   text-align: center !important;
+}
+
+table td.rtdownvotes {
+   text-align: center !important;
+}
+
+table th.qatupvotes {
+   text-align: center !important;
+}
+
+table td.qatupvotes {
+   text-align: center !important;
+}
+
+table th.qatdownvotes {
+   text-align: center !important;
+}
+
+table td.qatdownvotes {
+   text-align: center !important;
+}
+
+table th.diffs {
+   text-align: center !important;
+}
+table td.diffs {
+   text-align: center !important;
+}
+
+table th.voted {
+   text-align: center !important;
+}
+table td.voted {
+   text-align: center !important;
+}
+
+body.dark-mode {
+   background-color: var(--background) !important;
+   transition: background-color var(--transitionTime) ease;
+   span.difference.neutral {
+      color: var(--textColor);
+   }
+
+   .navbar-menu {
+      background-color: var(--foreground) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar.has-border {
+      background-color: var(--foreground) !important;
+      border-bottom: 1px solid var(--borderColor);
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar {
+      background-color: var(--foreground) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   a.navbar-item,
+   .navbar-link {
+      color: var(--textColor) !important;
+   }
+
+   a.navbar-item:hover,
+   a.navbar-item:focus,
+   a.navbar-item.is-active,
+   .navbar-link:hover,
+   .navbar-link:focus,
+   .navbar-link.is-active {
+      background-color: var(--foreground) !important;
+      color: var(--textColor) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar-link:not(.is-arrowless)::after {
+      border-color: #eee;
+   }
+
+   .navbar.has-shadow {
+      background-color: var(--foreground) !important;
+      box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.35) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar.navbar-expand-lg.navbar-light.bg-light {
+      color: var(--foreground) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .title {
+      color: var(--textColor) !important;
+   }
+
+   .box.has-shadow {
+      background-color: var(--foreground) !important;
+      color: var(--textColor) !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.23), 0 5px 15px rgba(0, 0, 0, 0.18);
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .box.has-shadow:hover {
+      box-shadow: 0 15px 25px rgba(23, 23, 23, 0.63), 0 8px 15px rgba(0, 0, 0, 0.4);
+   }
+
+   a {
+      color: var(--alternate) !important;
+   }
+
+   button.arrow {
+      color: var(--alternate) !important;
+   }
+
+   a.navbar-item {
+      color: var(--textColor) !important;
+   }
+
+   a.navbar-item:hover {
+      background-color: rgba(0, 0, 0, 0.37) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .textarea[disabled] {
+      background-color: #3a3a3a;
+      border-color: #202020;
+      box-shadow: none;
+      color: var(--textColor) !important;
+   }
+   .textarea {
+      background-color: #222;
+      border-color: #202020;
+      box-shadow: none;
+      color: var(--textColor) !important;
+   }
+
+   .input {
+      background-color: #222;
+      border-color: #202020;
+      box-shadow: none;
+      color: var(--textColor) !important;
+   }
+
+   .user-manage-selector {
+      min-width: 80px;
+      width: 80px;
+      max-width: 80px;
+      margin-top: 5px;
+      margin-left: 8px;
+      padding-bottom: 5px;
+   }
+   .user-manage-button {
+      margin-top: 5px;
+      width: 80px;
+   }
+
+   strong {
+      color: var(--textColor) !important;
+   }
+
+   h1 {
+      color: var(--textColor) !important;
+   }
+
+   h2 {
+      color: var(--textColor) !important;
+   }
+
+   h3 {
+      color: var(--textColor) !important;
+   }
+
+   h5 {
+      color: var(--textColor) !important;
+   }
+
+   th {
+      color: var(--textColor) !important;
+   }
+
+   span.songBottom.time {
+      color: var(--textColor) !important;
+   }
+
+   span.scoreTop.ppWeightedValue {
+      color: var(--textColor) !important;
+   }
+
+   span.scoreBottom {
+      color: var(--textColor) !important;
+   }
+
+   a.pagination-link {
+      color: var(--textColor) !important;
+   }
+   .card {
+      background-color: var(--foreground) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .footer {
+      background-color: var(--background) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   h4 {
+      color: var(--alternate) !important;
+   }
+
+   label {
+      color: var(--textColor) !important;
+   }
+
+   table td {
+      color: var(--textColor) !important;
+   }
+
+   span.scoreTop.ppValue {
+      color: var(--ppColour) !important;
+   }
+
+   .scoreTop.ppLabel {
+      color: var(--ppColour) !important;
+   }
+
+   .pagination .button {
+      background-color: #2d2d2d !important;
+      border-color: var(--foreground) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar .input {
+      background-color: rgba(0, 0, 0, 0.46) !important;
+      border-color: #4a4a4a !important;
+      color: var(--textColor) !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   .navbar .input:focus {
+      border-color: var(--alternate);
+      outline: 0;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(134, 134, 134, 0.6);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(14, 14, 14, 0.6);
+   }
+
+   .table-bordered,
+   .table-bordered td,
+   .table-bordered th {
+      border: 1px solid rgba(19, 19, 19, 0.48) !important;
+   }
+
+   .content table td,
+   .content table th {
+      border-color: rgba(219, 219, 219, 0.3) !important;
+   }
+
+   .card-body {
+      color: var(--textColor) !important;
+   }
+
+   #chart > svg > g:nth-child(4) > g > text {
+      color: var(--textColor) !important;
+   }
+
+   #chart > svg > g:nth-child(4) > g > rect {
+      color: var(--textColor) !important;
+   }
+
+   .btn.btn-raised.btn-primary {
+      background-color: var(--foreground) !important;
+      box-shadow: none !important;
+      transition: background-color var(--transitionTime) ease;
+   }
+
+   ::placeholder {
+      color: var(--textColor) !important;
+   }
+
+   .form-control {
+      color: var(--textColor) !important;
+   }
+
+   #chart > svg > g:nth-child(4) {
+      display: none;
+   }
+
+   .select select {
+      background-color: #2d2d2d !important;
+      color: var(--textColor) !important;
+   }
+   p {
+      color: var(--textColor) !important;
+   }
+}

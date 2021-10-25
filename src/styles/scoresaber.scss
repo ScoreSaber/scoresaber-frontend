@@ -1,0 +1,149 @@
+@import 'bulma/css/bulma.css';
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+   --background: #202020;
+   --foreground: #252525;
+   --foregroundItem: #2d2d2d;
+   --textColor: #eee;
+   --borderColor: #1a1a1a;
+   --scoreSaberYellow: #ffde1a;
+
+   --ppColour: #8992e8;
+   --ppColourDark: #6b76da;
+   --alternate: #72a8ff;
+   --dimmed: #3e3e3e;
+   --transitionTime: 0s;
+}
+
+html {
+   height: 100%;
+   margin: 0;
+}
+
+body {
+   min-height: 100%;
+   margin: 0;
+   background-color: var(--background);
+   font-family: 'Heebo', sans-serif;
+   font-size: 14px;
+}
+
+.container {
+   max-width: 1050px !important;
+}
+
+.page-container {
+   width: 100%;
+   max-width: 1150px;
+   margin: 0 auto;
+}
+
+strong {
+   color: var(--textColor);
+}
+
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+   color: var(--textColor);
+}
+
+.content table thead td,
+.content table thead th {
+   color: var(--textColor);
+}
+
+.title.is-4,
+.title.is-5,
+.title.is-6 {
+   color: var(--textColor);
+}
+
+label {
+   color: var(--textColor);
+}
+
+p {
+   color: var(--textColor);
+}
+
+a {
+   color: var(--alternate);
+}
+
+a:hover {
+   color: var(--scoreSaberYellow);
+}
+
+.pp {
+   color: var(--ppColour);
+   cursor: help;
+}
+
+td.centered {
+   text-align: center !important;
+}
+
+th.centered {
+   text-align: center !important;
+}
+
+div.is-center {
+   margin-left: auto;
+   margin-right: auto;
+   text-align: center;
+}
+
+.window {
+   display: block;
+   margin-bottom: 10px;
+   padding: 1.25rem 1.25rem 1.25rem 1.25rem;
+   border-radius: 0px 0px 3px 3px !important;
+   background-color: var(--foreground) !important;
+   color: var(--textColor);
+}
+
+.window-header {
+   padding-left: 6px;
+   padding-top: 3px;
+   border-radius: 3px 3px 0px 0px !important;
+   color: var(--textColor);
+   background-color: rgb(51, 51, 51);
+   height: 32px;
+   font-size: large;
+   font-weight: 600;
+}
+
+.fas.header {
+   padding-right: 6px;
+}
+
+.window.noheading {
+   border-radius: 3px 3px 3px 3px !important;
+}
+
+.window.has-shadow {
+   box-shadow: 0 0px 6px rgba(0, 0, 0, 0.23), 0 0px 0px rgba(0, 0, 0, 0.18);
+}
+
+.button {
+   outline: none !important;
+   box-shadow: none !important;
+   outline-style: none !important;
+}
+
+.button:hover:enabled {
+   color: var(--scoreSaberYellow);
+}
+
+.button:active:enabled {
+   transform: translateY(1px);
+}
+
+.section {
+   padding-top: 30px;
+}

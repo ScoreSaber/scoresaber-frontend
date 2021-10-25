@@ -1,0 +1,163 @@
+<script lang="ts">
+   import type { Player } from '$lib/models/PlayerData';
+   import Navbar from '$lib/components/common/navbar.svelte';
+   import Footer from '$lib/components/common/footer.svelte';
+   import Error from '$lib/components/common/error.svelte';
+   import Button from '$lib/components/common/button.svelte';
+   import Stats from '$lib/components/player/stats.svelte';
+   import Loader from '$lib/components/common/loader.svelte';
+   import Badges from '$lib/components/player/badges.svelte';
+   import CDNImage from '$lib/components/image/cdn-image.svelte';
+   import PlayerLink from '$lib/components/player/player-link.svelte';
+   import CountryImage from '$lib/components/image/country-image.svelte';
+
+   import { rankToPage } from '$lib/utils/helpers';
+
+   import axios from '$lib/utils/fetcher';
+   import { useAccio } from '$lib/utils/accio';
+   import { page } from '$app/stores';
+
+   $: scoreFilter = 'Top Scores' || 'Recent Scores';
+
+   const {
+      data: playerData,
+      error: playerDataError,
+      refresh: refreshRankings
+   } = useAccio<Player>(`/api/player/${$page.params.index}/full`, { fetcher: axios, dataLoaded: playerDataLoaded });
+
+   function playerDataLoaded(playerData: Player) {
+      document.title = `${playerData.name}'s Profile | ScoreSaber!`;
+   }
+</script>
+
+<title>ScoreSaber!</title>
+<Navbar />
+<div class="section">
+   <div class="window has-shadow noheading">
+      {#if $playerData}
+         {#if !$playerData.banned}
+            <div class="columns">
+               <!-- Profile picture & badges -->
+               <div class="column is-narrow">
+                  <div class="profile-picture">
+                     <CDNImage title={$playerData.name} src={$playerData.profilePicture} className="image is-128x128 rounded" />
+                  </div>
+                  <div class="desktop">
+                     <Badges player={$playerData} />
+                  </div>
+               </div>
+               <div class="column">
+                  <!-- Player name -->
+                  <h5 class="title is-5 player has-text-centered-mobile">
+                     <PlayerLink
+                        player={$playerData}
+                        external={true}
+                        countryImage={true}
+                        destination={`https://steamcommunity.com/profiles/${$playerData.id}`}
+                     />
+                     <span title="Performance Points" class="title-header spacer pp">
+                        {$playerData.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
+                     </span>
+                  </h5>
+
+                  <h5 class="title is-5 player has-text-centered-mobile">
+                     <small>
+                        <span class="title-header">
+                           <i class="fas fa-globe-americas" title="Global Ranking" />
+                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}>#{$playerData.rank}</a>
+                        </span>
+
+                        <span class="title-header spacer">
+                           <CountryImage country={$playerData.country} />
+                           <a
+                              title="Country Ranking"
+                              href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
+                              >#{$playerData.countryRank}</a
+                           >
+                        </span>
+                     </small>
+                  </h5>
+
+                  <div class="stats has-text-centered-mobile">
+                     <Stats player={$playerData} />
+                  </div>
+
+                  <div class="mobile">
+                     <Badges player={$playerData} />
+                  </div>
+               </div>
+            </div>
+         {:else}
+            <span>Player banned</span>
+         {/if}
+      {:else if !$playerDataError}
+         <Loader />
+      {/if}
+      {#if $playerDataError}
+         <Error message={$playerDataError.toString()} />
+      {/if}
+   </div>
+   <div class="window has-shadow noheading">
+      <div class="button-container">
+         <Button isDisabled={true} poggleable={true} title={'Top Scores'} icon={'chevron-down'} />
+         <Button poggleable={true} title={'Recent Scores'} icon={'clock'} />
+      </div>
+   </div>
+</div>
+
+<Footer />
+
+<style>
+   .button-container {
+      display: flex;
+      justify-content: center;
+   }
+
+   h5.player {
+      /* display: flex;
+      align-items: center; */
+      margin-bottom: 0px !important;
+   }
+   .column.is-narrow {
+      position: relative;
+      width: 200px;
+   }
+   .profile-picture {
+      display: flex;
+      justify-content: center;
+   }
+
+   .title-header {
+      font-size: smaller;
+   }
+
+   .title-header.spacer {
+      border-left: 1px solid var(--dimmed);
+      margin-left: 5px;
+      padding-left: 10px;
+   }
+
+   .fas.fa-globe-americas {
+      height: 11px;
+      width: 16px;
+      cursor: help;
+   }
+
+   .stats {
+      margin-top: 5px;
+   }
+
+   @media only screen and (min-width: 769px) {
+      .mobile {
+         display: none;
+      }
+   }
+   @media only screen and (max-width: 769px) {
+      .column.is-narrow {
+         width: 100%;
+      }
+      .desktop {
+         display: none;
+      }
+   }
+</style>
