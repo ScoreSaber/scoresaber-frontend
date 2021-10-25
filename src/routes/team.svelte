@@ -1,10 +1,3 @@
-<script lang="ts" context="module">
-   import { loadMetadata } from '$lib/metadata-loader';
-   export async function load({ fetch }) {
-      return await loadMetadata(fetch, 'https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json');
-   }
-</script>
-
 <script lang="ts">
    import type { ScoreSaberTeam } from '$lib/models/ScoreSaberTeam';
    import Meta from '$lib/components/common/meta.svelte';
@@ -15,7 +8,6 @@
    import Loader from '$lib/components/common/loader.svelte';
    import { useAccio } from '$lib/utils/accio';
 
-   export let metadata: ScoreSaberTeam = undefined;
    const { data: team, error } = useAccio<ScoreSaberTeam>('https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json', {
       fetcher: axios
    });
@@ -23,9 +15,6 @@
 
 <head>
    <title>Team | ScoreSaber!</title>
-   {#if metadata}
-      <Meta title="{metadata.TeamMembers.QAT.length.toString()} QAT Members" />
-   {/if}
 </head>
 
 <Navbar />
