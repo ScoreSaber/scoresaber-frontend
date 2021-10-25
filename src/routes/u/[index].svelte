@@ -1,3 +1,11 @@
+<script lang="ts" context="module">
+   import { loadMetadata } from '$lib/metadata-loader';
+
+   export async function load({ fetch, page }) {
+      return await loadMetadata(fetch, `/api/player/${page.params.index}/full`);
+   }
+</script>
+
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
    import Navbar from '$lib/components/common/navbar.svelte';
@@ -7,15 +15,16 @@
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Badges from '$lib/components/player/badges.svelte';
-   import CDNImage from '$lib/components/image/cdn-image.svelte';
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import CountryImage from '$lib/components/image/country-image.svelte';
-
-   import { rankToPage } from '$lib/utils/helpers';
+   import Meta from '$lib/components/common/meta.svelte';
+   import { page } from '$app/stores';
+   import { getCDNUrl, rankToPage } from '$lib/utils/helpers';
 
    import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
-   import { page } from '$app/stores';
+
+   export let metadata: Player = undefined;
 
    $: scoreFilter = 'Top Scores' || 'Recent Scores';
 
@@ -30,7 +39,21 @@
    }
 </script>
 
-<title>ScoreSaber!</title>
+<head>
+   <title>Team | ScoreSaber!</title>
+   {#if metadata}
+      <Meta
+         description={`Player Ranking: #${metadata.rank}\r\nPerformance Points: ${metadata.pp.toLocaleString('en-US', {
+            minimumFractionDigits: 2
+         })}pp\r\nTotal Play Count: ${
+            metadata.scoreStats.totalPlayCount
+         }\r\nAverage Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%`}
+         image={getCDNUrl(metadata.profilePicture)}
+         title="{metadata.name}'s profile"
+      />
+   {/if}
+</head>
+
 <Navbar />
 <div class="section">
    <div class="window has-shadow noheading">
@@ -40,7 +63,12 @@
                <!-- Profile picture & badges -->
                <div class="column is-narrow">
                   <div class="profile-picture">
-                     <CDNImage title={$playerData.name} src={$playerData.profilePicture} className="image is-128x128 rounded" />
+                     <img
+                        alt={$playerData.name}
+                        title={$playerData.name}
+                        src={getCDNUrl($playerData.profilePicture)}
+                        class="image is-128x128 rounded"
+                     />
                   </div>
                   <div class="desktop">
                      <Badges player={$playerData} />

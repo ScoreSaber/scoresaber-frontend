@@ -1,8 +1,8 @@
 <script lang="ts">
-   import CDNImage from '$lib/components/image/cdn-image.svelte';
+   import { getCDNUrl } from '$lib/utils/helpers';
    import { getName } from 'country-list';
    export let country: string;
    const countryImagePath = `/flags/${country.toLowerCase()}.png`;
 </script>
 
-<CDNImage title={getName(country)} src={countryImagePath} className="is-country" />
+<img alt={getName(country)} title={getName(country)} src={getCDNUrl(countryImagePath)} class="is-country" />

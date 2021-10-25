@@ -2,7 +2,6 @@
    import type { Player } from '$lib/models/PlayerData';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
-   import CDNImage from '$lib/components/image/cdn-image.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import PlayerLink from '$lib/components/player/player-link.svelte';
@@ -13,6 +12,7 @@
    import { useAccio } from '$lib/utils/accio';
    import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
+   import { getCDNUrl } from '$lib/utils/helpers';
 
    const playersPerPage = 50;
 
@@ -83,7 +83,7 @@
                            <span class="rank">#{player.rank}</span>
                         </td>
                         <td class="player">
-                           <CDNImage src={player.profilePicture} title={player.name} className="image rounded is-24x24" />
+                           <img src={getCDNUrl(player.profilePicture)} alt={player.name} title={player.name} class="image rounded is-24x24" />
                            <span class="playerName"><PlayerLink {player} destination={`/u/${player.id}`} /></span>
                         </td>
                         <td class="pp centered">

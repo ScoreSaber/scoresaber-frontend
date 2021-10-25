@@ -1,6 +1,6 @@
 <script type="ts">
    import type { Player } from '$lib/models/PlayerData';
-   import CDNImage from '$lib/components/image/cdn-image.svelte';
+   import { getCDNUrl } from '$lib/utils/helpers';
    export let player: Player;
    let badgeClass = 'image is-badge';
    if (player.badges.length > 1) {
@@ -10,7 +10,7 @@
 
 <div class="badges">
    {#each player.badges as badge, i}
-      <CDNImage src={'/badges/' + badge.image} title={badge.description} className={badgeClass} />
+      <img src={getCDNUrl('/badges/' + badge.image)} title={badge.description} alt={badge.description} class={badgeClass} />
    {/each}
 </div>
 
@@ -20,5 +20,15 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+   }
+   .image.is-badge {
+      border-radius: 7%;
+      margin-bottom: 5px;
+      width: 80px;
+      height: 30px;
+      cursor: help;
+   }
+   .image.is-badge.grouped {
+      margin-right: 8px;
    }
 </style>
