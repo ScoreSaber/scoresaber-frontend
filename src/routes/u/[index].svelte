@@ -41,7 +41,7 @@
 </script>
 
 <head>
-   <title>Team | ScoreSaber!</title>
+   <title>ScoreSaber!</title>
    {#if metadata}
       <Meta
          description={`Player Ranking: #${metadata.rank}\r\nPerformance Points: ${metadata.pp.toLocaleString('en-US', {
