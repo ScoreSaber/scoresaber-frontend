@@ -1,6 +1,5 @@
 <script lang="ts">
    import type { ScoreSaberTeam } from '$lib/models/ScoreSaberTeam';
-   import Meta from '$lib/components/common/meta.svelte';
    import axios from '$lib/utils/fetcher';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';

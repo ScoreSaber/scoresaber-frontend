@@ -18,6 +18,7 @@
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import CountryImage from '$lib/components/image/country-image.svelte';
    import Meta from '$lib/components/common/meta.svelte';
+   import RankChart from '$lib/components/player/rank-chart.svelte';
    import { page } from '$app/stores';
    import { getCDNUrl, rankToPage } from '$lib/utils/helpers';
 
@@ -113,6 +114,9 @@
                   <div class="mobile">
                      <Badges player={$playerData} />
                   </div>
+                  {#if !$playerData.inactive}
+                     <RankChart player={$playerData} />
+                  {/if}
                </div>
             </div>
          {:else}
