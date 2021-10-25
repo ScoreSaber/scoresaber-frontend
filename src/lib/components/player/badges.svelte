@@ -1,6 +1,5 @@
 <script type="ts">
    import type { Player } from '$lib/models/PlayerData';
-   import { getCDNUrl } from '$lib/utils/helpers';
    export let player: Player;
    let badgeClass = 'image is-badge';
    if (player.badges.length > 1) {
@@ -10,7 +9,7 @@
 
 <div class="badges">
    {#each player.badges as badge, i}
-      <img src={getCDNUrl('/badges/' + badge.image)} title={badge.description} alt={badge.description} class={badgeClass} />
+      <img src={badge.image} title={badge.description} alt={badge.description} class={badgeClass} />
    {/each}
 </div>
 

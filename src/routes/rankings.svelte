@@ -12,7 +12,6 @@
    import { useAccio } from '$lib/utils/accio';
    import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
-   import { getCDNUrl } from '$lib/utils/helpers';
 
    const playersPerPage = 50;
 
@@ -83,7 +82,7 @@
                            <span class="rank">#{player.rank}</span>
                         </td>
                         <td class="player">
-                           <img src={getCDNUrl(player.profilePicture)} alt={player.name} title={player.name} class="image rounded is-24x24" />
+                           <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" />
                            <span class="playerName"><PlayerLink {player} destination={`/u/${player.id}`} /></span>
                         </td>
                         <td class="pp centered">

@@ -19,8 +19,8 @@
    import CountryImage from '$lib/components/image/country-image.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
+   import { rankToPage } from '$lib/utils/helpers';
    import { page } from '$app/stores';
-   import { getCDNUrl, rankToPage } from '$lib/utils/helpers';
 
    import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
@@ -49,7 +49,7 @@
          })}pp\r\nTotal Play Count: ${
             metadata.scoreStats.totalPlayCount
          }\r\nAverage Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%`}
-         image={getCDNUrl(metadata.profilePicture)}
+         image={metadata.profilePicture}
          title="{metadata.name}'s profile"
       />
    {/if}
@@ -64,12 +64,7 @@
                <!-- Profile picture & badges -->
                <div class="column is-narrow">
                   <div class="profile-picture">
-                     <img
-                        alt={$playerData.name}
-                        title={$playerData.name}
-                        src={getCDNUrl($playerData.profilePicture)}
-                        class="image is-128x128 rounded"
-                     />
+                     <img alt={$playerData.name} title={$playerData.name} src={$playerData.profilePicture} class="image is-128x128 rounded" />
                   </div>
                   <div class="desktop">
                      <Badges player={$playerData} />
