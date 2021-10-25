@@ -48,6 +48,7 @@
       padding: 4px 8px 4px 8px;
       border-radius: 2px;
       margin: 0px 5px 5px 0px;
+      cursor: default;
    }
    .stat-item.ranked {
       background-color: var(--ppColourDark);
