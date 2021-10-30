@@ -40,15 +40,15 @@ export function getDifficultyLabel(input: number): string {
 export function getDifficultyLabelSmall(input: number): string {
    switch (input) {
       case 1:
-         return 'Es';
+         return 'E';
       case 3:
          return 'N';
       case 5:
          return 'H';
       case 7:
-         return 'E';
+         return 'X';
       case 9:
-         return 'E+';
+         return 'Ex+';
    }
 }
 
