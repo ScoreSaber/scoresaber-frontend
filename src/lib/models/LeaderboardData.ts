@@ -86,6 +86,7 @@ export interface LeaderboardInfo {
    stars: number;
    plays: number;
    dailyPlays: number;
+   coverImage: string;
 }
 
 export interface Score {

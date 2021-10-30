@@ -7,11 +7,12 @@
 </script>
 
 <script lang="ts">
-   import type { Player } from '$lib/models/PlayerData';
+   import type { Player, PlayerScore } from '$lib/models/PlayerData';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
    import Error from '$lib/components/common/error.svelte';
    import Button from '$lib/components/common/button.svelte';
+   import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Badges from '$lib/components/player/badges.svelte';
@@ -19,7 +20,10 @@
    import CountryImage from '$lib/components/image/country-image.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
+   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
+   import queryString from 'query-string';
    import { rankToPage } from '$lib/utils/helpers';
+   import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
 
    import axios from '$lib/utils/fetcher';
@@ -27,7 +31,7 @@
 
    export let metadata: Player = undefined;
 
-   $: scoreFilter = 'Top Scores' || 'Recent Scores';
+   $: sort = createQueryStore('sort', 'top', queryChanged);
 
    const {
       data: playerData,
@@ -35,8 +39,24 @@
       refresh: refreshRankings
    } = useAccio<Player>(`/api/player/${$page.params.index}/full`, { fetcher: axios, dataLoaded: playerDataLoaded });
 
+   const {
+      data: scoreData,
+      error: scoreDataError,
+      refresh: refreshScores
+   } = useAccio<PlayerScore[]>(
+      queryString.stringifyUrl({
+         url: `/api/player/${$page.params.index}/scores`,
+         query: queryString.parse($page.query.toString())
+      }),
+      { fetcher: axios }
+   );
+
    function playerDataLoaded(playerData: Player) {
       document.title = `${playerData.name}'s Profile | ScoreSaber!`;
+   }
+
+   function queryChanged(newQuery: string) {
+      refreshScores({ query: newQuery });
    }
 </script>
 
@@ -90,7 +110,6 @@
                            <i class="fas fa-globe-americas" title="Global Ranking" />
                            <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}>#{$playerData.rank}</a>
                         </span>
-
                         <span class="title-header spacer">
                            <CountryImage country={$playerData.country} />
                            <a
@@ -129,12 +148,91 @@
          <Button isDisabled={true} poggleable={true} title={'Top Scores'} icon={'chevron-down'} />
          <Button poggleable={true} title={'Recent Scores'} icon={'clock'} />
       </div>
+
+      {#if $scoreData && $playerData}
+         {#if !$playerData.banned}
+            <div class="ranking songs">
+               <table class="ranking songs">
+                  <thead>
+                     <tr>
+                        <th width="5px" />
+                        <th />
+                        <th />
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {#each $scoreData as score}
+                        <tr class="table-item">
+                           <td>
+                              <div class="rank-info">
+                                 <span>
+                                    <i class="fas fa-globe-americas" title="Ranking" />
+                                    <a title="Ranking" href={`#`}>#{score.score.rank}</a>
+                                 </span>
+                                 <FormattedDate date={score.score.timeSet} />
+                              </div>
+                           </td>
+                           <td>
+                              <SmallSongInfo leaderboard={score.leaderboard} />
+                           </td>
+                           <td />
+                        </tr>
+                     {/each}
+                  </tbody>
+               </table>
+            </div>
+         {/if}
+      {:else if !$scoreData}
+         <Loader />
+      {/if}
+      {#if $scoreDataError}
+         <Error message={$scoreDataError.toString()} />
+      {/if}
    </div>
 </div>
 
 <Footer />
 
 <style>
+   .rank-info {
+      width: 100px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+   }
+   table {
+      border-collapse: separate;
+      border-spacing: 0 5px;
+   }
+
+   .content table th {
+      border: none !important;
+   }
+   td {
+      border: none !important;
+      border-style: solid none;
+      align-items: center;
+      vertical-align: middle;
+   }
+
+   td:first-child {
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+   }
+   td:last-child {
+      border-bottom-right-radius: 5px;
+      border-top-right-radius: 5px;
+   }
+
+   tr.table-item {
+      background-color: #323232;
+   }
+   tr.table-item:hover {
+      background-color: #3c3c3c;
+   }
+
+   /* End player scores */
+
    .button-container {
       display: flex;
       justify-content: center;
