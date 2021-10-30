@@ -149,10 +149,7 @@
    span.playerName {
       font-weight: 700;
       margin-left: 10px;
-      display: block;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      display: flex;
    }
    tr.table-item {
       background-color: #323232;
