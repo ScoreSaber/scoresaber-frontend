@@ -84,6 +84,7 @@
                         <td class="player">
                            <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" />
                            <span class="playerName"><PlayerLink {player} destination={`/u/${player.id}`} /></span>
+                           <!-- <span class="playerName">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span> -->
                         </td>
                         <td class="pp centered">
                            <span class="pp">{player.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span><span class="pp ppLabel">pp</span>
@@ -148,6 +149,10 @@
    span.playerName {
       font-weight: 700;
       margin-left: 10px;
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
    }
    tr.table-item {
       background-color: #323232;
