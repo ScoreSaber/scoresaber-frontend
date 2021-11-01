@@ -166,10 +166,10 @@
       margin-left: 10px;
       display: flex;
    }
-   tr.table-item {
+   tr.table-item td {
       background-color: #323232;
    }
-   tr.table-item:hover {
+   tr.table-item:hover td {
       background-color: #3c3c3c;
    }
    td:first-child {
