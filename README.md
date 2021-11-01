@@ -21,4 +21,4 @@ npm run dev -- --open
 npm run build
 ```
 
-> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
+> You can preview the built app with `npm run preview`. This should _not_ be used to serve ScoreSaber in production.
