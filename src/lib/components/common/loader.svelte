@@ -8,6 +8,9 @@
       height: 48px;
       width: 48px;
    }
+   .columns {
+      display: flex;
+   }
    @keyframes loading {
       0% {
          transform: perspective(120px) rotateX(0deg) rotateY(0deg);
