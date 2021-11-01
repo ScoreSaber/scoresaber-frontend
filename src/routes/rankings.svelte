@@ -145,6 +145,21 @@
       white-space: nowrap;
       display: flex;
       align-items: flex-end;
+      overflow: hidden;
+   }
+   td.player span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+   @media (min-width: 1024px) {
+      .player {
+         max-width: 250px;
+      }
+   }
+   @media (max-width: 1024px) {
+      .player {
+         max-width: 55vw;
+      }
    }
    span.playerName {
       font-weight: 700;
