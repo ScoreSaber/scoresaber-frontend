@@ -74,6 +74,11 @@
 {/if}
 
 <style>
+   a,
+   span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
    span.panda {
       color: #ff03e3;
    }
