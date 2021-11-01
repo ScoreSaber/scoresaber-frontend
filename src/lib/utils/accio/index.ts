@@ -14,8 +14,8 @@ export class Accio {
       });
 
       const refresh = async (refreshOptions?: Partial<AccioRefreshOptions<D>>) => {
-         // data.set(null);
-         // error.set(null);
+         data.set(null);
+         error.set(null);
          if (refreshOptions.query) {
             key = `${rootKey}${refreshOptions.query}`;
          }
