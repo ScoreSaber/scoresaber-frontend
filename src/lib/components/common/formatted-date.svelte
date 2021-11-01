@@ -10,7 +10,6 @@
    onMount(() => {
       const interval = setInterval(() => {
          formattedDate = format(date);
-         hoverDate = dateFormat(date, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
       }, 1000);
       return () => {
          clearInterval(interval);
