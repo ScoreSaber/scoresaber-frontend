@@ -55,21 +55,27 @@ export class Accio {
 
       if (typeof window !== 'undefined') {
          let lastFocus: number | null = null;
-         const rawHandler = () => {
+         window.addEventListener('focus', () => {
             const now = Date.now();
             if (lastFocus === null || now - lastFocus > 5000) {
                lastFocus = now;
                console.log(`Regained focus, refreshing ${key}`);
                refresh({ forceRevalidate: true, softRefresh: true });
             }
-         };
-         window.addEventListener('focus', rawHandler);
-      }
+         });
 
-      if (typeof window !== 'undefined') {
          window.addEventListener('online', () => {
             console.log(`User is back online, refreshing ${key}`);
             refresh({ forceRevalidate: true, softRefresh: true });
+         });
+
+         window.addEventListener('visibilitychange', () => {
+            const now = Date.now();
+            if (lastFocus === null || now - lastFocus > 5000) {
+               lastFocus = now;
+               console.log(`Regained focus, refreshing ${key}`);
+               refresh({ forceRevalidate: true, softRefresh: true });
+            }
          });
       }
       onDestroy(() => unsubscribe?.());
