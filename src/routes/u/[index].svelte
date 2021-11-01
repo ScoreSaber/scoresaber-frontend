@@ -239,7 +239,7 @@
    }
 
    h5.player {
-      /* display: flex;
+      /* display: flex; a
       align-items: center; */
       margin-bottom: 0px !important;
    }
