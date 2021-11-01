@@ -23,18 +23,21 @@ export class Accio {
             data.set(null);
             error.set(null);
          }
-         await loadData(key);
+         await loadData(key, refreshOptions?.forceRevalidate);
       };
 
-      const loadData = async (key: string) => {
+      const loadData = async (key: string, forceRevalidate = false) => {
          try {
             let rawData = undefined;
-            if (cache.has(key)) {
-               const cachedData = cache.get(key);
-               if (!cachedData.hasExpired()) {
-                  rawData = cache.get(key).data;
+            if (!forceRevalidate) {
+               if (cache.has(key)) {
+                  const cachedData = cache.get(key);
+                  if (!cachedData.hasExpired()) {
+                     rawData = cache.get(key).data;
+                  }
                }
             }
+
             if (!rawData) {
                rawData = await options.fetcher(key);
                const expiry = new Date();
@@ -56,8 +59,8 @@ export class Accio {
             const now = Date.now();
             if (lastFocus === null || now - lastFocus > 5000) {
                lastFocus = now;
-               console.log('Refreshing for on focus');
-               refresh({ softRefresh: true });
+               console.log(`Regained focus, refreshing ${key}`);
+               refresh({ forceRevalidate: true, softRefresh: true });
             }
          };
          window.addEventListener('focus', rawHandler);
@@ -65,8 +68,8 @@ export class Accio {
 
       if (typeof window !== 'undefined') {
          window.addEventListener('online', () => {
-            console.log('User is back online, refreshing data');
-            refresh({ softRefresh: true });
+            console.log(`User is back online, refreshing ${key}`);
+            refresh({ forceRevalidate: true, softRefresh: true });
          });
       }
       onDestroy(() => unsubscribe?.());
@@ -87,6 +90,7 @@ export interface AccioOptions<D = any> {
 export interface AccioRefreshOptions {
    query?: string;
    softRefresh?: boolean;
+   forceRevalidate?: boolean;
 }
 
 const fetcher = <D>(url: string): Promise<D> => {
