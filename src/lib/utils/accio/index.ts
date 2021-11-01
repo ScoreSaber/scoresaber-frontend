@@ -70,11 +70,13 @@ export class Accio {
          });
 
          window.addEventListener('visibilitychange', () => {
-            const now = Date.now();
-            if (lastFocus === null || now - lastFocus > 5000) {
-               lastFocus = now;
-               console.log(`Regained focus, refreshing ${key}`);
-               refresh({ forceRevalidate: true, softRefresh: true });
+            if (document.visibilityState === 'visible') {
+               const now = Date.now();
+               if (lastFocus === null || now - lastFocus > 5000) {
+                  lastFocus = now;
+                  console.log(`Regained focus, refreshing ${key}`);
+                  refresh({ forceRevalidate: true, softRefresh: true });
+               }
             }
          });
       }
