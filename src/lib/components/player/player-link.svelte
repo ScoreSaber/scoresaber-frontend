@@ -80,33 +80,33 @@
       text-overflow: ellipsis;
    }
    span.panda {
-      color: #ff03e3;
+      color: var(--panda);
    }
    span.admin {
-      color: #bfdcf9;
+      color: var(--admin);
    }
    span.qat-head {
-      color: #ff006f;
+      color: var(--qat-head);
    }
    span.nat {
-      color: #0b64f0;
+      color: var(--nat);
    }
    span.rt {
-      color: #1abc9c;
+      color: var(--rt);
    }
    span.rtr {
-      color: #11806a;
+      color: var(--rtr);
    }
    span.qat {
-      color: #f70000;
+      color: var(--qat);
    }
    span.dev {
-      color: #111111;
+      color: var(--dev);
    }
    span.ppv3 {
-      color: #8d4eca;
+      color: var(--ppv3);
    }
    span.supporter {
-      color: #f96854;
+      color: var(--supporter);
    }
 </style>
