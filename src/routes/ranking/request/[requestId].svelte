@@ -69,7 +69,7 @@
                </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
                {#if $request.rankComments.length + $request.qatComments.length === 0}
-                  <span class="window" color="has-text-color">No comments yet!</span>
+                  <span class="window has-shadow" color="has-text-color">No comments yet!</span>
                {/if}
                <div class="comment-list">
                   {#each $request.rankComments as comment}
@@ -87,7 +87,7 @@
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
                                     <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
-                                    <span class="comment-content">{comment.comment}</span>
+                                    <span class="comment-content">{decode(comment.comment)}</span>
                                  </p>
                               </div>
                            </div>
@@ -109,7 +109,7 @@
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
                                     <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
-                                    <span class="comment-content">{comment.comment}</span>
+                                    <span class="comment-content">{decode(comment.comment)}</span>
                                  </p>
                               </div>
                            </div>
@@ -145,8 +145,8 @@
 
                      <div class="content">
                         Mapped by <a href={'#'}><b>{$request.leaderboardInfo.levelAuthorName}</b></a><br />
-                        Status: {getRankingApprovalStatus($request.approved)}<br />
-                        Request Type: {$request.requestType == 1 ? 'Rank' : 'Unrank'}<br />
+                        Status: <strong>{getRankingApprovalStatus($request.approved)}</strong><br />
+                        Request Type: <strong>{$request.requestType == 1 ? 'Rank' : 'Unrank'}</strong><br />
                         <hr />
                         <div class="votes">
                            <div class="vote">RT 👍<br /><b>{$request.rankVotes.upvotes}</b></div>
@@ -173,6 +173,13 @@
 <Footer />
 
 <style>
+   @media screen and (max-width: 769px), print {
+      .columns {
+         display: flex;
+         flex-direction: column-reverse;
+      }
+   }
+
    code {
       display: block;
       width: 100%;
