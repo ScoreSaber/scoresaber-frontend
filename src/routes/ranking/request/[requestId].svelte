@@ -9,7 +9,7 @@
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import { page } from '$app/stores';
-   import { getDifficultyLabel, getDifficultyOrStarValue, getDifficultyStyle } from '$lib/utils/helpers';
+   import { getDifficultyLabel, getDifficultyOrStarValue, getDifficultyStyle, getRankingApprovalStatus } from '$lib/utils/helpers';
    import AvatarImage from '$lib/components/image/avatar-image.svelte';
    import { decode } from 'html-entities';
 
@@ -23,19 +23,6 @@
       }),
       { fetcher: axios }
    );
-
-   function getRankingApprovalStatus(input: number): string {
-      switch (input) {
-         case 0:
-            return 'In Progress';
-         case 1:
-            return 'Approved';
-         case 2:
-            return 'Denied';
-         default:
-            return 'Unknown';
-      }
-   }
 </script>
 
 <head>

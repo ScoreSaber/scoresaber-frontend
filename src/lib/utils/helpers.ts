@@ -52,6 +52,19 @@ export function getDifficultyLabelSmall(input: number): string {
    }
 }
 
+export function getRankingApprovalStatus(input: number): string {
+   switch (input) {
+      case 0:
+         return 'In Progress';
+      case 1:
+         return 'Approved';
+      case 2:
+         return 'Denied';
+      default:
+         return 'Unknown';
+   }
+}
+
 export function getDifficultyOrStarValue(input: LeaderboardInfo): string {
    if (input.stars > 0) {
       return `${input.stars}★`;
