@@ -9,7 +9,7 @@
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import { page } from '$app/stores';
-   import { getDifficultyLabel, getDifficultyOrStarValue, getDifficultyStyle, getRankingApprovalStatus } from '$lib/utils/helpers';
+   import { getDifficultyLabel, getDifficultyStyle, getRankingApprovalStatus } from '$lib/utils/helpers';
    import AvatarImage from '$lib/components/image/avatar-image.svelte';
    import { decode } from 'html-entities';
 
@@ -17,12 +17,7 @@
       data: request,
       error: requestError,
       refresh: refreshRequest
-   } = useAccio<RankRequestInformation>(
-      queryString.stringifyUrl({
-         url: `/api/ranking/request/${$page.params.requestId}`
-      }),
-      { fetcher: axios }
-   );
+   } = useAccio<RankRequestInformation>(`/api/ranking/request/${$page.params.requestId}`, { fetcher: axios });
 </script>
 
 <head>
