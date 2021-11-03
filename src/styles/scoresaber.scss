@@ -14,6 +14,12 @@
    --alternate: #72a8ff;
    --dimmed: #3e3e3e;
    --transitionTime: 0s;
+
+   --expert-plus: #8f48db;
+   --expert: #bf2a42;
+   --hard: tomato;
+   --normal: #59b0f4;
+   --easy: MediumSeaGreen;
 }
 
 html {
@@ -156,21 +162,21 @@ div.is-center {
 }
 
 .tag.expert-plus {
-   background-color: #8f48db !important;
+   background-color: var(--expert-plus) !important;
 }
 
 .tag.expert {
-   background-color: #bf2a42 !important;
+   background-color: var(--expert) !important;
 }
 
 .tag.hard {
-   background-color: tomato !important;
+   background-color: var(--hard) !important;
 }
 
 .tag.normal {
-   background-color: #59b0f4 !important;
+   background-color: var(--normal) !important;
 }
 
 .tag.easy {
-   background-color: MediumSeaGreen !important;
+   background-color: var(--easy) !important;
 }

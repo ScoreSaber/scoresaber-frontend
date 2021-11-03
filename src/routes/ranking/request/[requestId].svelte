@@ -35,7 +35,25 @@
       <div class="columns">
          {#if $request}
             <div class="column is-8">
-               <div class="window has-shadow">aaa</div>
+               <div class="window has-shadow">
+                  <div class="tabs is-centered">
+                     <ul class="m-0">
+                        {#each $request.difficulties as difficulty}
+                           <li>
+                              <a
+                                 href="/ranking/request/{difficulty.requestId}"
+                                 class={getDifficultyStyle(difficulty.difficulty) +
+                                    ' ' +
+                                    ($request.leaderboardInfo.difficulty === difficulty.difficulty ? 'selected' : '')}
+                              >
+                                 <span>{getDifficultyLabel(difficulty.difficulty)}</span>
+                              </a>
+                           </li>
+                        {/each}
+                     </ul>
+                  </div>
+                  <code>aaa</code>
+               </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
                <div class="comment-list">
                   {#each $request.rankComments as comment}
@@ -53,8 +71,7 @@
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
                                     <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
-                                    {@html comment.comment.replace(/\n/g, '<br />')}
-                                    <!-- TODO: A better method to handle this kind of stuff maybe? -->
+                                    <span class="comment-content">{comment.comment}</span>
                                  </p>
                               </div>
                            </div>
@@ -76,7 +93,7 @@
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
                                     <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
-                                    {@html comment.comment.replace(/\n/g, '<br />')}
+                                    <span class="comment-content">{comment.comment}</span>
                                  </p>
                               </div>
                            </div>
@@ -100,7 +117,7 @@
                            >
                               {getDifficultyLabel($request.leaderboardInfo.difficulty)}
                            </div>
-                           <div class="title is-5"><a href={'#'}>{$request.leaderboardInfo.songName}</a></div>
+                           <div class="title is-5 mb-0"><a href={'#'}>{$request.leaderboardInfo.songName}</a></div>
                            <div class="subtitle is-6">by {$request.leaderboardInfo.songAuthorName}</div>
                         </div>
                         <div class="media-right">
@@ -139,6 +156,48 @@
 <Footer />
 
 <style>
+   .tabs a.selected {
+      border-bottom-width: 3px;
+      font-weight: 700;
+   }
+
+   .tabs a {
+      color: white;
+   }
+
+   .tabs a.easy {
+      border-bottom-color: var(--easy);
+      color: var(--easy);
+   }
+
+   .tabs a.normal {
+      border-bottom-color: var(--normal);
+      color: var(--normal);
+   }
+
+   .tabs a.hard {
+      border-bottom-color: var(--hard);
+      color: var(--hard);
+   }
+
+   .tabs a.expert {
+      border-bottom-color: var(--expert);
+      color: var(--expert);
+   }
+
+   .tabs a.expert-plus {
+      border-bottom-color: var(--expert-plus);
+      color: var(--expert-plus);
+   }
+
+   .tabs ul {
+      border-bottom-color: var(--dimmed);
+   }
+
+   .comment-content {
+      white-space: pre-line;
+   }
+
    span.rank {
       font-size: x-small;
       float: right;
