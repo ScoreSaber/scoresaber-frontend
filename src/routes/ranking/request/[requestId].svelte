@@ -8,10 +8,10 @@
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
-   import Button from '$lib/components/common/button.svelte';
    import { page } from '$app/stores';
    import { getDifficultyLabel, getDifficultyOrStarValue, getDifficultyStyle } from '$lib/utils/helpers';
    import AvatarImage from '$lib/components/image/avatar-image.svelte';
+   import { decode } from 'html-entities';
 
    const {
       data: request,
@@ -23,26 +23,6 @@
       }),
       { fetcher: axios }
    );
-
-   // stackoverflow my beloved
-   const decodeHTML = (function () {
-      var element = document.createElement('div');
-
-      function decodeHTMLEntities(str) {
-         if (str && typeof str === 'string') {
-            // strip script/html tags
-            str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gim, '');
-            str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gim, '');
-            element.innerHTML = str;
-            str = element.textContent;
-            element.textContent = '';
-         }
-
-         return str;
-      }
-
-      return decodeHTMLEntities;
-   })();
 </script>
 
 <head>
@@ -72,7 +52,7 @@
                         {/each}
                      </ul>
                   </div>
-                  <code>{decodeHTML($request.requestDescription)}</code>
+                  <code>{decode($request.requestDescription)}</code>
                </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
                <div class="comment-list">
@@ -183,6 +163,7 @@
       background-color: var(--dimmed);
       border-radius: 5px;
       white-space: pre-line;
+      overflow-wrap: anywhere;
    }
 
    .tabs a.selected {
