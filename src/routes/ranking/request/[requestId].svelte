@@ -70,9 +70,9 @@
                                  <p>
                                     <span class="tag mb-2 rank rt">Ranking Team</span>
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
-                                    <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
+                                    <small class="text-muted"><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
-                                    <span class="comment-content">{decode(comment.comment)}</span>
+                                    <code class="mt-1">{decode(comment.comment)}</code>
                                  </p>
                               </div>
                            </div>
@@ -92,9 +92,9 @@
                                  <p>
                                     <span class="tag mb-2 rank qat">Quality Assurance Team</span>
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
-                                    <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
+                                    <small class="text-muted"><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
-                                    <span class="comment-content">{decode(comment.comment)}</span>
+                                    <code class="mt-1">{decode(comment.comment)}</code>
                                  </p>
                               </div>
                            </div>
@@ -111,7 +111,7 @@
                   />
                   <div class="card-content">
                      <div class="media">
-                        <div class="media-content">
+                        <div class="media-content is-clipped">
                            <div
                               title={getDifficultyLabel($request.leaderboardInfo.difficulty)}
                               class="tag mb-2 {getDifficultyStyle($request.leaderboardInfo.difficulty)}"
@@ -163,6 +163,10 @@
          display: flex;
          flex-direction: column-reverse;
       }
+   }
+
+   .text-muted {
+      color: var(--muted);
    }
 
    code {
