@@ -55,6 +55,9 @@
                   <code>{decode($request.requestDescription)}</code>
                </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
+               {#if $request.rankComments.length + $request.qatComments.length === 0}
+                  <span class="window" color="has-text-color">No comments yet!</span>
+               {/if}
                <div class="comment-list">
                   {#each $request.rankComments as comment}
                      <div class="window has-shadow">
