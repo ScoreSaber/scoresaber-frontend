@@ -38,7 +38,7 @@
                <i class="fas fa-medal" />
                Player Rankings
             </a>
-            <a href to="/ranking/requests" class="navbar-item">
+            <a href="/ranking/requests" class="navbar-item">
                <i class="fas fa-tasks" />
                Rank Requests
             </a>

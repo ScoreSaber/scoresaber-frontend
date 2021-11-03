@@ -20,6 +20,11 @@
          if (onClicked) {
             onClicked();
          }
+      } else {
+         // did this since I don't want to disable the button and what even is "poggleable" bruh
+         if (onClicked) {
+            onClicked();
+         }
       }
    }
 
