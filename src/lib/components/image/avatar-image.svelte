@@ -5,3 +5,9 @@
 </script>
 
 <img alt={userId + ' Avatar'} src={getCDNUrl(imagePath)} class="is-avatar" />
+
+<style>
+   .is-avatar {
+      border-radius: 5px;
+   }
+</style>

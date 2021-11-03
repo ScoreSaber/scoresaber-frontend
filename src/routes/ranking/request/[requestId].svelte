@@ -34,46 +34,6 @@
    <div class="section">
       <div class="columns">
          {#if $request}
-            <div class="column is-4">
-               <div class="card map-card">
-                  <div
-                     class="bg-image"
-                     style={`background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(${$request.leaderboardInfo.coverImage}) repeat scroll 0% 0%`}
-                  />
-                  <div class="card-content">
-                     <div class="media is-align-items-center">
-                        <div class="media-left">
-                           <figure class="image is-96x96 mr-0 ml-0">
-                              <img src={$request.leaderboardInfo.coverImage} alt="cock" />
-                           </figure>
-                        </div>
-                        <div class="media-content">
-                           <div
-                              title={getDifficultyLabel($request.leaderboardInfo.difficulty)}
-                              class="tag mb-2 {getDifficultyStyle($request.leaderboardInfo.difficulty)}"
-                           >
-                              {getDifficultyLabel($request.leaderboardInfo.difficulty)}
-                           </div>
-                           <div class="title is-5"><a href={'#'}>{$request.leaderboardInfo.songName}</a></div>
-                           <div class="subtitle is-6">by {$request.leaderboardInfo.songAuthorName}</div>
-                        </div>
-                     </div>
-
-                     <div class="content">
-                        Mapped by <a href={'#'}><b>{$request.leaderboardInfo.levelAuthorName}</b></a>
-                        <hr />
-                        Status: idk<br />
-                        <div class="votes">
-                           <div class="vote">RT 👍<br /><b>{$request.rankVotes.upvotes}</b></div>
-                           <div class="vote">RT 👎<br /><b>{$request.rankVotes.downvotes}</b></div>
-                           <div class="vote">QAT 👍<br /><b>{$request.qatVotes.upvotes}</b></div>
-                           <div class="vote">QAT 😐<br /><b>{$request.qatVotes.neutral}</b></div>
-                           <div class="vote">QAT 👎<br /><b>{$request.qatVotes.downvotes}</b></div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
             <div class="column is-8">
                <div class="window has-shadow">aaa</div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
@@ -93,7 +53,8 @@
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
                                     <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
-                                    {@html comment.comment.replace(/\n/g, '<br />')} // TODO: A better method to handle this kind of stuff maybe?
+                                    {@html comment.comment.replace(/\n/g, '<br />')}
+                                    <!-- TODO: A better method to handle this kind of stuff maybe? -->
                                  </p>
                               </div>
                            </div>
@@ -122,6 +83,46 @@
                         </article>
                      </div>
                   {/each}
+               </div>
+            </div>
+            <div class="column is-4">
+               <div class="card map-card">
+                  <div
+                     class="bg-image"
+                     style={`background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(${$request.leaderboardInfo.coverImage}) repeat scroll 0% 0%`}
+                  />
+                  <div class="card-content">
+                     <div class="media">
+                        <div class="media-content">
+                           <div
+                              title={getDifficultyLabel($request.leaderboardInfo.difficulty)}
+                              class="tag mb-2 {getDifficultyStyle($request.leaderboardInfo.difficulty)}"
+                           >
+                              {getDifficultyLabel($request.leaderboardInfo.difficulty)}
+                           </div>
+                           <div class="title is-5"><a href={'#'}>{$request.leaderboardInfo.songName}</a></div>
+                           <div class="subtitle is-6">by {$request.leaderboardInfo.songAuthorName}</div>
+                        </div>
+                        <div class="media-right">
+                           <figure class="image is-96x96 mr-0 ml-0">
+                              <img src={$request.leaderboardInfo.coverImage} alt="Map Cover" class="map-cover" />
+                           </figure>
+                        </div>
+                     </div>
+
+                     <div class="content">
+                        Mapped by <a href={'#'}><b>{$request.leaderboardInfo.levelAuthorName}</b></a>
+                        <hr />
+                        Status: idk<br />
+                        <div class="votes">
+                           <div class="vote">RT 👍<br /><b>{$request.rankVotes.upvotes}</b></div>
+                           <div class="vote">RT 👎<br /><b>{$request.rankVotes.downvotes}</b></div>
+                           <div class="vote">QAT 👍<br /><b>{$request.qatVotes.upvotes}</b></div>
+                           <div class="vote">QAT 😐<br /><b>{$request.qatVotes.neutral}</b></div>
+                           <div class="vote">QAT 👎<br /><b>{$request.qatVotes.downvotes}</b></div>
+                        </div>
+                     </div>
+                  </div>
                </div>
             </div>
          {:else if !$request}
@@ -197,6 +198,10 @@
    .vote {
       background-color: var(--foregroundItem);
       padding: 0.2rem 0.3rem;
+      border-radius: 5px;
+   }
+
+   .map-cover {
       border-radius: 5px;
    }
 </style>
