@@ -64,7 +64,7 @@
          <div class="ranking">
             <table>
                <thead>
-                  <tr>
+                  <tr class="headers">
                      <th class="rank" />
                      <th class="player" />
                      <th class="pp centered">Performance Points</th>
@@ -99,14 +99,22 @@
 <style>
    table {
       border-collapse: separate;
-      border-spacing: 0 5px;
       white-space: nowrap;
-      margin-top: -15px;
+      border-spacing: 0 5px;
    }
    div.ranking {
       overflow-x: auto;
    }
    .content table th {
       border: none !important;
+   }
+
+   @media (max-width: 512px) {
+      table {
+         border-spacing: 0;
+      }
+      .headers {
+         display: none;
+      }
    }
 </style>

@@ -1,12 +1,16 @@
 <script type="ts">
    import type { Player } from '$lib/models/PlayerData';
    import PlayerLink from '$lib/components/player/player-link.svelte';
+   import CountryImage from '$lib/components/image/country-image.svelte';
    import WeeklyChange from '$lib/components/player/weekly-change.svelte';
-   const isExpanded: boolean = false;
+   import Stats from '$lib/components/player/stats.svelte';
+   let isExpanded: boolean = false;
    export let player: Player;
+
+   const toggleExpanded = () => (isExpanded = !isExpanded);
 </script>
 
-<tr class="table-item">
+<tr class="table-item {isExpanded ? 'expanded' : ''}" on:click={toggleExpanded}>
    <td class="rank" width="5px">
       <span class="rank">#{player.rank}</span>
    </td>
@@ -32,8 +36,33 @@
       <WeeklyChange {player} />
    </td>
 </tr>
+<tr class="infobox-row">
+   <td colspan="8" class="infobox-container"
+      ><div class="infobox{isExpanded ? ' is-expanded' : ''}">
+         <div class="infobox-content">
+            <div class="infobox-upper">
+               <img
+                  src={player.profilePicture}
+                  alt={player.name}
+                  title={player.name}
+                  class="profile-image image rounded is-64x64 has-text-weight-semibold"
+               />
+               <div class="player is-size-3">{player.name}</div>
+               <div><CountryImage country={player.country} /> #{player.countryRank} <span class="separator" /> {player.pp}pp</div>
+            </div>
+            <div>
+               <Stats {player} />
+            </div>
+            <a href="/u/{player.id}" class="full-profile-link">Full profile &rsaquo;</a>
+         </div>
+      </div>
+   </td>
+</tr>
 
 <style>
+   tr.table-item {
+      cursor: pointer;
+   }
    td {
       border: none !important;
       border-style: solid none;
@@ -69,7 +98,8 @@
    tr.table-item td {
       background-color: #323232;
    }
-   tr.table-item:hover td {
+   tr.table-item:hover td,
+   tr.table-item.expanded td {
       background-color: #3c3c3c;
    }
    td:first-child {
@@ -81,5 +111,74 @@
       border-right-style: solid;
       border-bottom-right-radius: 5px;
       border-top-right-radius: 5px;
+   }
+
+   .infobox-upper {
+      display: grid;
+      grid-template-columns: max-content auto;
+      gap: 0 10px;
+   }
+
+   .profile-image {
+      grid-row: 1 / span 2;
+   }
+
+   .infobox {
+      height: 0;
+      transition: all 0.25s ease;
+      margin-top: -10px;
+      margin-bottom: 5px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+      pointer-events: none;
+      background-color: #3c3c3c;
+      border-radius: 0 0 5px 5px;
+   }
+
+   .full-profile-link {
+      display: inline-block;
+      padding: 8px 15px;
+      margin-top: 5px;
+      border-radius: 5px;
+      background: #fff1;
+   }
+
+   .infobox-content {
+      padding: 25px;
+      opacity: 0;
+      transition: inherit;
+      max-width: calc(100vw - 102px);
+      position: sticky;
+   }
+
+   .infobox.is-expanded .infobox-content {
+      opacity: 1;
+   }
+
+   .infobox-row,
+   .infobox-container {
+      margin: 0;
+      padding: 0;
+   }
+
+   .separator {
+      display: inline-block;
+      height: 1.5em;
+      margin: 5px 0;
+      vertical-align: middle;
+      width: 1px;
+      background: #7f7f7f;
+   }
+   @media (max-width: 512px) {
+      .infobox-row {
+         display: table-row;
+      }
+   }
+
+   .infobox.is-expanded {
+      height: 275px;
+      pointer-events: all;
+      opacity: 1;
    }
 </style>
