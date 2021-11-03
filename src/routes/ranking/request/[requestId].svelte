@@ -2,7 +2,6 @@
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
    import { useAccio } from '$lib/utils/accio';
-   import queryString from 'query-string';
    import type { RankRequestInformation } from '$lib/models/Ranking';
    import axios from '$lib/utils/fetcher';
    import Loader from '$lib/components/common/loader.svelte';
@@ -18,6 +17,10 @@
       error: requestError,
       refresh: refreshRequest
    } = useAccio<RankRequestInformation>(`/api/ranking/request/${$page.params.requestId}`, { fetcher: axios });
+
+   page.subscribe((p) => {
+      refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
+   });
 </script>
 
 <head>
