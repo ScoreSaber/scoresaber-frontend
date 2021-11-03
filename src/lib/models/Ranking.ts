@@ -2,6 +2,7 @@ import type { LeaderboardInfo } from './LeaderboardData';
 
 export interface RankRequestInformation {
    requestId: number;
+   requestDescription: string;
    leaderboardInfo: LeaderboardInfo;
    created_at: string;
    rankVotes: VoteGroup;
