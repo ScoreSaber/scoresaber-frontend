@@ -9,11 +9,19 @@
    --borderColor: #1a1a1a;
    --scoreSaberYellow: #ffde1a;
 
+   --muted: #848484;
+
    --ppColour: #8992e8;
    --ppColourDark: #6b76da;
    --alternate: #72a8ff;
    --dimmed: #3e3e3e;
    --transitionTime: 0s;
+
+   --expert-plus: #8f48db;
+   --expert: #bf2a42;
+   --hard: tomato;
+   --normal: #59b0f4;
+   --easy: MediumSeaGreen;
 }
 
 html {
@@ -153,4 +161,24 @@ div.is-center {
 }
 .image.is-country {
    cursor: help;
+}
+
+.tag.expert-plus {
+   background-color: var(--expert-plus) !important;
+}
+
+.tag.expert {
+   background-color: var(--expert) !important;
+}
+
+.tag.hard {
+   background-color: var(--hard) !important;
+}
+
+.tag.normal {
+   background-color: var(--normal) !important;
+}
+
+.tag.easy {
+   background-color: var(--easy) !important;
 }
