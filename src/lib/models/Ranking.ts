@@ -10,6 +10,12 @@ export interface RankRequestInformation {
    qatComments: Comment[];
    requestType: number;
    approved: number;
+   difficulties: RankingDifficulty[];
+}
+
+export interface RankingDifficulty {
+   requestId: number;
+   difficulty: number;
 }
 
 export interface Comment {
