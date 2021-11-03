@@ -23,6 +23,19 @@
       }),
       { fetcher: axios }
    );
+
+   function getRankingApprovalStatus(input: number): string {
+      switch (input) {
+         case 0:
+            return 'In Progress';
+         case 1:
+            return 'Approved';
+         case 2:
+            return 'Denied';
+         default:
+            return 'Unknown';
+      }
+   }
 </script>
 
 <head>
@@ -131,9 +144,10 @@
                      </div>
 
                      <div class="content">
-                        Mapped by <a href={'#'}><b>{$request.leaderboardInfo.levelAuthorName}</b></a>
+                        Mapped by <a href={'#'}><b>{$request.leaderboardInfo.levelAuthorName}</b></a><br />
+                        Status: {getRankingApprovalStatus($request.approved)}<br />
+                        Request Type: {$request.requestType == 1 ? 'Rank' : 'Unrank'}<br />
                         <hr />
-                        Status: idk<br />
                         <div class="votes">
                            <div class="vote">RT 👍<br /><b>{$request.rankVotes.upvotes}</b></div>
                            <div class="vote">RT 👎<br /><b>{$request.rankVotes.downvotes}</b></div>
