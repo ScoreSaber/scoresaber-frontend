@@ -23,6 +23,26 @@
       }),
       { fetcher: axios }
    );
+
+   // stackoverflow my beloved
+   const decodeHTML = (function () {
+      var element = document.createElement('div');
+
+      function decodeHTMLEntities(str) {
+         if (str && typeof str === 'string') {
+            // strip script/html tags
+            str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gim, '');
+            str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gim, '');
+            element.innerHTML = str;
+            str = element.textContent;
+            element.textContent = '';
+         }
+
+         return str;
+      }
+
+      return decodeHTMLEntities;
+   })();
 </script>
 
 <head>
@@ -52,7 +72,7 @@
                         {/each}
                      </ul>
                   </div>
-                  <code>aaa</code>
+                  <code>{decodeHTML($request.requestDescription)}</code>
                </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
                <div class="comment-list">
@@ -156,6 +176,15 @@
 <Footer />
 
 <style>
+   code {
+      display: block;
+      width: 100%;
+      color: var(--textColor);
+      background-color: var(--dimmed);
+      border-radius: 5px;
+      white-space: pre-line;
+   }
+
    .tabs a.selected {
       border-bottom-width: 3px;
       font-weight: 700;
