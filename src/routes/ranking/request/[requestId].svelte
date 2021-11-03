@@ -10,6 +10,8 @@
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Button from '$lib/components/common/button.svelte';
    import { page } from '$app/stores';
+   import { getDifficultyLabel, getDifficultyOrStarValue, getDifficultyStyle } from '$lib/utils/helpers';
+   import AvatarImage from '$lib/components/image/avatar-image.svelte';
 
    const {
       data: request,
@@ -29,12 +31,101 @@
 
 <Navbar />
 <div>
-   <div class="section breakout">
-      <div class="window has-shadow">
+   <div class="section">
+      <div class="columns">
          {#if $request}
-            {JSON.stringify($request)}
+            <div class="column is-4">
+               <div class="card map-card">
+                  <div
+                     class="bg-image"
+                     style={`background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(${$request.leaderboardInfo.coverImage}) repeat scroll 0% 0%`}
+                  />
+                  <div class="card-content">
+                     <div class="media is-align-items-center">
+                        <div class="media-left">
+                           <figure class="image is-96x96 mr-0 ml-0">
+                              <img src={$request.leaderboardInfo.coverImage} alt="cock" />
+                           </figure>
+                        </div>
+                        <div class="media-content">
+                           <div
+                              title={getDifficultyLabel($request.leaderboardInfo.difficulty)}
+                              class="tag mb-2 {getDifficultyStyle($request.leaderboardInfo.difficulty)}"
+                           >
+                              {getDifficultyLabel($request.leaderboardInfo.difficulty)}
+                           </div>
+                           <div class="title is-5"><a href={'#'}>{$request.leaderboardInfo.songName}</a></div>
+                           <div class="subtitle is-6">by {$request.leaderboardInfo.songAuthorName}</div>
+                        </div>
+                     </div>
+
+                     <div class="content">
+                        Mapped by <a href={'#'}><b>{$request.leaderboardInfo.levelAuthorName}</b></a>
+                        <hr />
+                        Status: idk<br />
+                        <div class="votes">
+                           <div class="vote">RT 👍<br /><b>{$request.rankVotes.upvotes}</b></div>
+                           <div class="vote">RT 👎<br /><b>{$request.rankVotes.downvotes}</b></div>
+                           <div class="vote">QAT 👍<br /><b>{$request.qatVotes.upvotes}</b></div>
+                           <div class="vote">QAT 😐<br /><b>{$request.qatVotes.neutral}</b></div>
+                           <div class="vote">QAT 👎<br /><b>{$request.qatVotes.downvotes}</b></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="column is-8">
+               <div class="window has-shadow">aaa</div>
+               <div class="title is-5 mt-3 mb-3">Comments</div>
+               <div class="comment-list">
+                  {#each $request.rankComments as comment}
+                     <div class="window has-shadow">
+                        <article class="media">
+                           <figure class="media-left m-0 mr-4 ml-0">
+                              <p class="image is-48x48">
+                                 <AvatarImage userId={comment.userId} />
+                              </p>
+                           </figure>
+                           <div class="media-content">
+                              <div class="content">
+                                 <p>
+                                    <span class="tag mb-2 rank rt">Ranking Team</span>
+                                    <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
+                                    <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
+                                    <br />
+                                    {@html comment.comment.replace(/\n/g, '<br />')} // TODO: A better method to handle this kind of stuff maybe?
+                                 </p>
+                              </div>
+                           </div>
+                        </article>
+                     </div>
+                  {/each}
+                  {#each $request.qatComments as comment}
+                     <div class="window has-shadow">
+                        <article class="media">
+                           <figure class="media-left m-0 mr-4 ml-0">
+                              <p class="image is-48x48">
+                                 <AvatarImage userId={comment.userId} />
+                              </p>
+                           </figure>
+                           <div class="media-content">
+                              <div class="content">
+                                 <p>
+                                    <span class="tag mb-2 rank qat">Quality Assurance Team</span>
+                                    <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
+                                    <small><FormattedDate date={new Date(comment.timeStamp)} /></small>
+                                    <br />
+                                    {@html comment.comment.replace(/\n/g, '<br />')}
+                                 </p>
+                              </div>
+                           </div>
+                        </article>
+                     </div>
+                  {/each}
+               </div>
+            </div>
          {:else if !$request}
-            <Loader />
+            <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
          {/if}
          {#if $requestError}
             <Error message={$requestError.toString()} />
@@ -45,4 +136,67 @@
 <Footer />
 
 <style>
+   span.rank {
+      font-size: x-small;
+      float: right;
+   }
+
+   .rank.rt {
+      background-color: #1abc9c;
+   }
+
+   .rank.qat {
+      background-color: #f70000;
+   }
+
+   .bg-image {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background-position: 50% !important;
+      background-repeat: no-repeat !important;
+      background-size: cover !important;
+      z-index: -1;
+   }
+
+   .map-card {
+      z-index: 1;
+      color: var(--textColor);
+   }
+
+   .subtitle {
+      display: block;
+      color: var(--textColor);
+      font-size: 14px;
+      margin-top: 0.5rem;
+   }
+
+   hr {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      background-color: var(--dimmed);
+   }
+
+   .tag {
+      font-size: xx-small;
+      min-width: 20px;
+      color: white;
+      padding: 4px 4px 3px 4px;
+      cursor: help;
+   }
+
+   .votes {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      align-items: center;
+      margin-top: 1rem;
+      text-align: center;
+   }
+
+   .vote {
+      background-color: var(--foregroundItem);
+      padding: 0.2rem 0.3rem;
+      border-radius: 5px;
+   }
 </style>

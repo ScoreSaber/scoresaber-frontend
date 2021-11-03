@@ -9,6 +9,8 @@
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Button from '$lib/components/common/button.svelte';
+   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
+   import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info.svelte';
 
    const {
       data: topRequests,
@@ -49,6 +51,22 @@
 <Navbar />
 <div>
    <div class="section breakout">
+      {#if $topRequests && $belowTopRequests}
+         <nav class="level mb-5">
+            <div class="level-item has-text-centered">
+               <div>
+                  <p class="heading">Rank Requests</p>
+                  <p class="title level-color">{$topRequests.length + $belowTopRequests.length}</p>
+               </div>
+            </div>
+            <div class="level-item has-text-centered">
+               <div>
+                  <p class="heading">Something else...</p>
+                  <p class="title level-color">0</p>
+               </div>
+            </div>
+         </nav>
+      {/if}
       <div class="window has-shadow">
          {#if $topRequests}
             <h3>Next items in queue</h3>
@@ -56,39 +74,31 @@
                <table>
                   <thead>
                      <tr>
-                        <th class="map centered">Map</th>
+                        <th class="diffs_created_at" />
+                        <th class="map" />
                         <th class="rt_upvotes">RT 👍</th>
                         <th class="rt_downvotes">RT 👎</th>
                         <th class="qat_upvotes">QAT 👍</th>
                         <th class="qat_neutral">QAT 😐</th>
                         <th class="qat_downvotes">QAT 👎</th>
-                        <th class="difficultyCount centered">Difficulties</th>
-                        <th class="created_at centered">Created At</th>
                      </tr>
                   </thead>
                   <tbody>
                      {#each $topRequests as request}
                         <tr class="table-item">
+                           <td class="diffs_created_at"
+                              ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
+                                 date={new Date(request.created_at)}
+                              /></td
+                           >
                            <td class="map">
-                              <img src={request.leaderboardInfo.coverImage} alt={request.leaderboardInfo.songName} />
-                              <span class="songInfo">
-                                 <a href="/ranking/request/{request.requestId}"
-                                    >{request.leaderboardInfo.songName.length < 30
-                                       ? request.leaderboardInfo.songName
-                                       : request.leaderboardInfo.songName.slice(0, 29).trim() + '…'}</a
-                                 >
-                                 by {request.leaderboardInfo.levelAuthorName.length < 16
-                                    ? request.leaderboardInfo.levelAuthorName
-                                    : request.leaderboardInfo.levelAuthorName.slice(0, 15).trim() + '…'}</span
-                              >
+                              <SmallRequestInfo {request} />
                            </td>
                            <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
                            <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
                            <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
                            <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
                            <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
-                           <td class="difficultyCount centered">{request.difficultyCount}</td>
-                           <td class="created_at centered"><FormattedDate date={new Date(request.created_at)} /></td>
                         </tr>
                      {/each}
                   </tbody>
@@ -117,39 +127,30 @@
                   <table>
                      <thead>
                         <tr>
-                           <th class="map centered">Map</th>
+                           <th class="diffs_created_at" />
+                           <th class="map" />
                            <th class="rt_upvotes">RT 👍</th>
                            <th class="rt_downvotes">RT 👎</th>
                            <th class="qat_upvotes">QAT 👍</th>
                            <th class="qat_neutral">QAT 😐</th>
                            <th class="qat_downvotes">QAT 👎</th>
-                           <th class="difficultyCount centered">Difficulties</th>
-                           <th class="created_at">Created At</th>
                         </tr>
                      </thead>
                      <tbody>
                         {#each $belowTopRequests as request}
                            <tr class="table-item">
-                              <td class="map">
-                                 <img src={request.leaderboardInfo.coverImage} alt={request.leaderboardInfo.songName} />
-                                 <span class="songInfo">
-                                    <a href="/ranking/request/{request.requestId}"
-                                       >{request.leaderboardInfo.songName.length < 30
-                                          ? request.leaderboardInfo.songName
-                                          : request.leaderboardInfo.songName.slice(0, 29).trim() + '…'}</a
-                                    >
-                                    by {request.leaderboardInfo.levelAuthorName.length < 16
-                                       ? request.leaderboardInfo.levelAuthorName
-                                       : request.leaderboardInfo.levelAuthorName.slice(0, 15).trim() + '…'}</span
-                                 >
+                              <td class="diffs_created_at"
+                                 ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
+                                    date={new Date(request.created_at)}
+                                 /></td
+                              ><td class="map">
+                                 <SmallRequestInfo {request} />
                               </td>
                               <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
                               <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
                               <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
                               <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
                               <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
-                              <td class="difficultyCount centered">{request.difficultyCount}</td>
-                              <td class="created_at"><FormattedDate date={new Date(request.created_at)} /></td>
                            </tr>
                         {/each}
                      </tbody>
@@ -218,5 +219,9 @@
 
    .below-top {
       margin-top: 1rem;
+   }
+
+   .level-color {
+      color: var(--textColor);
    }
 </style>

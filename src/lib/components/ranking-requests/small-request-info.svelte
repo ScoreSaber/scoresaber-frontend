@@ -1,27 +1,30 @@
 <script lang="ts">
-   import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
-   import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
-   export let leaderboard: LeaderboardInfo;
+   import type { RankRequestListing } from '$lib/models/Ranking';
+   export let request: RankRequestListing;
 </script>
 
 <div class="song-container">
    <div class="song-image-wrapper">
-      <img class="song-image" src={leaderboard.coverImage} alt="cock" />
-      <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
-         {getDifficultyOrStarValue(leaderboard)}
-      </div>
+      <img class="song-image" src={request.leaderboardInfo.coverImage} alt="cock" />
+      <!-- <div class="tag">
+         {request.difficultyCount} diff{request.difficultyCount > 1 ? 's' : ''}
+      </div> -->
    </div>
    <div class="song-info-container">
       <div class="song-info">
-         <a href={'#'}>
+         <a href={`/ranking/request/${request.requestId}`}>
             <span class="song-name">
-               {leaderboard.songName}
+               {request.leaderboardInfo.songName.length < 30
+                  ? request.leaderboardInfo.songName
+                  : request.leaderboardInfo.songName.slice(0, 29).trim() + '…'}
             </span>
          </a>
          by
          <a href={'#'}>
             <span>
-               {leaderboard.songAuthorName}
+               {request.leaderboardInfo.songAuthorName.length < 30
+                  ? request.leaderboardInfo.songAuthorName
+                  : request.leaderboardInfo.songAuthorName.slice(0, 29).trim() + '…'}
             </span>
          </a>
       </div>
@@ -29,7 +32,9 @@
          mapped by
          <a href={'#'}>
             <span class="mapper-name">
-               {leaderboard.levelAuthorName}
+               {request.leaderboardInfo.levelAuthorName.length < 30
+                  ? request.leaderboardInfo.levelAuthorName
+                  : request.leaderboardInfo.levelAuthorName.slice(0, 29).trim() + '…'}
             </span>
          </a>
       </div>
@@ -71,8 +76,8 @@
       bottom: 0.5em;
       right: 20px;
       min-width: 20px;
-      color: white;
-      background-color: MediumSeaGreen;
+      color: black;
+      background-color: var(--ppColour);
       padding: 4px 4px 3px 4px;
       cursor: help;
    }
