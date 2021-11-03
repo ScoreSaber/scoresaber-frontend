@@ -9,7 +9,6 @@
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Button from '$lib/components/common/button.svelte';
-   import { writable } from 'svelte/store';
 
    const {
       data: topRequests,
@@ -33,12 +32,11 @@
       { fetcher: axios }
    );
 
-   let showBelowTop = writable(false);
+   $: showBelowTop = false;
 
    function toggleBelowTop() {
-      console.log('aaa');
-      showBelowTop.update((show) => !show);
-      if ($showBelowTop) {
+      showBelowTop = !showBelowTop;
+      if (showBelowTop) {
          refreshBelowTopRequests();
       }
    }
@@ -108,10 +106,10 @@
          onClicked={() => {
             toggleBelowTop();
          }}
-         title={$showBelowTop ? 'Hide all requests' : 'Show all requests'}
-         icon={$showBelowTop ? 'chevron-up' : 'chevron-down'}
+         title={showBelowTop ? 'Hide all requests' : 'Show all requests'}
+         icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
       />
-      {#if $showBelowTop}
+      {#if showBelowTop}
          <div class="window has-shadow below-top">
             {#if $belowTopRequests}
                <h3>Open rank/unrank requests</h3>
