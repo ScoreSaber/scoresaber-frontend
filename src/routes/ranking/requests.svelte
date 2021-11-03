@@ -201,10 +201,10 @@
    }
 
    tr.table-item td {
-      background-color: #323232;
+      background-color: var(--gray);
    }
    tr.table-item:hover td {
-      background-color: #3c3c3c;
+      background-color: var(--gray-light);
    }
    td:first-child {
       border-left-style: solid;

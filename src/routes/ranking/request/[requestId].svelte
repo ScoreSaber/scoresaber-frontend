@@ -68,7 +68,7 @@
                            <div class="media-content">
                               <div class="content">
                                  <p>
-                                    <span class="tag mb-2 rank rt">Ranking Team</span>
+                                    <span class="tag mb-2 rank rt float">Ranking Team</span>
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
                                     <small class="text-muted"><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
@@ -90,7 +90,7 @@
                            <div class="media-content">
                               <div class="content">
                                  <p>
-                                    <span class="tag mb-2 rank qat">Quality Assurance Team</span>
+                                    <span class="tag mb-2 rank qat float">Quality Assurance Team</span>
                                     <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
                                     <small class="text-muted"><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
@@ -145,6 +145,98 @@
                      </div>
                   </div>
                </div>
+               <div class="window has-shadow mt-3">
+                  <div class="title is-6 mb-3">Ranking Tool</div>
+
+                  <div class="tooling mb-2">
+                     <div class="voting-tool">
+                        <span class="tag mb-2 rank rt">Ranking Team</span>
+                        <div class="field has-addons">
+                           <p class="control m-0">
+                              <button class="button is-small is-dark">
+                                 <span class="icon is-small">
+                                    <i class="fas fa-thumbs-up" />
+                                 </span>
+                              </button>
+                           </p>
+                           <p class="control m-0">
+                              <button class="button is-small is-dark">
+                                 <span class="icon is-small">
+                                    <i class="fas fa-thumbs-down" />
+                                 </span>
+                              </button>
+                           </p>
+                        </div>
+                     </div>
+
+                     <div class="voting-tool">
+                        <span class="tag mb-2 rank qat">Quality Assurance Team</span>
+                        <div class="field has-addons">
+                           <p class="control m-0">
+                              <button class="button is-small is-dark">
+                                 <span class="icon is-small">
+                                    <i class="far fa-thumbs-up" />
+                                 </span>
+                              </button>
+                           </p>
+                           <p class="control m-0">
+                              <button class="button is-small is-dark">
+                                 <span class="icon is-small">
+                                    <i class="far fa-meh" />
+                                 </span>
+                              </button>
+                           </p>
+                           <p class="control m-0">
+                              <button class="button is-small is-dark">
+                                 <span class="icon is-small">
+                                    <i class="far fa-thumbs-down" />
+                                 </span>
+                              </button>
+                           </p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="tooling">
+                     <div class="voting-tool">
+                        <span class="tag mb-2 rank nat">Nomination Assessment Team</span>
+                        <div class="field has-addons">
+                           <p class="control m-0">
+                              <button class="button is-small is-dark">
+                                 <span class="icon is-small">
+                                    <i class="fab fa-accessible-icon" />
+                                 </span>
+                              </button>
+                           </p>
+                           <p class="control m-0">
+                              <button class="button is-small is-dark">
+                                 <span class="icon is-small">
+                                    <i class="fas fa-times-circle" />
+                                 </span>
+                              </button>
+                           </p>
+                        </div>
+                     </div>
+                     <div class="voting-tool">
+                        <span class="tag mb-2 rank admin">Admin</span>
+                        <div class="field has-addons">
+                           <p class="control m-0">
+                              <button class="button is-small is-danger">
+                                 <span class="icon is-small">
+                                    <i class="fab fa-pied-piper-pp" />
+                                 </span>
+                              </button>
+                           </p>
+                           <p class="control m-0">
+                              <button class="button is-small is-dark">
+                                 <span class="icon is-small">
+                                    <i class="fas fa-check-circle" />
+                                 </span>
+                              </button>
+                           </p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
             </div>
          {:else if !$request}
             <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
@@ -163,6 +255,17 @@
          display: flex;
          flex-direction: column-reverse;
       }
+   }
+
+   .tooling {
+      display: flex;
+      gap: 0.5rem;
+   }
+
+   .voting-tool {
+      background-color: var(--gray-dark);
+      border-radius: 5px;
+      padding: 0.6rem 0.9rem;
    }
 
    .text-muted {
@@ -223,15 +326,27 @@
 
    span.rank {
       font-size: x-small;
+   }
+
+   span.rank.float {
       float: right;
    }
 
    .rank.rt {
-      background-color: #1abc9c;
+      background-color: var(--rt);
    }
 
    .rank.qat {
-      background-color: #f70000;
+      background-color: var(--qat);
+   }
+
+   .rank.nat {
+      background-color: var(--nat);
+   }
+
+   .rank.admin {
+      color: black;
+      background-color: var(--admin);
    }
 
    .bg-image {
