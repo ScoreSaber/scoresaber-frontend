@@ -19,6 +19,9 @@ export class Accio {
          if (refreshOptions.query) {
             key = `${rootKey}${refreshOptions.query}`;
          }
+         if (refreshOptions.newUrl) {
+            key = refreshOptions.newUrl;
+         }
          if (!refreshOptions.softRefresh) {
             data.set(null);
             error.set(null);
@@ -55,29 +58,52 @@ export class Accio {
 
       if (typeof window !== 'undefined') {
          let lastFocus: number | null = null;
-         window.addEventListener('focus', () => {
-            const now = Date.now();
-            if (lastFocus === null || now - lastFocus > 5000) {
-               lastFocus = now;
-               console.log(`Regained focus, refreshing ${key}`);
-               refresh({ forceRevalidate: true, softRefresh: true });
-            }
-         });
 
-         window.addEventListener('online', () => {
-            console.log(`User is back online, refreshing ${key}`);
-            refresh({ forceRevalidate: true, softRefresh: true });
-         });
-
-         window.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
+         function subscribeFocus() {
+            const focusHandler = () => {
                const now = Date.now();
                if (lastFocus === null || now - lastFocus > 5000) {
                   lastFocus = now;
                   console.log(`Regained focus, refreshing ${key}`);
                   refresh({ forceRevalidate: true, softRefresh: true });
                }
-            }
+            };
+            window.addEventListener('focus', focusHandler);
+            return () => window.removeEventListener('focus', focusHandler);
+         }
+
+         function subscribeOnline() {
+            const onlineHandler = () => {
+               console.log(`User is back online, refreshing ${key}`);
+               refresh({ forceRevalidate: true, softRefresh: true });
+            };
+            window.addEventListener('online', onlineHandler);
+            return () => window.removeEventListener('online', onlineHandler);
+         }
+
+         function subscribeVisibilityChange() {
+            const visibilityChangeHandler = () => {
+               if (document.visibilityState === 'visible') {
+                  const now = Date.now();
+                  if (lastFocus === null || now - lastFocus > 5000) {
+                     lastFocus = now;
+                     console.log(`Regained focus, refreshing ${key}`);
+                     refresh({ forceRevalidate: true, softRefresh: true });
+                  }
+               }
+            };
+            window.addEventListener('visibilitychange', visibilityChangeHandler);
+            return () => window.removeEventListener('visibilitychange', visibilityChangeHandler);
+         }
+
+         const unsubFocus = subscribeFocus();
+         const unsubOnline = subscribeOnline();
+         const unsubVisibility = subscribeVisibilityChange();
+
+         onDestroy(() => {
+            unsubFocus();
+            unsubOnline();
+            unsubVisibility();
          });
       }
       onDestroy(() => unsubscribe?.());
@@ -97,6 +123,7 @@ export interface AccioOptions<D = any> {
 
 export interface AccioRefreshOptions {
    query?: string;
+   newUrl?: string;
    softRefresh?: boolean;
    forceRevalidate?: boolean;
 }
