@@ -37,7 +37,7 @@
    </td>
 </tr>
 <tr class="infobox-row">
-   <td colspan="8" class="infobox-container"
+   <td colspan="2" class="infobox-container"
       ><div class="infobox{isExpanded ? ' is-expanded' : ''}">
          <div class="infobox-content">
             <div class="infobox-upper">
@@ -60,9 +60,6 @@
 </tr>
 
 <style>
-   tr.table-item {
-      cursor: pointer;
-   }
    td {
       border: none !important;
       border-style: solid none;
@@ -95,12 +92,12 @@
       margin-left: 10px;
       display: flex;
    }
+   tr.table-item {
+      border-radius: 5px;
+      overflow: hidden;
+   }
    tr.table-item td {
       background-color: #323232;
-   }
-   tr.table-item:hover td,
-   tr.table-item.expanded td {
-      background-color: #3c3c3c;
    }
    td:first-child {
       border-left-style: solid;
@@ -128,7 +125,6 @@
       transition: all 0.25s ease;
       margin-top: -10px;
       margin-bottom: 5px;
-      width: 100%;
       box-sizing: border-box;
       overflow: hidden;
       pointer-events: none;
@@ -148,7 +144,6 @@
       padding: 25px;
       opacity: 0;
       transition: inherit;
-      max-width: calc(100vw - 102px);
       position: sticky;
    }
 
@@ -162,6 +157,10 @@
       padding: 0;
    }
 
+   .infobox-row {
+      display: none;
+   }
+
    .separator {
       display: inline-block;
       height: 1.5em;
@@ -171,14 +170,48 @@
       background: #7f7f7f;
    }
    @media (max-width: 512px) {
+      tr.table-item:hover td,
+      tr.table-item.expanded td {
+         background-color: #3c3c3c;
+      }
+
+      tr.table-item {
+         cursor: pointer;
+         background-color: #323232;
+      }
+
+      tr.table-item.expanded {
+         border-radius: 5px 5px 0 0;
+      }
+      .rank {
+         width: max-content;
+      }
+      .table-item,
       .infobox-row {
-         display: table-row;
+         display: flex;
+         align-items: center;
+         width: 100%;
+      }
+      .table-item:hover,
+      .table-item.expanded {
+         background-color: #3c3c3c;
+      }
+
+      .infobox-row {
+         margin-bottom: 5px;
+      }
+      .table-item td:not(.player, .rank) {
+         display: none;
       }
    }
 
    .infobox.is-expanded {
-      height: 275px;
+      height: 341px;
       pointer-events: all;
       opacity: 1;
+   }
+
+   .infobox :global(.stats-container) {
+      justify-content: start !important;
    }
 </style>

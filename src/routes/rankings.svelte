@@ -113,5 +113,9 @@
       .headers {
          display: none;
       }
+
+      .headers th:not(.player, .rank) {
+         display: none;
+      }
    }
 </style>
