@@ -117,6 +117,8 @@
                         <div class="votes">
                            <div class="vote">RT 👍<br /><b>{$request.rankVotes.upvotes}</b></div>
                            <div class="vote">RT 👎<br /><b>{$request.rankVotes.downvotes}</b></div>
+                        </div>
+                        <div class="votes">
                            <div class="vote">QAT 👍<br /><b>{$request.qatVotes.upvotes}</b></div>
                            <div class="vote">QAT 😐<br /><b>{$request.qatVotes.neutral}</b></div>
                            <div class="vote">QAT 👎<br /><b>{$request.qatVotes.downvotes}</b></div>
@@ -191,14 +193,16 @@
       flex-direction: row;
       justify-content: space-evenly;
       align-items: center;
-      margin-top: 1rem;
+      margin-top: 0.8rem;
       text-align: center;
+      gap: 0.5rem;
    }
 
    .vote {
       background-color: var(--foregroundItem);
       padding: 0.2rem 0.3rem;
       border-radius: 5px;
+      flex-grow: 1;
    }
 
    .map-cover {
