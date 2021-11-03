@@ -110,9 +110,6 @@
    }
 
    @media (max-width: 512px) {
-      table {
-         border-spacing: 0;
-      }
       .headers {
          display: none;
       }
