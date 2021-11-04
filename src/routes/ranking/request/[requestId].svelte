@@ -118,7 +118,9 @@
                            >
                               {getDifficultyLabel($request.leaderboardInfo.difficulty)}
                            </div>
-                           <div class="title is-5 mb-0"><a href={'#'}>{$request.leaderboardInfo.songName}</a></div>
+                           <div class="title is-5 mb-0">
+                              <a href={`/leaderboard/${$request.leaderboardInfo.id}`}>{$request.leaderboardInfo.songName}</a>
+                           </div>
                            <div class="subtitle is-6">by {$request.leaderboardInfo.songAuthorName}</div>
                         </div>
                         <div class="media-right">
