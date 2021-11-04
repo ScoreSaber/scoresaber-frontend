@@ -23,7 +23,7 @@ export interface PlayerScore {
 }
 
 export interface LeaderboardPlayer {
-   playerId: string;
+   id: string;
    name: string;
    profilePicture: string;
    country: string;
