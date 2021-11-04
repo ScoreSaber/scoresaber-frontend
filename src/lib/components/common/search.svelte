@@ -244,4 +244,14 @@
          margin-top: 100px;
       }
    }
+   @media (max-width: 512px) {
+      .search-wrapper {
+         height: 100%;
+         border-radius: 0;
+      }
+
+      .search-results {
+         max-height: calc(100% - 51px);
+      }
+   }
 </style>
