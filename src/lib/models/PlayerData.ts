@@ -28,6 +28,7 @@ export interface LeaderboardPlayer {
    profilePicture: string;
    country: string;
    permissions: number;
+   role: string;
 }
 export interface ScoreStats {
    totalScore: number;
