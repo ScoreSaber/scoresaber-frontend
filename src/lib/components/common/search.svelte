@@ -99,6 +99,11 @@
    <div class="search-wrapper">
       <div class="search-box">
          <input bind:value={searchValue} bind:this={inputBox} on:input={handleInput} on:keydown={handleKeydown} type="search" placeholder="Search" />
+         <button on:click={() => setVisibility(false)} class="close" aria-label="close"
+            ><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg></button
+         >
       </div>
       <hr />
       <div class="search-results" bind:this={resultsElement}>
@@ -237,6 +242,16 @@
       border: 0;
       height: 0;
       border-bottom: solid 1px #3c3c3c;
+   }
+
+   .close {
+      width: 51px;
+      background: transparent;
+      border: 0;
+      display: flex;
+      padding: 15px;
+      font-size: 2em;
+      color: #fff;
    }
 
    @media (min-width: 512px) {
