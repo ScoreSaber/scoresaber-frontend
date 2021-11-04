@@ -12,13 +12,10 @@
          : x.toLowerCase().includes(value.toLowerCase())
    );
 
-   function filterOptions(search: string) {
-      return;
-   }
-
    function selectOption(option: string) {
       value = option;
       valueSelected(value);
+      value = '';
    }
 </script>
 
