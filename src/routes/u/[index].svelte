@@ -29,6 +29,7 @@
 
    import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
+   import Score from '$lib/components/player/score.svelte';
 
    export let metadata: Player = undefined;
 
@@ -163,21 +164,7 @@
                   </thead>
                   <tbody>
                      {#each $scoreData as score}
-                        <tr class="table-item">
-                           <td>
-                              <div class="rank-info">
-                                 <span>
-                                    <i class="fas fa-globe-americas" title="Ranking" />
-                                    <a title="Ranking" href={`#`}>#{score.score.rank}</a>
-                                 </span>
-                                 <FormattedDate date={score.score.timeSet} />
-                              </div>
-                           </td>
-                           <td>
-                              <SmallSongInfo leaderboard={score.leaderboard} />
-                           </td>
-                           <td />
-                        </tr>
+                        <Score {score} />
                      {/each}
                   </tbody>
                </table>
@@ -195,12 +182,6 @@
 <Footer />
 
 <style>
-   .rank-info {
-      width: 100px;
-      display: flex;
-      flex-direction: column;
-      text-align: center;
-   }
    table {
       border-collapse: separate;
       border-spacing: 0 5px;
@@ -209,30 +190,6 @@
    .content table th {
       border: none !important;
    }
-   td {
-      border: none !important;
-      border-style: solid none;
-      align-items: center;
-      vertical-align: middle;
-   }
-
-   td:first-child {
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-   }
-   td:last-child {
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
-   }
-
-   tr.table-item {
-      background-color: #323232;
-   }
-   tr.table-item:hover {
-      background-color: #3c3c3c;
-   }
-
-   /* End player scores */
 
    .button-container {
       display: flex;

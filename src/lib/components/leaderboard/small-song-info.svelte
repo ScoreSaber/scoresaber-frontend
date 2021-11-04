@@ -13,7 +13,7 @@
    </div>
    <div class="song-info-container">
       <div class="song-info">
-         <a href={'#'}>
+         <a href={`/leaderboard/${leaderboard.id}`}>
             <span class="song-name">
                {leaderboard.songName}
             </span>
