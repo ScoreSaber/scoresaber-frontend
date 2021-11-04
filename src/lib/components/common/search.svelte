@@ -46,18 +46,18 @@
       target.scrollIntoView({ behavior: 'smooth' });
    };
 
-   const handleKeydown = ({ key, preventDefault }: KeyboardEvent) => {
+   const handleKeydown = ({ key }: KeyboardEvent) => {
       switch (key) {
          case 'ArrowUp':
             focusElement--;
             bounceCursor();
             scrollToActive();
-            preventDefault();
+            break;
          case 'ArrowDown':
             focusElement++;
             bounceCursor();
             scrollToActive();
-            preventDefault();
+            break;
          case 'Enter':
             if (focusElement < searchResults.players.length && searchResults.players !== 'loading') {
                location.href = `/u/${searchResults.players[focusElement].id}`;
@@ -114,13 +114,12 @@
             </svg></button
          >
       </div>
-      <hr />
       <div class="search-results" bind:this={resultsElement}>
-         <div class="section-title">Players</div>
          <div class="results">
             {#if searchResults.players == 'loading'}
                <div>Loading...</div>
             {:else}
+               {#if searchResults.players.length > 0}<div class="section-title">Players</div>{/if}
                {#each searchResults.players as player, i}
                   <a href="/u/{player.id}" class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
@@ -129,11 +128,11 @@
                {/each}
             {/if}
          </div>
-         <div class="section-title">Leaderboards</div>
          <div class="results">
             {#if searchResults.leaderboards == 'loading'}
                loading...
             {:else}
+               {#if searchResults.leaderboards.length > 0} <div class="section-title">Leaderboards</div>{/if}
                {#each searchResults.leaderboards as leaderboard, i}
                   <a href="/leaderboard/{leaderboard.id}" class="result map-result {i == focusElement - searchResults.players.length ? 'focus' : ''}">
                      <div class="cover-art">
@@ -194,6 +193,7 @@
       max-width: 512px;
       opacity: 0;
       transition: all 0.25s ease;
+      overflow: hidden;
       transform: translate3d(0, -30px, 0);
    }
 
@@ -296,7 +296,8 @@
 
    .section-title {
       padding: 15px;
-      padding-bottom: 5px;
+      border-top: solid 1px #4a4a4a;
+      border-bottom: solid 1px #4a4a4a;
       color: #eee;
       text-transform: uppercase;
       font-weight: bold;
