@@ -1,6 +1,6 @@
 <script lang="ts">
    import TextInput from '../common/text-input.svelte';
-
+   import { slide } from 'svelte/transition';
    export let addCountry = (country: string) => {};
 
    let expanded = false;
@@ -36,11 +36,13 @@
    }
 </script>
 
-<div class="country addCountry">
+<div class="country addCountry" class:expanded>
    {#if expanded}
-      <TextInput bind:elementRef={input} bind:value={newCountry} classes="addCountry" placeholder="Add Country" />
+      <div transition:slide={{ duration: 300 }} class="addCountry">
+         <TextInput bind:elementRef={input} bind:value={newCountry} classes="addCountry" placeholder="Add Country" />
+      </div>
    {:else}
-      <div class="addLabel addCountry" on:click={toggleExpand}>+ Add</div>
+      <div transition:slide={{ duration: 300 }} class="addLabel addCountry" on:click={toggleExpand}>+ Add</div>
    {/if}
 </div>
 
@@ -48,11 +50,15 @@
    .country {
       margin: 5px;
       background-color: var(--foregroundItem);
-      transition: background-color var(--transitionTime);
+      transition: background-color var(--transitionTime), width var(--transitionTime), max-width var(--transitionTime);
       padding: 5px 12px;
       border-radius: 7px;
       position: relative;
       font-weight: bold;
+      max-width: 61px;
+      width: auto;
+   }
+   .country.expanded {
       max-width: 150px;
    }
    .country:hover {
