@@ -4,6 +4,7 @@
    import CountryImage from '$lib/components/image/country-image.svelte';
    import WeeklyChange from '$lib/components/player/weekly-change.svelte';
    import Stats from '$lib/components/player/stats.svelte';
+   import { rankToPage } from '$lib/utils/helpers';
    let isExpanded: boolean = false;
    export let player: Player;
 
@@ -48,7 +49,13 @@
                   class="profile-image image rounded is-64x64 has-text-weight-semibold"
                />
                <div class="player is-size-3">{player.name}</div>
-               <div><CountryImage country={player.country} /> #{player.countryRank} <span class="separator" /> {player.pp}pp</div>
+               <div>
+                  <CountryImage country={player.country} />
+                  <a title="Country Ranking" href={`/rankings?page=${rankToPage(player.countryRank, 50)}&countries=${player.country.toLowerCase()}`}
+                     >#{player.countryRank}</a
+                  > <span class="separator" />
+                  <span title="Performance Points" class="pp">{player.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp</span>
+               </div>
             </div>
             <div>
                <Stats {player} />
@@ -162,7 +169,7 @@
    .separator {
       display: inline-block;
       height: 1.5em;
-      margin: 5px 0;
+      margin: 5px 5px;
       vertical-align: middle;
       width: 1px;
       background: #7f7f7f;
