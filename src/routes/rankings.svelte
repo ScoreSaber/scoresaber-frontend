@@ -12,10 +12,14 @@
    import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
+   import CountryChip from '$lib/components/rankings/country-chip.svelte';
 
    const playersPerPage = 50;
 
    $: currentPage = createQueryStore('page', 1, queryChanged);
+
+   $: countryStore = createQueryStore('countries', undefined, queryChanged);
+   $: filteredCountries = (<string>$countryStore)?.split(',') ?? [];
 
    const {
       data: rankings,
@@ -48,6 +52,11 @@
    function queryChanged(newQuery: string) {
       refreshRankings({ query: newQuery });
    }
+
+   function removeCountry(country: string) {
+      filteredCountries = filteredCountries.filter((c) => c !== country);
+      $countryStore = filteredCountries.length > 0 ? filteredCountries.join(',') : null;
+   }
 </script>
 
 <head>
@@ -62,6 +71,13 @@
          <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
       {#if $rankings && $playerCount}
+         {#if filteredCountries && filteredCountries.length > 0}
+            <div class="countries">
+               {#each filteredCountries as country}
+                  <CountryChip {country} remove={removeCountry} />
+               {/each}
+            </div>
+         {/if}
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
             <table>
                <thead>
@@ -118,5 +134,10 @@
       .headers th:not(.player, .rank) {
          display: none;
       }
+   }
+
+   .countries {
+      display: flex;
+      flex-flow: row wrap;
    }
 </style>
