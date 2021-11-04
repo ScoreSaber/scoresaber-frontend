@@ -1,7 +1,6 @@
 <script lang="ts">
-   import { onMount, createEventDispatcher } from 'svelte';
+   import { onMount } from 'svelte';
    import SearchView from '$lib/components/common/search.svelte';
-   import Search from '$lib/components/common/search.svelte';
 
    let searchModal: SearchView;
 

@@ -3,10 +3,8 @@
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import queryString from 'query-string';
    import fetcher from '$lib/utils/fetcher';
-   import axios, { CancelTokenSource } from 'axios';
-   import PlayerLink from '../player/player-link.svelte';
+   import axios from 'axios';
    import CountryImage from '../image/country-image.svelte';
-   import PlayerRow from '../player/player-row.svelte';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
