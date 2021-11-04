@@ -1,8 +1,11 @@
 <script lang="ts">
-   import TextInput from '../common/text-input.svelte';
    import { slide } from 'svelte/transition';
    import Autocomplete from '../common/autocomplete.svelte';
+   import { useAccio } from '$lib/utils/accio';
+   import queryString from 'query-string';
+   import axios from '$lib/utils/fetcher';
    export let addCountry = (country: string) => {};
+   export let selectedCountries: string[] = [];
 
    let expanded = false;
    let input: HTMLInputElement;
@@ -38,13 +41,33 @@
    }
 
    let temp = ['AU', 'GB', 'US', 'UK', 'CA'];
+
+   const {
+      data: countrySearch,
+      error: countrySearchError,
+      refresh: refreshCountrySearch
+   } = useAccio<{ Name: string; Code: string }[]>(
+      queryString.stringifyUrl({
+         url: 'https://datahub.io/core/country-list/r/data.json'
+      }),
+      { fetcher: axios }
+   );
+
+   $: options = ($countrySearch ?? [])
+      .map((x) => {
+         return {
+            label: x.Name,
+            value: x.Code
+         };
+      })
+      .filter((x) => !selectedCountries.includes(x.value));
 </script>
 
 <div class="country" bind:this={chip} class:expanded>
    {#if expanded}
       <div transition:slide={{ duration: 300 }}>
          <Autocomplete
-            options={temp}
+            {options}
             valueSelected={() => addCountry(newCountry)}
             bind:elementRef={input}
             bind:value={newCountry}

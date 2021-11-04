@@ -82,7 +82,7 @@
                {#each filteredCountries as country}
                   <CountryChip {country} remove={removeCountry} />
                {/each}
-               <AddCountry {addCountry} />
+               <AddCountry {addCountry} selectedCountries={filteredCountries} />
             </div>
          {/if}
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
