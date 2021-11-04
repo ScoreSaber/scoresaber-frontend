@@ -156,7 +156,7 @@
                   <a href="/u/{player.id}" class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
                      <span class="player-name"><CountryImage country={player.country} /> {player.name}</span>
-                     <span class="rank">#{player.rank}</span></a
+                     <span class="rank">#{player.rank.toLocaleString('en-US')}</span></a
                   >
                {/each}
             {/if}
