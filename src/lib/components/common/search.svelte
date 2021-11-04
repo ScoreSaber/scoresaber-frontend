@@ -160,7 +160,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000;
+      background: #0003;
       z-index: 500;
       opacity: 0;
       pointer-events: none;
@@ -168,8 +168,10 @@
    }
 
    .modal-background.is-visible {
-      opacity: 0.5;
+      opacity: 1;
       pointer-events: all;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
    }
 
    .modal-container {
