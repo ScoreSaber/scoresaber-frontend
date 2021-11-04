@@ -1,17 +1,27 @@
 <script lang="ts">
    import TextInput from '../common/text-input.svelte';
 
-   export const addCountry = (country: string) => {};
+   export let addCountry = (country: string) => {};
 
    let expanded = false;
-   let chip: HTMLElement;
-   let input;
+   let input: HTMLInputElement;
+   let newCountry: string = '';
 
    document.addEventListener('click', checkChipClick);
+   document.addEventListener('keydown', checkKeyDown);
 
    function checkChipClick(e: MouseEvent) {
       if (!(e.target as HTMLElement).classList.contains('addCountry')) {
          expanded = false;
+      }
+   }
+
+   function checkKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Enter') {
+         if (newCountry !== '') {
+            addCountry(newCountry);
+            newCountry = '';
+         }
       }
    }
 
@@ -26,9 +36,9 @@
    }
 </script>
 
-<div class="country addCountry" bind:this={chip}>
+<div class="country addCountry">
    {#if expanded}
-      <TextInput bind:elementRef={input} classes="addCountry" placeholder="Add Country" />
+      <TextInput bind:elementRef={input} bind:value={newCountry} classes="addCountry" placeholder="Add Country" />
    {:else}
       <div class="addLabel addCountry" on:click={toggleExpand}>+ Add</div>
    {/if}

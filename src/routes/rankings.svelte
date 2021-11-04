@@ -58,6 +58,11 @@
       filteredCountries = filteredCountries.filter((c) => c !== country);
       $countryStore = filteredCountries.length > 0 ? filteredCountries.join(',') : null;
    }
+
+   function addCountry(country: string) {
+      filteredCountries.push(country);
+      $countryStore = filteredCountries.join(',');
+   }
 </script>
 
 <head>
@@ -77,7 +82,7 @@
                {#each filteredCountries as country}
                   <CountryChip {country} remove={removeCountry} />
                {/each}
-               <AddCountry />
+               <AddCountry {addCountry} />
             </div>
          {/if}
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
