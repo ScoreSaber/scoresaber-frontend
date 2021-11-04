@@ -3,10 +3,18 @@
    export let value: string = '';
    export let classes: string = '';
    export let elementRef: HTMLElement;
-   export let options: string[] = [];
+   export let options: string[] | { label: string; value: string }[] = [];
    export let valueSelected: (value: string) => void = () => {};
 
-   $: filteredOptions = options.filter((x) => x.toLowerCase().includes(value.toLowerCase()));
+   $: filteredOptions = (options as any[]).filter((x) =>
+      x.label
+         ? x.label.toLowerCase().include(value.toLowerCase()) || x.value.toLowerCase().includes(value.toLowerCase())
+         : x.toLowerCase().includes(value.toLowerCase())
+   );
+
+   function filterOptions(search: string) {
+      return;
+   }
 
    function selectOption(option: string) {
       value = option;
@@ -19,9 +27,15 @@
    {#if options.length > 0 && value.length > 0}
       <div class="options">
          {#each filteredOptions as option}
-            <div class="option" on:click={() => selectOption(option)}>
-               {option}
-            </div>
+            {#if option.label && option.value}
+               <div class="option" on:click={() => selectOption(option.value)}>
+                  {option.label}
+               </div>
+            {:else}
+               <div class="option" on:click={() => selectOption(option)}>
+                  {option}
+               </div>
+            {/if}
          {/each}
       </div>
    {/if}
