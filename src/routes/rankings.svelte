@@ -13,6 +13,7 @@
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
    import CountryChip from '$lib/components/rankings/country-chip.svelte';
+   import AddCountry from '$lib/components/rankings/add-country.svelte';
 
    const playersPerPage = 50;
 
@@ -76,6 +77,7 @@
                {#each filteredCountries as country}
                   <CountryChip {country} remove={removeCountry} />
                {/each}
+               <AddCountry />
             </div>
          {/if}
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
