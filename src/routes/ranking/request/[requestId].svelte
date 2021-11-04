@@ -11,6 +11,7 @@
    import { getDifficultyLabel, getDifficultyStyle, getRankingApprovalStatus } from '$lib/utils/helpers';
    import AvatarImage from '$lib/components/image/avatar-image.svelte';
    import { decode } from 'html-entities';
+   import { fly } from 'svelte/transition';
 
    const {
       data: request,
@@ -32,7 +33,7 @@
    <div class="section">
       <div class="columns">
          {#if $request}
-            <div class="column is-8">
+            <div in:fly={{ y: -20, duration: 1000 }} class="column is-8">
                <div class="window has-shadow">
                   <div class="tabs is-centered">
                      <ul class="m-0">
@@ -103,7 +104,7 @@
                   {/each}
                </div>
             </div>
-            <div class="column is-4">
+            <div in:fly={{ y: -20, duration: 1000 }} class="column is-4">
                <div class="card map-card">
                   <div
                      class="bg-image"

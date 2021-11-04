@@ -9,8 +9,8 @@
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Button from '$lib/components/common/button.svelte';
-   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info.svelte';
+   import { fly } from 'svelte/transition';
 
    const {
       data: topRequests,
@@ -52,7 +52,7 @@
 <div>
    <div class="section breakout">
       {#if $topRequests && $belowTopRequests}
-         <nav class="level mb-5">
+         <nav in:fly={{ x: 20, duration: 1000 }} out:fly={{ x: -20, duration: 250 }} class="level mb-5">
             <div class="level-item has-text-centered">
                <div>
                   <p class="heading">Rank Requests</p>
@@ -69,40 +69,42 @@
       {/if}
       <div class="window has-shadow">
          {#if $topRequests}
-            <h3>Next items in queue</h3>
-            <div class="ranking">
-               <table>
-                  <thead>
-                     <tr>
-                        <th class="diffs_created_at" />
-                        <th class="map" />
-                        <th class="rt_upvotes">RT 👍</th>
-                        <th class="rt_downvotes">RT 👎</th>
-                        <th class="qat_upvotes">QAT 👍</th>
-                        <th class="qat_neutral">QAT 😐</th>
-                        <th class="qat_downvotes">QAT 👎</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {#each $topRequests as request}
-                        <tr class="table-item">
-                           <td class="diffs_created_at"
-                              ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
-                                 date={new Date(request.created_at)}
-                              /></td
-                           >
-                           <td class="map">
-                              <SmallRequestInfo {request} />
-                           </td>
-                           <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
-                           <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
-                           <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
-                           <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
-                           <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
+            <div in:fly={{ x: 20, duration: 1000 }} out:fly={{ x: -20, duration: 250 }}>
+               <h3>Next items in queue</h3>
+               <div class="ranking">
+                  <table>
+                     <thead>
+                        <tr>
+                           <th class="diffs_created_at" />
+                           <th class="map" />
+                           <th class="rt_upvotes">RT 👍</th>
+                           <th class="rt_downvotes">RT 👎</th>
+                           <th class="qat_upvotes">QAT 👍</th>
+                           <th class="qat_neutral">QAT 😐</th>
+                           <th class="qat_downvotes">QAT 👎</th>
                         </tr>
-                     {/each}
-                  </tbody>
-               </table>
+                     </thead>
+                     <tbody>
+                        {#each $topRequests as request}
+                           <tr class="table-item">
+                              <td class="diffs_created_at"
+                                 ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
+                                    date={new Date(request.created_at)}
+                                 /></td
+                              >
+                              <td class="map">
+                                 <SmallRequestInfo {request} />
+                              </td>
+                              <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
+                              <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
+                              <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
+                              <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
+                              <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
+                           </tr>
+                        {/each}
+                     </tbody>
+                  </table>
+               </div>
             </div>
          {:else if !$topRequests}
             <Loader />
@@ -120,7 +122,7 @@
          icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
       />
       {#if showBelowTop}
-         <div class="window has-shadow below-top">
+         <div in:fly={{ x: 20, duration: 500 }} out:fly={{ x: -20, duration: 500 }} class="window has-shadow below-top">
             {#if $belowTopRequests}
                <h3>Open rank/unrank requests</h3>
                <div class="ranking">
