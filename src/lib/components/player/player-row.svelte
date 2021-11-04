@@ -13,7 +13,7 @@
 
 <tr class="table-item {isExpanded ? 'expanded' : ''}" on:click={toggleExpanded}>
    <td class="rank" width="5px">
-      <span class="rank">#{player.rank}</span>
+      <span class="rank">#{player.rank.toLocaleString('en-US')}</span>
    </td>
    <td class="player">
       <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" />
@@ -25,10 +25,10 @@
    </td>
 
    <td class="total-play-count centered">
-      <span>{player.scoreStats.totalPlayCount}</span>
+      <span>{player.scoreStats.totalPlayCount.toLocaleString('en-US')}</span>
    </td>
    <td class="ranked-play-count centered">
-      <span>{player.scoreStats.rankedPlayCount}</span>
+      <span>{player.scoreStats.rankedPlayCount.toLocaleString('en-US')}</span>
    </td>
    <td class="ranked-acc centered">
       <span>{player.scoreStats.averageRankedAccuracy.toFixed(2)}%</span>

@@ -60,6 +60,13 @@
    function queryChanged(newQuery: string) {
       refreshScores({ query: newQuery });
    }
+
+   page.subscribe((p) => {
+      if (typeof window !== 'undefined') {
+         refreshScores({ query: '?' + p.query.toString() });
+         refreshRankings({ newUrl: `/api/player/${$page.params.index}/full` });
+      }
+   });
 </script>
 
 <head>
@@ -68,9 +75,9 @@
       <Meta
          description={`Player Ranking: #${metadata.rank}\r\nPerformance Points: ${metadata.pp.toLocaleString('en-US', {
             minimumFractionDigits: 2
-         })}pp\r\nTotal Play Count: ${
-            metadata.scoreStats.totalPlayCount
-         }\r\nAverage Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%`}
+         })}pp\r\nTotal Play Count: ${metadata.scoreStats.totalPlayCount.toLocaleString(
+            'en-US'
+         )}\r\nAverage Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%`}
          image={metadata.profilePicture}
          title="{metadata.name}'s profile"
       />
@@ -110,14 +117,16 @@
                      <small>
                         <span class="title-header">
                            <i class="fas fa-globe-americas" title="Global Ranking" />
-                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}>#{$playerData.rank}</a>
+                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
+                              >#{$playerData.rank.toLocaleString('en-US')}</a
+                           >
                         </span>
                         <span class="title-header spacer">
                            <CountryImage country={$playerData.country} />
                            <a
                               title="Country Ranking"
                               href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
-                              >#{$playerData.countryRank}</a
+                              >#{$playerData.countryRank.toLocaleString('en-US')}</a
                            >
                         </span>
                      </small>
