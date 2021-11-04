@@ -115,7 +115,7 @@
       border-radius: 5px;
       display: flex;
       align-items: center;
-      gap: 30px;
+      gap: 60px;
    }
 
    .fake-searchbox span {

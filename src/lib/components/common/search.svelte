@@ -145,7 +145,13 @@
             {#if searchResults.players == 'loading'}
                <div>Loading...</div>
             {:else}
-               {#if searchResults.players.length > 0}<div class="section-title">Players</div>{/if}
+               {#if searchResults.players.length > 0}
+                  <div class="section-title">
+                     <a href="/rankings?search={encodeURIComponent(searchValue)}" title="Advanced Search"
+                        >Players <i class="fa fa-external-link-alt" /></a
+                     >
+                  </div>
+               {/if}
                {#each searchResults.players as player, i}
                   <a href="/u/{player.id}" class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
@@ -159,7 +165,13 @@
             {#if searchResults.leaderboards == 'loading'}
                loading...
             {:else}
-               {#if searchResults.leaderboards.length > 0} <div class="section-title">Leaderboards</div>{/if}
+               {#if searchResults.leaderboards.length > 0}
+                  <div class="section-title">
+                     <a href="/leaderboards?search={encodeURIComponent(searchValue)}" title="Advanced Search"
+                        >Leaderboards <i class="fa fa-external-link-alt" /></a
+                     >
+                  </div>
+               {/if}
                {#each searchResults.leaderboards as leaderboard, i}
                   <a href="/leaderboard/{leaderboard.id}" class="result map-result {i == focusElement - searchResults.players.length ? 'focus' : ''}">
                      <div class="cover-art">
