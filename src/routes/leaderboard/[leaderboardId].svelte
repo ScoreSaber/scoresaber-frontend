@@ -68,14 +68,16 @@
                               <th class="player" />
                               <th class="timeSet centered">Time Set</th>
                               <th class="score centered">Score</th>
-                              <th class="mods centered">Mods</th>
+                              {#if $leaderboardScores.filter((score) => score.modifiers.length > 0).length > 0}
+                                 <th class="mods centered">Mods</th>
+                              {/if}
                               {#if $leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
                               <th class="pp centered">PP</th>
                            </tr>
                         </thead>
                         <tbody>
                            {#each $leaderboardScores as score}
-                              <LeaderboardRow {score} leaderboard={$leaderboard} />
+                              <LeaderboardRow {score} leaderboard={$leaderboard} otherScores={$leaderboardScores} />
                            {/each}
                         </tbody>
                      </table>

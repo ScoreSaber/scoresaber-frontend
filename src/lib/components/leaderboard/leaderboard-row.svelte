@@ -4,6 +4,7 @@
    import FormattedDate from '../common/formatted-date.svelte';
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
+   export let otherScores: Score[];
 
    function getAccuracy() {
       let scoreCalc = score.baseScore;
@@ -33,9 +34,11 @@
    <td class="score centered">
       <span>{score.modifiedScore.toLocaleString('en-US')}</span>
    </td>
-   <td class="mods centered">
-      <span>{score.modifiers.length === 0 ? '-' : score.modifiers}</span>
-   </td>
+   {#if otherScores.filter((score) => score.modifiers.length > 0).length > 0}
+      <td class="mods centered">
+         <span>{score.modifiers.length === 0 ? '-' : score.modifiers}</span>
+      </td>
+   {/if}
    {#if leaderboard.maxScore}
       <td class="accuracy centered {new Date(score.timeSet).getTime() / 1000 <= 1558474032 ? 'old-score' : ''}">
          <span>{getAccuracy().toFixed(2)}%</span>
