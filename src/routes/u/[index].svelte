@@ -25,6 +25,7 @@
    import { rankToPage } from '$lib/utils/helpers';
    import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
+   import { fly } from 'svelte/transition';
 
    import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
@@ -80,7 +81,7 @@
    <div class="window has-shadow noheading">
       {#if $playerData}
          {#if !$playerData.banned}
-            <div class="columns">
+            <div in:fly={{ x: 20, duration: 1000 }} class="columns">
                <!-- Profile picture & badges -->
                <div class="column is-narrow">
                   <div class="profile-picture">
@@ -143,7 +144,7 @@
          <Error message={$playerDataError.toString()} />
       {/if}
    </div>
-   <div class="window has-shadow noheading">
+   <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
       <div class="button-container">
          <Button isDisabled={true} poggleable={true} title={'Top Scores'} icon={'chevron-down'} />
          <Button poggleable={true} title={'Recent Scores'} icon={'clock'} />
@@ -151,7 +152,7 @@
 
       {#if $scoreData && $playerData}
          {#if !$playerData.banned}
-            <div class="ranking songs">
+            <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
                <table class="ranking songs">
                   <thead>
                      <tr>

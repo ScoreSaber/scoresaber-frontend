@@ -11,6 +11,7 @@
    import { useAccio } from '$lib/utils/accio';
    import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
+   import { fly } from 'svelte/transition';
 
    const playersPerPage = 50;
 
@@ -61,7 +62,7 @@
          <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
       {#if $rankings && $playerCount}
-         <div class="ranking">
+         <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
             <table>
                <thead>
                   <tr class="headers">
