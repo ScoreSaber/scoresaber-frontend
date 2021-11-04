@@ -49,7 +49,7 @@
                <i class="fas fa-tasks" />
                Rank Requests
             </a>
-            <a href="/" class="navbar-item" on:click={showSearchModal}>
+            <a href="/" class="navbar-item">
                <i class="fas fa-book" />
                Wiki
             </a>
@@ -65,7 +65,9 @@
                <i class="fab fa-gratipay fa-2x" title="Support us on Patreon!" />
             </a>
             <button class="navbar-item" on:click={showSearchModal}>
-               <div class="fake-searchbox"><i class="fa fa-search" /> Search</div>
+               <div class="fake-searchbox">
+                  <i class="fa fa-search" /><span><kbd>Ctrl</kbd> + <kbd>/</kbd></span>
+               </div>
             </button>
          </div>
       </div>
@@ -109,8 +111,25 @@
    .fake-searchbox {
       background: #3c3c3c;
       padding: 5px 10px;
+      cursor: text;
       border-radius: 5px;
-      padding-right: 50px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+   }
+
+   .fake-searchbox span {
+      color: #888;
+   }
+
+   kbd {
+      font-family: sans-serif;
+      padding: 0 5px;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: solid 1px currentColor;
    }
 
    .navbar-burger.is-button {

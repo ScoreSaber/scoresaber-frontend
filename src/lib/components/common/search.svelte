@@ -4,6 +4,9 @@
    import queryString from 'query-string';
    import fetcher from '$lib/utils/fetcher';
    import axios, { CancelTokenSource } from 'axios';
+   import PlayerLink from '../player/player-link.svelte';
+   import CountryImage from '../image/country-image.svelte';
+   import PlayerRow from '../player/player-row.svelte';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
@@ -111,19 +114,25 @@
       }, 200);
    };
 
-   const handleWindowKeyup = ({ key, metaKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) => {
+   function handleWindowKeydown({ key, metaKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
       if (key == 'Escape') return setVisibility(false);
       if (key == '/' && metaKey && !visible) {
          setVisibility(true);
+         preventDefault();
       }
-   };
+   }
 </script>
 
-<svelte:window on:keydown={handleWindowKeyup} />
+<svelte:window on:keydown={handleWindowKeydown} />
 <div class="modal-background {visible ? 'is-visible' : ''}" on:click={() => setVisibility(false)} />
 <div class="modal-container {visible ? 'is-visible' : ''}">
    <div class="search-wrapper">
       <div class="search-box">
+         <div class="search-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+         </div>
          <input bind:value={searchValue} bind:this={inputBox} on:input={handleInput} on:keydown={handleKeydown} type="search" placeholder="Search" />
          <button on:click={() => setVisibility(false)} class="close" aria-label="close"
             ><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -140,7 +149,8 @@
                {#each searchResults.players as player, i}
                   <a href="/u/{player.id}" class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
-                     <span class="playerName">{player.name}</span></a
+                     <span class="player-name"><CountryImage country={player.country} /> {player.name}</span>
+                     <span class="rank">#{player.rank}</span></a
                   >
                {/each}
             {/if}
@@ -161,6 +171,7 @@
                      <div class="song-info">
                         <div class="song-name">{leaderboard.songName}</div>
                         <div class="song-artist">{leaderboard.songAuthorName}</div>
+                        <div class="mapper">{leaderboard.levelAuthorName}</div>
                      </div>
                   </a>
                {/each}
@@ -214,6 +225,8 @@
       transition: all 0.25s ease;
       overflow: hidden;
       transform: translate3d(0, -30px, 0);
+      box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
+         rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
    }
 
    .modal-container.is-visible .search-wrapper {
@@ -242,17 +255,33 @@
       gap: 10px;
       color: #eee;
       align-items: center;
+      position: relative;
       font-size: 1.25em;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
    }
 
+   .results .rank {
+      content: '⏎';
+      border: solid 1px #777;
+      flex: 1;
+      max-width: min-content;
+      padding: 3px 7px;
+      border-radius: 5px;
+      font-size: 0.8em;
+      height: 29px;
+   }
+
+   .result .player-name {
+      flex: 1;
+   }
+
    .results .map-result {
       display: grid;
       grid-template-columns: 100px calc(100% - 100px);
       gap: 10px;
-      padding: 10px;
+      padding: 5px;
    }
 
    .map-result .song-name {
@@ -280,6 +309,15 @@
       width: 100px;
       height: 100px;
       flex-shrink: 0;
+      overflow: hidden;
+   }
+
+   .map-result .cover-art img {
+      border-radius: 5px;
+      background: #555;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
    }
 
    .cover-art .difficulty-badge {
@@ -300,11 +338,27 @@
       background: #4a4a4a;
    }
 
+   .results .result.focus::after {
+      content: '⏎';
+      border: solid 1px #777;
+      padding: 5px 7px;
+      border-radius: 5px;
+      font-size: 0.5em;
+      height: 29px;
+      display: flex;
+      align-items: center;
+   }
+
+   .map-result.result.focus::after {
+      position: absolute;
+      right: 15px;
+   }
+
    .search-box input {
       flex: 1;
       background: transparent;
       border: 0;
-      padding: 15px 20px;
+      padding: 15px;
       font-size: 1.25em;
       color: #fff;
    }
@@ -321,14 +375,9 @@
       text-transform: uppercase;
       font-weight: bold;
    }
-   hr {
-      margin: 0;
-      border: 0;
-      height: 0;
-      border-bottom: solid 1px #3c3c3c;
-   }
 
-   .close {
+   .close,
+   .search-icon {
       width: 51px;
       background: transparent;
       border: 0;
@@ -336,6 +385,11 @@
       padding: 15px;
       font-size: 2em;
       color: #fff;
+   }
+
+   .search-icon {
+      padding-right: 0;
+      width: 36px;
    }
 
    @media (min-width: 512px) {
