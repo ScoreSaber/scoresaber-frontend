@@ -1,6 +1,7 @@
 <script lang="ts">
    import TextInput from '../common/text-input.svelte';
    import { slide } from 'svelte/transition';
+   import Autocomplete from '../common/autocomplete.svelte';
    export let addCountry = (country: string) => {};
 
    let expanded = false;
@@ -35,12 +36,20 @@
    function focusInput() {
       if (expanded) input.focus();
    }
+
+   let temp = ['AU', 'GB', 'US', 'UK', 'CA'];
 </script>
 
 <div class="country" bind:this={chip} class:expanded>
    {#if expanded}
       <div transition:slide={{ duration: 300 }}>
-         <TextInput bind:elementRef={input} bind:value={newCountry} placeholder="Add Country" />
+         <Autocomplete
+            options={temp}
+            valueSelected={() => addCountry(newCountry)}
+            bind:elementRef={input}
+            bind:value={newCountry}
+            placeholder="Add Country"
+         />
       </div>
    {:else}
       <div transition:slide={{ duration: 300 }} class="addLabel" on:click={toggleExpand}>+ Add</div>
