@@ -73,7 +73,7 @@
 
 <div class="section">
    <div class="window has-shadow noheading">
-      {#if $playerCount}
+      {#if $playerCount && $rankings && $playerCount}
          <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
       {#if $rankings && $playerCount}
@@ -112,7 +112,7 @@
       {#if $rankingsError || $playerCountError}
          <Error message={$rankingsError.toString() || $playerCountError.toString()} />
       {/if}
-      {#if $playerCount}
+      {#if $playerCount && $rankings && $playerCount}
          <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
    </div>
