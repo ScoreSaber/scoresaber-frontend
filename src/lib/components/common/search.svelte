@@ -227,7 +227,7 @@
 
    .search-wrapper {
       border-radius: 5px;
-      background: #373737;
+      background: var(--gray);
       height: min-content;
       width: 100%;
       max-width: 640px;
