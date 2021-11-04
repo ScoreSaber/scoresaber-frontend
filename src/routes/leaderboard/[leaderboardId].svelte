@@ -7,24 +7,47 @@
    import Error from '$lib/components/common/error.svelte';
    import { page } from '$app/stores';
    import { getDifficultyLabel, getDifficultyStyle, getRankingApprovalStatus } from '$lib/utils/helpers';
-   import type { Leaderboard } from '$lib/models/LeaderboardData';
+   import type { Leaderboard, LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
    import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
+   import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
+   import queryString from 'query-string';
+   import { createQueryStore } from '$lib/query-store';
+
+   $: currentPage = createQueryStore('page', 1, queryChanged);
 
    const {
       data: leaderboard,
       error: leaderboardError,
       refresh: refreshLeaderboard
-   } = useAccio<Leaderboard>(`/api/leaderboard/${$page.params.leaderboardId}`, {
-      fetcher: axios
-   });
+   } = useAccio<LeaderboardInfo>(`/api/leaderboard/by-id/${$page.params.leaderboardId}/info`, { fetcher: axios });
+
+   const {
+      data: leaderboardScores,
+      error: leaderboardScoresError,
+      refresh: refreshLeaderboardScores
+   } = useAccio<Score[]>(
+      queryString.stringifyUrl({
+         url: `/api/leaderboard/by-id/${$page.params.leaderboardId}/scores`,
+         query: queryString.parse($page.query.toString())
+      }),
+      { fetcher: axios }
+   );
 
    page.subscribe((p) => {
-      refreshLeaderboard({ newUrl: `/api/leaderboard/${$page.params.leaderboardId}` });
+      refreshLeaderboard({ newUrl: `/api/leaderboard/by-id/${$page.params.leaderboardId}/info` });
    });
+
+   function changePage(newPage: number) {
+      $currentPage = newPage;
+   }
+
+   function queryChanged(newQuery: string) {
+      refreshLeaderboardScores({ query: newQuery });
+   }
 </script>
 
 <head>
-   <title>{$leaderboard ? $leaderboard.leaderboardInfo.songName + ' - Leaderboard' : 'Leaderboard'} | ScoreSaber!</title>
+   <title>{$leaderboard ? $leaderboard.songName + ' - Leaderboard' : 'Leaderboard'} | ScoreSaber!</title>
 </head>
 
 <Navbar />
@@ -34,27 +57,12 @@
          {#if $leaderboard}
             <div class="column is-8">
                <div class="window has-shadow">
-                  <div class="tabs is-centered">
-                     <ul class="m-0">
-                        {#each $leaderboard.leaderboardInfo.difficulties as difficulty}
-                           <li>
-                              <a
-                                 href="/leaderboard/{difficulty.leaderboardId}"
-                                 class={getDifficultyStyle(difficulty.difficulty) +
-                                    ' ' +
-                                    ($leaderboard.leaderboardInfo.difficulty === difficulty.difficulty ? 'selected' : '')}
-                              >
-                                 <span>{getDifficultyLabel(difficulty.difficulty)}</span>
-                              </a>
-                           </li>
-                        {/each}
-                     </ul>
-                  </div>
+                  <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
                   table here
                </div>
             </div>
             <div class="column is-4">
-               <LeaderboardMapInfo leaderboardInfo={$leaderboard.leaderboardInfo} />
+               <LeaderboardMapInfo leaderboardInfo={$leaderboard} />
                <div class="window has-shadow mt-3">
                   <div class="title is-6 mb-3">Ranking Tool</div>
 
@@ -66,7 +74,7 @@
                               <span class="icon is-small">
                                  <i class="fas fa-stream" />
                               </span>
-                              <span> Create Rank Request </span>
+                              <span>Create Rank Request</span>
                            </button>
                         </p>
                      </div>
@@ -103,77 +111,12 @@
       padding: 0.6rem 0.9rem;
    }
 
-   .text-muted {
-      color: var(--muted);
-   }
-
-   .tabs a.selected {
-      border-bottom-width: 3px;
-      font-weight: 700;
-   }
-
-   .tabs li > .selected {
-      background-color: var(--gray-dark);
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-   }
-
-   .tabs a {
-      color: white;
-   }
-
-   .tabs a.easy {
-      border-bottom-color: var(--easy);
-      color: var(--easy);
-   }
-
-   .tabs a.normal {
-      border-bottom-color: var(--normal);
-      color: var(--normal);
-   }
-
-   .tabs a.hard {
-      border-bottom-color: var(--hard);
-      color: var(--hard);
-   }
-
-   .tabs a.expert {
-      border-bottom-color: var(--expert);
-      color: var(--expert);
-   }
-
-   .tabs a.expert-plus {
-      border-bottom-color: var(--expert-plus);
-      color: var(--expert-plus);
-   }
-
-   .tabs ul {
-      border-bottom-color: var(--dimmed);
-   }
-
-   .comment-content {
-      white-space: pre-line;
-   }
-
    span.rank {
       font-size: x-small;
    }
 
    .rank.rt {
       background-color: var(--rt);
-   }
-
-   .rank.qat {
-      background-color: var(--qat);
-   }
-
-   .rank.nat {
-      background-color: var(--nat);
-   }
-
-   .rank.admin {
-      color: black;
-      background-color: var(--admin);
    }
 
    .tag {

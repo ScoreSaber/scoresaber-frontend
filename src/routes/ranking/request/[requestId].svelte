@@ -13,6 +13,7 @@
    import { decode } from 'html-entities';
    import { fly } from 'svelte/transition';
    import RequestMapInfo from '$lib/components/map/request-map-info.svelte';
+   import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
 
    const {
       data: request,
@@ -36,22 +37,7 @@
          {#if $request}
             <div in:fly={{ y: -20, duration: 1000 }} class="column is-8">
                <div class="window has-shadow">
-                  <div class="tabs is-centered">
-                     <ul class="m-0">
-                        {#each $request.difficulties as difficulty}
-                           <li>
-                              <a
-                                 href="/ranking/request/{difficulty.requestId}"
-                                 class={getDifficultyStyle(difficulty.difficulty) +
-                                    ' ' +
-                                    ($request.leaderboardInfo.difficulty === difficulty.difficulty ? 'selected' : '')}
-                              >
-                                 <span>{getDifficultyLabel(difficulty.difficulty)}</span>
-                              </a>
-                           </li>
-                        {/each}
-                     </ul>
-                  </div>
+                  <DifficultySelection rankingDiffs={$request.difficulties} currentDiff={$request.leaderboardInfo.difficulty} />
                   <code>{decode($request.requestDescription)}</code>
                </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
@@ -242,50 +228,6 @@
       border-radius: 5px;
       white-space: pre-line;
       overflow-wrap: anywhere;
-   }
-
-   .tabs li > .selected {
-      background-color: var(--gray-dark);
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-   }
-
-   .tabs a.selected {
-      border-bottom-width: 3px;
-      font-weight: 700;
-   }
-
-   .tabs a {
-      color: white;
-   }
-
-   .tabs a.easy {
-      border-bottom-color: var(--easy);
-      color: var(--easy);
-   }
-
-   .tabs a.normal {
-      border-bottom-color: var(--normal);
-      color: var(--normal);
-   }
-
-   .tabs a.hard {
-      border-bottom-color: var(--hard);
-      color: var(--hard);
-   }
-
-   .tabs a.expert {
-      border-bottom-color: var(--expert);
-      color: var(--expert);
-   }
-
-   .tabs a.expert-plus {
-      border-bottom-color: var(--expert-plus);
-      color: var(--expert-plus);
-   }
-
-   .tabs ul {
-      border-bottom-color: var(--dimmed);
    }
 
    .comment-content {
