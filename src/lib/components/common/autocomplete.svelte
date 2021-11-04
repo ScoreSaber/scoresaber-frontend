@@ -59,6 +59,7 @@
       padding: 5px;
       background-color: var(--gray-dark);
       border-radius: 0 0 5px 5px;
+      z-index: 5;
    }
    .options .option {
       padding: 5px;
