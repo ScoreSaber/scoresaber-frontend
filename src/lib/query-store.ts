@@ -21,7 +21,11 @@ export function createQueryStore(prop: any, initialValue: any, queryChanged?: Qu
          });
       },
       set: async (v: any) => {
-         query[prop] = v;
+         if (v === null) {
+            delete query[prop];
+         } else {
+            query[prop] = v;
+         }
          const urlSearchParams = new URLSearchParams(query);
          const g = `?${urlSearchParams.toString()}`;
          goto(g, { keepfocus: true, noscroll: true });
