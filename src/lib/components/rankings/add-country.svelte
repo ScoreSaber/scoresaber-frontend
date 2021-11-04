@@ -6,12 +6,13 @@
    let expanded = false;
    let input: HTMLInputElement;
    let newCountry: string = '';
+   let chip: HTMLDivElement;
 
    document.addEventListener('click', checkChipClick);
    document.addEventListener('keydown', checkKeyDown);
 
    function checkChipClick(e: MouseEvent) {
-      if (!(e.target as HTMLElement).classList.contains('addCountry')) {
+      if (!chip.contains(e.target as Node)) {
          expanded = false;
       }
    }
@@ -36,13 +37,13 @@
    }
 </script>
 
-<div class="country addCountry" class:expanded>
+<div class="country" bind:this={chip} class:expanded>
    {#if expanded}
-      <div transition:slide={{ duration: 300 }} class="addCountry">
-         <TextInput bind:elementRef={input} bind:value={newCountry} classes="addCountry" placeholder="Add Country" />
+      <div transition:slide={{ duration: 300 }}>
+         <TextInput bind:elementRef={input} bind:value={newCountry} placeholder="Add Country" />
       </div>
    {:else}
-      <div transition:slide={{ duration: 300 }} class="addLabel addCountry" on:click={toggleExpand}>+ Add</div>
+      <div transition:slide={{ duration: 300 }} class="addLabel" on:click={toggleExpand}>+ Add</div>
    {/if}
 </div>
 
