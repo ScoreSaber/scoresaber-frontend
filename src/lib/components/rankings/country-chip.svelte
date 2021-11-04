@@ -19,6 +19,7 @@
       padding: 5px 12px;
       border-radius: 7px;
       position: relative;
+      font-weight: bold;
    }
    .country .remove {
       visibility: none;
