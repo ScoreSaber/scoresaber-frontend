@@ -106,6 +106,12 @@
    tr.table-item td {
       background-color: #323232;
    }
+   tr.table-item td {
+      background-color: var(--gray);
+   }
+   tr.table-item:hover td {
+      background-color: var(--gray-light);
+   }
    td:first-child {
       border-left-style: solid;
       border-top-left-radius: 5px;

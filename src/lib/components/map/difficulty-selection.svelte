@@ -38,7 +38,7 @@
 
 <style>
    .tabs a.selected {
-      border-bottom-width: 3px;
+      border-bottom-width: 2px;
       font-weight: 700;
    }
 
@@ -50,6 +50,7 @@
 
    .tabs a {
       color: white;
+      font-size: 14px;
    }
 
    .tabs a.easy {

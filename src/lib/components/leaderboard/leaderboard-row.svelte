@@ -1,38 +1,37 @@
 <script type="ts">
    import PlayerLink from '$lib/components/player/player-link.svelte';
-   import type { Score } from '$lib/models/LeaderboardData';
+   import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
+   import FormattedDate from '../common/formatted-date.svelte';
    export let score: Score;
+   export let leaderboard: LeaderboardInfo;
 </script>
 
 <tr class="table-item">
    <td class="rank" width="5px">
-      <span class="rank">#{score.rank}</span>
+      <span class="rank tag is">#{score.rank}</span>
    </td>
    <td class="player">
       <img
-         src={score.leaderboardPlayerInfo.profilePicture}
+         src="https://cdn.scoresaber.com/avatars/steam.png"
          alt={score.leaderboardPlayerInfo.name}
          title={score.leaderboardPlayerInfo.name}
          class="image rounded is-24x24"
       />
-      <span class="playerName"><PlayerLink player={score.leaderboardPlayerInfo} destination={`/u/${score.leaderboardPlayerInfo.playerId}`} /></span>
-      <!-- <span class="playerName">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span> -->
+      <span class="playerName"><PlayerLink player={score.leaderboardPlayerInfo} destination={`/u/${score.leaderboardPlayerInfo.id}`} /></span>
    </td>
+   <td class="timeSet centered">
+      <span><FormattedDate date={new Date(score.timeSet)} /></span>
+   </td>
+   <td class="score centered">
+      <span>{score.baseScore.toLocaleString('en-US')}</span>
+   </td>
+   {#if leaderboard.maxScore}
+      <td class="accuracy centered">
+         <span>{(100.005115151).toFixed(2)}%</span>
+      </td>
+   {/if}
    <td class="pp centered">
-      <span class="pp">{player.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span><span class="pp ppLabel">pp</span>
-   </td>
-
-   <td class="total-play-count centered">
-      <span>{player.scoreStats.totalPlayCount}</span>
-   </td>
-   <td class="ranked-play-count centered">
-      <span>{player.scoreStats.rankedPlayCount}</span>
-   </td>
-   <td class="ranked-acc centered">
-      <span>{player.scoreStats.averageRankedAccuracy.toFixed(2)}%</span>
-   </td>
-   <td class="difference centered">
-      <WeeklyChange {player} />
+      <span class="pp">{score.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span><span class="pp ppLabel">pp</span>
    </td>
 </tr>
 
@@ -75,6 +74,12 @@
    }
    tr.table-item td {
       background-color: #323232;
+   }
+   tr.table-item td {
+      background-color: var(--gray);
+   }
+   tr.table-item:hover td {
+      background-color: var(--gray-light);
    }
    td:first-child {
       border-left-style: solid;

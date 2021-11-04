@@ -12,6 +12,8 @@
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import queryString from 'query-string';
    import { createQueryStore } from '$lib/query-store';
+   import { fly } from 'svelte/transition';
+   import LeaderboardRow from '$lib/components/leaderboard/leaderboard-row.svelte';
 
    $: currentPage = createQueryStore('page', 1, queryChanged);
 
@@ -54,11 +56,29 @@
 <div>
    <div class="section">
       <div class="columns">
-         {#if $leaderboard}
+         {#if $leaderboard && $leaderboardScores}
             <div class="column is-8">
                <div class="window has-shadow">
                   <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
-                  table here
+                  <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard">
+                     <table>
+                        <thead>
+                           <tr class="headers">
+                              <th class="rank" />
+                              <th class="player" />
+                              <th class="timeSet centered">Time Set</th>
+                              <th class="score centered">Score</th>
+                              {#if $leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
+                              <th class="pp centered">PP</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {#each $leaderboardScores as score}
+                              <LeaderboardRow {score} leaderboard={$leaderboard} />
+                           {/each}
+                        </tbody>
+                     </table>
+                  </div>
                </div>
             </div>
             <div class="column is-4">
@@ -84,8 +104,8 @@
          {:else}
             <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
          {/if}
-         {#if $leaderboardError}
-            <Error message={$leaderboardError.toString()} />
+         {#if $leaderboardError || $leaderboardScoresError}
+            <Error message={$leaderboardError.toString() || $leaderboardScoresError.toString()} />
          {/if}
       </div>
    </div>
@@ -125,5 +145,16 @@
       color: white;
       padding: 4px 4px 3px 4px;
       cursor: help;
+   }
+
+   table {
+      border-collapse: separate;
+      border-spacing: 0 5px;
+      white-space: nowrap;
+      margin-top: -15px;
+   }
+
+   .content table th {
+      border: none !important;
    }
 </style>

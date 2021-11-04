@@ -1,6 +1,7 @@
 <script lang="ts">
    import type { RankRequestInformation } from '$lib/models/Ranking';
    import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus } from '$lib/utils/helpers';
+   import FormattedDate from '../common/formatted-date.svelte';
    export let request: RankRequestInformation;
 </script>
 
@@ -34,6 +35,7 @@
          Mapped by <a href={'#'}><b>{request.leaderboardInfo.levelAuthorName}</b></a><br />
          Status: <strong>{getRankingApprovalStatus(request.approved)}</strong><br />
          Request Type: <strong>{request.requestType == 1 ? 'Rank' : 'Unrank'}</strong><br />
+         Created: <strong><FormattedDate date={new Date(request.created_at)} /></strong><br />
          <hr />
          <div class="votes">
             <div class="vote">RT 👍<br /><b>{request.rankVotes.upvotes}</b></div>
