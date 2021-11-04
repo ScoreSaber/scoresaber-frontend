@@ -109,14 +109,16 @@
                      <small>
                         <span class="title-header">
                            <i class="fas fa-globe-americas" title="Global Ranking" />
-                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}>#{$playerData.rank}</a>
+                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
+                              >#{$playerData.rank.toLocaleString('en-US')}</a
+                           >
                         </span>
                         <span class="title-header spacer">
                            <CountryImage country={$playerData.country} />
                            <a
                               title="Country Ranking"
                               href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
-                              >#{$playerData.countryRank}</a
+                              >#{$playerData.countryRank.toLocaleString('en-US')}</a
                            >
                         </span>
                      </small>
