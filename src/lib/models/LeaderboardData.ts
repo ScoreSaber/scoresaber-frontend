@@ -88,7 +88,7 @@ export interface LeaderboardInfo {
    dailyPlays: number;
    coverImage: string;
    playerScore: Score | null;
-   difficulties: Difficulty;
+   difficulties: Difficulty[];
 }
 
 export interface Score {
