@@ -3,6 +3,7 @@
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import queryString from 'query-string';
    import fetcher from '$lib/utils/fetcher';
+   import axios, { CancelTokenSource } from 'axios';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
@@ -69,6 +70,17 @@
       console.log(focusElement);
    };
 
+   let cancelPlayer = axios.CancelToken.source();
+   let cancelLeaderboard = axios.CancelToken.source();
+
+   const absorbCancel = (thrown) => {
+      if (axios.isCancel(thrown)) {
+         console.log('request canceled');
+      } else {
+         console.error(thrown);
+      }
+   };
+
    const handleInput = () => {
       searchResults = {
          players: [],
@@ -77,20 +89,28 @@
       focusElement = 0;
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-         const searchParameter = new URLSearchParams();
-         searchParameter.set('search', searchValue);
+         cancelPlayer.cancel('new search');
+         cancelLeaderboard.cancel('new search');
+
+         cancelPlayer = axios.CancelToken.source();
+         cancelLeaderboard = axios.CancelToken.source();
+
          fetcher<Player[]>(
             queryString.stringifyUrl({
                url: '/api/players',
                query: { search: searchValue }
-            })
+            }),
+            { cancelToken: cancelPlayer.token }
          ).then((players) => (searchResults.players = players));
          fetcher<LeaderboardInfo[]>(
             queryString.stringifyUrl({
                url: '/api/leaderboards',
                query: { search: searchValue }
-            })
-         ).then((leaderboards) => (searchResults.leaderboards = leaderboards));
+            }),
+            { cancelToken: cancelLeaderboard.token }
+         )
+            .then((leaderboards) => (searchResults.leaderboards = leaderboards))
+            .catch(absorbCancel);
       }, 200);
    };
 
