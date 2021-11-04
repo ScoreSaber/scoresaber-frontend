@@ -6,14 +6,14 @@
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import { page } from '$app/stores';
-   import { getDifficultyLabel, getDifficultyStyle, getRankingApprovalStatus } from '$lib/utils/helpers';
-   import type { Leaderboard, LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
+   import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
    import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import queryString from 'query-string';
    import { createQueryStore } from '$lib/query-store';
    import { fly } from 'svelte/transition';
    import LeaderboardRow from '$lib/components/leaderboard/leaderboard-row.svelte';
+   import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
 
    $: currentPage = createQueryStore('page', 1, queryChanged);
 
@@ -79,6 +79,7 @@
                            {/each}
                         </tbody>
                      </table>
+                     <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$currentPage} changePage={(e) => changePage(e)} />
                   </div>
                </div>
             </div>
@@ -86,20 +87,12 @@
                <LeaderboardMapInfo leaderboardInfo={$leaderboard} />
                <div class="window has-shadow mt-3">
                   <div class="title is-6 mb-3">Ranking Tool</div>
-
-                  <div class="tooling mb-2">
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank rt">Ranking Team</span>
-                        <p class="control m-0">
-                           <button class="button is-small is-dark">
-                              <span class="icon is-small">
-                                 <i class="fas fa-stream" />
-                              </span>
-                              <span>Create Rank Request</span>
-                           </button>
-                        </p>
-                     </div>
-                  </div>
+                  <button class="button is-small is-dark">
+                     <span class="icon is-small">
+                        <i class="fas fa-stream" />
+                     </span>
+                     <span>Create Rank Request</span>
+                  </button>
                </div>
             </div>
          {:else}

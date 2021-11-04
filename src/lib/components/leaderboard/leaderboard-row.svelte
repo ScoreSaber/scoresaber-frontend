@@ -34,7 +34,7 @@
       <span>{score.modifiedScore.toLocaleString('en-US')}</span>
    </td>
    <td class="mods centered">
-      <span>{score.modifiers}</span>
+      <span>{score.modifiers.length === 0 ? '-' : score.modifiers}</span>
    </td>
    {#if leaderboard.maxScore}
       <td class="accuracy centered {new Date(score.timeSet).getTime() / 1000 <= 1558474032 ? 'old-score' : ''}">
@@ -67,12 +67,6 @@
    td.player span {
       overflow: hidden;
       text-overflow: ellipsis;
-   }
-
-   @media (min-width: 1024px) {
-      .player {
-         max-width: 250px;
-      }
    }
    @media (max-width: 1024px) {
       .player {
