@@ -14,6 +14,7 @@
    import { fly } from 'svelte/transition';
    import CountryChip from '$lib/components/rankings/country-chip.svelte';
    import AddCountry from '$lib/components/rankings/add-country.svelte';
+   import type { countryData } from '$lib/models/CountryData';
 
    const playersPerPage = 50;
 
@@ -45,6 +46,11 @@
       }),
       { fetcher: axios }
    );
+
+   let countrySearch: countryData[] = [];
+   (async () => {
+      countrySearch = await axios('https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.json');
+   })();
 
    function changePage(newPage: number) {
       $currentPage = newPage;
@@ -82,7 +88,7 @@
                {#each filteredCountries as country}
                   <CountryChip {country} remove={removeCountry} />
                {/each}
-               <AddCountry {addCountry} selectedCountries={filteredCountries} />
+               <AddCountry {addCountry} selectedCountries={filteredCountries} {countrySearch} />
             </div>
          {/if}
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">

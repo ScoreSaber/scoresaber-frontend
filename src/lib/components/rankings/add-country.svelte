@@ -1,11 +1,10 @@
 <script lang="ts">
    import { slide } from 'svelte/transition';
    import Autocomplete from '../common/autocomplete.svelte';
-   import { useAccio } from '$lib/utils/accio';
-   import queryString from 'query-string';
-   import axios from '$lib/utils/fetcher';
+   import type { countryData } from '$lib/models/CountryData';
    export let addCountry = (country: string) => {};
    export let selectedCountries: string[] = [];
+   export let countrySearch: countryData[] = [];
 
    let expanded = false;
    let input: HTMLInputElement;
@@ -40,24 +39,11 @@
       if (expanded) input.focus();
    }
 
-   let temp = ['AU', 'GB', 'US', 'UK', 'CA'];
-
-   const {
-      data: countrySearch,
-      error: countrySearchError,
-      refresh: refreshCountrySearch
-   } = useAccio<{ Name: string; Code: string }[]>(
-      queryString.stringifyUrl({
-         url: 'https://datahub.io/core/country-list/r/data.json'
-      }),
-      { fetcher: axios }
-   );
-
-   $: options = ($countrySearch ?? [])
+   $: options = (countrySearch ?? [])
       .map((x) => {
          return {
-            label: `${x.Name} (${x.Code})`,
-            value: x.Code
+            label: `${x.name} (${x['alpha-2']})`,
+            value: x['alpha-2']
          };
       })
       .filter((x) => !selectedCountries.includes(x.value));
