@@ -8,7 +8,7 @@
 </script>
 
 <div class="pages">
-   <PaginationNav {totalItems} {pageSize} {currentPage} limit={1} showStepOptions={false} on:setPage={(e) => changePage(e.detail.page)} />
+   <PaginationNav {totalItems} {pageSize} {currentPage} limit={1} showStepOptions={true} on:setPage={(e) => changePage(e.detail.page)} />
 </div>
 
 <style>
@@ -21,7 +21,7 @@
    .pages :global(.option) {
       background-color: var(--gray);
       cursor: pointer;
-      padding: 0.2rem;
+      padding: 0.2rem 0.5rem;
       font-size: 14px;
       border-radius: 5px;
       margin: 0;
@@ -32,7 +32,6 @@
    }
 
    .pages :global(.option.ellipsis) {
-      padding: 0.2rem 0.5rem;
       background-color: var(--foreground);
       cursor: default;
    }

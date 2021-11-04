@@ -4,105 +4,127 @@
 
 import { PREVIOUS_PAGE, NEXT_PAGE, ELLIPSIS } from './symbolTypes';
 
-export default function ({ totalItems, pageSize, currentPage, limit = null, showStepOptions = false }) {
-   const totalPages = Math.ceil(totalItems / pageSize);
-   const limitThreshold = getLimitThreshold({ limit });
-   const limited = limit && totalPages > limitThreshold;
-   let options = limited ? generateLimitedOptions({ totalPages, limit, currentPage }) : generateUnlimitedOptions({ totalPages });
-   return showStepOptions ? addStepOptions({ options, currentPage, totalPages }) : options;
+export class PaginationInfo {
+   totalItems: number;
+   pageSize: number;
+   currentPage: number;
+   limit?: number = null;
+   showStepOptions?: boolean = false;
 }
 
-function generateUnlimitedOptions({ totalPages }) {
-   return new Array(totalPages).fill(null).map((value, index) => ({
-      type: 'number',
-      value: index + 1
-   }));
+export class PaginationOptions {
+   type: 'number' | 'symbol';
+   value?: number;
+   symbol?: string;
 }
 
-function generateLimitedOptions({ totalPages, limit, currentPage }) {
+export default function (info: PaginationInfo) {
+   const totalPages = Math.ceil(info.totalItems / info.pageSize);
+   const limitThreshold = getLimitThreshold(info.limit);
+   const limited = info.limit && totalPages > limitThreshold;
+   let options: PaginationOptions[] = limited ? generateLimitedOptions(totalPages, info) : generateUnlimitedOptions(totalPages);
+   return info.showStepOptions ? addStepOptions(options, info.currentPage, totalPages) : options;
+}
+
+function generateUnlimitedOptions(totalPages: number): PaginationOptions[] {
+   let options: PaginationOptions[] = [];
+   for (let i = 1; i <= totalPages; i++) {
+      options.push({ type: 'number', value: i });
+   }
+   return options;
+}
+
+function generateLimitedOptions(totalPages: number, { limit, currentPage }: PaginationInfo): PaginationOptions[] {
    const boundarySize = limit * 2 + 2;
    const firstBoundary = 1 + boundarySize;
    const lastBoundary = totalPages - boundarySize;
    const totalShownPages = firstBoundary + 2;
 
+   let options: PaginationOptions[] = [];
+
    if (currentPage <= firstBoundary - limit) {
-      return Array(totalShownPages)
-         .fill(null)
-         .map((value, index) => {
-            if (index === totalShownPages - 1) {
-               return {
-                  type: 'number',
-                  value: totalPages
-               };
-            } else if (index === totalShownPages - 2) {
-               return {
-                  type: 'symbol',
-                  symbol: ELLIPSIS,
-                  value: firstBoundary + 1
-               };
-            }
-            return {
+      for (let i = 0; i < totalShownPages; i++) {
+         if (i === totalShownPages - 1) {
+            options.push({
                type: 'number',
-               value: index + 1
-            };
+               value: totalPages
+            });
+            continue;
+         } else if (i === totalShownPages - 2) {
+            options.push({
+               type: 'symbol',
+               symbol: ELLIPSIS,
+               value: firstBoundary + 1
+            });
+            continue;
+         }
+         options.push({
+            type: 'number',
+            value: i + 1
          });
+      }
    } else if (currentPage >= lastBoundary + limit) {
-      return Array(totalShownPages)
-         .fill(null)
-         .map((value, index) => {
-            if (index === 0) {
-               return {
-                  type: 'number',
-                  value: 1
-               };
-            } else if (index === 1) {
-               return {
-                  type: 'symbol',
-                  symbol: ELLIPSIS,
-                  value: lastBoundary - 1
-               };
-            }
-            return {
+      for (let i = 0; i < totalShownPages; i++) {
+         if (i === 0) {
+            options.push({
                type: 'number',
-               value: lastBoundary + index - 2
-            };
+               value: 1
+            });
+            continue;
+         } else if (i === 1) {
+            options.push({
+               type: 'symbol',
+               symbol: ELLIPSIS,
+               value: lastBoundary - 1
+            });
+            continue;
+         }
+         options.push({
+            type: 'number',
+            value: lastBoundary + i - 2
          });
+      }
    } else if (currentPage >= firstBoundary - limit && currentPage <= lastBoundary + limit) {
-      return Array(totalShownPages)
-         .fill(null)
-         .map((value, index) => {
-            if (index === 0) {
-               return {
-                  type: 'number',
-                  value: 1
-               };
-            } else if (index === 1) {
-               return {
-                  type: 'symbol',
-                  symbol: ELLIPSIS,
-                  value: currentPage - limit + (index - 2)
-               };
-            } else if (index === totalShownPages - 1) {
-               return {
-                  type: 'number',
-                  value: totalPages
-               };
-            } else if (index === totalShownPages - 2) {
-               return {
-                  type: 'symbol',
-                  symbol: ELLIPSIS,
-                  value: currentPage + limit + 1
-               };
-            }
-            return {
+      for (let i = 0; i < totalShownPages; i++) {
+         if (i === 0) {
+            options.push({
                type: 'number',
-               value: currentPage - limit + (index - 2)
-            };
+               value: 1
+            });
+            continue;
+         } else if (i === 1) {
+            options.push({
+               type: 'symbol',
+               symbol: ELLIPSIS,
+               value: currentPage - limit + (i - 2)
+            });
+            continue;
+         } else if (i === totalShownPages - 1) {
+            options.push({
+               type: 'number',
+               value: totalPages
+            });
+            continue;
+         } else if (i === totalShownPages - 2) {
+            options.push({
+               type: 'symbol',
+               symbol: ELLIPSIS,
+               value: currentPage + limit + 1
+            });
+            continue;
+         }
+         options.push({
+            type: 'number',
+            value: currentPage - limit + (i - 2)
          });
+      }
    }
+
+   return options;
 }
 
-function addStepOptions({ options, currentPage, totalPages }) {
+function addStepOptions(options: PaginationOptions[], currentPage, totalPages: number): PaginationOptions[] {
+   currentPage = parseInt(currentPage); // TS decided that even after putting a type annotation, currentPage would still be a string. :)
    return [
       {
          type: 'symbol',
@@ -118,7 +140,7 @@ function addStepOptions({ options, currentPage, totalPages }) {
    ];
 }
 
-function getLimitThreshold({ limit }) {
+function getLimitThreshold(limit: number) {
    const maximumUnlimitedPages = 3; // This means we cannot limit 3 pages or less
    const numberOfBoundaryPages = 2; // The first and last pages are always shown
    return limit * 2 + maximumUnlimitedPages + numberOfBoundaryPages;
