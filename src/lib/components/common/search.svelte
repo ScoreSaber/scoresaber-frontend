@@ -4,7 +4,7 @@
    import queryString from 'query-string';
    import fetcher from '$lib/utils/fetcher';
    import axios from 'axios';
-   import CountryImage from '../image/country-image.svelte';
+   import CountryImage from '$lib/components/image/country-image.svelte';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
@@ -147,16 +147,16 @@
       </div>
       <div class="search-results" bind:this={resultsElement}>
          <div class="results">
+            {#if searchValue.length > 3}
+               <div class="section-title">
+                  <a href="/rankings?search={encodeURIComponent(searchValue)}" title="Advanced Search"
+                     >Players <i class="fa fa-external-link-alt" /></a
+                  >
+               </div>
+            {/if}
             {#if searchResults.players == 'loading'}
                <div>Loading...</div>
             {:else}
-               {#if searchResults.players.length > 0}
-                  <div class="section-title">
-                     <a href="/rankings?search={encodeURIComponent(searchValue)}" title="Advanced Search"
-                        >Players <i class="fa fa-external-link-alt" /></a
-                     >
-                  </div>
-               {/if}
                {#each searchResults.players as player, i}
                   <a on:click={() => onLinkClicked()} href="/u/{player.id}" class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
@@ -167,16 +167,16 @@
             {/if}
          </div>
          <div class="results">
+            {#if searchValue.length > 3}
+               <div class="section-title">
+                  <a href="/leaderboards?search={encodeURIComponent(searchValue)}" title="Advanced Search"
+                     >Leaderboards <i class="fa fa-external-link-alt" /></a
+                  >
+               </div>
+            {/if}
             {#if searchResults.leaderboards == 'loading'}
-               loading...
+               <div>Loading...</div>
             {:else}
-               {#if searchResults.leaderboards.length > 0}
-                  <div class="section-title">
-                     <a href="/leaderboards?search={encodeURIComponent(searchValue)}" title="Advanced Search"
-                        >Leaderboards <i class="fa fa-external-link-alt" /></a
-                     >
-                  </div>
-               {/if}
                {#each searchResults.leaderboards as leaderboard, i}
                   <a
                      on:click={() => onLinkClicked()}
