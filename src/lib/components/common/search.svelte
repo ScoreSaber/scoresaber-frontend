@@ -114,9 +114,9 @@
       }, 200);
    };
 
-   function handleWindowKeydown({ key, metaKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
+   function handleWindowKeydown({ key, metaKey, ctrlKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
       if (key == 'Escape') return setVisibility(false);
-      if (key == '/' && metaKey && !visible) {
+      if (key == '/' && (metaKey || ctrlKey) && !visible) {
          setVisibility(true);
          preventDefault();
       }
