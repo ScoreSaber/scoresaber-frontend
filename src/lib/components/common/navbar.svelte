@@ -1,5 +1,11 @@
 <script lang="ts">
-   import { onMount } from 'svelte';
+   import { onMount, createEventDispatcher } from 'svelte';
+   import SearchView from '$lib/components/common/search.svelte';
+   import Search from '$lib/components/common/search.svelte';
+
+   let searchModal: SearchView;
+
+   const showSearchModal = () => searchModal?.setVisibility(true);
 
    onMount(() => {
       let burger = document.getElementsByClassName('navbar-burger')[0] as HTMLElement;
@@ -15,6 +21,7 @@
    });
 </script>
 
+<SearchView bind:this={searchModal} />
 <nav id="navbar" class="navbar has-border is-fixed-top" aria-label="main navigation">
    <div class="container">
       <div class="navbar-brand">
@@ -42,7 +49,7 @@
                <i class="fas fa-tasks" />
                Rank Requests
             </a>
-            <a href="/" class="navbar-item">
+            <a href="/" class="navbar-item" on:click={showSearchModal}>
                <i class="fas fa-book" />
                Wiki
             </a>
@@ -57,6 +64,9 @@
             <a class="navbar-item donate" target="_blank" rel="noopener noreferrer" href="https://www.patreon.com/scoresaber">
                <i class="fab fa-gratipay fa-2x" title="Support us on Patreon!" />
             </a>
+            <button class="navbar-item" on:click={showSearchModal}>
+               <div class="fake-searchbox"><i class="fa fa-search" /> Search</div>
+            </button>
          </div>
       </div>
    </div>
@@ -76,23 +86,31 @@
       background-color: var(--foreground);
    }
 
-   a.navbar-item,
-   a.navbar-item:hover,
-   a.navbar-item:focus {
+   .navbar-item,
+   .navbar-item:hover,
+   .navbar-item:focus {
       color: var(--scoreSaberYellow);
       background-color: var(--foreground);
+      border: 0;
    }
 
-   a.navbar-item {
+   .navbar-item {
       color: var(--textColor);
    }
 
-   a.navbar-item:hover {
+   .navbar-item:hover {
       background-color: var(--foreground);
    }
 
-   a.navbar-item:active {
+   .navbar-item:active {
       background-color: var(--foreground);
+   }
+
+   .fake-searchbox {
+      background: #3c3c3c;
+      padding: 5px 10px;
+      border-radius: 5px;
+      padding-right: 50px;
    }
 
    .navbar-burger.is-button {
