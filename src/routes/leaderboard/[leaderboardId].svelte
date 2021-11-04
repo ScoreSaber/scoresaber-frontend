@@ -33,23 +33,25 @@
 <div>
    <div class="section">
       <div class="columns">
-         {#if $leaderboard && $leaderboardDiffs}
+         {#if $leaderboard}
             <div class="column is-8">
                <div class="window has-shadow">
                   <div class="tabs is-centered">
                      <ul class="m-0">
-                        {#each $leaderboardDiffs as difficulty}
-                           <li>
-                              <a
-                                 href="/leaderboard/{difficulty.leaderboardId}"
-                                 class={getDifficultyStyle(difficulty.difficulty) +
-                                    ' ' +
-                                    ($leaderboard.leaderboardInfo.difficulty === difficulty.difficulty ? 'selected' : '')}
-                              >
-                                 <span>{getDifficultyLabel(difficulty.difficulty)}</span>
-                              </a>
-                           </li>
-                        {/each}
+                        {#if $leaderboard.leaderboardInfo.difficulties}
+                           {#each $leaderboard.leaderboardInfo.difficulties as difficulty}
+                              <li>
+                                 <a
+                                    href="/leaderboard/{difficulty.leaderboardId}"
+                                    class={getDifficultyStyle(difficulty.difficulty) +
+                                       ' ' +
+                                       ($leaderboard.leaderboardInfo.difficulty === difficulty.difficulty ? 'selected' : '')}
+                                 >
+                                    <span>{getDifficultyLabel(difficulty.difficulty)}</span>
+                                 </a>
+                              </li>
+                           {/each}
+                        {/if}
                      </ul>
                   </div>
                   table here
@@ -105,8 +107,8 @@
          {:else}
             <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
          {/if}
-         {#if $leaderboardError || $leaderboardDiffsError}
-            <Error message={$leaderboardError.toString() || $leaderboardDiffsError.toString()} />
+         {#if $leaderboardError}
+            <Error message={$leaderboardError.toString()} />
          {/if}
       </div>
    </div>
