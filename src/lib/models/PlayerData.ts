@@ -23,11 +23,12 @@ export interface PlayerScore {
 }
 
 export interface LeaderboardPlayer {
-   playerId: string;
+   id: string;
    name: string;
    profilePicture: string;
    country: string;
    permissions: number;
+   role: string;
 }
 export interface ScoreStats {
    totalScore: number;
