@@ -68,7 +68,6 @@
                location.href = `/leaderboard/${leaderboard.id}`;
             }
       }
-      console.log(focusElement);
    };
 
    let cancel = axios.CancelToken.source();
@@ -103,7 +102,11 @@
          fetcher<LeaderboardInfo[]>(
             queryString.stringifyUrl({
                url: '/api/leaderboards',
-               query: { search: searchValue }
+               query: {
+                  search: searchValue,
+                  category: 0,
+                  sort: 0
+               }
             }),
             { cancelToken: cancel.token }
          )
