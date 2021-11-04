@@ -58,7 +58,7 @@
 </script>
 
 {#if external}
-   <a title={playerClass[1]} rel="external" target="_blank" href={destination}>
+   <a title={playerClass[1]} rel="external" target="_blank" href={destination} class="player-link">
       {#if countryImage}
          <CountryImage country={player.country} />
       {/if}
@@ -74,6 +74,11 @@
 {/if}
 
 <style>
+   .player-link {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+   }
    a,
    span {
       overflow: hidden;
