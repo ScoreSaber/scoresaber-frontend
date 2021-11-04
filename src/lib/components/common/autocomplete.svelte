@@ -7,8 +7,8 @@
    export let valueSelected: (value: string) => void = () => {};
 
    $: filteredOptions = (options as any[]).filter((x) =>
-      x.label
-         ? x.label.toLowerCase().include(value.toLowerCase()) || x.value.toLowerCase().includes(value.toLowerCase())
+      x.label && x.value
+         ? x.label.toLowerCase().includes(value.toLowerCase()) || x.value.toLowerCase().includes(value.toLowerCase())
          : x.toLowerCase().includes(value.toLowerCase())
    );
 
