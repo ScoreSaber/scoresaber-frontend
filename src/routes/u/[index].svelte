@@ -59,6 +59,13 @@
    function queryChanged(newQuery: string) {
       refreshScores({ query: newQuery });
    }
+
+   page.subscribe((p) => {
+      if (typeof window !== 'undefined') {
+         refreshScores({ query: '?' + p.query.toString() });
+         refreshRankings({ newUrl: `/api/player/${$page.params.index}/full` });
+      }
+   });
 </script>
 
 <head>

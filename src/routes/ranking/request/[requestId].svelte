@@ -20,7 +20,9 @@
    } = useAccio<RankRequestInformation>(`/api/ranking/request/${$page.params.requestId}`, { fetcher: axios });
 
    page.subscribe((p) => {
-      refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
+      if (typeof window !== 'undefined') {
+         refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
+      }
    });
 </script>
 

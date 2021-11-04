@@ -122,6 +122,10 @@
          preventDefault();
       }
    }
+
+   function onLinkClicked() {
+      setVisibility(false);
+   }
 </script>
 
 <svelte:window on:keydown={handleWindowKeydown} />
@@ -154,7 +158,7 @@
                   </div>
                {/if}
                {#each searchResults.players as player, i}
-                  <a href="/u/{player.id}" class="result {i == focusElement ? 'focus' : ''}">
+                  <a on:click={() => onLinkClicked()} href="/u/{player.id}" class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
                      <span class="player-name"><CountryImage country={player.country} /> {player.name}</span>
                      <span class="rank">#{player.rank.toLocaleString('en-US')}</span></a
@@ -174,7 +178,11 @@
                   </div>
                {/if}
                {#each searchResults.leaderboards as leaderboard, i}
-                  <a href="/leaderboard/{leaderboard.id}" class="result map-result {i == focusElement - searchResults.players.length ? 'focus' : ''}">
+                  <a
+                     on:click={() => onLinkClicked()}
+                     href="/leaderboard/{leaderboard.id}"
+                     class="result map-result {i == focusElement - searchResults.players.length ? 'focus' : ''}"
+                  >
                      <div class="cover-art">
                         <img src={leaderboard.coverImage} alt={leaderboard.songName} />
                         <div class="difficulty-badge" style="background-color: {colours[leaderboard.difficultyRaw.replace(/_(.*?)_.*/, '$1')]}">
