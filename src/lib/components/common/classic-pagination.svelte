@@ -36,6 +36,20 @@
       cursor: default;
    }
 
+   .pages :global(.option.disabled) {
+      background-color: var(--foreground);
+      color: var(--gray-light);
+      cursor: default;
+   }
+
+   .pages :global(.option.prev) {
+      padding: 0.2rem 0.7rem;
+   }
+
+   .pages :global(.option.next) {
+      padding: 0.2rem 0.7rem;
+   }
+
    .pages :global(.option.ellipsis):hover {
       background-color: var(--foreground);
    }
