@@ -211,4 +211,9 @@
    .infobox :global(.stats-container) {
       justify-content: start !important;
    }
+
+   .infobox .player {
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
 </style>
