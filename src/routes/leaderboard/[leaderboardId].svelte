@@ -57,32 +57,44 @@
 <div>
    <div class="section">
       <div class="columns">
-         {#if $leaderboard && $leaderboardScores}
+         {#if $leaderboard}
             <div class="column is-8">
                <div class="window has-shadow">
                   <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
                   <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard">
-                     <table>
-                        <thead>
-                           <tr class="headers">
-                              <th class="rank" />
-                              <th class="player" />
-                              <th class="timeSet centered">Time Set</th>
-                              <th class="score centered">Score</th>
-                              {#if $leaderboardScores.filter((score) => score.modifiers.length > 0).length > 0}
-                                 <th class="mods centered">Mods</th>
-                              {/if}
-                              {#if $leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
-                              {#if $leaderboard.ranked}<th class="pp centered">PP</th>{/if}
-                           </tr>
-                        </thead>
-                        <tbody>
-                           {#each $leaderboardScores as score}
-                              <LeaderboardRow {score} leaderboard={$leaderboard} otherScores={$leaderboardScores} />
-                           {/each}
-                        </tbody>
-                     </table>
-                     <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$currentPage} changePage={(e) => changePage(e)} />
+                     {#if $leaderboardScores}
+                        <table>
+                           <thead>
+                              <tr class="headers">
+                                 <th class="rank" />
+                                 <th class="player" />
+                                 <th class="timeSet centered">Time Set</th>
+                                 <th class="score centered">Score</th>
+                                 {#if $leaderboardScores.filter((score) => score.modifiers.length > 0).length > 0}
+                                    <th class="mods centered">Mods</th>
+                                 {/if}
+                                 {#if $leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
+                                 {#if $leaderboard.ranked}<th class="pp centered">PP</th>{/if}
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {#each $leaderboardScores as score}
+                                 <LeaderboardRow {score} leaderboard={$leaderboard} otherScores={$leaderboardScores} />
+                              {/each}
+                           </tbody>
+                        </table>
+                        <ClassicPagination
+                           totalItems={$leaderboard.plays}
+                           pageSize={12}
+                           currentPage={$currentPage}
+                           changePage={(e) => changePage(e)}
+                        />
+                     {:else}
+                        <div class="window has-shadow"><Loader /></div>
+                     {/if}
+                     {#if $leaderboardScoresError}
+                        <Error message={$leaderboardScoresError.toString()} />
+                     {/if}
                   </div>
                </div>
             </div>
@@ -101,8 +113,8 @@
          {:else}
             <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
          {/if}
-         {#if $leaderboardError || $leaderboardScoresError}
-            <Error message={$leaderboardError.toString() || $leaderboardScoresError.toString()} />
+         {#if $leaderboardError}
+            <Error message={$leaderboardError.toString()} />
          {/if}
       </div>
    </div>
