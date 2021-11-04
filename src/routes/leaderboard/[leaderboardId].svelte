@@ -68,6 +68,7 @@
                               <th class="player" />
                               <th class="timeSet centered">Time Set</th>
                               <th class="score centered">Score</th>
+                              <th class="mods centered">Mods</th>
                               {#if $leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
                               <th class="pp centered">PP</th>
                            </tr>
@@ -118,6 +119,10 @@
          display: flex;
          flex-direction: column-reverse;
       }
+   }
+
+   .leaderboard {
+      overflow-x: auto;
    }
 
    .tooling {

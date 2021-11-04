@@ -4,11 +4,19 @@
    import FormattedDate from '../common/formatted-date.svelte';
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
+
+   function getAccuracy() {
+      let scoreCalc = score.baseScore;
+      let maxScore = leaderboard.maxScore;
+
+      console.log(scoreCalc, maxScore);
+      return (scoreCalc / maxScore) * 100;
+   }
 </script>
 
 <tr class="table-item">
    <td class="rank" width="5px">
-      <span class="rank tag is">#{score.rank}</span>
+      #{score.rank}
    </td>
    <td class="player">
       <img
@@ -23,19 +31,27 @@
       <span><FormattedDate date={new Date(score.timeSet)} /></span>
    </td>
    <td class="score centered">
-      <span>{score.baseScore.toLocaleString('en-US')}</span>
+      <span>{score.modifiedScore.toLocaleString('en-US')}</span>
+   </td>
+   <td class="mods centered">
+      <span>{score.modifiers}</span>
    </td>
    {#if leaderboard.maxScore}
-      <td class="accuracy centered">
-         <span>{(100.005115151).toFixed(2)}%</span>
+      <td class="accuracy centered {new Date(score.timeSet).getTime() / 1000 <= 1558474032 ? 'old-score' : ''}">
+         <span>{getAccuracy().toFixed(2)}%</span>
       </td>
    {/if}
    <td class="pp centered">
-      <span class="pp">{score.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span><span class="pp ppLabel">pp</span>
+      <span class="pp">{score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><span class="pp ppLabel"
+         >pp</span
+      >
    </td>
 </tr>
 
 <style>
+   .old-score {
+      color: red;
+   }
    td {
       border: none !important;
       border-style: solid none;
