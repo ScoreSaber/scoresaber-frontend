@@ -1,6 +1,7 @@
 <script lang="ts">
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
+   import FormattedDate from '../common/formatted-date.svelte';
    export let leaderboardInfo: LeaderboardInfo;
 </script>
 
@@ -29,6 +30,10 @@
 
       <div class="content">
          Mapped by <a href={'#'}><b>{leaderboardInfo.levelAuthorName}</b></a><br />
+         Plays: <b>{leaderboardInfo.plays.toLocaleString('en-US')}</b> ({leaderboardInfo.dailyPlays.toLocaleString('en-US')} daily)<br />
+         Status: <b>{leaderboardInfo.ranked ? 'Ranked' : leaderboardInfo.qualified ? 'Qualified' : 'Unranked'}</b><br />
+         <br />
+         <strong class="text-muted">{leaderboardInfo.songHash}</strong><br />
       </div>
    </div>
 </div>
@@ -48,15 +53,17 @@
       background-repeat: no-repeat !important;
       background-size: cover !important;
       z-index: -1;
+      border-radius: 5px;
    }
 
    .map-card {
       z-index: 1;
       color: var(--textColor);
+      background: none;
    }
 
    .tag {
-      font-size: xx-small;
+      font-size: x-small;
       min-width: 20px;
       color: white;
       padding: 4px 4px 3px 4px;
@@ -89,5 +96,13 @@
       color: var(--textColor);
       font-size: 14px;
       margin-top: 0.5rem !important;
+   }
+
+   .content {
+      word-break: break-all;
+   }
+
+   .text-muted {
+      color: var(--muted);
    }
 </style>

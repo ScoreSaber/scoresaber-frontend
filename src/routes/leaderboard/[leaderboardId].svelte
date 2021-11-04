@@ -37,6 +37,7 @@
 
    page.subscribe((p) => {
       refreshLeaderboard({ newUrl: `/api/leaderboard/by-id/${$page.params.leaderboardId}/info` });
+      refreshLeaderboardScores({ newUrl: `/api/leaderboard/by-id/${$page.params.leaderboardId}/scores` });
    });
 
    function changePage(newPage: number) {
@@ -72,7 +73,7 @@
                                  <th class="mods centered">Mods</th>
                               {/if}
                               {#if $leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
-                              <th class="pp centered">PP</th>
+                              {#if $leaderboard.ranked}<th class="pp centered">PP</th>{/if}
                            </tr>
                         </thead>
                         <tbody>

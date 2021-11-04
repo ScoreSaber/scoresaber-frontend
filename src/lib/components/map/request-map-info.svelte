@@ -65,11 +65,13 @@
       background-repeat: no-repeat !important;
       background-size: cover !important;
       z-index: -1;
+      border-radius: 5px;
    }
 
    .map-card {
       z-index: 1;
       color: var(--textColor);
+      background: none;
    }
 
    .tag {
