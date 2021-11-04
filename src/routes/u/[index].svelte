@@ -67,9 +67,9 @@
       <Meta
          description={`Player Ranking: #${metadata.rank}\r\nPerformance Points: ${metadata.pp.toLocaleString('en-US', {
             minimumFractionDigits: 2
-         })}pp\r\nTotal Play Count: ${
-            metadata.scoreStats.totalPlayCount
-         }\r\nAverage Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%`}
+         })}pp\r\nTotal Play Count: ${metadata.scoreStats.totalPlayCount.toLocaleString(
+            'en-US'
+         )}\r\nAverage Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%`}
          image={metadata.profilePicture}
          title="{metadata.name}'s profile"
       />
@@ -168,7 +168,7 @@
                               <div class="rank-info">
                                  <span>
                                     <i class="fas fa-globe-americas" title="Ranking" />
-                                    <a title="Ranking" href={`#`}>#{score.score.rank}</a>
+                                    <a title="Ranking" href={`#`}>#{score.score.rank.toLocaleString('en-US')}</a>
                                  </span>
                                  <FormattedDate date={score.score.timeSet} />
                               </div>
