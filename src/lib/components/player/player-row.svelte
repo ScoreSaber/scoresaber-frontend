@@ -111,8 +111,6 @@
    }
 
    .infobox-upper {
-      display: grid;
-      grid-template-columns: max-content auto;
       gap: 0 10px;
    }
 
@@ -190,7 +188,6 @@
       .infobox-row {
          display: flex;
          align-items: center;
-         width: 100%;
       }
       .table-item:hover,
       .table-item.expanded {
@@ -206,7 +203,7 @@
    }
 
    .infobox.is-expanded {
-      height: 341px;
+      height: 405px;
       pointer-events: all;
       opacity: 1;
    }
