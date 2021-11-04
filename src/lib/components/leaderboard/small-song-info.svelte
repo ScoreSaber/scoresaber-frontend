@@ -2,7 +2,16 @@
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
    export let leaderboard: LeaderboardInfo;
+   import SearchView from '$lib/components/common/search.svelte';
+   let searchModal: SearchView;
+
+   const openSearch = (val) => {
+      searchModal?.setVisibility(true);
+      searchModal?.search(val);
+   };
 </script>
+
+<SearchView bind:this={searchModal} />
 
 <div class="song-container">
    <div class="song-image-wrapper">
@@ -27,7 +36,7 @@
       </div>
       <div class="mapper-info">
          mapped by
-         <a href={'#'}>
+         <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.levelAuthorName)}>
             <span class="mapper-name">
                {leaderboard.levelAuthorName}
             </span>

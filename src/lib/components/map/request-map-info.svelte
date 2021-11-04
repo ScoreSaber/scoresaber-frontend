@@ -3,7 +3,17 @@
    import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus } from '$lib/utils/helpers';
    import FormattedDate from '../common/formatted-date.svelte';
    export let request: RankRequestInformation;
+
+   import SearchView from '$lib/components/common/search.svelte';
+   let searchModal: SearchView;
+
+   const openSearch = (val) => {
+      searchModal?.setVisibility(true);
+      searchModal?.search(val);
+   };
 </script>
+
+<SearchView bind:this={searchModal} />
 
 <div class="card map-card">
    <div
@@ -32,7 +42,9 @@
       </div>
 
       <div class="content">
-         Mapped by <a href={'#'}><b>{request.leaderboardInfo.levelAuthorName}</b></a><br />
+         Mapped by <a href={'#'} on:click|preventDefault={() => openSearch(request.leaderboardInfo.levelAuthorName)}
+            ><b>{request.leaderboardInfo.levelAuthorName}</b></a
+         ><br />
          Status: <strong>{getRankingApprovalStatus(request.approved)}</strong><br />
          Request Type: <strong>{request.requestType == 1 ? 'Rank' : 'Unrank'}</strong><br />
          Created: <strong><FormattedDate date={new Date(request.created_at)} /></strong><br />

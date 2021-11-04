@@ -1,9 +1,19 @@
 <script lang="ts">
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
-   import FormattedDate from '../common/formatted-date.svelte';
+
    export let leaderboardInfo: LeaderboardInfo;
+
+   import SearchView from '$lib/components/common/search.svelte';
+   let searchModal: SearchView;
+
+   const openSearch = (val) => {
+      searchModal?.setVisibility(true);
+      searchModal?.search(val);
+   };
 </script>
+
+<SearchView bind:this={searchModal} />
 
 <div class="card map-card">
    <div
@@ -29,7 +39,9 @@
       </div>
 
       <div class="content">
-         Mapped by <a href={'#'}><b>{leaderboardInfo.levelAuthorName}</b></a><br />
+         Mapped by <a href={'#'} on:click|preventDefault={() => openSearch(leaderboardInfo.levelAuthorName)}
+            ><b>{leaderboardInfo.levelAuthorName}</b></a
+         ><br />
          Plays: <b>{leaderboardInfo.plays.toLocaleString('en-US')}</b> ({leaderboardInfo.dailyPlays.toLocaleString('en-US')} daily)<br />
          Status: <b>{leaderboardInfo.ranked ? 'Ranked' : leaderboardInfo.qualified ? 'Qualified' : 'Unranked'}</b><br />
          <br />
