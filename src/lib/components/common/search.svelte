@@ -220,7 +220,7 @@
       background: #373737;
       height: min-content;
       width: 100%;
-      max-width: 512px;
+      max-width: 640px;
       opacity: 0;
       transition: all 0.25s ease;
       overflow: hidden;
@@ -392,12 +392,12 @@
       width: 36px;
    }
 
-   @media (min-width: 512px) {
+   @media (min-width: 640px) {
       .search-wrapper {
          margin-top: 100px;
       }
    }
-   @media (max-width: 512px) {
+   @media (max-width: 640px) {
       .search-wrapper {
          height: 100%;
          border-radius: 0;
