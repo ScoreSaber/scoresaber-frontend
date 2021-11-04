@@ -115,11 +115,11 @@
       border-radius: 5px;
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 30px;
    }
 
    .fake-searchbox span {
-      color: #888;
+      color: #555;
    }
 
    kbd {
