@@ -56,7 +56,7 @@
    $: options = ($countrySearch ?? [])
       .map((x) => {
          return {
-            label: x.Name,
+            label: `${x.Name} (${x.Code})`,
             value: x.Code
          };
       })
