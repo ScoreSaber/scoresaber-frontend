@@ -9,6 +9,15 @@
    let focusElement: number = 0;
    let resultsElement: HTMLDivElement;
 
+   const diffNames = ['E', 'N', 'H', 'X', 'X+'];
+   const colours = {
+      Easy: '#4eb677',
+      Normal: '#66b2ea',
+      Hard: '#fc6e51',
+      Expert: '#c23a4c',
+      ExpertPlus: '#904fd4'
+   };
+
    interface SearchResults {
       players: Player[] | 'loading';
       leaderboards: LeaderboardInfo[] | 'loading';
@@ -33,8 +42,8 @@
    let debounceTimer;
 
    const scrollToActive = () => {
-      const activeResult = resultsElement.querySelectorAll(`a.result`)[focusElement];
-      resultsElement.scrollTo({ top: focusElement * activeResult.getBoundingClientRect().height, behavior: 'smooth' });
+      const target = resultsElement.querySelectorAll(`a.result`)[Math.max(0, focusElement - 1)];
+      target.scrollIntoView({ behavior: 'smooth' });
    };
 
    const handleKeydown = ({ key, preventDefault }: KeyboardEvent) => {
@@ -126,9 +135,18 @@
                loading...
             {:else}
                {#each searchResults.leaderboards as leaderboard, i}
-                  <a href="/leaderboard/{leaderboard.id}" class="result {i == focusElement - searchResults.players.length ? 'focus' : ''}"
-                     >{leaderboard.songName}</a
-                  >
+                  <a href="/leaderboard/{leaderboard.id}" class="result map-result {i == focusElement - searchResults.players.length ? 'focus' : ''}">
+                     <div class="cover-art">
+                        <img src={leaderboard.coverImage} alt={leaderboard.songName} />
+                        <div class="difficulty-badge" style="background-color: {colours[leaderboard.difficultyRaw.replace(/_(.*?)_.*/, '$1')]}">
+                           {leaderboard.stars ? `★ ${leaderboard.stars}` : leaderboard.difficultyRaw.replace(/_(.*?)_.*/, '$1').replace('Plus', '+')}
+                        </div>
+                     </div>
+                     <div class="song-info">
+                        <div class="song-name">{leaderboard.songName}</div>
+                        <div class="song-artist">{leaderboard.songAuthorName}</div>
+                     </div>
+                  </a>
                {/each}
             {/if}
          </div>
@@ -190,7 +208,7 @@
    }
 
    .search-results {
-      max-height: 500px;
+      max-height: calc(100vh - 300px);
       overflow: auto;
    }
 
@@ -202,13 +220,59 @@
    .results .result {
       padding: 10px 15px;
       display: flex;
-      gap: 5px;
+      gap: 10px;
       color: #eee;
       align-items: center;
       font-size: 1.25em;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+   }
+
+   .results .map-result {
+      display: grid;
+      grid-template-columns: 100px calc(100% - 100px);
+      gap: 10px;
+      padding: 10px;
+   }
+
+   .map-result .song-name {
+      font-size: 1.5em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: bold;
+      grid-row: 2;
+   }
+   .map-result .song-artist {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+   }
+
+   .song-info {
+      width: 100%;
+      padding-right: 15px;
+      display: flex;
+      flex-direction: column;
+   }
+   .map-result .cover-art {
+      position: relative;
+      padding: 10px;
+      width: 100px;
+      height: 100px;
+      flex-shrink: 0;
+   }
+
+   .cover-art .difficulty-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      padding: 3px 7px;
+      font-size: 0.8em;
+      border-radius: 5px;
+      font-weight: bold;
+      display: flex;
+      gap: 5px;
    }
 
    .results .result:hover,
