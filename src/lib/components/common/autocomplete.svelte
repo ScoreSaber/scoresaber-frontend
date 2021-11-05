@@ -11,6 +11,7 @@
 
    let highlighted: number = 0;
    let optionsElement: HTMLDivElement;
+   let showOptions: boolean = false;
 
    $: filteredOptions =
       value === '' && showAll
@@ -46,8 +47,17 @@
 </script>
 
 <div>
-   <input type="text" on:keydown={keydown} bind:this={elementRef} class={classes} bind:value {placeholder} />
-   {#if options.length > 0}
+   <input
+      type="text"
+      on:focus={() => (showOptions = true)}
+      on:blur={() => (showOptions = false)}
+      on:keydown={keydown}
+      bind:this={elementRef}
+      class={classes}
+      bind:value
+      {placeholder}
+   />
+   {#if options.length > 0 && showOptions}
       <div class="options" bind:this={optionsElement}>
          {#each filteredOptions as option, i}
             {#if option.label && option.value}
