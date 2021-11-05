@@ -43,7 +43,7 @@
    $: options = Object.keys(regions ?? {}).filter((x) => x !== '' && !selectedRegions.includes(x));
 </script>
 
-<div class="country" bind:this={chip} class:expanded>
+<div class="country" bind:this={chip} class:expanded class:hasSelected={selectedRegions.length > 0}>
    {#if expanded}
       <div transition:slide={{ duration: 300 }}>
          <Autocomplete {options} valueSelected={() => addRegion(newCountry)} bind:elementRef={input} bind:value={newCountry} placeholder="Region" />
@@ -68,11 +68,13 @@
       border-radius: 7px;
       position: relative;
       font-weight: bold;
-      max-width: 150px;
-      width: auto;
+      max-width: 125px;
+   }
+   .hasSelected {
+      max-width: 70px;
    }
    .country.expanded {
-      max-width: 150px;
+      max-width: 200px;
    }
    .country:hover {
       background-color: #323232;

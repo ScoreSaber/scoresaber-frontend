@@ -49,7 +49,7 @@
       .filter((x) => !selectedCountries.includes(x.value));
 </script>
 
-<div class="country" bind:this={chip} class:expanded>
+<div class="country" bind:this={chip} class:expanded class:hasSelected={selectedCountries.length > 0}>
    {#if expanded}
       <div transition:slide={{ duration: 300 }}>
          <Autocomplete
@@ -81,8 +81,10 @@
       border-radius: 7px;
       position: relative;
       font-weight: bold;
-      /* max-width: 500px; */
-      width: auto;
+      max-width: 130px;
+   }
+   .hasSelected {
+      max-width: 70px;
    }
    .country.expanded {
       max-width: 150px;
