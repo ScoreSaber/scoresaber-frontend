@@ -50,14 +50,14 @@
    <input
       type="text"
       on:focus={() => (showOptions = true)}
-      on:blur={() => (showOptions = false)}
+      on:blur={() => setTimeout(() => (showOptions = false))}
       on:keydown={keydown}
       bind:this={elementRef}
       class={classes}
       bind:value
       {placeholder}
    />
-   {#if options.length > 0 && showOptions}
+   {#if options.length > 0}
       <div class="options" bind:this={optionsElement}>
          {#each filteredOptions as option, i}
             {#if option.label && option.value}
