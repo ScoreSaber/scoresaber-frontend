@@ -66,10 +66,7 @@
       $currentPage = newPage;
    }
 
-   function queryChanged(newQuery: string) {
-      console.log(query, newQuery);
-      // refreshRankings({ query: newQuery });
-   }
+   function queryChanged(newQuery: string) {}
 
    function removeCountry(country: string) {
       filteredCountries = filteredCountries.filter((c) => c !== country);

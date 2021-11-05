@@ -2,6 +2,7 @@
    import { slide } from 'svelte/transition';
    import Autocomplete from '../common/autocomplete.svelte';
    import type { countryData } from '$lib/models/CountryData';
+   import { onDestroy, onMount } from 'svelte';
    export let addCountry = (country: string) => {};
    export let selectedCountries: string[] = [];
    export let countryData: countryData[] = [];
@@ -11,8 +12,15 @@
    let newCountry: string = '';
    let chip: HTMLDivElement;
 
-   document.addEventListener('click', checkChipClick);
-   document.addEventListener('keydown', checkKeyDown);
+   onMount(() => {
+      document.addEventListener('click', checkChipClick);
+      document.addEventListener('keydown', checkKeyDown);
+   });
+
+   onDestroy(() => {
+      document.removeEventListener('click', checkChipClick);
+      document.removeEventListener('keydown', checkKeyDown);
+   });
 
    function checkChipClick(e: MouseEvent) {
       if (chip && !chip.contains(e.target as Node)) {
@@ -87,7 +95,7 @@
       max-width: 70px;
    }
    .country.expanded {
-      max-width: 150px;
+      max-width: 200px;
    }
    .country:hover {
       background-color: #323232;

@@ -3,6 +3,7 @@
    import Autocomplete from '../common/autocomplete.svelte';
    import type { countryData } from '$lib/models/CountryData';
    import { groupBy } from '$lib/utils/helpers';
+   import { onDestroy, onMount } from 'svelte';
    export let addRegion = (country: string) => {};
    export let selectedRegions: string[] = [];
    export let countryData: countryData[] = [];
@@ -12,8 +13,15 @@
    let newCountry: string = '';
    let chip: HTMLDivElement;
 
-   document.addEventListener('click', checkChipClick);
-   document.addEventListener('keydown', checkKeyDown);
+   onMount(() => {
+      document.addEventListener('click', checkChipClick);
+      document.addEventListener('keydown', checkKeyDown);
+   });
+
+   onDestroy(() => {
+      document.removeEventListener('click', checkChipClick);
+      document.removeEventListener('keydown', checkKeyDown);
+   });
 
    function checkChipClick(e: MouseEvent) {
       if (chip && !chip.contains(e.target as Node)) {

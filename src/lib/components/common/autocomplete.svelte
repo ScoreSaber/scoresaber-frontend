@@ -4,7 +4,7 @@
    export let placeholder: string = '';
    export let value: string = '';
    export let classes: string = '';
-   export let elementRef: HTMLElement;
+   export let elementRef: HTMLElement = null;
    export let options: string[] | { label: string; value: string }[] = [];
    export let valueSelected: (value: string) => void = () => {};
    export let showAll: boolean = false;
