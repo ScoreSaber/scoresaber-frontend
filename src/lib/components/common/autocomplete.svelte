@@ -1,4 +1,6 @@
 <script lang="ts">
+   import { fly } from 'svelte/transition';
+
    export let placeholder: string = '';
    export let value: string = '';
    export let classes: string = '';
@@ -49,11 +51,21 @@
       <div class="options" bind:this={optionsElement}>
          {#each filteredOptions as option, i}
             {#if option.label && option.value}
-               <div class="option" class:highlight={highlighted === i} on:click={() => selectOption(option.value)}>
+               <div
+                  in:fly={{ y: -60, delay: 60 * i, duration: 300 }}
+                  class="option"
+                  class:highlight={highlighted === i}
+                  on:click={() => selectOption(option.value)}
+               >
                   {option.label}
                </div>
             {:else}
-               <div class="option" class:highlight={highlighted === i} on:click={() => selectOption(option)}>
+               <div
+                  in:fly={{ y: -60, delay: 60 * i, duration: 300 }}
+                  class="option"
+                  class:highlight={highlighted === i}
+                  on:click={() => selectOption(option)}
+               >
                   {option}
                </div>
             {/if}
