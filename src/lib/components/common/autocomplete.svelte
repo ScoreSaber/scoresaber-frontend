@@ -8,6 +8,7 @@
    export let showAll: boolean = false;
 
    let highlighted: number = 0;
+   let optionsElement: HTMLDivElement;
 
    $: filteredOptions =
       value === '' && showAll
@@ -38,14 +39,14 @@
       } else if (highlighted < 0) {
          highlighted = filteredOptions.length - 1;
       }
-      // $.elementRef.scrollTop = $.elementRef.scrollHeight / $.options.length * (highlighted - 1);
+      optionsElement.scrollTop = (optionsElement.children[highlighted] as HTMLDivElement).offsetTop - 40;
    }
 </script>
 
 <div>
    <input type="text" on:keydown={keydown} bind:this={elementRef} class={classes} bind:value {placeholder} />
    {#if options.length > 0}
-      <div class="options">
+      <div class="options" bind:this={optionsElement}>
          {#each filteredOptions as option, i}
             {#if option.label && option.value}
                <div class="option" class:highlight={highlighted === i} on:click={() => selectOption(option.value)}>
@@ -83,6 +84,8 @@
       background-color: var(--gray-dark);
       border-radius: 0 0 5px 5px;
       z-index: 5;
+      overflow: auto;
+      max-height: 400px;
    }
    .options .option {
       padding: 5px;
