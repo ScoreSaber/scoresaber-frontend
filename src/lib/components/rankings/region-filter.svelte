@@ -49,7 +49,13 @@
          <Autocomplete {options} valueSelected={() => addRegion(newCountry)} bind:elementRef={input} bind:value={newCountry} placeholder="Region" />
       </div>
    {:else}
-      <div transition:slide={{ duration: 300 }} class="addLabel" on:click={toggleExpand}>Filter Region</div>
+      <div transition:slide={{ duration: 300 }} class="addLabel" on:click={toggleExpand}>
+         {#if selectedRegions.length > 0}
+            + Add
+         {:else}
+            Filter By Region
+         {/if}
+      </div>
    {/if}
 </div>
 
@@ -62,7 +68,7 @@
       border-radius: 7px;
       position: relative;
       font-weight: bold;
-      max-width: 105px;
+      max-width: 150px;
       width: auto;
    }
    .country.expanded {

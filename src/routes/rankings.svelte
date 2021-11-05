@@ -89,7 +89,6 @@
    }
 
    $: refreshRankings({ query: '?' + query });
-   $: console.log(query);
 </script>
 
 <head>

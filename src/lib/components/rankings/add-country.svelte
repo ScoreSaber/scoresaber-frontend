@@ -66,7 +66,7 @@
          {#if selectedCountries.length > 0}
             + Add
          {:else}
-            Filter Country
+            Filter By Country
          {/if}
       </div>
    {/if}
