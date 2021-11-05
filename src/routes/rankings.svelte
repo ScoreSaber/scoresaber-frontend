@@ -23,9 +23,9 @@
    $: currentPage = createQueryStore('page', 1, queryChanged);
 
    $: regions = createQueryStore('regions', undefined, queryChanged);
-   $: filteredRegions = $page.query.get('regions') ? $page.query.get('regions').split(',') : [];
+   $: filteredRegions = $regions ? (<string>$regions).split(',') : [];
    $: countryStore = createQueryStore('countries', undefined, queryChanged);
-   $: filteredCountries = filteredRegions.length <= 0 ? ($page.query.get('countries') ? $page.query.get('countries').split(',') : []) : null;
+   $: filteredCountries = filteredRegions.length <= 0 ? ($countryStore ? (<string>$countryStore)?.split(',') : []) : null;
 
    $: regionCountries = countryData.filter((x) => filteredRegions.includes(x.region)).map((c) => c['alpha-2']);
    $: query = queryString.stringify({
@@ -66,7 +66,10 @@
       $currentPage = newPage;
    }
 
-   function queryChanged(newQuery: string) {}
+   function queryChanged(newQuery: string) {
+      console.log(query, newQuery);
+      // refreshRankings({ query: newQuery });
+   }
 
    function removeCountry(country: string) {
       filteredCountries = filteredCountries.filter((c) => c !== country);
