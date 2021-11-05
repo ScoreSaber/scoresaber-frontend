@@ -12,7 +12,7 @@
    }
 
    if (lastWeek !== 999999) {
-      difference = lastWeek - player.rank;
+      difference = lastWeek - parseInt(historyArray[historyArray.length - 1]);
    }
 </script>
 
