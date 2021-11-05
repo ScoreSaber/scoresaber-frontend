@@ -58,6 +58,7 @@
             bind:elementRef={input}
             bind:value={newCountry}
             placeholder="Add Country"
+            showAll={true}
          />
       </div>
    {:else}
