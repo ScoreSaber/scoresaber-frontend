@@ -15,13 +15,23 @@
    import CountryChip from '$lib/components/rankings/country-chip.svelte';
    import AddCountry from '$lib/components/rankings/add-country.svelte';
    import type { countryData } from '$lib/models/CountryData';
+   import RegionFilter from '$lib/components/rankings/region-filter.svelte';
+   import RegionChip from '$lib/components/rankings/region-chip.svelte';
 
    const playersPerPage = 50;
 
    $: currentPage = createQueryStore('page', 1, queryChanged);
 
    $: countryStore = createQueryStore('countries', undefined, queryChanged);
-   $: filteredCountries = (<string>$countryStore)?.split(',') ?? [];
+   $: filteredCountries = $page.query.get('countries') ? $page.query.get('countries').split(',') : [];
+   $: regions = createQueryStore('regions', undefined, queryChanged);
+   $: filteredRegions = $page.query.get('regions') ? $page.query.get('regions').split(',') : [];
+
+   $: regionCountries = countryData.filter((x) => filteredRegions.includes(x.region)).map((c) => c['alpha-2']);
+   $: query = queryString.stringify({
+      page: $currentPage,
+      countries: filteredRegions.length > 0 ? regionCountries.join(',') : filteredCountries.length > 0 ? filteredCountries.join(',') : undefined
+   });
 
    const {
       data: rankings,
@@ -30,7 +40,7 @@
    } = useAccio<Player[]>(
       queryString.stringifyUrl({
          url: '/api/players',
-         query: queryString.parse($page.query.toString())
+         query: queryString.parse(query)
       }),
       { fetcher: axios }
    );
@@ -42,23 +52,21 @@
    } = useAccio<number>(
       queryString.stringifyUrl({
          url: '/api/players/count',
-         query: queryString.parse($page.query.toString())
+         query: queryString.parse(query)
       }),
       { fetcher: axios }
    );
 
-   let countrySearch: countryData[] = [];
+   let countryData: countryData[] = [];
    (async () => {
-      countrySearch = await axios('https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.json');
+      countryData = await axios('https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.json');
    })();
 
    function changePage(newPage: number) {
       $currentPage = newPage;
    }
 
-   function queryChanged(newQuery: string) {
-      refreshRankings({ query: newQuery });
-   }
+   function queryChanged(newQuery: string) {}
 
    function removeCountry(country: string) {
       filteredCountries = filteredCountries.filter((c) => c !== country);
@@ -69,6 +77,26 @@
       filteredCountries.push(country);
       $countryStore = filteredCountries.join(',');
    }
+
+   function removeRegion(region: string) {
+      filteredRegions = filteredRegions.filter((r) => r !== region);
+      $regions = filteredRegions.length > 0 ? filteredRegions.join(',') : null;
+      if (filteredRegions.length > 0) {
+         $countryStore = null;
+         filteredCountries = [];
+      }
+   }
+
+   function addRegion(region: string) {
+      filteredRegions.push(region);
+      $regions = filteredRegions.join(',');
+      if (filteredRegions.length > 0) {
+         $countryStore = null;
+         filteredCountries = [];
+      }
+   }
+
+   $: refreshRankings({ query: '?' + query });
 </script>
 
 <head>
@@ -83,14 +111,24 @@
          <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
       {#if $rankings && $playerCount}
-         {#if filteredCountries && filteredCountries.length > 0}
-            <div class="countries">
+         <div class="countries">
+            {#if filteredCountries && filteredCountries.length > 0 && filteredRegions.length === 0}
                {#each filteredCountries as country}
                   <CountryChip {country} remove={removeCountry} />
                {/each}
-               <AddCountry {addCountry} selectedCountries={filteredCountries} {countrySearch} />
-            </div>
-         {/if}
+            {/if}
+            {#if filteredRegions.length === 0}
+               <AddCountry {addCountry} selectedCountries={filteredCountries} {countryData} />
+            {/if}
+         </div>
+         <div class="countries">
+            {#if filteredRegions && filteredRegions.length > 0}
+               {#each filteredRegions as region}
+                  <RegionChip {region} remove={removeRegion} />
+               {/each}
+            {/if}
+            <RegionFilter {addRegion} selectedRegions={filteredRegions} {countryData} />
+         </div>
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
             <table>
                <thead>
