@@ -13,6 +13,7 @@
    import { fly } from 'svelte/transition';
    import RequestMapInfo from '$lib/components/map/request-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
+   import { onDestroy } from 'svelte';
 
    const {
       data: request,
@@ -20,11 +21,12 @@
       refresh: refreshRequest
    } = useAccio<RankRequestInformation>(`/api/ranking/request/${$page.params.requestId}`, { fetcher: axios });
 
-   page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe((p) => {
       if (typeof window !== undefined) {
          refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
       }
    });
+   onDestroy(pageUnsubscribe);
 </script>
 
 <head>

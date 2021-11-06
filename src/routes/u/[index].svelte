@@ -19,7 +19,6 @@
    import CountryImage from '$lib/components/image/country-image.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
-   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import queryString from 'query-string';
    import { rankToPage } from '$lib/utils/helpers';
    import { createQueryStore } from '$lib/query-store';
@@ -29,6 +28,7 @@
    import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
    import Score from '$lib/components/player/score.svelte';
+   import { onDestroy } from 'svelte';
 
    export let metadata: Player = undefined;
 
@@ -61,7 +61,7 @@
       document.title = `${playerData.name}'s Profile | ScoreSaber!`;
    }
 
-   page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe((p) => {
       if (typeof window !== 'undefined') {
          refreshScores({
             newUrl: getPlayerScoresUrl(p.params.index, $page.query.toString())
@@ -69,6 +69,7 @@
          refreshRankings({ newUrl: getPlayerInfoUrl(p.params.index) });
       }
    });
+   onDestroy(pageUnsubscribe);
 </script>
 
 <head>

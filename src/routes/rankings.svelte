@@ -12,6 +12,7 @@
    import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
+   import { onDestroy } from 'svelte';
 
    const playersPerPage = 50;
 
@@ -45,7 +46,7 @@
       $currentPage = newPage;
    }
 
-   page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe((p) => {
       if (typeof window !== 'undefined') {
          refreshRankings({
             newUrl: queryString.stringifyUrl({
@@ -55,6 +56,8 @@
          });
       }
    });
+
+   onDestroy(pageUnsubscribe);
 </script>
 
 <head>
