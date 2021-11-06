@@ -46,7 +46,7 @@
    }
 
    page.subscribe((p) => {
-      if (typeof window !== undefined) {
+      if (typeof window !== 'undefined') {
          refreshRankings({
             newUrl: queryString.stringifyUrl({
                url: '/api/players',

@@ -34,37 +34,39 @@
 
    $: sort = createQueryStore('sort', 'top');
 
+   function getPlayerInfoUrl(playerId: string) {
+      return `/api/player/${playerId}/full`;
+   }
+
+   function getPlayerScoresUrl(playerId: string, query: string) {
+      return queryString.stringifyUrl({
+         url: `/api/player/${playerId}/scores`,
+         query: queryString.parse(query)
+      });
+   }
+
    const {
       data: playerData,
       error: playerDataError,
       refresh: refreshRankings
-   } = useAccio<Player>(`/api/player/${$page.params.index}/full`, { fetcher: axios, dataLoaded: playerDataLoaded });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.index), { fetcher: axios, dataLoaded: playerDataLoaded });
 
    const {
       data: scoreData,
       error: scoreDataError,
       refresh: refreshScores
-   } = useAccio<PlayerScore[]>(
-      queryString.stringifyUrl({
-         url: `/api/player/${$page.params.index}/scores`,
-         query: queryString.parse($page.query.toString())
-      }),
-      { fetcher: axios }
-   );
+   } = useAccio<PlayerScore[]>(getPlayerScoresUrl($page.params.index, $page.query.toString()), { fetcher: axios });
 
    function playerDataLoaded(playerData: Player) {
       document.title = `${playerData.name}'s Profile | ScoreSaber!`;
    }
 
    page.subscribe((p) => {
-      if (typeof window !== undefined) {
+      if (typeof window !== 'undefined') {
          refreshScores({
-            newUrl: queryString.stringifyUrl({
-               url: `/api/player/${$page.params.index}/scores`,
-               query: queryString.parse($page.query.toString())
-            })
+            newUrl: getPlayerScoresUrl(p.params.index, $page.query.toString())
          });
-         refreshRankings({ newUrl: `/api/player/${$page.params.index}/full` });
+         refreshRankings({ newUrl: getPlayerInfoUrl(p.params.index) });
       }
    });
 </script>

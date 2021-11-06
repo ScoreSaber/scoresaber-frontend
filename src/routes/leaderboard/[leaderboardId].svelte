@@ -20,34 +20,36 @@
 
    let leaderboardId = $page.params.leaderboardId;
 
+   function getLeaderboardInfoUrl(leaderboardId: string) {
+      return `/api/leaderboard/by-id/${leaderboardId}/info`;
+   }
+
+   function getLeaderboardScoresUrl(leaderboardId: string, query: string) {
+      return queryString.stringifyUrl({
+         url: `/api/leaderboard/by-id/${leaderboardId}/scores`,
+         query: queryString.parse(query)
+      });
+   }
+
    const {
       data: leaderboard,
       error: leaderboardError,
       refresh: refreshLeaderboard
-   } = useAccio<LeaderboardInfo>(`/api/leaderboard/by-id/${$page.params.leaderboardId}/info`, { fetcher: axios });
+   } = useAccio<LeaderboardInfo>(getLeaderboardInfoUrl($page.params.leaderboardId), { fetcher: axios });
 
    const {
       data: leaderboardScores,
       error: leaderboardScoresError,
       refresh: refreshLeaderboardScores
-   } = useAccio<Score[]>(
-      queryString.stringifyUrl({
-         url: `/api/leaderboard/by-id/${$page.params.leaderboardId}/scores`,
-         query: queryString.parse($page.query.toString())
-      }),
-      { fetcher: axios }
-   );
+   } = useAccio<Score[]>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.query.toString()), { fetcher: axios });
 
    const pageUnsubscribe = page.subscribe((p) => {
-      if (typeof window !== undefined) {
+      if (typeof window !== 'undefined') {
          refreshLeaderboardScores({
-            newUrl: queryString.stringifyUrl({
-               url: `/api/leaderboard/by-id/${$page.params.leaderboardId}/scores`,
-               query: queryString.parse($page.query.toString())
-            })
+            newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, $page.query.toString())
          });
          if (leaderboardId != p.params.leaderboardId) {
-            refreshLeaderboard({ newUrl: `/api/leaderboard/by-id/${p.params.leaderboardId}/info` });
+            refreshLeaderboard({ newUrl: getLeaderboardInfoUrl(p.params.leaderboardId) });
             leaderboardId = p.params.leaderboardId;
          }
       }
