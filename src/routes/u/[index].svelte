@@ -12,7 +12,6 @@
    import Footer from '$lib/components/common/footer.svelte';
    import Error from '$lib/components/common/error.svelte';
    import Button from '$lib/components/common/button.svelte';
-   import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Badges from '$lib/components/player/badges.svelte';
@@ -33,7 +32,7 @@
 
    export let metadata: Player = undefined;
 
-   $: sort = createQueryStore('sort', 'top', queryChanged);
+   $: sort = createQueryStore('sort', 'top');
 
    const {
       data: playerData,
@@ -57,13 +56,14 @@
       document.title = `${playerData.name}'s Profile | ScoreSaber!`;
    }
 
-   function queryChanged(newQuery: string) {
-      refreshScores({ query: newQuery });
-   }
-
    page.subscribe((p) => {
-      if (typeof window !== 'undefined') {
-         refreshScores({ query: '?' + p.query.toString() });
+      if (typeof window !== undefined) {
+         refreshScores({
+            newUrl: queryString.stringifyUrl({
+               url: `/api/player/${$page.params.index}/scores`,
+               query: queryString.parse($page.query.toString())
+            })
+         });
          refreshRankings({ newUrl: `/api/player/${$page.params.index}/full` });
       }
    });

@@ -21,7 +21,7 @@
    </td>
    <td class="player">
       <img
-         src="https://cdn.scoresaber.com/avatars/steam.png"
+         src={score.leaderboardPlayerInfo.profilePicture}
          alt={score.leaderboardPlayerInfo.name}
          title={score.leaderboardPlayerInfo.name}
          class="image rounded is-24x24"

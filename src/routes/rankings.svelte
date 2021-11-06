@@ -15,7 +15,7 @@
 
    const playersPerPage = 50;
 
-   $: currentPage = createQueryStore('page', 1, queryChanged);
+   $: currentPage = createQueryStore('page', 1);
 
    const {
       data: rankings,
@@ -45,9 +45,16 @@
       $currentPage = newPage;
    }
 
-   function queryChanged(newQuery: string) {
-      refreshRankings({ query: newQuery });
-   }
+   page.subscribe((p) => {
+      if (typeof window !== undefined) {
+         refreshRankings({
+            newUrl: queryString.stringifyUrl({
+               url: '/api/players',
+               query: queryString.parse($page.query.toString())
+            })
+         });
+      }
+   });
 </script>
 
 <head>

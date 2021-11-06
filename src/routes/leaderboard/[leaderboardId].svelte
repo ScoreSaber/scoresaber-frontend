@@ -14,8 +14,11 @@
    import { fly } from 'svelte/transition';
    import LeaderboardRow from '$lib/components/leaderboard/leaderboard-row.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
+   import { onDestroy } from 'svelte';
 
-   $: currentPage = createQueryStore('page', 1, queryChanged);
+   $: currentPage = createQueryStore('page', 1);
+
+   let leaderboardId = $page.params.leaderboardId;
 
    const {
       data: leaderboard,
@@ -35,18 +38,26 @@
       { fetcher: axios }
    );
 
-   page.subscribe((p) => {
-      refreshLeaderboard({ newUrl: `/api/leaderboard/by-id/${$page.params.leaderboardId}/info` });
-      refreshLeaderboardScores({ newUrl: `/api/leaderboard/by-id/${$page.params.leaderboardId}/scores` });
+   const pageUnsubscribe = page.subscribe((p) => {
+      if (typeof window !== undefined) {
+         refreshLeaderboardScores({
+            newUrl: queryString.stringifyUrl({
+               url: `/api/leaderboard/by-id/${$page.params.leaderboardId}/scores`,
+               query: queryString.parse($page.query.toString())
+            })
+         });
+         if (leaderboardId != p.params.leaderboardId) {
+            refreshLeaderboard({ newUrl: `/api/leaderboard/by-id/${p.params.leaderboardId}/info` });
+            leaderboardId = p.params.leaderboardId;
+         }
+      }
    });
 
    function changePage(newPage: number) {
       $currentPage = newPage;
    }
 
-   function queryChanged(newQuery: string) {
-      refreshLeaderboardScores({ query: newQuery });
-   }
+   onDestroy(pageUnsubscribe);
 </script>
 
 <head>
@@ -131,33 +142,6 @@
 
    .leaderboard {
       overflow-x: auto;
-   }
-
-   .tooling {
-      display: flex;
-      gap: 0.5rem;
-   }
-
-   .voting-tool {
-      background-color: var(--gray-dark);
-      border-radius: 5px;
-      padding: 0.6rem 0.9rem;
-   }
-
-   span.rank {
-      font-size: x-small;
-   }
-
-   .rank.rt {
-      background-color: var(--rt);
-   }
-
-   .tag {
-      font-size: xx-small;
-      min-width: 20px;
-      color: white;
-      padding: 4px 4px 3px 4px;
-      cursor: help;
    }
 
    table {

@@ -16,9 +16,6 @@ export class Accio {
       });
 
       const refresh = async (refreshOptions?: Partial<AccioRefreshOptions>) => {
-         if (refreshOptions.query) {
-            key = `${rootKey}${refreshOptions.query}`;
-         }
          if (refreshOptions.newUrl) {
             key = refreshOptions.newUrl;
          }
@@ -122,7 +119,6 @@ export interface AccioOptions<D = any> {
 }
 
 export interface AccioRefreshOptions {
-   query?: string;
    newUrl?: string;
    softRefresh?: boolean;
    forceRevalidate?: boolean;
