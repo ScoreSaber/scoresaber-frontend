@@ -46,9 +46,8 @@
    {/if}
    {#if leaderboard.ranked}
       <td class="pp centered">
-         <span class="pp">{score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><span class="pp ppLabel"
-            >pp</span
-         >
+         <span title="Performance Points" class="pp">{score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span
+         ><span class="pp ppLabel">pp</span>
       </td>
    {/if}
 </tr>
