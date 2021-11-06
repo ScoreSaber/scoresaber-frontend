@@ -2,6 +2,7 @@
    import type { PlayerScore } from '$lib/models/PlayerData';
    import FormattedDate from '../common/formatted-date.svelte';
    import SmallSongInfo from '../leaderboard/small-song-info.svelte';
+   import { rankToPage } from '$lib/utils/helpers';
    export let score: PlayerScore;
 </script>
 
@@ -10,7 +11,9 @@
       <div class="rank-info">
          <span>
             <i class="fas fa-globe-americas" title="Ranking" />
-            <a title="Ranking" href={`#`}>#{score.score.rank}</a>
+            <a title="Ranking" href={`/leaderboard/${score.leaderboard.id}?page=${rankToPage(score.score.rank, 12)}`}
+               >#{score.score.rank.toLocaleString('en-US')}</a
+            >
          </span>
          <FormattedDate date={score.score.timeSet} />
       </div>

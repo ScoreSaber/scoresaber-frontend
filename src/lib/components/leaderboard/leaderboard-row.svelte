@@ -17,7 +17,7 @@
 
 <tr class="table-item">
    <td class="rank" width="5px">
-      #{score.rank}
+      #{score.rank.toLocaleString('en-US')}
    </td>
    <td class="player">
       <img
