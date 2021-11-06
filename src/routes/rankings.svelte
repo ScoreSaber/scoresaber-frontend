@@ -1,5 +1,6 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
+   import { onDestroy } from 'svelte';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
    import Loader from '$lib/components/common/loader.svelte';
@@ -20,11 +21,11 @@
 
    const playersPerPage = 50;
 
-   $: currentPage = createQueryStore('page', 1, queryChanged);
+   $: currentPage = createQueryStore('page', 1);
 
-   $: regions = createQueryStore('regions', undefined, queryChanged);
+   $: regions = createQueryStore('regions', undefined);
    $: filteredRegions = $regions ? (<string>$regions).split(',') : [];
-   $: countryStore = createQueryStore('countries', undefined, queryChanged);
+   $: countryStore = createQueryStore('countries', undefined);
    $: filteredCountries = filteredRegions.length <= 0 ? ($countryStore ? (<string>$countryStore)?.split(',') : []) : null;
 
    $: regionCountries = countryData.filter((x) => filteredRegions.includes(x.region)).map((c) => c['alpha-2']);
@@ -66,8 +67,6 @@
       $currentPage = newPage;
    }
 
-   function queryChanged(newQuery: string) {}
-
    function removeCountry(country: string) {
       filteredCountries = filteredCountries.filter((c) => c !== country);
       $countryStore = filteredCountries.length > 0 ? filteredCountries.join(',') : null;
@@ -88,7 +87,18 @@
       $regions = filteredRegions.join(',');
    }
 
-   $: refreshRankings({ query: '?' + query });
+   const pageUnsubscribe = page.subscribe((p) => {
+      if (typeof window !== 'undefined') {
+         refreshRankings({
+            newUrl: queryString.stringifyUrl({
+               url: '/api/players',
+               query: queryString.parse($page.query.toString())
+            })
+         });
+      }
+   });
+
+   onDestroy(pageUnsubscribe);
 </script>
 
 <head>
