@@ -129,7 +129,9 @@
                   <RegionChip {region} remove={removeRegion} />
                {/each}
             {/if}
-            <RegionFilter {addRegion} selectedRegions={filteredRegions} {countryData} />
+            {#if filteredCountries.length === 0}
+               <RegionFilter {addRegion} selectedRegions={filteredRegions} {countryData} />
+            {/if}
          </div>
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
             <table>
