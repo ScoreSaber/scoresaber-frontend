@@ -80,6 +80,32 @@
       }
    };
 
+   export const search = (value: string) => {
+      searchValue = value;
+      cancel.cancel('new search');
+      cancel = axios.CancelToken.source();
+      fetcher<Player[]>(
+         queryString.stringifyUrl({
+            url: '/api/players',
+            query: { search: value }
+         }),
+         { cancelToken: cancel.token }
+      ).then((players) => (searchResults.players = players));
+      fetcher<LeaderboardInfo[]>(
+         queryString.stringifyUrl({
+            url: '/api/leaderboards',
+            query: {
+               search: searchValue,
+               category: 0,
+               sort: 0
+            }
+         }),
+         { cancelToken: cancel.token }
+      )
+         .then((leaderboards) => (searchResults.leaderboards = leaderboards))
+         .catch(absorbCancel);
+   };
+
    const handleInput = () => {
       searchResults = {
          players: [],
@@ -88,30 +114,7 @@
       focusElement = 0;
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-         cancel.cancel('new search');
-
-         cancel = axios.CancelToken.source();
-
-         fetcher<Player[]>(
-            queryString.stringifyUrl({
-               url: '/api/players',
-               query: { search: searchValue }
-            }),
-            { cancelToken: cancel.token }
-         ).then((players) => (searchResults.players = players));
-         fetcher<LeaderboardInfo[]>(
-            queryString.stringifyUrl({
-               url: '/api/leaderboards',
-               query: {
-                  search: searchValue,
-                  category: 0,
-                  sort: 0
-               }
-            }),
-            { cancelToken: cancel.token }
-         )
-            .then((leaderboards) => (searchResults.leaderboards = leaderboards))
-            .catch(absorbCancel);
+         search(searchValue);
       }, 200);
    };
 
@@ -238,7 +241,7 @@
 
    .search-wrapper {
       border-radius: 5px;
-      background: #373737;
+      background: var(--gray);
       height: min-content;
       width: 100%;
       max-width: 640px;

@@ -12,7 +12,6 @@
    import Footer from '$lib/components/common/footer.svelte';
    import Error from '$lib/components/common/error.svelte';
    import Button from '$lib/components/common/button.svelte';
-   import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Badges from '$lib/components/player/badges.svelte';
@@ -29,41 +28,45 @@
 
    import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
+   import Score from '$lib/components/player/score.svelte';
 
    export let metadata: Player = undefined;
 
-   $: sort = createQueryStore('sort', 'top', queryChanged);
+   $: sort = createQueryStore('sort', 'top');
+
+   function getPlayerInfoUrl(playerId: string) {
+      return `/api/player/${playerId}/full`;
+   }
+
+   function getPlayerScoresUrl(playerId: string, query: string) {
+      return queryString.stringifyUrl({
+         url: `/api/player/${playerId}/scores`,
+         query: queryString.parse(query)
+      });
+   }
 
    const {
       data: playerData,
       error: playerDataError,
       refresh: refreshRankings
-   } = useAccio<Player>(`/api/player/${$page.params.index}/full`, { fetcher: axios, dataLoaded: playerDataLoaded });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.index), { fetcher: axios, dataLoaded: playerDataLoaded });
 
    const {
       data: scoreData,
       error: scoreDataError,
       refresh: refreshScores
-   } = useAccio<PlayerScore[]>(
-      queryString.stringifyUrl({
-         url: `/api/player/${$page.params.index}/scores`,
-         query: queryString.parse($page.query.toString())
-      }),
-      { fetcher: axios }
-   );
+   } = useAccio<PlayerScore[]>(getPlayerScoresUrl($page.params.index, $page.query.toString()), { fetcher: axios });
 
    function playerDataLoaded(playerData: Player) {
       document.title = `${playerData.name}'s Profile | ScoreSaber!`;
    }
 
-   function queryChanged(newQuery: string) {
-      refreshScores({ query: newQuery });
-   }
-
    page.subscribe((p) => {
       if (typeof window !== 'undefined') {
-         refreshScores({ query: '?' + p.query.toString() });
-         refreshRankings({ newUrl: `/api/player/${$page.params.index}/full` });
+         refreshScores({
+            newUrl: getPlayerScoresUrl(p.params.index, $page.query.toString())
+         });
+         refreshRankings({ newUrl: getPlayerInfoUrl(p.params.index) });
       }
    });
 </script>
@@ -172,21 +175,7 @@
                   </thead>
                   <tbody>
                      {#each $scoreData as score}
-                        <tr class="table-item">
-                           <td>
-                              <div class="rank-info">
-                                 <span>
-                                    <i class="fas fa-globe-americas" title="Ranking" />
-                                    <a title="Ranking" href={`#`}>#{score.score.rank.toLocaleString('en-US')}</a>
-                                 </span>
-                                 <FormattedDate date={score.score.timeSet} />
-                              </div>
-                           </td>
-                           <td>
-                              <SmallSongInfo leaderboard={score.leaderboard} />
-                           </td>
-                           <td />
-                        </tr>
+                        <Score {score} />
                      {/each}
                   </tbody>
                </table>
@@ -204,12 +193,6 @@
 <Footer />
 
 <style>
-   .rank-info {
-      width: 100px;
-      display: flex;
-      flex-direction: column;
-      text-align: center;
-   }
    table {
       border-collapse: separate;
       border-spacing: 0 5px;
@@ -218,30 +201,6 @@
    .content table th {
       border: none !important;
    }
-   td {
-      border: none !important;
-      border-style: solid none;
-      align-items: center;
-      vertical-align: middle;
-   }
-
-   td:first-child {
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-   }
-   td:last-child {
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
-   }
-
-   tr.table-item {
-      background-color: #323232;
-   }
-   tr.table-item:hover {
-      background-color: #3c3c3c;
-   }
-
-   /* End player scores */
 
    .button-container {
       display: flex;

@@ -16,17 +16,20 @@
    });
 
    const getXTickLimit = (): number => {
-      var limit = 25;
-      if (window.innerWidth <= 1000) {
-         limit = 20;
+      if (typeof window !== 'undefined') {
+         var limit = 25;
+         if (window.innerWidth <= 1000) {
+            limit = 20;
+         }
+         if (window.innerWidth <= 632) {
+            limit = 13;
+         }
+         if (window.innerWidth <= 500) {
+            limit = 8;
+         }
+         return limit;
       }
-      if (window.innerWidth <= 632) {
-         limit = 13;
-      }
-      if (window.innerWidth <= 500) {
-         limit = 8;
-      }
-      return limit;
+      return 8;
    };
 
    let labels = [];
