@@ -28,7 +28,7 @@
             </span>
          </a>
          by
-         <a href={'#'}>
+         <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.songAuthorName)}>
             <span>
                {leaderboard.songAuthorName}
             </span>
