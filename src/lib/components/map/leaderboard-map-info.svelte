@@ -29,7 +29,9 @@
             <div class="title is-5 mb-0">
                <a href={`/leaderboard/${leaderboardInfo.id}`}>{leaderboardInfo.songName}</a>
             </div>
-            <div class="subtitle is-6">by {leaderboardInfo.songAuthorName}</div>
+            <div class="subtitle is-6">
+               by <a href={'#'} on:click|preventDefault={() => openSearch(leaderboardInfo.songAuthorName)}><b>{leaderboardInfo.songAuthorName}</b></a>
+            </div>
          </div>
          <div class="media-right">
             <figure class="image is-96x96 mr-0 ml-0">
