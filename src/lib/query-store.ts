@@ -1,12 +1,8 @@
-import { goto, invalidate } from '$app/navigation';
+import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import queryString from 'query-string';
 
-export interface QueryChanged {
-   (query?: string, prop?: any): void;
-}
-
-export function createQueryStore(prop: any, initialValue: any, queryChanged?: QueryChanged) {
+export function createQueryStore(prop: any, initialValue: any) {
    var query = undefined;
    return {
       subscribe: (h) => {
@@ -14,7 +10,6 @@ export function createQueryStore(prop: any, initialValue: any, queryChanged?: Qu
             query = queryString.parse(p.query.toString());
             if (query[prop]) {
                h(query[prop]);
-               queryChanged('?' + p.query.toString(), 0);
             } else {
                h(initialValue);
             }

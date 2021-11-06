@@ -1,7 +1,16 @@
 <script lang="ts">
    import type { RankRequestListing } from '$lib/models/Ranking';
    export let request: RankRequestListing;
+   import SearchView from '$lib/components/common/search.svelte';
+   let searchModal: SearchView;
+
+   const openSearch = (val) => {
+      searchModal?.setVisibility(true);
+      searchModal?.search(val);
+   };
 </script>
+
+<SearchView bind:this={searchModal} />
 
 <div class="song-container">
    <div class="song-image-wrapper">
@@ -30,7 +39,7 @@
       </div>
       <div class="mapper-info">
          mapped by
-         <a href={'#'}>
+         <a href={'#'} on:click|preventDefault={() => openSearch(request.leaderboardInfo.levelAuthorName)}>
             <span class="mapper-name">
                {request.leaderboardInfo.levelAuthorName.length < 30
                   ? request.leaderboardInfo.levelAuthorName

@@ -2,16 +2,16 @@
    import CountryImage from '$lib/components/image/country-image.svelte';
    import NameBadge from '$lib/components/image/name-badge.svelte';
    import * as permissions from '$lib/utils/permissions';
-   import type { Player } from '$lib/models/PlayerData';
+   import type { LeaderboardPlayer, Player } from '$lib/models/PlayerData';
 
-   export let player: Player;
+   export let player: Player | LeaderboardPlayer;
    export let destination: string;
    export let external: boolean = false;
    export let countryImage: boolean = true;
 
    $: playerClass = getPlayerClass(player);
 
-   export function getPlayerClass(player: Player): [string, string] {
+   export function getPlayerClass(player: Player | LeaderboardPlayer): [string, string] {
       if (permissions.checkPermissionNumber(player.permissions, permissions.PANDA)) {
          return ['panda', 'Owner of ScoreSaber'];
       }
@@ -58,7 +58,7 @@
 </script>
 
 {#if external}
-   <a title={playerClass[1]} rel="external" target="_blank" href={destination}>
+   <a title={playerClass[1]} rel="external" target="_blank" href={destination} class="player-link">
       {#if countryImage}
          <CountryImage country={player.country} />
       {/if}
@@ -74,6 +74,11 @@
 {/if}
 
 <style>
+   .player-link {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+   }
    a,
    span {
       overflow: hidden;
