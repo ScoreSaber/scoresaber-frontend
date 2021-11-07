@@ -13,7 +13,7 @@
    import { fly } from 'svelte/transition';
    import RequestMapInfo from '$lib/components/map/request-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
-   import { onDestroy } from 'svelte';
+   import { onDestroy, onMount } from 'svelte';
 
    import { userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
@@ -29,6 +29,7 @@
          refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
       }
    });
+
    onDestroy(pageUnsubscribe);
 </script>
 
@@ -99,7 +100,7 @@
             </div>
             <div in:fly={{ y: -20, duration: 1000 }} class="column is-4">
                <RequestMapInfo request={$request} />
-               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.PANDA_Group)}
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
                   <div class="window has-shadow mt-3">
                      <div class="title is-6 mb-3">Ranking Tool</div>
 
@@ -125,73 +126,79 @@
                               </div>
                            </div>
                         {/if}
-
-                        <div class="voting-tool">
-                           <span class="tag mb-2 rank qat">Quality Assurance Team</span>
-                           <div class="field has-addons">
-                              <p class="control m-0">
-                                 <button class="button is-small is-dark">
-                                    <span class="icon is-small">
-                                       <i class="far fa-thumbs-up" />
-                                    </span>
-                                 </button>
-                              </p>
-                              <p class="control m-0">
-                                 <button class="button is-small is-dark">
-                                    <span class="icon is-small">
-                                       <i class="far fa-meh" />
-                                    </span>
-                                 </button>
-                              </p>
-                              <p class="control m-0">
-                                 <button class="button is-small is-dark">
-                                    <span class="icon is-small">
-                                       <i class="far fa-thumbs-down" />
-                                    </span>
-                                 </button>
-                              </p>
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.QAT)}
+                           <div class="voting-tool">
+                              <span class="tag mb-2 rank qat">Quality Assurance Team</span>
+                              <div class="field has-addons">
+                                 <p class="control m-0">
+                                    <button class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="far fa-thumbs-up" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="far fa-meh" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="far fa-thumbs-down" />
+                                       </span>
+                                    </button>
+                                 </p>
+                              </div>
                            </div>
-                        </div>
+                        {/if}
                      </div>
+
                      <div class="tooling">
-                        <div class="voting-tool">
-                           <span class="tag mb-2 rank nat">Nomination Assessment Team</span>
-                           <div class="field has-addons">
-                              <p class="control m-0">
-                                 <button class="button is-small is-dark">
-                                    <span class="icon is-small">
-                                       <i class="fab fa-accessible-icon" />
-                                    </span>
-                                 </button>
-                              </p>
-                              <p class="control m-0">
-                                 <button class="button is-small is-dark">
-                                    <span class="icon is-small">
-                                       <i class="fas fa-times-circle" />
-                                    </span>
-                                 </button>
-                              </p>
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.NAT)}
+                           <div class="voting-tool">
+                              <span class="tag mb-2 rank nat">Nomination Assessment Team</span>
+                              <div class="field has-addons">
+                                 <p class="control m-0">
+                                    <button class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fab fa-accessible-icon" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fas fa-times-circle" />
+                                       </span>
+                                    </button>
+                                 </p>
+                              </div>
                            </div>
-                        </div>
-                        <div class="voting-tool">
-                           <span class="tag mb-2 rank admin">Admin</span>
-                           <div class="field has-addons">
-                              <p class="control m-0">
-                                 <button class="button is-small is-danger">
-                                    <span class="icon is-small">
-                                       <i class="fab fa-pied-piper-pp" />
-                                    </span>
-                                 </button>
-                              </p>
-                              <p class="control m-0">
-                                 <button class="button is-small is-dark">
-                                    <span class="icon is-small">
-                                       <i class="fas fa-check-circle" />
-                                    </span>
-                                 </button>
-                              </p>
+                        {/if}
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
+                           <div class="voting-tool">
+                              <span class="tag mb-2 rank admin">Admin</span>
+                              <div class="field has-addons">
+                                 <p class="control m-0">
+                                    <button class="button is-small is-danger">
+                                       <span class="icon is-small">
+                                          <i class="fab fa-pied-piper-pp" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fas fa-check-circle" />
+                                       </span>
+                                    </button>
+                                 </p>
+                              </div>
                            </div>
-                        </div>
+                        {/if}
                      </div>
                   </div>
                {/if}
