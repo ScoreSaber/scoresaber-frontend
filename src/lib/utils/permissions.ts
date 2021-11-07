@@ -1,22 +1,23 @@
 import type { Player } from '$lib/models/PlayerData';
+
 // Security permissions:
-export const RT = 1;
-export const QAT = 2;
-export const QATHead = 4;
-export const NAT = 8;
-export const ADMIN = 16;
-export const PANDA = 32;
+const RT = 1;
+const QAT = 2;
+const QATHead = 4;
+const NAT = 8;
+const ADMIN = 16;
+const PANDA = 32;
 
 // User groups:
-export const PANDA_Group = RT | QAT | QATHead | NAT | ADMIN | PANDA;
-export const ADMIN_Group = RT | QAT | QATHead | NAT | ADMIN;
-export const NAT_Group = RT | NAT;
-export const QATHead_Group = QAT | QATHead;
-export const QAT_Group = QAT;
-export const RT_GROUP = RT;
+const PANDA_Group = RT | QAT | QATHead | NAT | ADMIN | PANDA;
+const ADMIN_Group = RT | QAT | QATHead | NAT | ADMIN;
+const NAT_Group = RT | NAT;
+const QATHead_Group = QAT | QATHead;
+const QAT_Group = QAT;
+const RT_GROUP = RT;
 
 // function to check for permission
-export function checkPermission(player: Player, permission: number): boolean {
+function checkPermission(player: Player, permission: number): boolean {
    if (player === undefined) {
       return false;
    }
@@ -29,7 +30,7 @@ export function checkPermission(player: Player, permission: number): boolean {
    return false;
 }
 
-export function checkPermissionNumber(userPermissions: number, permission: number): boolean {
+function checkPermissionNumber(userPermissions: number, permission: number): boolean {
    if (userPermissions === undefined) {
       return false;
    }
@@ -38,3 +39,26 @@ export function checkPermissionNumber(userPermissions: number, permission: numbe
    }
    return false;
 }
+
+export default {
+   security: {
+      RT,
+      QAT,
+      QATHead,
+      NAT,
+      ADMIN,
+      PANDA
+   },
+
+   groups: {
+      PANDA_Group,
+      ADMIN_Group,
+      NAT_Group,
+      QATHead_Group,
+      QAT_Group,
+      RT_GROUP
+   },
+
+   checkPermission,
+   checkPermissionNumber
+};

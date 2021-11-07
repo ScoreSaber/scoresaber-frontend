@@ -15,6 +15,9 @@
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import { onDestroy } from 'svelte';
 
+   import { userData } from '$lib/global-store';
+   import Permissions from '$lib/utils/permissions';
+
    const {
       data: request,
       error: requestError,
@@ -96,98 +99,102 @@
             </div>
             <div in:fly={{ y: -20, duration: 1000 }} class="column is-4">
                <RequestMapInfo request={$request} />
-               <div class="window has-shadow mt-3">
-                  <div class="title is-6 mb-3">Ranking Tool</div>
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.PANDA_Group)}
+                  <div class="window has-shadow mt-3">
+                     <div class="title is-6 mb-3">Ranking Tool</div>
 
-                  <div class="tooling mb-2">
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank rt">Ranking Team</span>
-                        <div class="field has-addons">
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fas fa-thumbs-up" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fas fa-thumbs-down" />
-                                 </span>
-                              </button>
-                           </p>
+                     <div class="tooling mb-2">
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.RT)}
+                           <div class="voting-tool">
+                              <span class="tag mb-2 rank rt">Ranking Team</span>
+                              <div class="field has-addons">
+                                 <p class="control m-0">
+                                    <button class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fas fa-thumbs-up" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fas fa-thumbs-down" />
+                                       </span>
+                                    </button>
+                                 </p>
+                              </div>
+                           </div>
+                        {/if}
+
+                        <div class="voting-tool">
+                           <span class="tag mb-2 rank qat">Quality Assurance Team</span>
+                           <div class="field has-addons">
+                              <p class="control m-0">
+                                 <button class="button is-small is-dark">
+                                    <span class="icon is-small">
+                                       <i class="far fa-thumbs-up" />
+                                    </span>
+                                 </button>
+                              </p>
+                              <p class="control m-0">
+                                 <button class="button is-small is-dark">
+                                    <span class="icon is-small">
+                                       <i class="far fa-meh" />
+                                    </span>
+                                 </button>
+                              </p>
+                              <p class="control m-0">
+                                 <button class="button is-small is-dark">
+                                    <span class="icon is-small">
+                                       <i class="far fa-thumbs-down" />
+                                    </span>
+                                 </button>
+                              </p>
+                           </div>
                         </div>
                      </div>
-
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank qat">Quality Assurance Team</span>
-                        <div class="field has-addons">
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="far fa-thumbs-up" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="far fa-meh" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="far fa-thumbs-down" />
-                                 </span>
-                              </button>
-                           </p>
+                     <div class="tooling">
+                        <div class="voting-tool">
+                           <span class="tag mb-2 rank nat">Nomination Assessment Team</span>
+                           <div class="field has-addons">
+                              <p class="control m-0">
+                                 <button class="button is-small is-dark">
+                                    <span class="icon is-small">
+                                       <i class="fab fa-accessible-icon" />
+                                    </span>
+                                 </button>
+                              </p>
+                              <p class="control m-0">
+                                 <button class="button is-small is-dark">
+                                    <span class="icon is-small">
+                                       <i class="fas fa-times-circle" />
+                                    </span>
+                                 </button>
+                              </p>
+                           </div>
+                        </div>
+                        <div class="voting-tool">
+                           <span class="tag mb-2 rank admin">Admin</span>
+                           <div class="field has-addons">
+                              <p class="control m-0">
+                                 <button class="button is-small is-danger">
+                                    <span class="icon is-small">
+                                       <i class="fab fa-pied-piper-pp" />
+                                    </span>
+                                 </button>
+                              </p>
+                              <p class="control m-0">
+                                 <button class="button is-small is-dark">
+                                    <span class="icon is-small">
+                                       <i class="fas fa-check-circle" />
+                                    </span>
+                                 </button>
+                              </p>
+                           </div>
                         </div>
                      </div>
                   </div>
-                  <div class="tooling">
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank nat">Nomination Assessment Team</span>
-                        <div class="field has-addons">
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fab fa-accessible-icon" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fas fa-times-circle" />
-                                 </span>
-                              </button>
-                           </p>
-                        </div>
-                     </div>
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank admin">Admin</span>
-                        <div class="field has-addons">
-                           <p class="control m-0">
-                              <button class="button is-small is-danger">
-                                 <span class="icon is-small">
-                                    <i class="fab fa-pied-piper-pp" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fas fa-check-circle" />
-                                 </span>
-                              </button>
-                           </p>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+               {/if}
             </div>
          {:else if !$request}
             <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
