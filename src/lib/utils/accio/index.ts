@@ -16,13 +16,16 @@ export class Accio {
       });
 
       const refresh = async (refreshOptions?: Partial<AccioRefreshOptions>) => {
-         if (refreshOptions.newUrl) {
-            key = refreshOptions.newUrl;
+         if (refreshOptions) {
+            if (refreshOptions.newUrl) {
+               key = refreshOptions.newUrl;
+            }
+            if (!refreshOptions.softRefresh) {
+               data.set(null);
+               error.set(null);
+            }
          }
-         if (!refreshOptions.softRefresh) {
-            data.set(null);
-            error.set(null);
-         }
+
          await loadData(key, refreshOptions?.forceRevalidate);
       };
 
@@ -39,17 +42,20 @@ export class Accio {
             }
 
             if (!rawData) {
-               rawData = await options.fetcher(key);
+               rawData = await options.fetcher(key, { withCredentials: true });
                const expiry = new Date();
                expiry.setTime(expiry.getTime() + parseInt(CACHE_EXPIRY_IN_MINUTES) * 60000);
                cache.set(key, new CacheItem({ data: rawData, expiresAt: expiry }));
             }
             data.set(rawData);
-            if (options.dataLoaded) {
-               options.dataLoaded(rawData);
+            if (options.onSuccess) {
+               options.onSuccess(rawData);
             }
          } catch (ex) {
             error.set(ex);
+            if (options.onError) {
+               options.onError(ex);
+            }
          }
       };
 
@@ -58,11 +64,13 @@ export class Accio {
 
          function subscribeFocus() {
             const focusHandler = () => {
-               const now = Date.now();
-               if (lastFocus === null || now - lastFocus > 5000) {
-                  lastFocus = now;
-                  console.log(`Regained focus, refreshing ${key}`);
-                  refresh({ forceRevalidate: true, softRefresh: true });
+               if (!options.ignoreSubscriptions) {
+                  const now = Date.now();
+                  if (lastFocus === null || now - lastFocus > 5000) {
+                     lastFocus = now;
+                     console.log(`Regained focus, refreshing ${key}`);
+                     refresh({ forceRevalidate: true, softRefresh: true });
+                  }
                }
             };
             window.addEventListener('focus', focusHandler);
@@ -71,8 +79,10 @@ export class Accio {
 
          function subscribeOnline() {
             const onlineHandler = () => {
-               console.log(`User is back online, refreshing ${key}`);
-               refresh({ forceRevalidate: true, softRefresh: true });
+               if (!options.ignoreSubscriptions) {
+                  console.log(`User is back online, refreshing ${key}`);
+                  refresh({ forceRevalidate: true, softRefresh: true });
+               }
             };
             window.addEventListener('online', onlineHandler);
             return () => window.removeEventListener('online', onlineHandler);
@@ -81,11 +91,13 @@ export class Accio {
          function subscribeVisibilityChange() {
             const visibilityChangeHandler = () => {
                if (document.visibilityState === 'visible') {
-                  const now = Date.now();
-                  if (lastFocus === null || now - lastFocus > 5000) {
-                     lastFocus = now;
-                     console.log(`Regained focus, refreshing ${key}`);
-                     refresh({ forceRevalidate: true, softRefresh: true });
+                  if (!options.ignoreSubscriptions) {
+                     const now = Date.now();
+                     if (lastFocus === null || now - lastFocus > 5000) {
+                        lastFocus = now;
+                        console.log(`Regained focus, refreshing ${key}`);
+                        refresh({ forceRevalidate: true, softRefresh: true });
+                     }
                   }
                }
             };
@@ -107,15 +119,21 @@ export class Accio {
       return { data, error, refresh };
    }
 }
-export interface DataLoaded {
+export interface OnSuccess {
    (data: any): void;
+}
+
+export interface OnError {
+   (error: any): void;
 }
 
 export type AccioFetcher<D = any> = (...props: any[]) => Promise<D>;
 export interface AccioOptions<D = any> {
    fetcher: AccioFetcher<D>;
    query: string;
-   dataLoaded: DataLoaded;
+   onSuccess: OnSuccess;
+   onError: OnError;
+   ignoreSubscriptions: boolean;
 }
 
 export interface AccioRefreshOptions {
@@ -134,7 +152,9 @@ const fetcher = <D>(url: string): Promise<D> => {
 export const defaultOptions: AccioOptions = {
    fetcher,
    query: null,
-   dataLoaded: null
+   onSuccess: null,
+   onError: null,
+   ignoreSubscriptions: false
 };
 
 export const createAccio = <D = any>(options?: Partial<AccioOptions<D>>) => new Accio();
