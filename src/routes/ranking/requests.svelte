@@ -52,7 +52,7 @@
 <div>
    <div class="section breakout">
       {#if $topRequests && $belowTopRequests}
-         <nav in:fly={{ x: 20, duration: 1000 }} out:fly={{ x: -20, duration: 250 }} class="level mb-5">
+         <nav in:fly={{ x: 20, duration: 1000 }} class="level mb-5">
             <div class="level-item has-text-centered">
                <div>
                   <p class="heading">Rank Requests</p>
@@ -69,7 +69,7 @@
       {/if}
       <div class="window has-shadow">
          {#if $topRequests}
-            <div in:fly={{ x: 20, duration: 1000 }} out:fly={{ x: -20, duration: 250 }}>
+            <div in:fly={{ x: 20, duration: 1000 }}>
                <h3>Next items in queue</h3>
                <div class="ranking">
                   <table>
@@ -122,7 +122,7 @@
          icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
       />
       {#if showBelowTop}
-         <div in:fly={{ x: 20, duration: 500 }} out:fly={{ x: -20, duration: 500 }} class="window has-shadow below-top">
+         <div in:fly={{ x: 20, duration: 500 }} class="window has-shadow below-top">
             {#if $belowTopRequests}
                <h3>Open rank/unrank requests</h3>
                <div class="ranking">
