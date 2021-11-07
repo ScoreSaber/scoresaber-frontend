@@ -10,7 +10,6 @@
       let scoreCalc = score.baseScore;
       let maxScore = leaderboard.maxScore;
 
-      console.log(scoreCalc, maxScore);
       return (scoreCalc / maxScore) * 100;
    }
 </script>
