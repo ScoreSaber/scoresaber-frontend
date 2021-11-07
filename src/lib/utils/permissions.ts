@@ -1,20 +1,23 @@
 import type { Player } from '$lib/models/PlayerData';
 
 // Security permissions:
-const RT = 1;
-const QAT = 2;
-const QATHead = 4;
-const NAT = 8;
-const ADMIN = 16;
-const PANDA = 32;
+const security = {
+   RT: 1,
+   QAT: 2,
+   QATHead: 4,
+   NAT: 8,
+   ADMIN: 16,
+   PANDA: 32
+};
 
-// User groups:
-const PANDA_Group = RT | QAT | QATHead | NAT | ADMIN | PANDA;
-const ADMIN_Group = RT | QAT | QATHead | NAT | ADMIN;
-const NAT_Group = RT | NAT;
-const QATHead_Group = QAT | QATHead;
-const QAT_Group = QAT;
-const RT_GROUP = RT;
+const groups = {
+   PANDA_Group: security.RT | security.QAT | security.QATHead | security.NAT | security.ADMIN | security.PANDA,
+   ADMIN_Group: security.RT | security.QAT | security.QATHead | security.NAT | security.ADMIN,
+   NAT_Group: security.RT | security.NAT,
+   QATHead_Group: security.QAT | security.QATHead,
+   QAT_Group: security.QAT,
+   RT_Group: security.RT
+};
 
 // function to check for permission
 function checkPermission(player: Player, permission: number): boolean {
@@ -41,24 +44,8 @@ function checkPermissionNumber(userPermissions: number, permission: number): boo
 }
 
 export default {
-   security: {
-      RT,
-      QAT,
-      QATHead,
-      NAT,
-      ADMIN,
-      PANDA
-   },
-
-   groups: {
-      PANDA_Group,
-      ADMIN_Group,
-      NAT_Group,
-      QATHead_Group,
-      QAT_Group,
-      RT_GROUP
-   },
-
+   security,
+   groups,
    checkPermission,
    checkPermissionNumber
 };
