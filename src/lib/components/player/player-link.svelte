@@ -1,6 +1,5 @@
 <script lang="ts">
    import CountryImage from '$lib/components/image/country-image.svelte';
-   import NameBadge from '$lib/components/image/name-badge.svelte';
    import * as permissions from '$lib/utils/permissions';
    import type { LeaderboardPlayer, Player } from '$lib/models/PlayerData';
 

@@ -63,14 +63,19 @@
                   Login
                </a>
             {:else}
-               <a href={`/u/${$userData.playerId}`} class="navbar-item">
-                  <i class="fas fa-user" />
-                  My Profile
-               </a>
-               <a href={`#`} on:click={() => logout()} class="navbar-item">
-                  <i class="fas fa-user-times" />
-                  Logout
-               </a>
+               <div class="navbar-item has-dropdown is-hoverable">
+                  <a href={''} class="navbar-link"> Profile </a>
+                  <div class="navbar-dropdown">
+                     <a href={`/u/${$userData.playerId}`} class="navbar-item">
+                        <i class="fas fa-user" />
+                        My Profile
+                     </a>
+                     <a href={`#`} on:click={() => logout()} class="navbar-item">
+                        <i class="fas fa-user-times" />
+                        Sign out
+                     </a>
+                  </div>
+               </div>
             {/if}
          </div>
          <div class="navbar-end">
@@ -117,6 +122,31 @@
 
    .navbar-item {
       color: var(--textColor);
+   }
+
+   .navbar-link,
+   .navbar-link:hover,
+   .navbar-link:focus {
+      color: var(--scoreSaberYellow);
+      background-color: var(--foreground);
+      border: 0;
+   }
+
+   .navbar-item.has-dropdown:focus .navbar-link,
+   .navbar-item.has-dropdown:hover .navbar-link {
+      background-color: var(--foreground);
+   }
+   .navbar-link {
+      color: var(--textColor);
+   }
+
+   .navbar-link:hover {
+      background-color: var(--foreground);
+   }
+
+   .navbar-dropdown {
+      border-top: 2px solid var(--background);
+      background-color: var(--foreground);
    }
 
    .navbar-item:hover {
