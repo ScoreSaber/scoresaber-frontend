@@ -1,7 +1,10 @@
 <script lang="ts">
    import { onMount } from 'svelte';
    import SearchView from '$lib/components/common/search.svelte';
-
+   import { userData } from '$lib/global-store';
+   import { API_URL } from '../../utils/env';
+   import fetcher from '$lib/utils/fetcher';
+   $: loggedIn = $userData != undefined;
    let searchModal: SearchView;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
@@ -18,6 +21,12 @@
          });
       }
    });
+
+   async function logout() {
+      localStorage.removeItem('login-token');
+      await fetcher('/api/auth/logout', { withCredentials: true });
+      location.reload();
+   }
 </script>
 
 <SearchView bind:this={searchModal} />
@@ -48,10 +57,21 @@
                <i class="fas fa-tasks" />
                Rank Requests
             </a>
-            <a href="/" class="navbar-item">
-               <i class="fas fa-book" />
-               Wiki
-            </a>
+            {#if !loggedIn}
+               <a href={`${API_URL}/api/auth/steam`} class="navbar-item">
+                  <i class="fas fa-user" />
+                  Login
+               </a>
+            {:else}
+               <a href={`/u/${$userData.playerId}`} class="navbar-item">
+                  <i class="fas fa-user" />
+                  My Profile
+               </a>
+               <a href={`#`} on:click={() => logout()} class="navbar-item">
+                  <i class="fas fa-user-times" />
+                  Logout
+               </a>
+            {/if}
          </div>
          <div class="navbar-end">
             <a class="navbar-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/scoresaber">

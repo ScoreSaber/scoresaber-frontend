@@ -3,3 +3,6 @@ export interface UserData {
    permissions: number;
    questKey: string;
 }
+export interface TokenResponse {
+   token: string;
+}
