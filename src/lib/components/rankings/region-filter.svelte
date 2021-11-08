@@ -53,11 +53,11 @@
 
 <div class="country" bind:this={chip} class:expanded class:hasSelected={selectedRegions.length > 0}>
    {#if expanded}
-      <div transition:slide={{ duration: 300 }}>
+      <div transition:slide|local={{ duration: 300 }}>
          <Autocomplete {options} valueSelected={() => addRegion(newCountry)} bind:elementRef={input} bind:value={newCountry} placeholder="Region" />
       </div>
    {:else}
-      <div transition:slide={{ duration: 300 }} class="addLabel" on:click={toggleExpand}>
+      <div transition:slide|local={{ duration: 300 }} class="addLabel" on:click={toggleExpand}>
          {#if selectedRegions.length > 0}
             + Add
          {:else}
@@ -77,6 +77,7 @@
       position: relative;
       font-weight: bold;
       max-width: 125px;
+      white-space: nowrap;
    }
    .hasSelected {
       max-width: 70px;

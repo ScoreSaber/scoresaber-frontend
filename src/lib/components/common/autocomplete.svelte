@@ -62,7 +62,7 @@
          {#each filteredOptions as option, i}
             {#if option.label && option.value}
                <div
-                  in:fly={{ y: -60, delay: 60 * i, duration: 300 }}
+                  in:fly={{ x: -60, delay: i < 10 ? 60 * i : 600, duration: 300 }}
                   class="option"
                   class:highlight={highlighted === i}
                   on:click={() => selectOption(option.value)}
@@ -71,7 +71,7 @@
                </div>
             {:else}
                <div
-                  in:fly={{ y: -60, delay: 60 * i, duration: 300 }}
+                  in:fly={{ x: -60, delay: i < 10 ? 60 * i : 600, duration: 300 }}
                   class="option"
                   class:highlight={highlighted === i}
                   on:click={() => selectOption(option)}
