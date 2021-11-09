@@ -6,11 +6,28 @@
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
 
+   import ScoreModal from './score-modal.svelte';
+
    function getAccuracy() {
       let scoreCalc = score.baseScore;
       let maxScore = leaderboard.maxScore;
 
       return (scoreCalc / maxScore) * 100;
+   }
+
+   function openScoreDetails(): any {
+      console.log('clicked');
+
+      let modal = new ScoreModal({
+         target: document.body,
+         props: {
+            score,
+            leaderboard,
+            otherScores
+         }
+      });
+
+      modal.setVisibility(true);
    }
 </script>
 
@@ -31,7 +48,7 @@
       <span><FormattedDate date={new Date(score.timeSet)} /></span>
    </td>
    <td class="score centered">
-      <span>{score.modifiedScore.toLocaleString('en-US')}</span>
+      <span class="score" on:click={openScoreDetails}>{score.modifiedScore.toLocaleString('en-US')}</span>
    </td>
    {#if otherScores.filter((score) => score.modifiers.length > 0).length > 0}
       <td class="mods centered">
@@ -103,5 +120,10 @@
       border-right-style: solid;
       border-bottom-right-radius: 5px;
       border-top-right-radius: 5px;
+   }
+
+   span.score {
+      border-bottom: 1px dotted white;
+      cursor: pointer;
    }
 </style>
