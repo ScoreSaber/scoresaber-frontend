@@ -1,18 +1,21 @@
 <script lang="ts">
+   import type { FilterItem } from '$lib/models/Filter';
    import CountryImage from '$lib/components/image/country-image.svelte';
-
-   export let country: string;
-   export let remove = (country: string) => {};
+   export let item: FilterItem;
+   export let remove = (chip: FilterItem) => {};
+   export let withCountryImages: boolean = false;
 </script>
 
-<div class="country">
-   <CountryImage {country} />
-   {country.toUpperCase()}
-   <span class="remove" on:click={() => remove(country)}> x </span>
+<div class="chip">
+   {#if withCountryImages}
+      <CountryImage country={item.key} />
+   {/if}
+   {item.friendlyName}
+   <span class="remove" on:click={() => remove(item)}> x </span>
 </div>
 
 <style>
-   .country {
+   .chip {
       margin: 5px;
       background-color: var(--foregroundItem);
       transition: background-color var(--transitionTime);
@@ -21,7 +24,7 @@
       position: relative;
       font-weight: bold;
    }
-   .country .remove {
+   .chip .remove {
       visibility: none;
       color: red;
       padding: 1px 8px;
@@ -34,14 +37,20 @@
       right: 0px;
       transform: translate(50%, -50%);
    }
-   .country .remove:hover {
+   .chip .remove:hover {
       cursor: pointer;
    }
-   .country:hover {
+   .chip:hover {
       background-color: #323232;
    }
-   .country:hover .remove {
+   .chip:hover .remove {
       visibility: visible;
       opacity: 1;
+   }
+   @media only screen and (max-width: 769px) {
+      .chip .remove {
+         visibility: visible;
+         opacity: 1;
+      }
    }
 </style>

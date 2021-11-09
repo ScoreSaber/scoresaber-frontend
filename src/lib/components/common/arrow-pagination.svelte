@@ -49,4 +49,7 @@
    .pagination .button:hover {
       color: var(--scoreSaberYellow) !important;
    }
+   .pagination {
+      margin-bottom: 0.1rem;
+   }
 </style>

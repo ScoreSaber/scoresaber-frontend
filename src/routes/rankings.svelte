@@ -13,26 +13,17 @@
    import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
-   import CountryChip from '$lib/components/rankings/country-chip.svelte';
-   import AddCountry from '$lib/components/rankings/add-country.svelte';
-   import type { countryData } from '$lib/models/CountryData';
-   import RegionFilter from '$lib/components/rankings/region-filter.svelte';
-   import RegionChip from '$lib/components/rankings/region-chip.svelte';
+   import Filter from '$lib/components/common/filter.svelte';
+   import filters from '$lib/utils/filters';
+   import type { FilterItem } from '$lib/models/Filter';
 
    const playersPerPage = 50;
 
    $: currentPage = createQueryStore('page', 1);
-
+   $: countries = createQueryStore('countries', undefined);
    $: regions = createQueryStore('regions', undefined);
-   $: filteredRegions = $regions ? (<string>$regions).split(',') : [];
-   $: countryStore = createQueryStore('countries', undefined);
-   $: filteredCountries = filteredRegions.length <= 0 ? ($countryStore ? (<string>$countryStore)?.split(',') : []) : null;
 
-   $: regionCountries = countryData.filter((x) => filteredRegions.includes(x.region)).map((c) => c['alpha-2']);
-   $: query = queryString.stringify({
-      page: $currentPage,
-      countries: filteredRegions.length > 0 ? regionCountries.join(',') : filteredCountries.length > 0 ? filteredCountries.join(',') : undefined
-   });
+   let filterChanged: boolean = false;
 
    const {
       data: rankings,
@@ -41,7 +32,7 @@
    } = useAccio<Player[]>(
       queryString.stringifyUrl({
          url: '/api/players',
-         query: queryString.parse(query)
+         query: queryString.parse($page.query.toString())
       }),
       { fetcher: axios }
    );
@@ -53,38 +44,13 @@
    } = useAccio<number>(
       queryString.stringifyUrl({
          url: '/api/players/count',
-         query: queryString.parse(query)
+         query: queryString.parse($page.query.toString())
       }),
       { fetcher: axios }
    );
 
-   let countryData: countryData[] = [];
-   (async () => {
-      countryData = await axios('https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.json');
-   })();
-
    function changePage(newPage: number) {
       $currentPage = newPage;
-   }
-
-   function removeCountry(country: string) {
-      filteredCountries = filteredCountries.filter((c) => c !== country);
-      $countryStore = filteredCountries.length > 0 ? filteredCountries.join(',') : null;
-   }
-
-   function addCountry(country: string) {
-      filteredCountries.push(country);
-      $countryStore = filteredCountries.join(',');
-   }
-
-   function removeRegion(region: string) {
-      filteredRegions = filteredRegions.filter((r) => r !== region);
-      $regions = filteredRegions.length > 0 ? filteredRegions.join(',') : null;
-   }
-
-   function addRegion(region: string) {
-      filteredRegions.push(region);
-      $regions = filteredRegions.join(',');
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
@@ -92,11 +58,38 @@
          refreshRankings({
             newUrl: queryString.stringifyUrl({
                url: '/api/players',
-               query: queryString.parse($page.query.toString())
+               query: queryString.parse(p.query.toString())
             })
          });
+         if (filterChanged) {
+            refreshPlayerCount({
+               newUrl: queryString.stringifyUrl({
+                  url: '/api/players/count',
+                  query: queryString.parse(p.query.toString())
+               })
+            });
+            filterChanged = false;
+         }
       }
    });
+
+   function countryFilterUpdated(items: FilterItem[]) {
+      if (items.length === 0) {
+         $countries = null;
+      } else {
+         $countries = items.map((i) => i.key).join(',');
+      }
+      filterChanged = true;
+   }
+
+   function regionFilterUpdated(items: FilterItem[]) {
+      if (items.length === 0) {
+         $regions = null;
+      } else {
+         $regions = items.map((i) => i.key).join(',');
+      }
+      filterChanged = true;
+   }
 
    onDestroy(pageUnsubscribe);
 </script>
@@ -109,30 +102,24 @@
 
 <div class="section">
    <div class="window has-shadow noheading">
+      {#if $regions === undefined}
+         <Filter
+            items={filters.countryFilter}
+            initialItems={$countries}
+            filterName={'Country'}
+            withCountryImages={true}
+            filterUpdated={countryFilterUpdated}
+         />
+      {/if}
+      {#if $countries === undefined}
+         <Filter items={filters.regionFilter} initialItems={$regions} filterName={'Region'} filterUpdated={regionFilterUpdated} />
+      {/if}
+   </div>
+   <div class="window has-shadow noheading">
       {#if $playerCount && $rankings && $playerCount}
          <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
       {#if $rankings && $playerCount}
-         <div class="countries">
-            {#if filteredCountries && filteredCountries.length > 0 && filteredRegions.length === 0}
-               {#each filteredCountries as country}
-                  <CountryChip {country} remove={removeCountry} />
-               {/each}
-            {/if}
-            {#if filteredRegions.length === 0}
-               <AddCountry {addCountry} selectedCountries={filteredCountries} {countryData} />
-            {/if}
-         </div>
-         <div class="countries">
-            {#if filteredRegions && filteredRegions.length > 0}
-               {#each filteredRegions as region}
-                  <RegionChip {region} remove={removeRegion} />
-               {/each}
-            {/if}
-            {#if filteredCountries.length === 0}
-               <RegionFilter {addRegion} selectedRegions={filteredRegions} {countryData} />
-            {/if}
-         </div>
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
             <table>
                <thead>
@@ -189,10 +176,5 @@
       .headers th:not(.player, .rank) {
          display: none;
       }
-   }
-
-   .countries {
-      display: flex;
-      flex-flow: row wrap;
    }
 </style>
