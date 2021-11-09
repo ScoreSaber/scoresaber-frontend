@@ -2,7 +2,7 @@
    import { loadMetadata } from '$lib/metadata-loader';
 
    export async function load({ fetch, page }) {
-      return await loadMetadata(fetch, `/api/player/${page.params.index}/full`);
+      return await loadMetadata(fetch, `/api/player/${page.params.playerId}/full`);
    }
 </script>
 
@@ -49,7 +49,7 @@
       data: playerData,
       error: playerDataError,
       refresh: refreshRankings
-   } = useAccio<Player>(getPlayerInfoUrl($page.params.index), { fetcher: axios, onSuccess: playerDataLoaded });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios, onSuccess: playerDataLoaded });
 
    const {
       data: scoreData,
