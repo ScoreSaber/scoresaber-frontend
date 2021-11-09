@@ -49,7 +49,7 @@
       data: playerData,
       error: playerDataError,
       refresh: refreshRankings
-   } = useAccio<Player>(getPlayerInfoUrl($page.params.index), { fetcher: axios, dataLoaded: playerDataLoaded });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.index), { fetcher: axios, onSuccess: playerDataLoaded });
 
    const {
       data: scoreData,
