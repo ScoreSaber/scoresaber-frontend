@@ -3,6 +3,7 @@ import { CACHE_EXPIRY_IN_MINUTES } from '$lib/utils/env';
 import { writable } from 'svelte/store';
 import { DefaultCache, CacheItem } from './cache';
 import queryString from 'query-string';
+import { browser } from '$app/env';
 
 export class Accio {
    useAccio<D = any, E = Error>(key: string, options?: Partial<AccioOptions<D>>) {
@@ -59,7 +60,7 @@ export class Accio {
          }
       };
 
-      if (typeof window !== 'undefined') {
+      if (browser) {
          let lastFocus: number | null = null;
 
          function subscribeFocus() {

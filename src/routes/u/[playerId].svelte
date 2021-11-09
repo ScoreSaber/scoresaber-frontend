@@ -29,6 +29,7 @@
    import { useAccio } from '$lib/utils/accio';
    import Score from '$lib/components/player/score.svelte';
    import { onDestroy } from 'svelte';
+   import { browser } from '$app/env';
 
    export let metadata: Player = undefined;
 
@@ -62,7 +63,7 @@
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
-      if (typeof window !== 'undefined') {
+      if (browser) {
          refreshScores({
             newUrl: getPlayerScoresUrl(p.params.playerId, $page.query.toString())
          });

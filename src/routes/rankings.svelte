@@ -16,6 +16,7 @@
    import Filter from '$lib/components/common/filter.svelte';
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
+   import { browser } from '$app/env';
 
    const playersPerPage = 50;
 
@@ -54,7 +55,7 @@
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
-      if (typeof window !== 'undefined') {
+      if (browser) {
          refreshRankings({
             newUrl: queryString.stringifyUrl({
                url: '/api/players',

@@ -15,6 +15,7 @@
    import LeaderboardRow from '$lib/components/leaderboard/leaderboard-row.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import { onDestroy } from 'svelte';
+   import { browser } from '$app/env';
 
    $: currentPage = createQueryStore('page', 1);
 
@@ -44,7 +45,7 @@
    } = useAccio<Score[]>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.query.toString()), { fetcher: axios });
 
    const pageUnsubscribe = page.subscribe((p) => {
-      if (typeof window !== 'undefined') {
+      if (browser) {
          refreshLeaderboardScores({
             newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, $page.query.toString())
          });

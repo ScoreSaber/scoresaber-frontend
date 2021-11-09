@@ -2,6 +2,7 @@
    import type { Player } from '$lib/models/PlayerData';
    import { onMount } from 'svelte';
    import Line from 'svelte-chartjs/src/Line.svelte';
+   import { browser } from '$app/env';
 
    export let player: Player;
 
@@ -16,7 +17,7 @@
    });
 
    const getXTickLimit = (): number => {
-      if (typeof window !== 'undefined') {
+      if (browser) {
          var limit = 25;
          if (window.innerWidth <= 1000) {
             limit = 20;
