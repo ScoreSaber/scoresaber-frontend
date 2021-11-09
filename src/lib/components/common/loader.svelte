@@ -7,6 +7,7 @@
       animation: loading 2s ease infinite;
       height: 48px;
       width: 48px;
+      margin: 30px 0;
    }
    .columns {
       display: flex;

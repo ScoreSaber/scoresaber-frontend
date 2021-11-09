@@ -1,13 +1,12 @@
 <script lang="ts">
    import { getCDNUrl } from '$lib/utils/helpers';
    import { getName } from 'country-list';
-   import { onMount } from 'svelte';
    export let country: string;
 
    $: countryImage = getCDNUrl('/flags/unknown.png');
    $: countryEmoji = 'Unknown';
 
-   onMount(() => {
+   $: {
       if (country != '') {
          const toTwemojiFlag = (input: string) =>
             `https://twemoji.maxcdn.com/v/13.1.0/svg/${input
@@ -21,7 +20,7 @@
          countryImage = toTwemojiFlag(country);
          countryEmoji = toEmojiFlag(country);
       }
-   });
+   }
 </script>
 
 <img alt={countryEmoji} title={getName(country)} src={countryImage} class="country" />
