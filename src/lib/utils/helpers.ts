@@ -60,6 +60,8 @@ export function getRankingApprovalStatus(input: number): string {
          return 'Approved';
       case 2:
          return 'Denied';
+      case 3:
+         return 'Qualified';
       default:
          return 'Unknown';
    }

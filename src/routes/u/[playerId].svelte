@@ -2,7 +2,7 @@
    import { loadMetadata } from '$lib/metadata-loader';
 
    export async function load({ fetch, page }) {
-      return await loadMetadata(fetch, `/api/player/${page.params.index}/full`);
+      return await loadMetadata(fetch, `/api/player/${page.params.playerId}/full`);
    }
 </script>
 
@@ -49,13 +49,13 @@
       data: playerData,
       error: playerDataError,
       refresh: refreshRankings
-   } = useAccio<Player>(getPlayerInfoUrl($page.params.index), { fetcher: axios, dataLoaded: playerDataLoaded });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios, onSuccess: playerDataLoaded });
 
    const {
       data: scoreData,
       error: scoreDataError,
       refresh: refreshScores
-   } = useAccio<PlayerScore[]>(getPlayerScoresUrl($page.params.index, $page.query.toString()), { fetcher: axios });
+   } = useAccio<PlayerScore[]>(getPlayerScoresUrl($page.params.playerId, $page.query.toString()), { fetcher: axios });
 
    function playerDataLoaded(playerData: Player) {
       document.title = `${playerData.name}'s Profile | ScoreSaber!`;
@@ -64,9 +64,9 @@
    const pageUnsubscribe = page.subscribe((p) => {
       if (typeof window !== 'undefined') {
          refreshScores({
-            newUrl: getPlayerScoresUrl(p.params.index, $page.query.toString())
+            newUrl: getPlayerScoresUrl(p.params.playerId, $page.query.toString())
          });
-         refreshRankings({ newUrl: getPlayerInfoUrl(p.params.index) });
+         refreshRankings({ newUrl: getPlayerInfoUrl(p.params.playerId) });
       }
    });
    onDestroy(pageUnsubscribe);

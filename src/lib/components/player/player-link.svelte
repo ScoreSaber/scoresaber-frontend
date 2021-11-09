@@ -1,6 +1,7 @@
 <script lang="ts">
    import CountryImage from '$lib/components/image/country-image.svelte';
-   import * as permissions from '$lib/utils/permissions';
+   import NameBadge from '$lib/components/image/name-badge.svelte';
+   import Permissions from '$lib/utils/permissions';
    import type { LeaderboardPlayer, Player } from '$lib/models/PlayerData';
 
    export let player: Player | LeaderboardPlayer;
@@ -11,23 +12,23 @@
    $: playerClass = getPlayerClass(player);
 
    export function getPlayerClass(player: Player | LeaderboardPlayer): [string, string] {
-      if (permissions.checkPermissionNumber(player.permissions, permissions.PANDA)) {
+      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PANDA)) {
          return ['panda', 'Owner of ScoreSaber'];
       }
 
-      if (permissions.checkPermissionNumber(player.permissions, permissions.ADMIN)) {
+      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.ADMIN)) {
          return ['admin', 'ScoreSaber Admin'];
       }
 
-      if (permissions.checkPermissionNumber(player.permissions, permissions.QATHead)) {
+      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QATHead)) {
          return ['qat-head', 'Head of Quality Assurance'];
       }
 
-      if (permissions.checkPermissionNumber(player.permissions, permissions.NAT)) {
+      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.NAT)) {
          return ['nat', 'Nomination Assessment Team'];
       }
 
-      if (permissions.checkPermissionNumber(player.permissions, permissions.RT)) {
+      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.RT)) {
          if (player.role.includes('Recruit')) {
             return ['rtr', 'Ranking Team Recruit'];
          } else {
@@ -35,7 +36,7 @@
          }
       }
 
-      if (permissions.checkPermissionNumber(player.permissions, permissions.QAT)) {
+      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QAT)) {
          return ['qat', 'Quality Assurance Team'];
       }
 

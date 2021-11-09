@@ -15,6 +15,10 @@
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import { onDestroy } from 'svelte';
 
+   import { userData } from '$lib/global-store';
+   import Permissions from '$lib/utils/permissions';
+   import poster from '$lib/utils/poster';
+
    const {
       data: request,
       error: requestError,
@@ -26,6 +30,21 @@
          refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
       }
    });
+
+   const requestActionEndpoint = '/api/ranking/request/action';
+
+   async function handleVote(group: string, direction: number) {
+      request.set(undefined);
+      await poster(`${requestActionEndpoint}/${group}/vote`, { requestId: $page.params.requestId, vote: direction }, { withCredentials: true });
+      refreshRequest({ forceRevalidate: true, softRefresh: true });
+   }
+
+   async function handleAction(group: string, action: string) {
+      request.set(undefined);
+      await poster(`${requestActionEndpoint}/${group}/${action}`, { requestId: $page.params.requestId }, { withCredentials: true });
+      refreshRequest({ forceRevalidate: true, softRefresh: true });
+   }
+
    onDestroy(pageUnsubscribe);
 </script>
 
@@ -96,98 +115,108 @@
             </div>
             <div in:fly={{ y: -20, duration: 1000 }} class="column is-4">
                <RequestMapInfo request={$request} />
-               <div class="window has-shadow mt-3">
-                  <div class="title is-6 mb-3">Ranking Tool</div>
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
+                  <div class="window has-shadow mt-3">
+                     <div class="title is-6 mb-3">Ranking Tool</div>
 
-                  <div class="tooling mb-2">
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank rt">Ranking Team</span>
-                        <div class="field has-addons">
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fas fa-thumbs-up" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fas fa-thumbs-down" />
-                                 </span>
-                              </button>
-                           </p>
-                        </div>
+                     <div class="tooling mb-2">
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.RT)}
+                           <div class="voting-tool">
+                              <span class="tag mb-2 rank rt">Ranking Team</span>
+                              <div class="field has-addons">
+                                 <p class="control m-0">
+                                    <button on:click={() => handleVote('rt', 1)} class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fas fa-thumbs-up" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button on:click={() => handleVote('rt', 0)} class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fas fa-thumbs-down" />
+                                       </span>
+                                    </button>
+                                 </p>
+                              </div>
+                           </div>
+                        {/if}
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.QAT)}
+                           <div class="voting-tool">
+                              <span class="tag mb-2 rank qat">Quality Assurance Team</span>
+                              <div class="field has-addons">
+                                 <p class="control m-0">
+                                    <button on:click={() => handleVote('qat', 1)} class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="far fa-thumbs-up" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button on:click={() => handleVote('qat', 2)} class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="far fa-meh" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button on:click={() => handleVote('qat', 0)} class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="far fa-thumbs-down" />
+                                       </span>
+                                    </button>
+                                 </p>
+                              </div>
+                           </div>
+                        {/if}
                      </div>
 
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank qat">Quality Assurance Team</span>
-                        <div class="field has-addons">
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="far fa-thumbs-up" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="far fa-meh" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="far fa-thumbs-down" />
-                                 </span>
-                              </button>
-                           </p>
-                        </div>
+                     <div class="tooling">
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.NAT)}
+                           <div class="voting-tool">
+                              <span class="tag mb-2 rank nat">Nomination Assessment Team</span>
+                              <div class="field has-addons">
+                                 <p class="control m-0">
+                                    <button on:click={() => handleAction('nat', 'qualify')} class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fab fa-accessible-icon" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button on:click={() => handleAction('nat', 'deny')} class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fas fa-times-circle" />
+                                       </span>
+                                    </button>
+                                 </p>
+                              </div>
+                           </div>
+                        {/if}
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
+                           <div class="voting-tool">
+                              <span class="tag mb-2 rank admin">Admin</span>
+                              <div class="field has-addons">
+                                 <p class="control m-0">
+                                    <button on:click={() => handleAction('admin', 'pp')} class="button is-small is-danger">
+                                       <span class="icon is-small">
+                                          <i class="fab fa-pied-piper-pp" />
+                                       </span>
+                                    </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <button on:click={() => handleAction('admin', 'approve')} class="button is-small is-dark">
+                                       <span class="icon is-small">
+                                          <i class="fas fa-check-circle" />
+                                       </span>
+                                    </button>
+                                 </p>
+                              </div>
+                           </div>
+                        {/if}
                      </div>
                   </div>
-                  <div class="tooling">
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank nat">Nomination Assessment Team</span>
-                        <div class="field has-addons">
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fab fa-accessible-icon" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fas fa-times-circle" />
-                                 </span>
-                              </button>
-                           </p>
-                        </div>
-                     </div>
-                     <div class="voting-tool">
-                        <span class="tag mb-2 rank admin">Admin</span>
-                        <div class="field has-addons">
-                           <p class="control m-0">
-                              <button class="button is-small is-danger">
-                                 <span class="icon is-small">
-                                    <i class="fab fa-pied-piper-pp" />
-                                 </span>
-                              </button>
-                           </p>
-                           <p class="control m-0">
-                              <button class="button is-small is-dark">
-                                 <span class="icon is-small">
-                                    <i class="fas fa-check-circle" />
-                                 </span>
-                              </button>
-                           </p>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+               {/if}
             </div>
          {:else if !$request}
             <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
