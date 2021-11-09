@@ -81,18 +81,30 @@
       border-radius: 0 0 5px 5px;
       z-index: 5;
       overflow: auto;
-      max-height: 400px;
+      max-height: 0px;
+      animation: showOptions var(--transitionTime) ease-in-out forwards;
+      animation-delay: calc(var(--transitionTime) * 0.5);
    }
    .options .option {
       padding: 5px;
       cursor: pointer;
       border-radius: 7px;
       margin-top: 5px;
+      white-space: normal;
    }
    .options .option:hover {
       background-color: var(--gray-light);
    }
    .options .option.highlight {
       background-color: var(--gray-light);
+   }
+
+   @keyframes showOptions {
+      from {
+         max-height: 0;
+      }
+      to {
+         max-height: 400px;
+      }
    }
 </style>

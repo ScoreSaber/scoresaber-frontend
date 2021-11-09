@@ -75,6 +75,8 @@
             addItemByFriendlyName(newOption);
             newOption = '';
          }
+      } else if (e.key === 'Escape') {
+         expanded = false;
       }
    }
 
@@ -98,7 +100,7 @@
    {#if items.length > 0}
       <div class="filter" bind:this={chip} class:expanded class:hasSelected={selectedItems.length > 0}>
          {#if expanded}
-            <div>
+            <div transition:slide|local={{ duration: 300 }}>
                <Autocomplete
                   options={items}
                   valueSelected={() => addItemByFriendlyName(newOption)}
@@ -135,10 +137,11 @@
       position: relative;
       font-weight: bold;
       max-width: 130px;
+      white-space: nowrap;
    }
-   /* .hasSelected {
+   .hasSelected {
       max-width: 70px;
-   } */
+   }
    .filter.expanded {
       max-width: 200px;
    }
