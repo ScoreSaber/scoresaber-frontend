@@ -16,9 +16,14 @@
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import { onDestroy } from 'svelte';
    import { browser } from '$app/env';
+   import Filter from '$lib/components/common/filter.svelte';
+   import filters from '$lib/utils/filters';
+   import type { FilterItem } from '$lib/models/Filter';
 
    $: currentPage = createQueryStore('page', 1);
+   $: countries = createQueryStore('countries', undefined);
 
+   let filterChanged: boolean = false;
    let leaderboardId = $page.params.leaderboardId;
 
    function getLeaderboardInfoUrl(leaderboardId: string) {
@@ -44,10 +49,24 @@
       refresh: refreshLeaderboardScores
    } = useAccio<Score[]>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.query.toString()), { fetcher: axios });
 
+   function countryFilterUpdated(items: FilterItem[]) {
+      filterChanged = true;
+
+      if (items.length === 0) {
+         $countries = null;
+      } else {
+         $countries = items.map((i) => i.key).join(',');
+      }
+   }
+
+   function changePage(newPage: number) {
+      $currentPage = newPage;
+   }
+
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser) {
          refreshLeaderboardScores({
-            newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, $page.query.toString())
+            newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, p.query.toString())
          });
          if (leaderboardId != p.params.leaderboardId) {
             refreshLeaderboard({ newUrl: getLeaderboardInfoUrl(p.params.leaderboardId) });
@@ -55,10 +74,6 @@
          }
       }
    });
-
-   function changePage(newPage: number) {
-      $currentPage = newPage;
-   }
 
    onDestroy(pageUnsubscribe);
 </script>
@@ -114,6 +129,16 @@
             </div>
             <div class="column is-4">
                <LeaderboardMapInfo leaderboardInfo={$leaderboard} />
+               <div class="window has-shadow mt-3">
+                  <div class="title is-6 mb-3">Filters</div>
+                  <Filter
+                     items={filters.countryFilter}
+                     initialItems={$countries}
+                     filterName={'Country'}
+                     withCountryImages={true}
+                     filterUpdated={countryFilterUpdated}
+                  />
+               </div>
                <div class="window has-shadow mt-3">
                   <div class="title is-6 mb-3">Ranking Tool</div>
                   <button class="button is-small is-dark">

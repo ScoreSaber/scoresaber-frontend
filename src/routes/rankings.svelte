@@ -75,21 +75,21 @@
    });
 
    function countryFilterUpdated(items: FilterItem[]) {
+      filterChanged = true;
       if (items.length === 0) {
          $countries = null;
       } else {
          $countries = items.map((i) => i.key).join(',');
       }
-      filterChanged = true;
    }
 
    function regionFilterUpdated(items: FilterItem[]) {
+      filterChanged = true;
       if (items.length === 0) {
          $regions = null;
       } else {
          $regions = items.map((i) => i.key).join(',');
       }
-      filterChanged = true;
    }
 
    onDestroy(pageUnsubscribe);
