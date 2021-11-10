@@ -1,5 +1,4 @@
 <script lang="ts">
-   import { onMount } from 'svelte';
    import SearchView from '$lib/components/common/search.svelte';
    import { userData } from '$lib/global-store';
    import { API_URL, CDN_URL } from '../../utils/env';
@@ -9,21 +8,9 @@
    let userMenuVisible: boolean = false;
    let menuButton: HTMLAnchorElement;
    let isExpanded = false;
+   let headerIncreaseContrast = false;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
-
-   onMount(() => {
-      let burger = document.getElementsByClassName('navbar-burger')[0] as HTMLElement;
-      if (burger) {
-         burger.addEventListener('click', () => {
-            let target = document.getElementById(burger.dataset['target'] || '');
-            burger.classList.toggle('is-active');
-            if (target) {
-               target.classList.toggle('is-active');
-            }
-         });
-      }
-   });
 
    async function logout() {
       localStorage.removeItem('login-token');
@@ -41,9 +28,10 @@
          userMenuVisible = false;
       }
    }}
+   on:scroll={() => (headerIncreaseContrast = document.scrollingElement.scrollTop > 10)}
 />
 
-<header class={isExpanded ? 'expanded' : ''}>
+<header class="{isExpanded ? 'expanded' : ''} {headerIncreaseContrast ? 'scrolled' : ''}">
    <div class="container">
       <button class="hamburger" on:click={() => (isExpanded = !isExpanded)}><i class="fa fa-bars" /></button>
       <nav>
@@ -93,7 +81,12 @@
       left: 0;
       width: 100%;
       z-index: 100;
+      transition: all 0.25s ease;
       background: #202020;
+   }
+
+   header.scrolled {
+      background: #1c1c1c;
    }
 
    header .container {
@@ -101,13 +94,6 @@
       justify-content: space-around;
       align-items: center;
       position: relative;
-   }
-
-   @supports (backdrop-filter: blur(20px)) {
-      header {
-         background: #202020aa;
-         backdrop-filter: blur(20px);
-      }
    }
 
    header nav {
@@ -265,7 +251,6 @@
    @media all and (max-width: 720px) {
       header {
          height: 61px;
-         transition: height 0.25s ease;
       }
 
       header.expanded {
