@@ -91,7 +91,7 @@
             url: '/api/players',
             query: { search: value }
          }),
-         { cancelToken: cancel.token }
+         { cancelToken: cancel.token, withCredentials: true }
       ).then((players) => (searchResults.players = players));
       fetcher<LeaderboardInfo[]>(
          queryString.stringifyUrl({
@@ -102,7 +102,7 @@
                sort: 0
             }
          }),
-         { cancelToken: cancel.token }
+         { cancelToken: cancel.token, withCredentials: true }
       )
          .then((leaderboards) => (searchResults.leaderboards = leaderboards))
          .catch(absorbCancel);
