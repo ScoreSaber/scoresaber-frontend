@@ -1,5 +1,4 @@
 <script lang="ts">
-   import { onMount } from 'svelte';
    import SearchView from '$lib/components/common/search.svelte';
    import { userData } from '$lib/global-store';
    import { API_URL, CDN_URL } from '../../utils/env';
@@ -12,19 +11,6 @@
    let headerIncreaseContrast = false;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
-
-   onMount(() => {
-      let burger = document.getElementsByClassName('navbar-burger')[0] as HTMLElement;
-      if (burger) {
-         burger.addEventListener('click', () => {
-            let target = document.getElementById(burger.dataset['target'] || '');
-            burger.classList.toggle('is-active');
-            if (target) {
-               target.classList.toggle('is-active');
-            }
-         });
-      }
-   });
 
    async function logout() {
       localStorage.removeItem('login-token');
