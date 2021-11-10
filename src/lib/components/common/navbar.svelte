@@ -156,6 +156,15 @@
       transition: all 0.25s ease;
    }
 
+   .userMenu a {
+      display: block;
+      color: #eee;
+      padding: 10px 15px;
+   }
+   .userMenu a:hover {
+      background: #fff2;
+   }
+
    .userMenu::before {
       content: '';
       position: absolute;
