@@ -1,9 +1,9 @@
 <script type="ts">
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
-   import { getDifficultyLabel, getDifficultyOrStarValue, getDifficultyStyle } from '$lib/utils/helpers';
    import { fly } from 'svelte/transition';
-   import FormattedDate from '../common/formatted-date.svelte';
+   import FormattedDate from '$lib/components/common/formatted-date.svelte';
+   import { HMDs } from '$lib/utils/helpers';
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
@@ -22,18 +22,6 @@
    export function setVisibility(visible: boolean): any {
       isVisible = visible;
    }
-
-   const HMDs = {
-      0: 'Unknown',
-      1: 'Oculus Rift CV1',
-      2: 'Vive',
-      4: 'Vive Pro',
-      8: 'Windows Mixed Reality',
-      16: 'Rift S',
-      32: 'Oculus Quest',
-      64: 'Valve Index',
-      128: 'Vive Cosmos'
-   };
 </script>
 
 {#if isVisible}
