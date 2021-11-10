@@ -12,7 +12,7 @@
       searchModal?.setVisibility(true);
       searchModal?.search(val);
    };
-</script
+</script>
 
 <div class="song-container">
    <div class="song-image-wrapper">
