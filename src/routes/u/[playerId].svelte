@@ -20,7 +20,7 @@
    import RankChart from '$lib/components/player/rank-chart.svelte';
    import queryString from 'query-string';
    import { rankToPage } from '$lib/utils/helpers';
-   import { createQueryStore } from '$lib/query-store';
+   import { createMultiQueryStore, createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
 
@@ -35,8 +35,7 @@
 
    export let metadata: Player = undefined;
 
-   $: sort = createQueryStore('sort', 'top');
-   $: currentPage = createQueryStore('page', 1);
+   $: pageQuery = createMultiQueryStore(['sort', 'page'], ['top', '1']);
 
    function getPlayerInfoUrl(playerId: string) {
       return `/api/player/${playerId}/full`;
@@ -88,16 +87,17 @@
       }
    ];
 
-   $: selOption = $sort ? sortButtons.find((x) => x.value == $sort) : sortButtons[0];
+   $: selOption = $pageQuery['sort'] ? sortButtons.find((x) => x.value == $pageQuery['sort']) : sortButtons[0];
+   $: console.log('test', $pageQuery);
    function sortChanged(option: buttonGroupItem) {
       $requestCancel.cancel('Filter Changed');
-      $sort = option.value;
+      pageQuery.updateMultiple(['sort', 'page'], [option.value, 1]);
       updateCancelToken();
    }
 
    function changePage(page: number) {
       $requestCancel.cancel('Filter Changed');
-      $currentPage = page;
+      pageQuery.update('page', page);
       updateCancelToken();
    }
 </script>
@@ -205,7 +205,7 @@
                <ClassicPagination
                   totalItems={$playerData.scoreStats.totalPlayCount}
                   pageSize={8}
-                  currentPage={$currentPage}
+                  currentPage={$pageQuery['page']}
                   changePage={(e) => changePage(e)}
                />
             </div>

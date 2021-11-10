@@ -49,7 +49,7 @@
       {/if}
       <span class="stat">
          {#if score.score.fullCombo}
-            <span title="FC" class="fc">
+            <span title="Full Combo" class="fc">
                FC &nbsp;
                <i class="fas fa-check" />
             </span>
@@ -105,5 +105,8 @@
    .misses,
    .oldScore {
       color: var(--danger);
+   }
+   .acc {
+      font-weight: bold;
    }
 </style>

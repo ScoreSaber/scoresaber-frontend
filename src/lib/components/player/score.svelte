@@ -4,6 +4,7 @@
    import SmallSongInfo from '../leaderboard/small-song-info.svelte';
    import { rankToPage } from '$lib/utils/helpers';
    import PlayerScoreComponent from './player-score.svelte';
+   import { fly } from 'svelte/transition';
    export let score: PlayerScore;
    export let row: number = 0;
 </script>
