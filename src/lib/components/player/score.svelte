@@ -3,6 +3,7 @@
    import FormattedDate from '../common/formatted-date.svelte';
    import SmallSongInfo from '../leaderboard/small-song-info.svelte';
    import { rankToPage } from '$lib/utils/helpers';
+   import PlayerScoreComponent from './player-score.svelte';
    export let score: PlayerScore;
    export let row: number = 0;
 </script>
@@ -23,7 +24,9 @@
    <div>
       <SmallSongInfo leaderboard={score.leaderboard} />
    </div>
-   <div />
+   <div>
+      <PlayerScoreComponent {score} />
+   </div>
 </div>
 
 <style>
@@ -38,19 +41,23 @@
    .table-item > div {
       position: relative;
       grid-row: var(--row) / span 1;
-      padding: 7px;
+      padding: 5px;
       margin: 5px 0;
    }
    .table-item > div:nth-child(2) {
       grid-column: 1;
-      border-radius: 7px 0 0 7px;
+      border-radius: 8px 0 0 8px;
+      display: flex;
+      align-items: center;
+      height: 100%;
    }
    .table-item > div:nth-child(3) {
       grid-column: 2;
+      padding: 12px 5px;
    }
    .table-item > div:nth-child(4) {
       grid-column: 3;
-      border-radius: 0 7px 7px 0;
+      border-radius: 0 8px 8px 0;
    }
    .table-item {
       display: contents;
@@ -70,7 +77,7 @@
       background-repeat: no-repeat !important;
       background-size: cover !important;
       z-index: 0;
-      border-radius: 7px;
+      border-radius: 8px;
       background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%,
          rgba(0, 0, 0, 0) var(--bgURL) repeat scroll 0% 0%;
       grid-row: var(--row) / span 1;

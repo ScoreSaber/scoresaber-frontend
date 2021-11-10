@@ -11,7 +11,6 @@
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
    import Error from '$lib/components/common/error.svelte';
-   import Button from '$lib/components/common/button.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Badges from '$lib/components/player/badges.svelte';
