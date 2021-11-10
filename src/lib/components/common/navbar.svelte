@@ -17,6 +17,13 @@
       await fetcher('/api/auth/logout', { withCredentials: true });
       location.reload();
    }
+   function handleWindowKeydown({ key, metaKey, ctrlKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
+      if (key == 'Escape') return searchModal?.setVisibility(false);
+      if (key == '/' && (metaKey || ctrlKey) && !searchModal.isVisible()) {
+         searchModal?.setVisibility(true);
+         preventDefault();
+      }
+   }
 </script>
 
 <SearchView bind:this={searchModal} />
@@ -29,6 +36,7 @@
       }
    }}
    on:scroll={() => (headerIncreaseContrast = document.scrollingElement.scrollTop > 10)}
+   on:keydown={handleWindowKeydown}
 />
 
 <header class="{isExpanded ? 'expanded' : ''} {headerIncreaseContrast ? 'scrolled' : ''}">
