@@ -10,6 +10,9 @@ export async function loadMetadata(fetch: Function, url: string) {
          }
       }
       const res = await fetch(url);
+      if (res.url.includes('cloudflareaccess')) {
+         return {};
+      }
       if (res.ok) {
          return {
             props: {
