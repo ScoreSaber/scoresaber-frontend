@@ -68,9 +68,11 @@ export class Accio {
                if (!options.ignoreSubscriptions) {
                   const now = Date.now();
                   if (lastFocus === null || now - lastFocus > 5000) {
-                     lastFocus = now;
-                     console.log(`Regained focus, refreshing ${key}`);
-                     refresh({ forceRevalidate: true, softRefresh: true });
+                     setTimeout(() => {
+                        lastFocus = now;
+                        console.log(`Regained focus, refreshing ${key}`);
+                        refresh({ forceRevalidate: true, softRefresh: true });
+                     }, 100);
                   }
                }
             };
