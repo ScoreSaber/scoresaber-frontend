@@ -31,20 +31,20 @@ export function createQueryStore(prop: any, initialValue: any) {
    };
 }
 
-export function createMultiQueryStore(props: string[], initialValues: string[]) {
+export function pageQueryStore<T extends object, Key extends keyof T>(props: T) {
    var query = undefined;
    return {
-      subscribe: (h) => {
+      subscribe: (h): T => {
          return page.subscribe((p) => {
             query = queryString.parse(p.query.toString());
-            h(props.map((p, i) => {
+            h(Object.keys(props).map((p) => {
                return {
-                  [p]: query[p] || initialValues[i]
+                  [p]: query[p] || props[p]
                }
             }).reduce((a, b) => { return { ...a, ...b } }));
          });
       },
-      update: async (prop: string, v: any) => {
+      updateSingle: async (prop: Key, v: any): Promise<void> => {
          if (v === null) {
             delete query[prop];
          } else {
@@ -54,12 +54,12 @@ export function createMultiQueryStore(props: string[], initialValues: string[]) 
          const g = `?${urlSearchParams.toString()}`;
          goto(g, { keepfocus: true, noscroll: true });
       },
-      updateMultiple: async (props: string[], vals: any[]) => {
-         props.forEach((p, i) => {
-            if (vals[i] === null) {
+      update: async (props: Partial<T>): Promise<void> => {
+         Object.keys(props).forEach((p) => {
+            if (props[p] === null) {
                delete query[p];
             } else {
-               query[p] = vals[i];
+               query[p] = props[p];
             }
          });
          const urlSearchParams = new URLSearchParams(query);

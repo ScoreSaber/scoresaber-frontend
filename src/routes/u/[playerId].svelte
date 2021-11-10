@@ -19,8 +19,8 @@
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
    import queryString from 'query-string';
+   import { pageQueryStore } from '$lib/query-store';
    import { rankToPage } from '$lib/utils/helpers';
-   import { createMultiQueryStore, createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
 
@@ -35,7 +35,7 @@
 
    export let metadata: Player = undefined;
 
-   $: pageQuery = createMultiQueryStore(['sort', 'page'], ['top', '1']);
+   $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });
 
    function getPlayerInfoUrl(playerId: string) {
       return `/api/player/${playerId}/full`;
@@ -88,16 +88,18 @@
    ];
 
    $: selOption = $pageQuery['sort'] ? sortButtons.find((x) => x.value == $pageQuery['sort']) : sortButtons[0];
-   $: console.log('test', $pageQuery);
    function sortChanged(option: buttonGroupItem) {
       $requestCancel.cancel('Filter Changed');
-      pageQuery.updateMultiple(['sort', 'page'], [option.value, 1]);
+      pageQuery.update({
+         page: 1,
+         sort: option.value
+      });
       updateCancelToken();
    }
 
    function changePage(page: number) {
       $requestCancel.cancel('Filter Changed');
-      pageQuery.update('page', page);
+      pageQuery.updateSingle('page', page);
       updateCancelToken();
    }
 </script>
