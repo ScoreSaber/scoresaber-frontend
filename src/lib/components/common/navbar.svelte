@@ -69,7 +69,7 @@
             <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square"><i class="fa fa-user" /></a>
          {:else}
             <a
-               href="javascript: void(0);"
+               href={'javascript: void(0);'}
                bind:this={menuButton}
                class="user"
                on:click={({ preventDefault }) => {
