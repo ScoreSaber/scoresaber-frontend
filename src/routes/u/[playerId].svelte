@@ -200,7 +200,7 @@
                      </tr>
                   </thead>
                   <tbody>
-                     {#each $scoreData as score}
+                     {#each $scoreData as score (score.score.id)}
                         <Score {score} />
                      {/each}
                   </tbody>
