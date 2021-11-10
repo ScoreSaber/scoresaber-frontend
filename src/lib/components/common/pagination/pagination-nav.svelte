@@ -6,7 +6,9 @@
    import { createEventDispatcher } from 'svelte';
    import generateNavigationOptions from './generateNavigationOptions';
 
-   import { PREVIOUS_PAGE, NEXT_PAGE, ELLIPSIS } from './symbolTypes';
+   const PREVIOUS_PAGE = 'PREVIOUS_PAGE';
+   const NEXT_PAGE = 'NEXT_PAGE';
+   const ELLIPSIS = 'ELLIPSIS';
 
    const dispatch = createEventDispatcher();
 

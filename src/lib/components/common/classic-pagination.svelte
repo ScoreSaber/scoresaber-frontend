@@ -54,6 +54,15 @@
       background-color: var(--foreground);
    }
 
+   .pages :global(.option.disabled):hover {
+      background-color: var(--foreground);
+   }
+
+   .pages :global(.option.active):hover {
+      background-color: var(--background);
+      cursor: default;
+   }
+
    .pages :global(.option):hover {
       background-color: var(--gray-light);
    }

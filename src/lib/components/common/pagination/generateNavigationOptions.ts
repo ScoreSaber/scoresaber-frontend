@@ -2,7 +2,9 @@
  * Credits go to @TahaSh from the original svelte-paginate library.
  */
 
-import { PREVIOUS_PAGE, NEXT_PAGE, ELLIPSIS } from './symbolTypes';
+const PREVIOUS_PAGE = 'PREVIOUS_PAGE';
+const NEXT_PAGE = 'NEXT_PAGE';
+const ELLIPSIS = 'ELLIPSIS';
 
 export class PaginationInfo {
    totalItems: number;
