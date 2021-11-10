@@ -110,13 +110,6 @@
       position: relative;
    }
 
-   @supports (backdrop-filter: blur(20px)) {
-      header {
-         background: #202020aa;
-         backdrop-filter: blur(20px);
-      }
-   }
-
    header nav {
       display: flex;
       align-items: center;
