@@ -7,6 +7,8 @@
    $: loggedIn = $userData != undefined;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
+   let menuButton: HTMLAnchorElement;
+   let isExpanded = false;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
 
@@ -32,13 +34,24 @@
 
 <SearchView bind:this={searchModal} />
 
-<header>
+<svelte:window
+   on:click={({ target }) => {
+      if ((target instanceof Node && menuButton.contains(target)) || menuButton == target) return;
+      else {
+         userMenuVisible = false;
+      }
+   }}
+/>
+
+<header class={isExpanded ? 'expanded' : ''}>
    <div class="container">
+      <button class="hamburger" on:click={() => (isExpanded = !isExpanded)}><i class="fa fa-bars" /></button>
       <nav>
          <a href="/" class="logo-container"
             ><img src="/images/logo.svg" class="logo" alt="ScoreSaber" /><span class="navbar-label">ScoreSaber</span></a
          >
          <a href="/rankings" aria-label="Rankings"><i class="fa fa-medal" /><span class="navbar-label">Rankings</span></a>
+         <a href="/ranking/requests" aria-label="Rank Requests"><i class="fa fa-list" /><span class="navbar-label">Rank Requests</span></a>
          <a href="/leaderboards" aria-label="Maps"><i class="fa fa-map" /><span class="navbar-label">Maps</span></a>
       </nav>
       <button class="searchbox-container" on:click={showSearchModal}>
@@ -47,12 +60,14 @@
          </div>
       </button>
 
-      <nav>
+      <nav class="social">
+         <div style="flex:1" />
          {#if !loggedIn}
             <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square"><i class="fa fa-user" /></a>
          {:else}
             <a
                href="javascript: void(0);"
+               bind:this={menuButton}
                class="user"
                on:click={({ preventDefault }) => {
                   userMenuVisible = !userMenuVisible;
@@ -83,6 +98,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
+      position: relative;
    }
 
    @supports (backdrop-filter: blur(20px)) {
@@ -96,14 +112,16 @@
       display: flex;
       align-items: center;
       padding: 10px;
+      position: relative;
    }
 
    header nav:first-of-type {
       flex-grow: 1;
    }
-   nav > a {
+   nav > a,
+   .hamburger {
       padding: 10px 15px;
-      color: inherit;
+      color: #eee;
       transition: background 0.25s ease;
       border-radius: 5px;
       display: flex;
@@ -112,13 +130,27 @@
       height: 41px;
    }
 
-   nav > a.square {
+   .hamburger {
+      position: absolute;
+      background: transparent;
+      color: inherit;
+      top: 10px;
+      display: none;
+      right: 10px;
+      z-index: 2;
+      border: 0;
+      padding: 15px;
+   }
+
+   nav > a.square,
+   .hamburger {
       width: 41px;
       padding: 0;
       align-items: center;
       justify-content: center;
    }
-   nav > a:hover {
+   nav > a:hover,
+   .hamburger:hover {
       background: #fff2;
       color: var(--scoreSaberYellow);
    }
@@ -161,6 +193,7 @@
       display: block;
       color: #eee;
       padding: 10px 15px;
+      filter: drop-shadow(0 5px 10px #0005);
    }
    .userMenu a:hover {
       background: #fff2;
@@ -170,13 +203,14 @@
       content: '';
       position: absolute;
       bottom: 100%;
-      right: 20px;
+      right: 21px;
       display: block;
       width: 0;
       height: 0;
       border: solid 5px transparent;
       border-bottom-color: #3e3e3e;
    }
+
    .userMenu.visible {
       transform: none;
       opacity: 1;
@@ -225,38 +259,56 @@
       opacity: 0.2;
    }
 
-   @media all and (max-width: 512px) {
-      .fake-searchbox {
-         gap: 0;
-         width: 35px;
-         justify-content: center;
-         background: transparent;
-         cursor: pointer;
-         padding: 0;
-         font-size: 1.25em;
+   @media all and (max-width: 720px) {
+      header {
+         height: 61px;
+         transition: height 0.25s ease;
       }
 
-      .fake-searchbox:hover {
-         background: #fff2;
+      header.expanded {
+         height: 100vh;
+      }
+      .hamburger {
+         display: block;
+      }
+      .userMenu {
+         top: unset;
+         bottom: 100%;
+      }
+      .userMenu::before {
+         bottom: unset;
+         top: 100%;
+         border: solid 5px transparent;
+         border-top-color: #3e3e3e;
+      }
+      header {
+         /* height: 61px; */
+         overflow: hidden;
+      }
+      header .container {
+         flex-direction: column;
+         align-items: baseline;
+         width: 100%;
       }
 
       header nav {
-         gap: 5px;
-      }
-      .fake-searchbox span {
-         display: none;
+         flex-direction: column;
+         align-items: flex-start;
+         flex: 1;
+         width: 100%;
       }
 
-      nav > a,
+      header nav.social {
+         flex-direction: row;
+         margin-top: 5px;
+      }
+
+      .searchbox-container {
+         padding: 0 10px;
+         width: 100%;
+      }
       .fake-searchbox {
-         width: 41px;
-         padding: 0;
-         align-items: center;
-         justify-content: center;
-      }
-
-      nav > a span {
-         display: none;
+         width: 100%;
       }
    }
 
