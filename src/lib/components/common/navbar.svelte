@@ -1,6 +1,6 @@
 <script lang="ts">
    import { writable } from 'svelte/store';
-   import type SearchView from '$lib/components/common/search.svelte';
+   import SearchView from '$lib/components/common/search.svelte';
    import { userData, searchView } from '$lib/global-store';
    import { API_URL, CDN_URL } from '../../utils/env';
    import fetcher from '$lib/utils/fetcher';
@@ -28,6 +28,8 @@
       }
    }
 </script>
+
+<SearchView bind:this={searchModal} />
 
 <svelte:window
    on:click={({ target }) => {
