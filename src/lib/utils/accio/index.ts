@@ -4,7 +4,7 @@ import { get, writable } from 'svelte/store';
 import { DefaultCache, CacheItem } from './cache';
 import queryString from 'query-string';
 import { browser } from '$app/env';
-import { requestCancel } from '$lib/global-store';
+import { requestCancel } from './canceler';
 
 export class Accio {
    useAccio<D = any, E = Error>(key: string, options?: Partial<AccioOptions<D>>) {
