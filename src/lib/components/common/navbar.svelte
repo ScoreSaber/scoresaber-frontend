@@ -23,7 +23,7 @@
 
 <svelte:window
    on:click={({ target }) => {
-      if ((target instanceof Node && menuButton.contains(target)) || menuButton == target) return;
+      if ((loggedIn && target instanceof Node && menuButton.contains(target)) || menuButton == target) return;
       else {
          userMenuVisible = false;
       }
