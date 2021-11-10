@@ -49,10 +49,9 @@
       <nav>
          <a href="/" class="logo-container"
             ><img src="/images/logo.svg" class="logo" alt="ScoreSaber" /><span class="navbar-label">ScoreSaber</span></a
-         >
+         > <a href="/leaderboards" aria-label="Maps"><i class="fa fa-map" /><span class="navbar-label">Maps</span></a>
          <a href="/rankings" aria-label="Rankings"><i class="fa fa-medal" /><span class="navbar-label">Rankings</span></a>
          <a href="/ranking/requests" aria-label="Rank Requests"><i class="fa fa-list" /><span class="navbar-label">Rank Requests</span></a>
-         <a href="/leaderboards" aria-label="Maps"><i class="fa fa-map" /><span class="navbar-label">Maps</span></a>
       </nav>
       <button class="searchbox-container" on:click={showSearchModal}>
          <div class="fake-searchbox">
