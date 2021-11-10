@@ -6,8 +6,6 @@
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
 
-   import ScoreModal from './score-modal.svelte';
-
    function getAccuracy() {
       let scoreCalc = score.baseScore;
       let maxScore = leaderboard.maxScore;
@@ -15,13 +13,12 @@
       return (scoreCalc / maxScore) * 100;
    }
 
-   let setVisibility;
-   function openScoreDetails(): any {
-      setVisibility(true);
+   export let showScoreModal: any;
+   function openScoreDetails(score: Score): any {
+      showScoreModal(score);
    }
 </script>
 
-<ScoreModal {score} {leaderboard} {otherScores} bind:setVisibility />
 <tr class="table-item">
    <td class="rank" width="5px">
       #{score.rank.toLocaleString('en-US')}
@@ -39,7 +36,7 @@
       <span><FormattedDate date={new Date(score.timeSet)} /></span>
    </td>
    <td class="score centered">
-      <span class="score" on:click={openScoreDetails}>{score.modifiedScore.toLocaleString('en-US')}</span>
+      <span class="score" on:click={openScoreDetails(score)}>{score.modifiedScore.toLocaleString('en-US')}</span>
    </td>
    {#if otherScores.filter((score) => score.modifiers.length > 0).length > 0}
       <td class="mods centered">

@@ -19,6 +19,7 @@
    import Filter from '$lib/components/common/filter.svelte';
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
+   import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
 
    $: currentPage = createQueryStore('page', 1);
    $: countries = createQueryStore('countries', undefined);
@@ -75,6 +76,14 @@
       }
    });
 
+   let scoreChosen: Score = null;
+   let setVisibility;
+
+   function showScoreModal(score: Score) {
+      scoreChosen = score;
+      setVisibility(true);
+   }
+
    onDestroy(pageUnsubscribe);
 </script>
 
@@ -109,7 +118,7 @@
                            </thead>
                            <tbody>
                               {#each $leaderboardScores as score}
-                                 <LeaderboardRow {score} leaderboard={$leaderboard} otherScores={$leaderboardScores} />
+                                 <LeaderboardRow {score} leaderboard={$leaderboard} otherScores={$leaderboardScores} {showScoreModal} />
                               {/each}
                            </tbody>
                         </table>
@@ -159,6 +168,8 @@
       </div>
    </div>
 </div>
+
+<ScoreModal score={scoreChosen} leaderboard={$leaderboard} otherScores={$leaderboardScores} bind:setVisibility />
 <Footer />
 
 <style>
