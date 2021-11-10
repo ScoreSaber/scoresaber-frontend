@@ -1,10 +1,11 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
+   import SmallSongInfo from '../leaderboard/small-song-info.svelte';
    import queryString from 'query-string';
    import fetcher from '$lib/utils/fetcher';
    import axios from 'axios';
-   import CountryImage from '$lib/components/image/country-image.svelte';
+   import PlayerLink from '../player/player-link.svelte';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
@@ -46,7 +47,8 @@
    let debounceTimer;
 
    const scrollToActive = () => {
-      const target = resultsElement.querySelectorAll(`a.result`)[Math.max(0, focusElement - 1)];
+      if (focusElement < 2) return resultsElement.scrollTo({ top: 0, behavior: 'smooth' });
+      const target = resultsElement.querySelectorAll(`.result`)[Math.max(0, focusElement - 2)];
       target.scrollIntoView({ behavior: 'smooth' });
    };
 
@@ -119,10 +121,6 @@
          search(searchValue);
       }, 200);
    };
-
-   function onLinkClicked() {
-      setVisibility(false);
-   }
 </script>
 
 <div class="modal-background {visible ? 'is-visible' : ''}" on:click={() => setVisibility(false)} />
@@ -154,11 +152,11 @@
                <div>Loading...</div>
             {:else}
                {#each searchResults.players as player, i}
-                  <a on:click={() => onLinkClicked()} href="/u/{player.id}" class="result {i == focusElement ? 'focus' : ''}">
+                  <div class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
-                     <span class="player-name"><CountryImage country={player.country} /> {player.name}</span>
-                     <span class="rank">#{player.rank.toLocaleString('en-US')}</span></a
-                  >
+                     <div class="player-name"><PlayerLink {player} destination="/u/{player.id}" /></div>
+                     <div class="rank">#{player.rank.toLocaleString(navigator?.language ?? 'en-AU')}</div>
+                  </div>
                {/each}
             {/if}
          </div>
@@ -174,23 +172,9 @@
                <div>Loading...</div>
             {:else}
                {#each searchResults.leaderboards as leaderboard, i}
-                  <a
-                     on:click={() => onLinkClicked()}
-                     href="/leaderboard/{leaderboard.id}"
-                     class="result map-result {i == focusElement - searchResults.players.length ? 'focus' : ''}"
-                  >
-                     <div class="cover-art">
-                        <img src={leaderboard.coverImage} alt={leaderboard.songName} />
-                        <div class="difficulty-badge" style="background-color: {colours[leaderboard.difficultyRaw.replace(/_(.*?)_.*/, '$1')]}">
-                           {leaderboard.stars ? `★ ${leaderboard.stars}` : leaderboard.difficultyRaw.replace(/_(.*?)_.*/, '$1').replace('Plus', '+')}
-                        </div>
-                     </div>
-                     <div class="song-info">
-                        <div class="song-name">{leaderboard.songName}</div>
-                        <div class="song-artist">{leaderboard.songAuthorName}</div>
-                        <div class="mapper">{leaderboard.levelAuthorName}</div>
-                     </div>
-                  </a>
+                  <div class="result map {i == focusElement - searchResults.players.length ? 'focus' : ''}">
+                     <div><SmallSongInfo {leaderboard} /></div>
+                  </div>
                {/each}
             {/if}
          </div>
@@ -279,6 +263,14 @@
       white-space: nowrap;
    }
 
+   .result.map {
+      justify-content: space-between;
+   }
+
+   .result .player-name {
+      flex: 1;
+   }
+
    .results .rank {
       content: '⏎';
       border: solid 1px #777;
@@ -290,69 +282,9 @@
       height: 29px;
    }
 
-   .result .player-name {
-      flex: 1;
-   }
-
-   .results .map-result {
-      display: grid;
-      grid-template-columns: 100px calc(100% - 100px);
-      gap: 10px;
-      padding: 5px;
-   }
-
-   .map-result .song-name {
-      font-size: 1.5em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-weight: bold;
-      grid-row: 2;
-   }
-   .map-result .song-artist {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-   }
-
-   .song-info {
-      width: 100%;
-      padding-right: 15px;
-      display: flex;
-      flex-direction: column;
-   }
-   .map-result .cover-art {
-      position: relative;
-      padding: 10px;
-      width: 100px;
-      height: 100px;
-      flex-shrink: 0;
-      overflow: hidden;
-   }
-
-   .map-result .cover-art img {
-      border-radius: 5px;
-      background: #555;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-   }
-
-   .cover-art .difficulty-badge {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      padding: 3px 7px;
-      font-size: 0.8em;
-      border-radius: 5px;
-      font-weight: bold;
-      display: flex;
-      gap: 5px;
-   }
-
-   .results .result:hover,
    .results .result:focus,
    .results .result.focus {
-      background: #4a4a4a;
+      background: #0002;
    }
 
    .results .result.focus::after {
@@ -361,14 +293,8 @@
       padding: 5px 7px;
       border-radius: 5px;
       font-size: 0.5em;
-      height: 29px;
       display: flex;
       align-items: center;
-   }
-
-   .map-result.result.focus::after {
-      position: absolute;
-      right: 15px;
    }
 
    .search-box input {
@@ -391,6 +317,10 @@
       color: #eee;
       text-transform: uppercase;
       font-weight: bold;
+      background: #323232;
+      position: sticky;
+      top: 0;
+      z-index: 2;
    }
 
    .close,
