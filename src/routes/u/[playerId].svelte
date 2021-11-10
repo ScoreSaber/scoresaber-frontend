@@ -207,7 +207,7 @@
                <ClassicPagination
                   totalItems={$playerData.scoreStats.totalPlayCount}
                   pageSize={8}
-                  currentPage={$pageQuery['page']}
+                  currentPage={$pageQuery.page}
                   changePage={(e) => changePage(e)}
                />
             </div>

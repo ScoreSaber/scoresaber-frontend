@@ -10,8 +10,13 @@
 </script>
 
 <div class="table-item" style={`--row: ${row}`}>
-   <div class="background" style={`--bgURL: url(${score.leaderboard.coverImage})`} />
-   <div>
+   <div
+      in:fly|local={{ x: 100, duration: 300, delay: 40 * (row - 1) }}
+      out:fly|local={{ x: -100, duration: 300, delay: 40 * (row - 1) }}
+      class="background"
+      style={`--bgURL: url(${score.leaderboard.coverImage})`}
+   />
+   <div in:fly|local={{ x: 100, duration: 300, delay: 40 * (row - 1) }} out:fly|local={{ x: -100, duration: 300, delay: 40 * (row - 1) }}>
       <div class="rank-info">
          <span>
             <i class="fas fa-globe-americas" title="Ranking" />
@@ -22,10 +27,10 @@
          <FormattedDate date={score.score.timeSet} />
       </div>
    </div>
-   <div>
+   <div in:fly|local={{ x: 100, duration: 300, delay: 40 * (row - 1) }} out:fly|local={{ x: -100, duration: 300, delay: 40 * (row - 1) }}>
       <SmallSongInfo leaderboard={score.leaderboard} />
    </div>
-   <div>
+   <div in:fly|local={{ x: 100, duration: 300, delay: 40 * (row - 1) }} out:fly|local={{ x: -100, duration: 300, delay: 40 * (row - 1) }}>
       <PlayerScoreComponent {score} />
    </div>
 </div>
