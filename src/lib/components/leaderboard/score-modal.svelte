@@ -80,7 +80,7 @@
                               {/if}
                            </div>
                            <div class="scores">
-                              {#if otherScores.filter((score) => score.modifiers.length > 0).length > 0}
+                              {#if score.modifiers.length > 0}
                                  <div class="score">
                                     Mods<br /><b>{score.modifiers}</b> (x{score.multiplier})
                                  </div>
