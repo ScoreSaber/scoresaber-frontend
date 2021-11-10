@@ -97,8 +97,11 @@
       updateCancelToken();
    }
 
+   let pageDirection = 1;
+
    function changePage(page: number) {
       $requestCancel.cancel('Filter Changed');
+      pageDirection = page > $pageQuery.page ? 1 : -1;
       pageQuery.updateSingle('page', page);
       updateCancelToken();
    }
@@ -199,7 +202,7 @@
             <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each $scoreData as score, i (score.score.id)}
-                     <Score {score} row={i + 1} />
+                     <Score {pageDirection} {score} row={i + 1} />
                   {/each}
                </div>
             </div>
