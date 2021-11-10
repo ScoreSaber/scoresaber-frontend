@@ -30,7 +30,7 @@
 </script>
 
 <SearchView bind:this={searchModal} />
-<nav id="navbar" class="navbar has-border is-fixed-top" aria-label="main navigation">
+<!-- <nav id="navbar" class="navbar has-border is-fixed-top" aria-label="main navigation">
    <div class="container">
       <div class="navbar-brand">
          <a href="/" class="navbar-item">
@@ -96,75 +96,150 @@
          </div>
       </div>
    </div>
-</nav>
+</nav> -->
+
+<header>
+   <div class="container">
+      <nav>
+         <a href="/" class="logo-container"
+            ><img src="/images/logo.svg" class="logo" alt="ScoreSaber" /><span class="navbar-label">ScoreSaber</span></a
+         >
+         <a href="/rankings" aria-label="Rankings"><i class="fa fa-medal" /><span class="navbar-label">Rankings</span></a>
+         <a href="/leaderboards" aria-label="Maps"><i class="fa fa-map" /><span class="navbar-label">Maps</span></a>
+      </nav>
+      <button class="searchbox-container" on:click={showSearchModal}>
+         <div class="fake-searchbox">
+            <i class="fa fa-search" /><span><kbd>Ctrl</kbd> + <kbd>/</kbd></span>
+         </div>
+      </button>
+      <nav><a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square"><i class="fa fa-user" /></a></nav>
+   </div>
+</header>
 
 <style>
-   .navbar-menu {
-      background-color: var(--foreground);
+   header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      background: #202020;
    }
 
-   .navbar.has-border {
-      background-color: var(--foreground);
-      border-bottom: 1px solid var(--borderColor);
+   header .container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
    }
 
-   .navbar {
-      background-color: var(--foreground);
+   @supports (backdrop-filter: blur(20px)) {
+      header {
+         background: #202020aa;
+         backdrop-filter: blur(20px);
+      }
    }
 
-   .navbar-item,
-   .navbar-item:hover,
-   .navbar-item:focus {
-      color: var(--scoreSaberYellow);
-      background-color: var(--foreground);
-      border: 0;
+   header nav {
+      display: flex;
+      align-items: center;
+      padding: 10px;
    }
 
-   .navbar-item {
-      color: var(--textColor);
+   header nav:first-of-type {
+      flex-grow: 1;
+   }
+   header nav a {
+      padding: 10px 15px;
+      color: inherit;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 41px;
    }
 
-   .navbar-link,
-   .navbar-link:hover,
-   .navbar-link:focus {
-      color: var(--scoreSaberYellow);
-      background-color: var(--foreground);
-      border: 0;
+   header nav a.square {
+      width: 41px;
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+   }
+   header nav a:hover {
+      background: #fff2;
    }
 
-   .navbar-item.has-dropdown:focus .navbar-link,
-   .navbar-item.has-dropdown:hover .navbar-link {
-      background-color: var(--foreground);
-   }
-   .navbar-link {
-      color: var(--textColor);
+   header nav a span {
+      display: block;
    }
 
-   .navbar-link:hover {
-      background-color: var(--foreground);
+   header nav a .fa {
+      display: block;
+      font-size: 1.25em;
    }
 
-   .navbar-dropdown {
-      border-top: 2px solid var(--background);
-      background-color: var(--foreground);
+   header nav:last-of-type {
+      justify-content: end;
    }
 
-   .navbar-item:hover {
-      background-color: var(--foreground);
+   header nav,
+   .searchbox-container {
+      color: #eee;
    }
-
-   .navbar-item:active {
-      background-color: var(--foreground);
-   }
-
    .fake-searchbox {
-      background: #3c3c3c;
-      padding: 5px 10px;
+      background: #ffffff28;
+      padding: 5px 15px;
       cursor: text;
       border-radius: 5px;
       display: flex;
       align-items: center;
-      gap: 60px;
+      height: 41px;
+      width: 165px;
+      justify-content: space-between;
+   }
+   .fake-searchbox kbd {
+      padding: 2px 4px;
+      color: #fff;
+      opacity: 0.2;
+   }
+
+   @media all and (max-width: 512px) {
+      .fake-searchbox {
+         gap: 0;
+         width: 35px;
+         justify-content: center;
+         background: transparent;
+         cursor: pointer;
+         padding: 0;
+         font-size: 1.25em;
+      }
+
+      .fake-searchbox:hover {
+         background: #fff2;
+      }
+
+      header nav {
+         gap: 5px;
+      }
+      .fake-searchbox span {
+         display: none;
+      }
+
+      header nav a,
+      .fake-searchbox {
+         width: 41px;
+         padding: 0;
+         align-items: center;
+         justify-content: center;
+      }
+
+      header nav a span {
+         display: none;
+      }
+   }
+
+   .searchbox-container {
+      background: transparent;
+      border: 0;
    }
 
    .fake-searchbox span {
@@ -181,22 +256,9 @@
       border: solid 1px currentColor;
    }
 
-   .navbar-burger.is-button {
-      background-color: transparent;
-      border: none;
-      outline: none;
-   }
-
-   .navbar-burger.is-button:hover {
-      color: var(--scoreSaberYellow);
-   }
    .logo {
-      width: 28px;
-      height: 28px;
-      margin-top: 2px;
-      margin-right: 7px;
-   }
-   .fas {
-      padding-right: 5px;
+      height: 1em;
+      transform: scale(1.5);
+      display: block;
    }
 </style>
