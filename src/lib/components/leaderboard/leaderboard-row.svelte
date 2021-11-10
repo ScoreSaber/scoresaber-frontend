@@ -15,22 +15,14 @@
       return (scoreCalc / maxScore) * 100;
    }
 
+   let setVisibility;
+
    function openScoreDetails(): any {
-      console.log('clicked');
-
-      let modal = new ScoreModal({
-         target: document.body,
-         props: {
-            score,
-            leaderboard,
-            otherScores
-         }
-      });
-
-      modal.setVisibility(true);
+      setVisibility(true);
    }
 </script>
 
+<ScoreModal {score} {leaderboard} {otherScores} bind:setVisibility />
 <tr class="table-item">
    <td class="rank" width="5px">
       #{score.rank.toLocaleString('en-US')}
