@@ -25,6 +25,7 @@
       font-size: 14px;
       border-radius: 5px;
       margin: 0;
+      transition: background-color var(--transitionTime) ease-in-out;
    }
 
    .pages :global(.option.active) {
@@ -54,7 +55,7 @@
       background-color: var(--foreground);
    }
 
-   .pages :global(.option):hover {
+   .pages :global(.option:not(.active)):hover {
       background-color: var(--gray-light);
    }
 </style>
