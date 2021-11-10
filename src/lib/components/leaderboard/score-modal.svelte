@@ -8,8 +8,6 @@
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
 
-   let modalDiv: HTMLDivElement;
-
    $: isVisible = false;
 
    function getAccuracy() {
