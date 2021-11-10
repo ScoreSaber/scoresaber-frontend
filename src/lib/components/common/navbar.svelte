@@ -101,7 +101,7 @@
    header nav:first-of-type {
       flex-grow: 1;
    }
-   header nav a {
+   nav > a {
       padding: 10px 15px;
       color: inherit;
       transition: background 0.25s ease;
@@ -112,17 +112,17 @@
       height: 41px;
    }
 
-   header nav a.square {
+   nav > a.square {
       width: 41px;
       padding: 0;
       align-items: center;
       justify-content: center;
    }
-   header nav a:hover {
+   nav > a:hover {
       background: #fff2;
    }
 
-   header nav a span {
+   nav > a span {
       display: block;
    }
 
@@ -132,7 +132,7 @@
       transition: all 0.25s ease;
    }
 
-   header nav a.user {
+   nav > a.user {
       width: 41px;
       padding: 0;
       border-radius: 99999px;
@@ -185,7 +185,7 @@
       border-radius: 0 0 5px 5px;
    }
 
-   header nav a .fa {
+   nav > a .fa {
       display: block;
       font-size: 1.25em;
    }
@@ -237,7 +237,7 @@
          display: none;
       }
 
-      header nav a,
+      nav > a,
       .fake-searchbox {
          width: 41px;
          padding: 0;
@@ -245,7 +245,7 @@
          justify-content: center;
       }
 
-      header nav a span {
+      nav > a span {
          display: none;
       }
    }
