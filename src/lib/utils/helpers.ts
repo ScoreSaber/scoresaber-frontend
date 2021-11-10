@@ -75,8 +75,20 @@ export function getDifficultyOrStarValue(input: LeaderboardInfo): string {
 }
 
 export function groupBy(xs: any[], key: string) {
-   return xs.reduce((rv: { [x: string]: any[]; }, x: { [x: string]: string | number; }) => {
+   return xs.reduce((rv: { [x: string]: any[] }, x: { [x: string]: string | number }) => {
       (rv[x[key]] = rv[x[key]] || []).push(x);
       return rv;
    }, {});
+}
+
+export const HMDs = {
+   0: 'Unknown',
+   1: 'Oculus Rift CV1',
+   2: 'Vive',
+   4: 'Vive Pro',
+   8: 'Windows Mixed Reality',
+   16: 'Rift S',
+   32: 'Oculus Quest',
+   64: 'Valve Index',
+   128: 'Vive Cosmos'
 };
