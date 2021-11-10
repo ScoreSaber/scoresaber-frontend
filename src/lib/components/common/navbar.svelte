@@ -2,10 +2,11 @@
    import { onMount } from 'svelte';
    import SearchView from '$lib/components/common/search.svelte';
    import { userData } from '$lib/global-store';
-   import { API_URL } from '../../utils/env';
+   import { API_URL, CDN_URL } from '../../utils/env';
    import fetcher from '$lib/utils/fetcher';
    $: loggedIn = $userData != undefined;
    let searchModal: SearchView;
+   let userMenuVisible: boolean = false;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
 
@@ -30,73 +31,6 @@
 </script>
 
 <SearchView bind:this={searchModal} />
-<!-- <nav id="navbar" class="navbar has-border is-fixed-top" aria-label="main navigation">
-   <div class="container">
-      <div class="navbar-brand">
-         <a href="/" class="navbar-item">
-            <img src="/images/logo.svg" class="logo" alt="Logo" />
-            <b>ScoreSaber</b>
-         </a>
-         <button class="navbar-burger is-button" data-target="navMenu" aria-label="menu" aria-expanded="false">
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-         </button>
-      </div>
-      <div class="navbar-menu" id="navMenu">
-         <div class="navbar-start">
-            <a href="https://scoresaber.com" class="navbar-item">
-               <i class="fas fa-trophy" />
-               Leaderboards
-            </a>
-            <a href="/rankings" class="navbar-item">
-               <i class="fas fa-medal" />
-               Player Rankings
-            </a>
-            <a href="/ranking/requests" class="navbar-item">
-               <i class="fas fa-tasks" />
-               Rank Requests
-            </a>
-            {#if !loggedIn}
-               <a href={`${API_URL}/api/auth/steam`} class="navbar-item">
-                  <i class="fas fa-user" />
-                  Login
-               </a>
-            {:else}
-               <div class="navbar-item has-dropdown is-hoverable">
-                  <a href={''} class="navbar-link"> Profile </a>
-                  <div class="navbar-dropdown">
-                     <a href={`/u/${$userData.playerId}`} class="navbar-item">
-                        <i class="fas fa-user" />
-                        My Profile
-                     </a>
-                     <a href={`#`} on:click={() => logout()} class="navbar-item">
-                        <i class="fas fa-user-times" />
-                        Sign out
-                     </a>
-                  </div>
-               </div>
-            {/if}
-         </div>
-         <div class="navbar-end">
-            <a class="navbar-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/scoresaber">
-               <i class="fab fa-discord fa-2x" title="Join the ScoreSaber Discord!" />
-            </a>
-            <a class="navbar-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/ScoreSaber">
-               <i class="fab fa-twitter fa-2x" title="Follow us on Twitter for updates!" />
-            </a>
-            <a class="navbar-item donate" target="_blank" rel="noopener noreferrer" href="https://www.patreon.com/scoresaber">
-               <i class="fab fa-gratipay fa-2x" title="Support us on Patreon!" />
-            </a>
-            <button class="navbar-item" on:click={showSearchModal}>
-               <div class="fake-searchbox">
-                  <i class="fa fa-search" /><span><kbd>Ctrl</kbd> + <kbd>/</kbd></span>
-               </div>
-            </button>
-         </div>
-      </div>
-   </div>
-</nav> -->
 
 <header>
    <div class="container">
@@ -112,7 +46,26 @@
             <i class="fa fa-search" /><span><kbd>Ctrl</kbd> + <kbd>/</kbd></span>
          </div>
       </button>
-      <nav><a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square"><i class="fa fa-user" /></a></nav>
+
+      <nav>
+         {#if !loggedIn}
+            <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square"><i class="fa fa-user" /></a>
+         {:else}
+            <a
+               href="javascript: void(0);"
+               class="user"
+               on:click={({ preventDefault }) => {
+                  userMenuVisible = !userMenuVisible;
+               }}
+            >
+               <img src="{CDN_URL}/avatars/{$userData.playerId}.jpg" alt="" class="user-avatar" />
+               <div class="userMenu {userMenuVisible ? 'visible' : ''}">
+                  <a href="/u/{$userData.playerId}">My Profile</a>
+                  <a href="/api/auth/logout" on:click={() => logout()}>Log Out</a>
+               </div>
+            </a>
+         {/if}
+      </nav>
    </div>
 </header>
 
@@ -151,6 +104,7 @@
    header nav a {
       padding: 10px 15px;
       color: inherit;
+      transition: background 0.25s ease;
       border-radius: 5px;
       display: flex;
       align-items: center;
@@ -170,6 +124,65 @@
 
    header nav a span {
       display: block;
+   }
+
+   .user-avatar {
+      border-radius: 999px;
+      width: 41px;
+      transition: all 0.25s ease;
+   }
+
+   header nav a.user {
+      width: 41px;
+      padding: 0;
+      border-radius: 99999px;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .userMenu {
+      position: absolute;
+      top: 100%;
+      right: 5px;
+      color: #fff;
+      background: #3e3e3e;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      width: 150px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate3d(0, -10px, 0);
+      transition: all 0.25s ease;
+   }
+
+   .userMenu::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      right: 20px;
+      display: block;
+      width: 0;
+      height: 0;
+      border: solid 5px transparent;
+      border-bottom-color: #3e3e3e;
+   }
+   .userMenu.visible {
+      transform: none;
+      opacity: 1;
+      pointer-events: all;
+   }
+
+   .userMenu a {
+      border-radius: 0;
+   }
+
+   .userMenu > :first-child {
+      border-radius: 5px 5px 0 0;
+   }
+
+   .userMenu > :last-child {
+      border-radius: 0 0 5px 5px;
    }
 
    header nav a .fa {
