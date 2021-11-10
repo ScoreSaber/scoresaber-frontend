@@ -120,6 +120,7 @@
    }
    nav > a:hover {
       background: #fff2;
+      color: var(--scoreSaberYellow);
    }
 
    nav > a span {
