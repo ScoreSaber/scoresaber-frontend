@@ -11,6 +11,8 @@
    let focusElement: number = 0;
    let resultsElement: HTMLDivElement;
 
+   export const isVisible = () => visible;
+
    const diffNames = ['E', 'N', 'H', 'X', 'X+'];
    const colours = {
       Easy: '#4eb677',
@@ -89,7 +91,7 @@
             url: '/api/players',
             query: { search: value }
          }),
-         { cancelToken: cancel.token }
+         { cancelToken: cancel.token, withCredentials: true }
       ).then((players) => (searchResults.players = players));
       fetcher<LeaderboardInfo[]>(
          queryString.stringifyUrl({
@@ -100,7 +102,7 @@
                sort: 0
             }
          }),
-         { cancelToken: cancel.token }
+         { cancelToken: cancel.token, withCredentials: true }
       )
          .then((leaderboards) => (searchResults.leaderboards = leaderboards))
          .catch(absorbCancel);
@@ -118,20 +120,11 @@
       }, 200);
    };
 
-   function handleWindowKeydown({ key, metaKey, ctrlKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
-      if (key == 'Escape') return setVisibility(false);
-      if (key == '/' && (metaKey || ctrlKey) && !visible) {
-         setVisibility(true);
-         preventDefault();
-      }
-   }
-
    function onLinkClicked() {
       setVisibility(false);
    }
 </script>
 
-<svelte:window on:keydown={handleWindowKeydown} />
 <div class="modal-background {visible ? 'is-visible' : ''}" on:click={() => setVisibility(false)} />
 <div class="modal-container {visible ? 'is-visible' : ''}">
    <div class="search-wrapper">

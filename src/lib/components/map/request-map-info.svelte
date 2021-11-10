@@ -3,17 +3,17 @@
    import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus } from '$lib/utils/helpers';
    import FormattedDate from '../common/formatted-date.svelte';
    export let request: RankRequestInformation;
-
-   import SearchView from '$lib/components/common/search.svelte';
+   import type SearchView from '$lib/components/common/search.svelte';
+   import { searchView } from '$lib/global-store';
    let searchModal: SearchView;
+
+   searchView.subscribe((v) => (searchModal = v));
 
    const openSearch = (val) => {
       searchModal?.setVisibility(true);
       searchModal?.search(val);
    };
 </script>
-
-<SearchView bind:this={searchModal} />
 
 <div class="card map-card">
    <div
