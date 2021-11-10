@@ -32,6 +32,8 @@
    import { browser } from '$app/env';
    import ButtonGroup, { buttonGroupItem } from '$lib/components/common/button-group.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
+   import { requestCancel } from '$lib/global-store';
+   import defaultAxios from 'axios';
 
    export let metadata: Player = undefined;
 
@@ -90,11 +92,15 @@
 
    $: selOption = $sort ? sortButtons.find((x) => x.value == $sort) : sortButtons[0];
    function sortChanged(option: buttonGroupItem) {
+      $requestCancel.cancel('Filter Changed');
       $sort = option.value;
+      $requestCancel = defaultAxios.CancelToken.source();
    }
 
    function changePage(page: number) {
+      $requestCancel.cancel('Filter Changed');
       $currentPage = page;
+      $requestCancel = defaultAxios.CancelToken.source();
    }
 </script>
 
