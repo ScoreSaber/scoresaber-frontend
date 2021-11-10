@@ -4,10 +4,12 @@
    import SmallSongInfo from '../leaderboard/small-song-info.svelte';
    import { rankToPage } from '$lib/utils/helpers';
    export let score: PlayerScore;
+   export let row: number = 0;
 </script>
 
-<tr class="table-item">
-   <td>
+<div class="table-item" style={`--row: ${row}`}>
+   <div class="background" style={`--bgURL: url(${score.leaderboard.coverImage})`} />
+   <div>
       <div class="rank-info">
          <span>
             <i class="fas fa-globe-americas" title="Ranking" />
@@ -17,12 +19,12 @@
          </span>
          <FormattedDate date={score.score.timeSet} />
       </div>
-   </td>
-   <td>
+   </div>
+   <div>
       <SmallSongInfo leaderboard={score.leaderboard} />
-   </td>
-   <td />
-</tr>
+   </div>
+   <div />
+</div>
 
 <style>
    .rank-info {
@@ -30,34 +32,47 @@
       display: flex;
       flex-direction: column;
       text-align: center;
+      height: 100%;
+      justify-content: center;
    }
-
-   td {
-      border: none !important;
-      border-style: solid none;
-      align-items: center;
-      vertical-align: middle;
+   .table-item > div {
+      position: relative;
+      grid-row: var(--row) / span 1;
+      padding: 7px;
+      margin: 5px 0;
    }
-
-   td:first-child {
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
+   .table-item > div:nth-child(2) {
+      grid-column: 1;
+      border-radius: 7px 0 0 7px;
    }
-   td:last-child {
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
+   .table-item > div:nth-child(3) {
+      grid-column: 2;
    }
-
-   tr.table-item {
-      background-color: #323232;
+   .table-item > div:nth-child(4) {
+      grid-column: 3;
+      border-radius: 0 7px 7px 0;
    }
-   tr.table-item:hover {
-      background-color: #3c3c3c;
+   .table-item {
+      display: contents;
+      position: relative;
    }
-
    .fas.fa-globe-americas {
       height: 11px;
       width: 16px;
       cursor: help;
+   }
+   .background {
+      grid-column: 1 / span 3;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background-position: 50% !important;
+      background-repeat: no-repeat !important;
+      background-size: cover !important;
+      z-index: 0;
+      border-radius: 7px;
+      background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%,
+         rgba(0, 0, 0, 0) var(--bgURL) repeat scroll 0% 0%;
+      grid-row: var(--row) / span 1;
    }
 </style>

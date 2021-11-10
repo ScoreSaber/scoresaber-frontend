@@ -196,20 +196,11 @@
       {#if $scoreData && $playerData}
          {#if !$playerData.banned}
             <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
-               <table class="ranking songs">
-                  <thead>
-                     <tr>
-                        <th width="5px" />
-                        <th />
-                        <th />
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {#each $scoreData as score (score.score.id)}
-                        <Score {score} />
-                     {/each}
-                  </tbody>
-               </table>
+               <div class="ranking songs gridTable">
+                  {#each $scoreData as score, i (score.score.id)}
+                     <Score {score} row={i + 1} />
+                  {/each}
+               </div>
             </div>
             <div class="pagination">
                <ClassicPagination
@@ -232,13 +223,10 @@
 <Footer />
 
 <style>
-   table {
-      border-collapse: separate;
-      border-spacing: 0 5px;
-   }
-
-   .content table th {
-      border: none !important;
+   .gridTable {
+      display: grid;
+      grid-template-columns: 1fr 6fr 3fr;
+      padding: 10px;
    }
 
    .button-container {
@@ -247,8 +235,6 @@
    }
 
    h5.player {
-      /* display: flex; a
-      align-items: center; */
       margin-bottom: 0px !important;
    }
    .column.is-narrow {
