@@ -64,7 +64,7 @@
          <a href="https://twitter.com/scoresaber" title="Follow us on Twitter" class="square"><i class="fab fa-twitter fa-2x" /></a>
          <div style="flex:1" />
          {#if !loggedIn}
-            <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square"><i class="fa fa-user" /></a>
+            <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square" rel="external"><i class="fa fa-user" /></a>
          {:else}
             <a
                href={'javascript: void(0);'}
