@@ -47,7 +47,8 @@
    let debounceTimer;
 
    const scrollToActive = () => {
-      const target = resultsElement.querySelectorAll(`.result`)[Math.max(0, focusElement - 1)];
+      if (focusElement < 2) return resultsElement.scrollTo({ top: 0, behavior: 'smooth' });
+      const target = resultsElement.querySelectorAll(`.result`)[Math.max(0, focusElement - 2)];
       target.scrollIntoView({ behavior: 'smooth' });
    };
 
@@ -316,6 +317,10 @@
       color: #eee;
       text-transform: uppercase;
       font-weight: bold;
+      background: #323232;
+      position: sticky;
+      top: 0;
+      z-index: 2;
    }
 
    .close,
