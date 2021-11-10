@@ -83,6 +83,7 @@
 </head>
 
 <Navbar />
+
 <div>
    <div class="section">
       <div class="columns">

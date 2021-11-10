@@ -16,7 +16,6 @@
    }
 
    let setVisibility;
-
    function openScoreDetails(): any {
       setVisibility(true);
    }
