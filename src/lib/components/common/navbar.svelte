@@ -9,6 +9,7 @@
    let userMenuVisible: boolean = false;
    let menuButton: HTMLAnchorElement;
    let isExpanded = false;
+   let headerIncreaseContrast = false;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
 
@@ -41,9 +42,10 @@
          userMenuVisible = false;
       }
    }}
+   on:scroll={() => (headerIncreaseContrast = document.scrollingElement.scrollTop > 10)}
 />
 
-<header class={isExpanded ? 'expanded' : ''}>
+<header class="{isExpanded ? 'expanded' : ''} {headerIncreaseContrast ? 'scrolled' : ''}">
    <div class="container">
       <button class="hamburger" on:click={() => (isExpanded = !isExpanded)}><i class="fa fa-bars" /></button>
       <nav>
@@ -93,7 +95,12 @@
       left: 0;
       width: 100%;
       z-index: 100;
+      transition: all 0.25s ease;
       background: #202020;
+   }
+
+   header.scrolled {
+      background: #1c1c1c;
    }
 
    header .container {
@@ -265,7 +272,6 @@
    @media all and (max-width: 720px) {
       header {
          height: 61px;
-         transition: height 0.25s ease;
       }
 
       header.expanded {
