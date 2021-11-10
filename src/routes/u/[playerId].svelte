@@ -30,6 +30,7 @@
    import Score from '$lib/components/player/score.svelte';
    import { onDestroy } from 'svelte';
    import { browser } from '$app/env';
+   import ButtonGroup, { buttonGroupItem } from '$lib/components/common/button-group.svelte';
 
    export let metadata: Player = undefined;
 
@@ -71,6 +72,24 @@
       }
    });
    onDestroy(pageUnsubscribe);
+
+   const sortButtons: buttonGroupItem[] = [
+      {
+         label: 'Top Scores',
+         value: 'top',
+         icon: 'chevron-down'
+      },
+      {
+         label: 'Recent Scores',
+         value: 'recent',
+         icon: 'clock'
+      }
+   ];
+
+   $: selOption = $sort ? sortButtons.find((x) => x.value == $sort) : sortButtons[0];
+   function sortChanged(option: buttonGroupItem) {
+      $sort = option.value;
+   }
 </script>
 
 <head>
@@ -160,8 +179,7 @@
    </div>
    <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
       <div class="button-container">
-         <Button isDisabled={true} poggleable={true} title={'Top Scores'} icon={'chevron-down'} />
-         <Button poggleable={true} title={'Recent Scores'} icon={'clock'} />
+         <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
       </div>
 
       {#if $scoreData && $playerData}
