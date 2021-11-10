@@ -2,16 +2,17 @@
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
    export let leaderboard: LeaderboardInfo;
-   import SearchView from '$lib/components/common/search.svelte';
+   import type SearchView from '$lib/components/common/search.svelte';
+   import { searchView } from '$lib/global-store';
    let searchModal: SearchView;
+
+   searchView.subscribe((v) => (searchModal = v));
 
    const openSearch = (val) => {
       searchModal?.setVisibility(true);
       searchModal?.search(val);
    };
-</script>
-
-<SearchView bind:this={searchModal} />
+</script
 
 <div class="song-container">
    <div class="song-image-wrapper">

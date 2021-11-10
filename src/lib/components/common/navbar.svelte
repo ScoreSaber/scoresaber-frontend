@@ -1,8 +1,10 @@
 <script lang="ts">
-   import SearchView from '$lib/components/common/search.svelte';
-   import { userData } from '$lib/global-store';
+   import { writable } from 'svelte/store';
+   import type SearchView from '$lib/components/common/search.svelte';
+   import { userData, searchView } from '$lib/global-store';
    import { API_URL, CDN_URL } from '../../utils/env';
    import fetcher from '$lib/utils/fetcher';
+   import { onMount } from 'svelte';
    $: loggedIn = $userData != undefined;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
@@ -11,6 +13,7 @@
    let headerIncreaseContrast = false;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
+   onMount(() => searchView.set(searchModal));
 
    async function logout() {
       localStorage.removeItem('login-token');
@@ -25,8 +28,6 @@
       }
    }
 </script>
-
-<SearchView bind:this={searchModal} />
 
 <svelte:window
    on:click={({ target }) => {
