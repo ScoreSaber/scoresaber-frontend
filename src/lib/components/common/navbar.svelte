@@ -1,8 +1,10 @@
 <script lang="ts">
+   import { writable } from 'svelte/store';
    import SearchView from '$lib/components/common/search.svelte';
-   import { userData } from '$lib/global-store';
+   import { userData, searchView } from '$lib/global-store';
    import { API_URL, CDN_URL } from '../../utils/env';
    import fetcher from '$lib/utils/fetcher';
+   import { onMount } from 'svelte';
    $: loggedIn = $userData != undefined;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
@@ -11,11 +13,19 @@
    let headerIncreaseContrast = false;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
+   onMount(() => searchView.set(searchModal));
 
    async function logout() {
       localStorage.removeItem('login-token');
       await fetcher('/api/auth/logout', { withCredentials: true });
       location.reload();
+   }
+   function handleWindowKeydown({ key, metaKey, ctrlKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
+      if (key == 'Escape') return searchModal?.setVisibility(false);
+      if (key == '/' && (metaKey || ctrlKey) && !searchModal.isVisible()) {
+         searchModal?.setVisibility(true);
+         preventDefault();
+      }
    }
 </script>
 
@@ -29,6 +39,7 @@
       }
    }}
    on:scroll={() => (headerIncreaseContrast = document.scrollingElement.scrollTop > 10)}
+   on:keydown={handleWindowKeydown}
 />
 
 <header class="{isExpanded ? 'expanded' : ''} {headerIncreaseContrast ? 'scrolled' : ''}">
@@ -53,7 +64,7 @@
          <a href="https://twitter.com/scoresaber" title="Follow us on Twitter" class="square"><i class="fab fa-twitter fa-2x" /></a>
          <div style="flex:1" />
          {#if !loggedIn}
-            <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square"><i class="fa fa-user" /></a>
+            <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square" rel="external"><i class="fa fa-user" /></a>
          {:else}
             <a
                href={'javascript: void(0);'}

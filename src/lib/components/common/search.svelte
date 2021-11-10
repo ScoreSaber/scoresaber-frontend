@@ -11,6 +11,8 @@
    let focusElement: number = 0;
    let resultsElement: HTMLDivElement;
 
+   export const isVisible = () => visible;
+
    const diffNames = ['E', 'N', 'H', 'X', 'X+'];
    const colours = {
       Easy: '#4eb677',
@@ -89,7 +91,7 @@
             url: '/api/players',
             query: { search: value }
          }),
-         { cancelToken: cancel.token }
+         { cancelToken: cancel.token, withCredentials: true }
       ).then((players) => (searchResults.players = players));
       fetcher<LeaderboardInfo[]>(
          queryString.stringifyUrl({
@@ -100,7 +102,7 @@
                sort: 0
             }
          }),
-         { cancelToken: cancel.token }
+         { cancelToken: cancel.token, withCredentials: true }
       )
          .then((leaderboards) => (searchResults.leaderboards = leaderboards))
          .catch(absorbCancel);
@@ -118,32 +120,23 @@
       }, 200);
    };
 
-   function handleWindowKeydown({ key, metaKey, ctrlKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
-      if (key == 'Escape') return setVisibility(false);
-      if (key == '/' && (metaKey || ctrlKey) && !visible) {
-         setVisibility(true);
-         preventDefault();
-      }
-   }
-
    function onLinkClicked() {
       setVisibility(false);
    }
 </script>
 
-<svelte:window on:keydown={handleWindowKeydown} />
 <div class="modal-background {visible ? 'is-visible' : ''}" on:click={() => setVisibility(false)} />
 <div class="modal-container {visible ? 'is-visible' : ''}">
    <div class="search-wrapper">
       <div class="search-box">
          <div class="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
          </div>
          <input bind:value={searchValue} bind:this={inputBox} on:input={handleInput} on:keydown={handleKeydown} type="search" placeholder="Search" />
          <button on:click={() => setVisibility(false)} class="close" aria-label="close"
-            ><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg></button
          >
