@@ -61,9 +61,9 @@
       </button>
 
       <nav class="social">
-         <a href="https://discord.gg/scoresaber" title="Discord" class="square"><i class="fab fa-discord fa-2x" /></a>
-         <a href="https://www.patreon.com/scoresaber" title="Patreon" class="square"><i class="fab fa-patreon fa-2x" /></a>
-         <a href="https://twitter.com/scoresaber" title="Twitter" class="square"><i class="fab fa-twitter fa-2x" /></a>
+         <a href="https://discord.gg/scoresaber" title="Join our Discord!" class="square"><i class="fab fa-discord fa-2x" /></a>
+         <a href="https://www.patreon.com/scoresaber" title="Support us on Patreon ❤️" class="square"><i class="fab fa-patreon fa-2x" /></a>
+         <a href="https://twitter.com/scoresaber" title="Follow us on Twitter" class="square"><i class="fab fa-twitter fa-2x" /></a>
          <div style="flex:1" />
          {#if !loggedIn}
             <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square"><i class="fa fa-user" /></a>
