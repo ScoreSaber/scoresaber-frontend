@@ -31,10 +31,12 @@
    import { onDestroy } from 'svelte';
    import { browser } from '$app/env';
    import ButtonGroup, { buttonGroupItem } from '$lib/components/common/button-group.svelte';
+   import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
 
    export let metadata: Player = undefined;
 
    $: sort = createQueryStore('sort', 'top');
+   $: currentPage = createQueryStore('page', 1);
 
    function getPlayerInfoUrl(playerId: string) {
       return `/api/player/${playerId}/full`;
@@ -89,6 +91,10 @@
    $: selOption = $sort ? sortButtons.find((x) => x.value == $sort) : sortButtons[0];
    function sortChanged(option: buttonGroupItem) {
       $sort = option.value;
+   }
+
+   function changePage(page: number) {
+      $currentPage = page;
    }
 </script>
 
@@ -200,6 +206,14 @@
                   </tbody>
                </table>
             </div>
+            <div class="pagination">
+               <ClassicPagination
+                  totalItems={$playerData.scoreStats.totalPlayCount}
+                  pageSize={8}
+                  currentPage={$currentPage}
+                  changePage={(e) => changePage(e)}
+               />
+            </div>
          {/if}
       {:else if !$scoreData}
          <Loader />
@@ -259,6 +273,14 @@
 
    .stats {
       margin-top: 5px;
+   }
+
+   .pagination {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0;
    }
 
    @media only screen and (min-width: 769px) {
