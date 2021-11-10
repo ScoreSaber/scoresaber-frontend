@@ -8,7 +8,8 @@
    import { useAccio } from '$lib/utils/accio';
 
    const { data: team, error } = useAccio<ScoreSaberTeam>('https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json', {
-      fetcher: axios
+      fetcher: axios,
+      withCredentials: false
    });
 </script>
 

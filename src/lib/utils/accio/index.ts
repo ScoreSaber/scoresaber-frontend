@@ -44,7 +44,7 @@ export class Accio {
             }
 
             if (!rawData) {
-               rawData = await options.fetcher(key, { withCredentials: true, cancelToken: get(requestCancel).token });
+               rawData = await options.fetcher(key, { withCredentials: options.withCredentials !== undefined ? options.withCredentials : true, cancelToken: get(requestCancel).token });
                const expiry = new Date();
                expiry.setTime(expiry.getTime() + parseInt(CACHE_EXPIRY_IN_MINUTES) * 60000);
                cache.set(key, new CacheItem({ data: rawData, expiresAt: expiry }));
@@ -136,7 +136,7 @@ export interface AccioOptions<D = any> {
    onSuccess: OnSuccess;
    onError: OnError;
    ignoreSubscriptions: boolean;
-   cancelToken?: any;
+   withCredentials?: boolean;
 }
 
 export interface AccioRefreshOptions {
@@ -157,7 +157,8 @@ export const defaultOptions: AccioOptions = {
    query: null,
    onSuccess: null,
    onError: null,
-   ignoreSubscriptions: false
+   ignoreSubscriptions: false,
+   withCredentials: true
 };
 
 export const createAccio = <D = any>(options?: Partial<AccioOptions<D>>) => new Accio();
