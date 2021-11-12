@@ -11,7 +11,7 @@
       <h1>Page not found</h1>
       <p>This website is beta software, there's a fair few dead links.</p>
    {:else}
-      <h1>{message?.length < 100 ? message.replace(/^Error: /, '') : `Error ${status ?? ''}`}</h1>
+      <h1>Error {status ?? ''}</h1>
       <p>Looks like something's gone wrong.</p>
       <p>This website' beta software, for now it's pretty safe to just ignore this.</p>
       <p class="status">Error info has been logged to console.</p>
