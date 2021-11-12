@@ -88,7 +88,6 @@
    {/if}
 </head>
 
-<Navbar />
 <div class="section">
    <div class="window has-shadow noheading">
       {#if $playerData}
@@ -191,8 +190,6 @@
       {/if}
    </div>
 </div>
-
-<Footer />
 
 <style>
    table {

@@ -48,7 +48,6 @@
    <title>Rank Requests | ScoreSaber!</title>
 </head>
 
-<Navbar />
 <div>
    <div class="section breakout">
       {#if $topRequests && $belowTopRequests}
@@ -168,7 +167,6 @@
       {/if}
    </div>
 </div>
-<Footer />
 
 <style>
    table {

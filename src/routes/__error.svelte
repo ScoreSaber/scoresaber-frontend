@@ -17,14 +17,11 @@
 </script>
 
 <div class="page-container">
-   <Navbar />
    <Error {status} {message} fullpage />
-   <Footer />
 </div>
 
 <style>
    .page-container {
-      min-height: calc(100vh - 61px);
       display: flex;
       flex-direction: column;
    }
