@@ -13,7 +13,7 @@
    {:else}
       <h1>{message?.length < 100 ? message.replace(/^Error: /, '') : `Error ${status ?? ''}`}</h1>
       <p>Looks like something's gone wrong.</p>
-      <p>This website' beta software, for now it's pretty safe to just ignore this</p>
+      <p>This website' beta software, for now it's pretty safe to just ignore this.</p>
       <p class="status">Error info has been logged to console.</p>
    {/if}
 </div>
@@ -21,7 +21,7 @@
 <style>
    .error {
       flex: 1;
-      padding: 3em;
+      padding: 2em 1.5em;
    }
 
    .status {
@@ -30,17 +30,12 @@
    }
    .error.fullpage {
       font-size: 2em;
+      padding: 4em 3em;
    }
    h1 {
       font-size: 3em;
       color: var(--scoreSaberYellow);
    }
-
-   pre {
-      background: #3c3c3c;
-      color: #eee;
-   }
-
    @media (max-width: 512px) {
       .error.fullpage {
          font-size: 1.5em;
