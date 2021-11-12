@@ -66,6 +66,7 @@
       display: flex;
       align-items: center;
       height: 100%;
+      margin: 0px;
    }
    .table-item > div:nth-child(3) {
       grid-column: 2;
