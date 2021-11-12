@@ -5,6 +5,7 @@ Once you've cloned the project and installed dependencies with `npm install` (or
 ```
 VITE_CDN_URL=https://cdn.scoresaber.com
 VITE_API_URL=https://novus.scoresaber.com
+VITE_API_KEY=YOUR_API_KEY
 ```
 
 To start a development server:
@@ -17,6 +18,7 @@ npm run dev -- --open
 ```
 
 ## Building
+
 ```bash
 npm run build
 ```
