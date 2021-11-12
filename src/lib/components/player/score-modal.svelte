@@ -116,7 +116,7 @@
       background-position: 50% !important;
       background-repeat: no-repeat !important;
       background-size: cover !important;
-      z-index: -1;
+      z-index: 0;
       border-radius: 10px;
    }
 
