@@ -8,6 +8,7 @@
    export let score: PlayerScore;
    export let row: number = 0;
    export let pageDirection: number = 1;
+   export let openModal: (score: PlayerScore) => void;
 </script>
 
 <div class="table-item" style={`--row: ${row}`}>
@@ -41,7 +42,7 @@
       in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
       out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
    >
-      <PlayerScoreComponent {score} />
+      <PlayerScoreComponent {openModal} {score} />
    </div>
 </div>
 

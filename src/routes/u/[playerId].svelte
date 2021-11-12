@@ -33,6 +33,9 @@
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import Modal, { bind } from '$lib/components/common/modal.svelte';
+   import { modal } from '$lib/global-store';
+   import ScoreModal from '$lib/components/player/score-modal.svelte';
 
    export let metadata: Player = undefined;
    const scoresPerPage = 8;
@@ -105,6 +108,10 @@
       pageDirection = page > $pageQuery.page ? 1 : -1;
       pageQuery.updateSingle('page', page);
       updateCancelToken();
+   }
+
+   function openModal(score: PlayerScore) {
+      modal.set(bind(ScoreModal, { player: $playerData, score: score }));
    }
 </script>
 
@@ -210,7 +217,7 @@
             <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each $scoreData as score, i (score.score.id)}
-                     <Score {pageDirection} {score} row={i + 1} />
+                     <Score {openModal} {pageDirection} {score} row={i + 1} />
                   {/each}
                </div>
             </div>
@@ -239,6 +246,7 @@
    </div>
 </div>
 
+<Modal show={$modal} />
 <Footer />
 
 <style>

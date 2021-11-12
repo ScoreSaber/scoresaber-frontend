@@ -2,6 +2,7 @@
    import type { PlayerScore } from '$lib/models/PlayerData';
 
    export let score: PlayerScore;
+   export let openModal: (score: PlayerScore) => void;
 
    function getAccuracy() {
       let scoreCalc = score.score.baseScore;
@@ -64,6 +65,9 @@
             </span>
          {/if}
       </span>
+      <span class="stat clickable" on:click={() => openModal(score)}>
+         <i class="fas fa-info-circle" />
+      </span>
    </div>
 </div>
 
@@ -86,6 +90,7 @@
       padding: 5px 7px;
       border-radius: 10px;
       background-color: var(--gray-light);
+      transition: background-color var(--transitionTime) ease-in-out;
       display: inline-block;
    }
    .scoreInfo .ranked {
@@ -108,5 +113,10 @@
    }
    .acc {
       font-weight: bold;
+   }
+
+   .clickable:hover {
+      background-color: var(--gray-dark);
+      cursor: pointer;
    }
 </style>
