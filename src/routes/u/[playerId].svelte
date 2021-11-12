@@ -259,6 +259,12 @@
       padding: 10px;
    }
 
+   @media (max-width: 512px) {
+      .gridTable {
+         grid-template-columns: 80px 8fr;
+      }
+   }
+
    .button-container {
       display: flex;
       justify-content: center;

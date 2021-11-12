@@ -55,7 +55,7 @@
       height: 100%;
       justify-content: center;
    }
-   .table-item > div {
+   .table-item > div:not(.background) {
       position: relative;
       grid-row: var(--row) / span 1;
       padding: 5px;
@@ -88,7 +88,7 @@
    }
    .background {
       grid-column: 1 / span 3;
-      position: absolute;
+      position: relative;
       top: 0;
       bottom: 0;
       background-position: 50% !important;
@@ -99,5 +99,40 @@
       background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%,
          rgba(0, 0, 0, 0) var(--bgURL) repeat scroll 0% 0%;
       grid-row: var(--row) / span 1;
+      margin: 5px 0;
+      padding: 8px;
+   }
+   @media (max-width: 512px) {
+      .table-item > div {
+         grid-row: calc(var(--row) * 3 + 1) / span 1 !important;
+      }
+      .table-item > div:nth-child(2),
+      .table-item > div:nth-child(3) {
+         padding: 8px;
+         margin-bottom: 0px;
+      }
+      .table-item > div:nth-child(2) {
+         grid-row: calc(var(--row) * 3) / span 1 !important;
+         grid-column: 1 / span 2;
+         margin-top: 5px;
+         margin-bottom: 0px;
+         padding-bottom: 0px;
+      }
+      .table-item > div:nth-child(2) > div {
+         flex-direction: row;
+         justify-content: space-around;
+         width: 100%;
+      }
+      .table-item > div:nth-child(3) {
+         grid-column: 1 / span 2;
+      }
+      .table-item > div:nth-child(4) {
+         margin-top: 0px;
+         grid-column: 1 / span 2;
+         grid-row: calc(var(--row) * 3 + 2) / span 1 !important;
+      }
+      .table-item > div.background {
+         grid-row: calc(var(--row) * 3) / span 3 !important;
+      }
    }
 </style>

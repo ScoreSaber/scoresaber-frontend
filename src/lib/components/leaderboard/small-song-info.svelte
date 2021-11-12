@@ -95,10 +95,4 @@
       margin: 0px;
       position: relative;
    }
-
-   @media only screen and (max-width: 769px) {
-      .tag {
-         bottom: auto !important;
-      }
-   }
 </style>

@@ -114,9 +114,17 @@
    .acc {
       font-weight: bold;
    }
-
    .clickable:hover {
       background-color: var(--gray-dark);
       cursor: pointer;
+   }
+
+   @media (max-width: 512px) {
+      .scoreInfo > div {
+         display: contents;
+      }
+      .scoreInfo {
+         flex-flow: row wrap;
+      }
    }
 </style>
