@@ -16,6 +16,7 @@
    import * as svelte from 'svelte';
    import { fade, fly } from 'svelte/transition';
    import { createEventDispatcher } from 'svelte';
+   import { modal } from '$lib/global-store';
 
    const dispatch = createEventDispatcher();
 
@@ -135,6 +136,7 @@
       onClose = callback.onClose || onClose;
       onClosed = callback.onClosed || onClosed;
       Component = null;
+      $modal = null;
       enableScroll();
    };
 
