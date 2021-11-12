@@ -31,10 +31,11 @@
    import { browser } from '$app/env';
    import ButtonGroup, { buttonGroupItem } from '$lib/components/common/button-group.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
+   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
 
    export let metadata: Player = undefined;
-
+   const scoresPerPage = 8;
    $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });
 
    function getPlayerInfoUrl(playerId: string) {
@@ -67,7 +68,7 @@
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser) {
          refreshScores({
-            newUrl: getPlayerScoresUrl(p.params.playerId, $page.query.toString())
+            newUrl: getPlayerScoresUrl(p.params.playerId, p.query.toString())
          });
          refreshRankings({ newUrl: getPlayerInfoUrl(p.params.playerId) });
       }
@@ -199,6 +200,13 @@
 
       {#if $scoreData && $playerData}
          {#if !$playerData.banned}
+            <div class="mobile top-arrowpagination">
+               <ArrowPagination
+                  pageClicked={changePage}
+                  page={parseInt($pageQuery.page)}
+                  maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
+               />
+            </div>
             <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each $scoreData as score, i (score.score.id)}
@@ -206,12 +214,19 @@
                   {/each}
                </div>
             </div>
-            <div class="pagination">
+            <div class="pagination desktop tablet">
                <ClassicPagination
                   totalItems={$playerData.scoreStats.totalPlayCount}
-                  pageSize={8}
+                  pageSize={scoresPerPage}
                   currentPage={$pageQuery.page}
                   changePage={(e) => changePage(e)}
+               />
+            </div>
+            <div class="mobile">
+               <ArrowPagination
+                  pageClicked={changePage}
+                  page={parseInt($pageQuery.page)}
+                  maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
                />
             </div>
          {/if}
@@ -227,6 +242,9 @@
 <Footer />
 
 <style>
+   .top-arrowpagination {
+      margin-top: 15px;
+   }
    .gridTable {
       display: grid;
       grid-template-columns: 1fr 6fr 3fr;
