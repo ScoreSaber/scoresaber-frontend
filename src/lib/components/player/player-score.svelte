@@ -57,7 +57,7 @@
          {:else}
             <span class="misses" title="Missed: {score.score.missedNotes}&#13;Bad Cut: {score.score.badCuts}&#13;Max Combo: {score.score.maxCombo}">
                <i class="fas fa-times" /> &nbsp;
-               {#if score.score.missedNotes}
+               {#if score.score.missedNotes || score.score.badCuts}
                   {score.score.missedNotes + score.score.badCuts}
                {:else}
                   FC
