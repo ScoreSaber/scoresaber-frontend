@@ -19,6 +19,7 @@
    import Permissions from '$lib/utils/permissions';
    import { browser } from '$app/env';
    import poster from '$lib/utils/poster';
+   import permissions from '$lib/utils/permissions';
 
    const {
       data: request,
@@ -46,6 +47,17 @@
       refreshRequest({ forceRevalidate: true, softRefresh: true });
    }
 
+   $: comment = '';
+
+   async function handleComment() {
+      let group;
+      if (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT)) group = 'rt';
+      else if (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT)) group = 'qat';
+      if (!group) return;
+      await poster(`${requestActionEndpoint}/${group}/comment`, { requestId: $page.params.requestId, comment }, { withCredentials: true });
+      await refreshRequest();
+   }
+
    onDestroy(pageUnsubscribe);
 </script>
 
@@ -64,6 +76,12 @@
                   <code>{decode($request.requestDescription)}</code>
                </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
+               {#if $userData && (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT) || Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT))}
+                  <div class="window has-shadow">
+                     <textarea class="textarea mb-2" bind:value={comment} placeholder="e.g. Hello world" />
+                     <button on:click={() => handleComment()} class="button is-small is-dark">Submit comment</button>
+                  </div>
+               {/if}
                {#if $request.rankComments.length + $request.qatComments.length === 0}
                   <span class="window has-shadow" color="has-text-color">No comments yet!</span>
                {/if}

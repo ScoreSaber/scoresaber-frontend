@@ -201,3 +201,53 @@ div.is-center {
 .has-navbar-fixed-top {
    padding-top: 61px !important;
 }
+
+.input,
+.textarea,
+.select select {
+   background-color: var(--gray);
+   border-color: var(--gray-dark);
+   border-radius: 4px;
+   color: #fff;
+   box-shadow: none;
+   max-width: 100%;
+   width: 100%;
+}
+
+.input:focus,
+.textarea:focus,
+.select select:focus,
+.is-focused.input,
+.is-focused.textarea,
+.select select.is-focused,
+.input:active,
+.textarea:active,
+.select select:active,
+.is-active.input,
+.is-active.textarea,
+.select select.is-active {
+   border-color: var(--scoreSaberYellow);
+   box-shadow: 0 0 0 0.125em rgba(72, 95, 199, 0.25);
+}
+
+.textarea::-webkit-input-placeholder {
+   color: var(--muted);
+}
+
+.textarea:-moz-placeholder {
+   /* Firefox 18- */
+   color: var(--muted);
+}
+
+.textarea::-moz-placeholder {
+   /* Firefox 19+ */
+   color: var(--muted);
+}
+
+.textarea:-ms-input-placeholder {
+   color: var(--muted);
+}
+
+.textarea::placeholder {
+   color: var(--muted);
+}
