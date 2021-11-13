@@ -4,6 +4,8 @@
    import type { UserData, TokenResponse } from '$lib/models/UserData';
    import { userData } from '$lib/global-store';
    import { useAccio } from '$lib/utils/accio';
+   import Navbar from '$lib/components/common/navbar.svelte';
+   import Footer from '$lib/components/common/footer.svelte';
 
    let tokenCheckAttempts: number = 0;
 
@@ -36,10 +38,25 @@
    } = useAccio<UserData>('/api/user/@me', { fetcher, onSuccess: onUserCheckSuccess, onError: onUserCheckFailed, ignoreSubscriptions: true });
 </script>
 
-<slot />
+<div class="root">
+   <Navbar />
+
+   <div class="page-container content">
+      <slot />
+   </div>
+   <Footer />
+</div>
 
 <style lang="scss" global>
    html {
       overflow: auto;
+   }
+   .root {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+   }
+   .content {
+      flex: 1;
    }
 </style>

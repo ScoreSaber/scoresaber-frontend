@@ -16,8 +16,6 @@
    <title>Team | ScoreSaber!</title>
 </head>
 
-<Navbar />
-
 <div class="section">
    <div class="window has-shadow">
       {#if $team}
@@ -41,8 +39,6 @@
       {/if}
    </div>
 </div>
-
-<Footer />
 
 <style>
 </style>

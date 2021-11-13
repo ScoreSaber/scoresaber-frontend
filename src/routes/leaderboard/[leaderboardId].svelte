@@ -91,8 +91,6 @@
    <title>{$leaderboard ? $leaderboard.songName + ' - Leaderboard' : 'Leaderboard'} | ScoreSaber!</title>
 </head>
 
-<Navbar />
-
 <div>
    <div class="section">
       <div class="columns">
@@ -170,7 +168,6 @@
 </div>
 
 <ScoreModal score={scoreChosen} leaderboard={$leaderboard} otherScores={$leaderboardScores} bind:setVisibility />
-<Footer />
 
 <style>
    @media screen and (max-width: 769px), print {

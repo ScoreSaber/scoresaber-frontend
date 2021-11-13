@@ -62,7 +62,6 @@
    <title>{$request ? $request.leaderboardInfo.songName + ' - Rank Request' : 'Rank Request'} | ScoreSaber!</title>
 </head>
 
-<Navbar />
 <div>
    <div class="section">
       <div class="columns">
@@ -248,7 +247,6 @@
       </div>
    </div>
 </div>
-<Footer />
 
 <style>
    @media screen and (max-width: 769px), print {

@@ -99,8 +99,6 @@
    <title>Rankings | ScoreSaber!</title>
 </head>
 
-<Navbar />
-
 <div class="section">
    <div class="window has-shadow noheading">
       {#if $regions === undefined}
@@ -153,8 +151,6 @@
       {/if}
    </div>
 </div>
-
-<Footer />
 
 <style>
    table {

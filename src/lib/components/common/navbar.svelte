@@ -10,10 +10,18 @@
    let userMenuVisible: boolean = false;
    let menuButton: HTMLAnchorElement;
    let isExpanded = false;
+   let scrollProbe: HTMLDivElement;
    let headerIncreaseContrast = false;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
-   onMount(() => searchView.set(searchModal));
+   onMount(() => {
+      searchView.set(searchModal);
+      const observer = new IntersectionObserver(([probe]) => {
+         headerIncreaseContrast = probe.intersectionRatio <= 0;
+      });
+
+      observer.observe(scrollProbe);
+   });
 
    async function logout() {
       localStorage.removeItem('login-token');
@@ -38,10 +46,10 @@
          userMenuVisible = false;
       }
    }}
-   on:scroll={() => (headerIncreaseContrast = document.scrollingElement.scrollTop > 10)}
    on:keydown={handleWindowKeydown}
 />
 
+<div bind:this={scrollProbe} />
 <header class="{isExpanded ? 'expanded' : ''} {headerIncreaseContrast ? 'scrolled' : ''}">
    <div class="container">
       <button class="hamburger" on:click={() => (isExpanded = !isExpanded)}><i class="fa fa-bars" /></button>
@@ -87,7 +95,7 @@
 
 <style>
    header {
-      position: fixed;
+      position: sticky;
       top: 0;
       left: 0;
       width: 100%;
