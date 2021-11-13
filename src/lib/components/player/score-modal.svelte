@@ -41,10 +41,9 @@
                PP
                <br />
                <b>
-                  <span title="Performance Points">
-                     {score.score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </span>
-                  <span class="ppLabel">pp</span>
+                  <span title="Performance Points"
+                     >{score.score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span
+                  ><span class="ppLabel">pp</span>
                </b>
             </div>
          {/if}
