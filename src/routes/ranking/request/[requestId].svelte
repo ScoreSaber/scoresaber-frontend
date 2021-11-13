@@ -55,8 +55,6 @@
       await refreshRequest({ forceRevalidate: true, softRefresh: true });
    }
 
-   $userData.permissions = permissions.groups.ADMIN;
-
    onDestroy(pageUnsubscribe);
 </script>
 
