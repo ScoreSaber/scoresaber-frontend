@@ -127,19 +127,24 @@ function generateLimitedOptions(totalPages: number, { limit, currentPage }: Pagi
 
 function addStepOptions(options: PaginationOptions[], currentPage, totalPages: number): PaginationOptions[] {
    currentPage = parseInt(currentPage); // TS decided that even after putting a type annotation, currentPage would still be a string. :)
-   return [
-      {
-         type: 'symbol',
-         symbol: PREVIOUS_PAGE,
-         value: currentPage <= 1 ? 1 : currentPage - 1
-      },
-      ...options,
-      {
-         type: 'symbol',
-         symbol: NEXT_PAGE,
-         value: currentPage >= totalPages ? totalPages : currentPage + 1
-      }
-   ];
+
+   if (options.length > 0) {
+      return [
+         {
+            type: 'symbol',
+            symbol: PREVIOUS_PAGE,
+            value: currentPage <= 1 ? 1 : currentPage - 1
+         },
+         ...options,
+         {
+            type: 'symbol',
+            symbol: NEXT_PAGE,
+            value: currentPage >= totalPages ? totalPages : currentPage + 1
+         }
+      ];
+   } else {
+      return options;
+   }
 }
 
 function getLimitThreshold(limit: number) {

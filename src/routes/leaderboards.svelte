@@ -41,6 +41,7 @@
    $: maxStar = createQueryStore('maxStar', 20);
    $: category = createQueryStore('category', 1);
    $: sort = createQueryStore('sort', 0);
+   $: search = createQueryStore('search', '');
 
    let rangeStars: number[] = [];
 
@@ -57,12 +58,13 @@
       };
    }
 
+   let searchValue;
+
    onMount(() => {
       rangeStars = [parseInt($minStar), parseInt($maxStar)];
+      searchValue = $search;
       refreshFilters();
    });
-
-   let filterChanged: boolean = false;
 
    const {
       data: leaderboards,
@@ -114,6 +116,15 @@
       toggleFilters();
    }
 
+   function changeSearch(event) {
+      if (event.target.value.length > 3) {
+         $search = event.target.value;
+         toggleFilters();
+      } else {
+         $search = null;
+      }
+   }
+
    let debounceTimer;
    function changeRangeStars(event) {
       clearTimeout(debounceTimer);
@@ -150,6 +161,12 @@
                query: queryString.parse(p.query.toString())
             })
          });
+         refreshLeaderboardsCount({
+            newUrl: queryString.stringifyUrl({
+               url: '/api/leaderboards',
+               query: queryString.parse(p.query.toString())
+            })
+         });
       }
    });
 
@@ -159,8 +176,6 @@
 <head>
    <title>Leaderboards | ScoreSaber!</title>
 </head>
-
-<Navbar />
 
 <div class="section">
    <div class="columns">
@@ -181,10 +196,10 @@
                            <tr class="table-item">
                               <td class="map"><SmallSongInfo {leaderboard} /></td>
                               <td class="plays centered">
-                                 {leaderboard.plays}
+                                 {leaderboard.plays.toLocaleString('en-US')}
                               </td>
                               <td class="plays-daily centered">
-                                 {leaderboard.dailyPlays}
+                                 {leaderboard.dailyPlays.toLocaleString('en-US')}
                               </td>
                            </tr>
                         {/each}
@@ -203,6 +218,10 @@
       </div>
       <div class="column is-4">
          <div class="window has-shadow noheading">
+            <div class="mb-2">Search Terms</div>
+            <input class="input mb-2" value={searchValue} on:input={(e) => changeSearch(e)} placeholder="Search..." />
+         </div>
+         <div class="window has-shadow noheading">
             <label class="checkbox">
                <input type="checkbox" checked={filters?.verified} on:click|preventDefault={toggleVerified} />
                Only show verified leaderboards
@@ -211,7 +230,8 @@
                <input type="checkbox" checked={filters?.ranked} on:click|preventDefault={toggleRanked} />
                Only show ranked leaderboards
             </label>
-            <hr />
+         </div>
+         <div class="window has-shadow noheading">
             <div class="mb-2">Sort By</div>
             <div class="select">
                <select value={filters?.category} on:change={changeCategory}>
@@ -244,7 +264,8 @@
                   Ascending
                </label>
             </div>
-            <hr />
+         </div>
+         <div class="window has-shadow noheading">
             <div class="mb-2 mt-2">Difficulty</div>
             <b>{rangeStars[0]}</b> to <b>{rangeStars[1]}</b> stars
             <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />

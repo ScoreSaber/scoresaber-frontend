@@ -259,6 +259,28 @@ div.is-center {
    color: var(--muted);
 }
 
+.input::-webkit-input-placeholder {
+   color: var(--muted);
+}
+
+.input:-moz-placeholder {
+   /* Firefox 18- */
+   color: var(--muted);
+}
+
+.input::-moz-placeholder {
+   /* Firefox 19+ */
+   color: var(--muted);
+}
+
+.input:-ms-input-placeholder {
+   color: var(--muted);
+}
+
+.input::placeholder {
+   color: var(--muted);
+}
+
 input {
    accent-color: var(--scoreSaberYellow);
 }
