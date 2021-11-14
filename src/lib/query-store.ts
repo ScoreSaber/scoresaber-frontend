@@ -1,6 +1,9 @@
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { get, writable } from 'svelte/store';
 import queryString from 'query-string';
+
+export const queryChangeTimeout = writable(null);
 
 export function createQueryStore(prop: any, initialValue: any) {
    var query = undefined;
@@ -21,6 +24,44 @@ export function createQueryStore(prop: any, initialValue: any) {
          } else {
             query[prop] = v;
          }
+         const urlSearchParams = new URLSearchParams(query);
+         const g = `?${urlSearchParams.toString()}`;
+         goto(g, { keepfocus: true, noscroll: true });
+      }
+   };
+}
+
+export function pageQueryStore<T extends object, Key extends keyof T>(props: T) {
+   var query = undefined;
+   return {
+      subscribe: (h): T => {
+         return page.subscribe((p) => {
+            query = queryString.parse(p.query.toString());
+            h(Object.keys(props).map((p) => {
+               return {
+                  [p]: query[p] || props[p]
+               }
+            }).reduce((a, b) => { return { ...a, ...b } }));
+         });
+      },
+      updateSingle: async (prop: Key, v: any): Promise<void> => {
+         if (v === null) {
+            delete query[prop];
+         } else {
+            query[prop] = v;
+         }
+         const urlSearchParams = new URLSearchParams(query);
+         const g = `?${urlSearchParams.toString()}`;
+         goto(g, { keepfocus: true, noscroll: true });
+      },
+      update: async (props: Partial<T>): Promise<void> => {
+         Object.keys(props).forEach((p) => {
+            if (props[p] === null) {
+               delete query[p];
+            } else {
+               query[p] = props[p];
+            }
+         });
          const urlSearchParams = new URLSearchParams(query);
          const g = `?${urlSearchParams.toString()}`;
          goto(g, { keepfocus: true, noscroll: true });

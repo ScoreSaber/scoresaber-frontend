@@ -16,10 +16,12 @@
 
 <div class="song-container">
    <div class="song-image-wrapper">
-      <img class="song-image" src={leaderboard.coverImage} alt="cock" />
-      <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
-         {getDifficultyOrStarValue(leaderboard)}
-      </div>
+      <figure>
+         <img class="song-image" src={leaderboard.coverImage} alt="{leaderboard.songName} Cover" />
+         <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
+            {getDifficultyOrStarValue(leaderboard)}
+         </div>
+      </figure>
    </div>
    <div class="song-info-container">
       <div class="song-info">
@@ -36,7 +38,7 @@
          </a>
       </div>
       <div class="mapper-info">
-         mapped by
+         Mapped by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.levelAuthorName)}>
             <span class="mapper-name">
                {leaderboard.levelAuthorName.length < 30 ? leaderboard.levelAuthorName : leaderboard.levelAuthorName.slice(0, 29).trim() + '…'}
@@ -63,9 +65,11 @@
    .song-info-container {
       display: flex;
       flex-direction: column;
+      justify-content: center;
    }
    .song-container {
       display: flex;
+      height: 100%;
    }
    .song-image-wrapper {
       display: flex;
@@ -78,7 +82,7 @@
       align-items: center;
       font-size: xx-small;
       position: absolute;
-      bottom: 0.5em;
+      bottom: 20%;
       right: 20px;
       min-width: 20px;
       color: white;
@@ -87,9 +91,8 @@
       cursor: help;
    }
 
-   @media only screen and (max-width: 769px) {
-      .tag {
-         bottom: auto !important;
-      }
+   figure {
+      margin: 0px;
+      position: relative;
    }
 </style>

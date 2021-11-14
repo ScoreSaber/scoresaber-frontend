@@ -1,9 +1,10 @@
 import { onMount, onDestroy } from 'svelte';
 import { CACHE_EXPIRY_IN_MINUTES } from '$lib/utils/env';
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import { DefaultCache, CacheItem } from './cache';
 import queryString from 'query-string';
 import { browser } from '$app/env';
+import { requestCancel } from './canceler';
 
 export class Accio {
    useAccio<D = any, E = Error>(key: string, options?: Partial<AccioOptions<D>>) {
@@ -43,7 +44,10 @@ export class Accio {
             }
 
             if (!rawData) {
-               rawData = await options.fetcher(key, { withCredentials: true });
+               rawData = await options.fetcher(key, {
+                  withCredentials: options.withCredentials !== undefined ? options.withCredentials : true,
+                  cancelToken: get(requestCancel).token
+               });
                const expiry = new Date();
                expiry.setTime(expiry.getTime() + parseInt(CACHE_EXPIRY_IN_MINUTES) * 60000);
                cache.set(key, new CacheItem({ data: rawData, expiresAt: expiry }));
@@ -135,6 +139,7 @@ export interface AccioOptions<D = any> {
    onSuccess: OnSuccess;
    onError: OnError;
    ignoreSubscriptions: boolean;
+   withCredentials?: boolean;
 }
 
 export interface AccioRefreshOptions {
@@ -155,7 +160,8 @@ export const defaultOptions: AccioOptions = {
    query: null,
    onSuccess: null,
    onError: null,
-   ignoreSubscriptions: false
+   ignoreSubscriptions: false,
+   withCredentials: true
 };
 
 export const createAccio = <D = any>(options?: Partial<AccioOptions<D>>) => new Accio();

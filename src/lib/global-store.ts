@@ -5,7 +5,8 @@ import type SearchView from '$lib/components/common/search.svelte';
 export const userData = writable(getUser());
 
 function getUser(): UserData | undefined {
-   return undefined;
+    return undefined;
 }
 
 export const searchView = writable<SearchView>();
+export const modal = writable(null);

@@ -25,6 +25,7 @@
       font-size: 14px;
       border-radius: 5px;
       margin: 0;
+      transition: background-color var(--transitionTime) ease-in-out;
    }
 
    .pages :global(.option.active) {

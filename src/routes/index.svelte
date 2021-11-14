@@ -7,7 +7,6 @@
    <title>ScoreSaber!</title>
 </head>
 
-<Navbar />
 <div>
    <section class="section is-fullwidth no-padding">
       <div>
@@ -26,7 +25,6 @@
       </div>
    </div>
 </div>
-<Footer />
 
 <style>
    @media screen and (min-width: 769px), print {

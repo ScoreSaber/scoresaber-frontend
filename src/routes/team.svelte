@@ -8,15 +8,14 @@
    import { useAccio } from '$lib/utils/accio';
 
    const { data: team, error } = useAccio<ScoreSaberTeam>('https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json', {
-      fetcher: axios
+      fetcher: axios,
+      withCredentials: false
    });
 </script>
 
 <head>
    <title>Team | ScoreSaber!</title>
 </head>
-
-<Navbar />
 
 <div class="section">
    <div class="window has-shadow">
@@ -41,8 +40,6 @@
       {/if}
    </div>
 </div>
-
-<Footer />
 
 <style>
 </style>
