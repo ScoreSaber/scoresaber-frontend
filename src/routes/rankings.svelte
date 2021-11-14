@@ -1,8 +1,6 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
    import { onDestroy } from 'svelte';
-   import Navbar from '$lib/components/common/navbar.svelte';
-   import Footer from '$lib/components/common/footer.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import PlayerRow from '$lib/components/player/player-row.svelte';
@@ -10,7 +8,7 @@
    import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
    import { useAccio } from '$lib/utils/accio';
-   import { createQueryStore } from '$lib/query-store';
+   import { createQueryStore, pageQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
    import Filter from '$lib/components/common/filter.svelte';
@@ -21,9 +19,12 @@
 
    const playersPerPage = 50;
 
-   $: currentPage = createQueryStore('page', 1);
-   $: countries = createQueryStore('countries', undefined);
-   $: regions = createQueryStore('regions', undefined);
+   $: pageQuery = pageQueryStore({
+      page: 1,
+      countries: null,
+      regions: null,
+      search: null
+   });
 
    let filterChanged: boolean = false;
 
@@ -52,7 +53,7 @@
    );
 
    function changePage(newPage: number) {
-      $currentPage = newPage;
+      pageQuery.updateSingle('page', newPage);
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
@@ -78,18 +79,18 @@
    function countryFilterUpdated(items: FilterItem[]) {
       filterChanged = true;
       if (items.length === 0) {
-         $countries = null;
+         pageQuery.updateSingle('countries', null);
       } else {
-         $countries = items.map((i) => i.key).join(',');
+         pageQuery.updateSingle('countries', items.map((i) => i.key).join(','));
       }
    }
 
    function regionFilterUpdated(items: FilterItem[]) {
       filterChanged = true;
       if (items.length === 0) {
-         $regions = null;
+         pageQuery.updateSingle('regions', null);
       } else {
-         $regions = items.map((i) => i.key).join(',');
+         pageQuery.updateSingle('regions', items.map((i) => i.key).join(','));
       }
    }
 
@@ -103,17 +104,17 @@
 <div class="section">
    <div class="window has-shadow noheading filters">
       <div>
-         {#if $regions === undefined}
+         {#if $pageQuery.regions === null}
             <Filter
                items={filters.countryFilter}
-               initialItems={$countries}
+               initialItems={$pageQuery.countries}
                filterName={'Country'}
                withCountryImages={true}
                filterUpdated={countryFilterUpdated}
             />
          {/if}
-         {#if $countries === undefined}
-            <Filter items={filters.regionFilter} initialItems={$regions} filterName={'Region'} filterUpdated={regionFilterUpdated} />
+         {#if $pageQuery.countries === null}
+            <Filter items={filters.regionFilter} initialItems={$pageQuery.regions} filterName={'Region'} filterUpdated={regionFilterUpdated} />
          {/if}
       </div>
       <div class="divider" />
@@ -123,7 +124,7 @@
    </div>
    <div class="window has-shadow noheading">
       {#if $playerCount && $rankings && $playerCount}
-         <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+         <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
       {#if $rankings && $playerCount}
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
@@ -154,7 +155,7 @@
          <Error message={$rankingsError.toString() || $playerCountError.toString()} />
       {/if}
       {#if $playerCount && $rankings && $playerCount}
-         <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+         <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
    </div>
 </div>
