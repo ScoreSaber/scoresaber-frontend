@@ -3,11 +3,25 @@
    import FormattedDate from '../common/formatted-date.svelte';
    import SmallSongInfo from '../leaderboard/small-song-info.svelte';
    import { rankToPage } from '$lib/utils/helpers';
+   import PlayerScoreComponent from './player-score.svelte';
+   import { fly } from 'svelte/transition';
    export let score: PlayerScore;
+   export let row: number = 0;
+   export let pageDirection: number = 1;
+   export let openModal: (score: PlayerScore) => void;
 </script>
 
-<tr class="table-item">
-   <td>
+<div class="table-item" style={`--row: ${row}`}>
+   <div
+      in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+      out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+      class="background"
+      style={`--bgURL: url(${score.leaderboard.coverImage})`}
+   />
+   <div
+      in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+      out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+   >
       <div class="rank-info">
          <span>
             <i class="fas fa-globe-americas" title="Ranking" />
@@ -17,12 +31,20 @@
          </span>
          <FormattedDate date={score.score.timeSet} />
       </div>
-   </td>
-   <td>
+   </div>
+   <div
+      in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+      out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+   >
       <SmallSongInfo leaderboard={score.leaderboard} />
-   </td>
-   <td />
-</tr>
+   </div>
+   <div
+      in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+      out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+   >
+      <PlayerScoreComponent {openModal} {score} />
+   </div>
+</div>
 
 <style>
    .rank-info {
@@ -30,34 +52,87 @@
       display: flex;
       flex-direction: column;
       text-align: center;
+      height: 100%;
+      justify-content: center;
    }
-
-   td {
-      border: none !important;
-      border-style: solid none;
+   .table-item > div:not(.background) {
+      position: relative;
+      grid-row: var(--row) / span 1;
+      padding: 5px;
+      margin: 5px 0;
+   }
+   .table-item > div:nth-child(2) {
+      grid-column: 1;
+      border-radius: 8px 0 0 8px;
+      display: flex;
       align-items: center;
-      vertical-align: middle;
+      height: 100%;
+      margin: 0px;
    }
-
-   td:first-child {
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
+   .table-item > div:nth-child(3) {
+      grid-column: 2;
+      padding: 12px 5px;
    }
-   td:last-child {
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
+   .table-item > div:nth-child(4) {
+      grid-column: 3;
+      border-radius: 0 8px 8px 0;
    }
-
-   tr.table-item {
-      background-color: #323232;
+   .table-item {
+      display: contents;
+      position: relative;
    }
-   tr.table-item:hover {
-      background-color: #3c3c3c;
-   }
-
    .fas.fa-globe-americas {
       height: 11px;
       width: 16px;
       cursor: help;
+   }
+   .background {
+      grid-column: 1 / span 3;
+      position: relative;
+      top: 0;
+      bottom: 0;
+      background-position: 50% !important;
+      background-repeat: no-repeat !important;
+      background-size: cover !important;
+      z-index: 0;
+      border-radius: 8px;
+      background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%,
+         rgba(0, 0, 0, 0) var(--bgURL) repeat scroll 0% 0%;
+      grid-row: var(--row) / span 1;
+      margin: 5px 0;
+      padding: 8px;
+   }
+   @media (max-width: 512px) {
+      .table-item > div {
+         grid-row: calc(var(--row) * 3 + 1) / span 1 !important;
+      }
+      .table-item > div:nth-child(2),
+      .table-item > div:nth-child(3) {
+         padding: 8px;
+         margin-bottom: 0px;
+      }
+      .table-item > div:nth-child(2) {
+         grid-row: calc(var(--row) * 3) / span 1 !important;
+         grid-column: 1 / span 2;
+         margin-top: 5px;
+         margin-bottom: 0px;
+         padding-bottom: 0px;
+      }
+      .table-item > div:nth-child(2) > div {
+         flex-direction: row;
+         justify-content: space-around;
+         width: 100%;
+      }
+      .table-item > div:nth-child(3) {
+         grid-column: 1 / span 2;
+      }
+      .table-item > div:nth-child(4) {
+         margin-top: 0px;
+         grid-column: 1 / span 2;
+         grid-row: calc(var(--row) * 3 + 2) / span 1 !important;
+      }
+      .table-item > div.background {
+         grid-row: calc(var(--row) * 3) / span 3 !important;
+      }
    }
 </style>

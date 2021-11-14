@@ -8,10 +8,7 @@
 
 <script lang="ts">
    import type { Player, PlayerScore } from '$lib/models/PlayerData';
-   import Navbar from '$lib/components/common/navbar.svelte';
-   import Footer from '$lib/components/common/footer.svelte';
    import Error from '$lib/components/common/error.svelte';
-   import Button from '$lib/components/common/button.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Badges from '$lib/components/player/badges.svelte';
@@ -20,8 +17,8 @@
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
    import queryString from 'query-string';
+   import { pageQueryStore } from '$lib/query-store';
    import { rankToPage } from '$lib/utils/helpers';
-   import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
 
@@ -30,10 +27,17 @@
    import Score from '$lib/components/player/score.svelte';
    import { onDestroy } from 'svelte';
    import { browser } from '$app/env';
+   import ButtonGroup, { buttonGroupItem } from '$lib/components/common/button-group.svelte';
+   import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
+   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import Modal, { bind } from '$lib/components/common/modal.svelte';
+   import { modal } from '$lib/global-store';
+   import ScoreModal from '$lib/components/player/score-modal.svelte';
 
    export let metadata: Player = undefined;
-
-   $: sort = createQueryStore('sort', 'top');
+   const scoresPerPage = 8;
+   $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });
 
    function getPlayerInfoUrl(playerId: string) {
       return `/api/player/${playerId}/full`;
@@ -65,12 +69,48 @@
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser) {
          refreshScores({
-            newUrl: getPlayerScoresUrl(p.params.playerId, $page.query.toString())
+            newUrl: getPlayerScoresUrl(p.params.playerId, p.query.toString())
          });
          refreshRankings({ newUrl: getPlayerInfoUrl(p.params.playerId) });
       }
    });
    onDestroy(pageUnsubscribe);
+
+   const sortButtons: buttonGroupItem[] = [
+      {
+         label: 'Top Scores',
+         value: 'top',
+         icon: 'chevron-down'
+      },
+      {
+         label: 'Recent Scores',
+         value: 'recent',
+         icon: 'clock'
+      }
+   ];
+
+   $: selOption = $pageQuery['sort'] ? sortButtons.find((x) => x.value == $pageQuery['sort']) : sortButtons[0];
+   function sortChanged(option: buttonGroupItem) {
+      $requestCancel.cancel('Filter Changed');
+      pageQuery.update({
+         page: 1,
+         sort: option.value
+      });
+      updateCancelToken();
+   }
+
+   let pageDirection = 1;
+
+   function changePage(page: number) {
+      $requestCancel.cancel('Filter Changed');
+      pageDirection = page > $pageQuery.page ? 1 : -1;
+      pageQuery.updateSingle('page', page);
+      updateCancelToken();
+   }
+
+   function openModal(score: PlayerScore) {
+      modal.set(bind(ScoreModal, { player: $playerData, score: score }));
+   }
 </script>
 
 <head>
@@ -159,27 +199,39 @@
    </div>
    <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
       <div class="button-container">
-         <Button isDisabled={true} poggleable={true} title={'Top Scores'} icon={'chevron-down'} />
-         <Button poggleable={true} title={'Recent Scores'} icon={'clock'} />
+         <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
       </div>
 
       {#if $scoreData && $playerData}
          {#if !$playerData.banned}
+            <div class="mobile top-arrowpagination">
+               <ArrowPagination
+                  pageClicked={changePage}
+                  page={parseInt($pageQuery.page)}
+                  maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
+               />
+            </div>
             <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
-               <table class="ranking songs">
-                  <thead>
-                     <tr>
-                        <th width="5px" />
-                        <th />
-                        <th />
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {#each $scoreData as score}
-                        <Score {score} />
-                     {/each}
-                  </tbody>
-               </table>
+               <div class="ranking songs gridTable">
+                  {#each $scoreData as score, i (score.score.id)}
+                     <Score {openModal} {pageDirection} {score} row={i + 1} />
+                  {/each}
+               </div>
+            </div>
+            <div class="pagination desktop tablet">
+               <ClassicPagination
+                  totalItems={$playerData.scoreStats.totalPlayCount}
+                  pageSize={scoresPerPage}
+                  currentPage={$pageQuery.page}
+                  changePage={(e) => changePage(e)}
+               />
+            </div>
+            <div class="mobile">
+               <ArrowPagination
+                  pageClicked={changePage}
+                  page={parseInt($pageQuery.page)}
+                  maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
+               />
             </div>
          {/if}
       {:else if !$scoreData}
@@ -191,14 +243,22 @@
    </div>
 </div>
 
+<Modal show={$modal} />
+
 <style>
-   table {
-      border-collapse: separate;
-      border-spacing: 0 5px;
+   .top-arrowpagination {
+      margin-top: 15px;
+   }
+   .gridTable {
+      display: grid;
+      grid-template-columns: 1fr 6fr 3fr;
+      padding: 10px;
    }
 
-   .content table th {
-      border: none !important;
+   @media (max-width: 512px) {
+      .gridTable {
+         grid-template-columns: 80px 8fr;
+      }
    }
 
    .button-container {
@@ -207,8 +267,6 @@
    }
 
    h5.player {
-      /* display: flex; a
-      align-items: center; */
       margin-bottom: 0px !important;
    }
    .column.is-narrow {
@@ -238,6 +296,14 @@
 
    .stats {
       margin-top: 5px;
+   }
+
+   .pagination {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0;
    }
 
    @media only screen and (min-width: 769px) {
