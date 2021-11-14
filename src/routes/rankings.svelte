@@ -81,7 +81,11 @@
       if (items.length === 0) {
          pageQuery.updateSingle('countries', null);
       } else {
-         pageQuery.updateSingle('countries', items.map((i) => i.key).join(','));
+         pageQuery.update({
+            page: 1,
+            countries: items.map((i) => i.key).join(','),
+            regions: null
+         });
       }
    }
 
@@ -90,7 +94,11 @@
       if (items.length === 0) {
          pageQuery.updateSingle('regions', null);
       } else {
-         pageQuery.updateSingle('regions', items.map((i) => i.key).join(','));
+         pageQuery.update({
+            page: 1,
+            regions: items.map((i) => i.key).join(','),
+            countries: null
+         });
       }
    }
 
