@@ -5,12 +5,7 @@ import adapter from '@sveltejs/adapter-node';
 const config = {
    // Consult https://github.com/sveltejs/svelte-preprocess
    // for more information about preprocessors
-   preprocess: preprocess({
-      scss: {
-         includePaths: ['./src/styles'],
-         prependData: `@import 'src/styles/scoresaber.scss';`
-      }
-   }),
+   preprocess: preprocess(),
 
    kit: {
       //   ssr: false,

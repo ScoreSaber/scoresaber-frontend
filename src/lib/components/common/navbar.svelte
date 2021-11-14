@@ -5,6 +5,7 @@
    import { API_URL, CDN_URL } from '../../utils/env';
    import fetcher from '$lib/utils/fetcher';
    import { onMount } from 'svelte';
+   import '../../../styles/scoresaber.scss';
    $: loggedIn = $userData != undefined;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
