@@ -17,6 +17,7 @@
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
    import { browser } from '$app/env';
+   import SearchInput from '$lib/components/common/search-input.svelte';
 
    const playersPerPage = 50;
 
@@ -100,19 +101,25 @@
 </head>
 
 <div class="section">
-   <div class="window has-shadow noheading">
-      {#if $regions === undefined}
-         <Filter
-            items={filters.countryFilter}
-            initialItems={$countries}
-            filterName={'Country'}
-            withCountryImages={true}
-            filterUpdated={countryFilterUpdated}
-         />
-      {/if}
-      {#if $countries === undefined}
-         <Filter items={filters.regionFilter} initialItems={$regions} filterName={'Region'} filterUpdated={regionFilterUpdated} />
-      {/if}
+   <div class="window has-shadow noheading filters">
+      <div>
+         {#if $regions === undefined}
+            <Filter
+               items={filters.countryFilter}
+               initialItems={$countries}
+               filterName={'Country'}
+               withCountryImages={true}
+               filterUpdated={countryFilterUpdated}
+            />
+         {/if}
+         {#if $countries === undefined}
+            <Filter items={filters.regionFilter} initialItems={$regions} filterName={'Region'} filterUpdated={regionFilterUpdated} />
+         {/if}
+      </div>
+      <div class="divider" />
+      <div class="advancedSearch">
+         <SearchInput icon="fa-search" onSearch={(v) => console.log(v)} />
+      </div>
    </div>
    <div class="window has-shadow noheading">
       {#if $playerCount && $rankings && $playerCount}
@@ -152,7 +159,22 @@
    </div>
 </div>
 
-<style>
+<style lang="scss">
+   .filters {
+      display: flex;
+      flex-flow: row nowrap;
+      > div:not(:last-child) {
+         margin-right: 1rem;
+      }
+      .divider {
+         border: 1px solid #fff;
+      }
+      .advancedSearch {
+         display: flex;
+         align-items: center;
+         flex: 1;
+      }
+   }
    table {
       border-collapse: separate;
       white-space: nowrap;
