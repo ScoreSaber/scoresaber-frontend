@@ -20,6 +20,8 @@
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
+   import { userData } from '$lib/global-store';
+   import Permissions from '$lib/utils/permissions';
 
    $: currentPage = createQueryStore('page', 1);
    $: countries = createQueryStore('countries', undefined);
@@ -149,15 +151,17 @@
                      filterUpdated={countryFilterUpdated}
                   />
                </div>
-               <div class="window has-shadow mt-3">
-                  <div class="title is-6 mb-3">Ranking Tool</div>
-                  <button class="button is-small is-dark">
-                     <span class="icon is-small">
-                        <i class="fas fa-stream" />
-                     </span>
-                     <span>Create Rank Request</span>
-                  </button>
-               </div>
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
+                  <div class="window has-shadow mt-3">
+                     <div class="title is-6 mb-3">Ranking Tool</div>
+                     <button class="button is-small is-dark">
+                        <span class="icon is-small">
+                           <i class="fas fa-stream" />
+                        </span>
+                        <span>Create Rank Request</span>
+                     </button>
+                  </div>
+               {/if}
             </div>
          {:else}
             <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>

@@ -53,6 +53,27 @@ export function getCategoryFromNumber(category: number): Category {
    return Category.Trending;
 }
 
+export function getNumberFromCategory(category: Category): number {
+   switch (category) {
+      case Category.Trending: {
+         return 0;
+      }
+      case Category.DateRanked: {
+         return 1;
+      }
+      case Category.ScoresSet: {
+         return 2;
+      }
+      case Category.StarDifficulty: {
+         return 3;
+      }
+      case Category.Author: {
+         return 4;
+      }
+   }
+   return 0;
+}
+
 export function getSortDirectionFromNumber(direction: number): SortDirection {
    switch (direction) {
       case 0: {
@@ -63,6 +84,18 @@ export function getSortDirectionFromNumber(direction: number): SortDirection {
       }
    }
    return SortDirection.Descending;
+}
+
+export function getNumberFromSortDirection(direction: SortDirection): number {
+   switch (direction) {
+      case SortDirection.Descending: {
+         return 0;
+      }
+      case SortDirection.Ascending: {
+         return 1;
+      }
+   }
+   return 0;
 }
 
 export interface LeaderboardInfo {

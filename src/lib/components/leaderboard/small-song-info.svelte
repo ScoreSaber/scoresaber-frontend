@@ -25,13 +25,13 @@
       <div class="song-info">
          <a href={`/leaderboard/${leaderboard.id}`}>
             <span class="song-name">
-               {leaderboard.songName}
+               {leaderboard.songName.length < 30 ? leaderboard.songName : leaderboard.songName.slice(0, 29).trim() + '…'}
             </span>
          </a>
          by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.songAuthorName)}>
             <span>
-               {leaderboard.songAuthorName}
+               {leaderboard.songAuthorName.length < 30 ? leaderboard.songAuthorName : leaderboard.songAuthorName.slice(0, 29).trim() + '…'}
             </span>
          </a>
       </div>
@@ -39,7 +39,7 @@
          mapped by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.levelAuthorName)}>
             <span class="mapper-name">
-               {leaderboard.levelAuthorName}
+               {leaderboard.levelAuthorName.length < 30 ? leaderboard.levelAuthorName : leaderboard.levelAuthorName.slice(0, 29).trim() + '…'}
             </span>
          </a>
       </div>

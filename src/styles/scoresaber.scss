@@ -37,6 +37,10 @@
    --dev: #111111;
    --ppv3: #8d4eca;
    --supporter: #f96854;
+
+   --progress-bg: none;
+   --track-bg: #57512f;
+   --thumb-bg: var(--scoreSaberYellow);
 }
 
 html {
@@ -250,4 +254,27 @@ div.is-center {
 
 .textarea::placeholder {
    color: var(--muted);
+}
+
+input {
+   accent-color: var(--scoreSaberYellow);
+}
+
+.checkbox:hover,
+.radio:hover {
+   color: var(--scoreSaberYellow);
+}
+
+hr {
+   background-color: var(--gray);
+}
+
+.select:not(.is-multiple):not(.is-loading)::after {
+   border-color: var(--scoreSaberYellow);
+   right: 1.125em;
+   z-index: 4;
+}
+
+.select:not(.is-multiple):not(.is-loading):hover::after {
+   border-color: var(--scoreSaberYellow);
 }
