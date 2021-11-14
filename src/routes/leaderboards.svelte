@@ -134,6 +134,12 @@
             query: queryString.parse($page.query.toString())
          })
       });
+      refreshLeaderboardsCount({
+         newUrl: queryString.stringifyUrl({
+            url: '/api/leaderboards/get-pages',
+            query: queryString.parse($page.query.toString())
+         })
+      });
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
