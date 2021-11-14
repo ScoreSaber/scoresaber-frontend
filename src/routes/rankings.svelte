@@ -212,5 +212,15 @@
       .headers th:not(.player, .rank) {
          display: none;
       }
+
+      .filters {
+         flex-flow: column nowrap;
+         > div:not(:last-child) {
+            margin-bottom: 1rem;
+         }
+         .divider {
+            display: none;
+         }
+      }
    }
 </style>
