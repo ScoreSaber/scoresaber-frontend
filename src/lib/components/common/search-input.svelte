@@ -1,5 +1,7 @@
 <script lang="ts">
-   export let value: string = '';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+
+   export let value: string = null;
    export let placeholder: string = 'Search...';
    export let onSearch: (value: string) => void = () => {};
    export let icon: string = null;
@@ -15,16 +17,32 @@
          onSearch(value);
       }, 500);
    }
+
+   function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Enter') {
+         onSearch(value);
+      }
+   }
+
+   function clearSearch() {
+      $requestCancel.cancel('Filter Changed');
+      value = null;
+      updateCancelToken();
+      onSearch(value);
+   }
 </script>
 
-<div class="searchInput">
+<div class="searchInput" class:active={value !== null}>
    {#if icon}
       <i class="fas {icon}" />
    {/if}
    <div>
-      <input type="text" bind:value {placeholder} on:input={onChange} />
+      <input type="text" bind:value {placeholder} on:input={onChange} on:keydown={onKeyDown} />
       <div class="active" />
    </div>
+   {#if value}
+      <div class="clear" on:click={clearSearch}>X</div>
+   {/if}
 </div>
 
 <style lang="scss">
@@ -63,12 +81,21 @@
          background-color: var(--scoreSaberYellow);
          transition: width calc(var(--transitionTime) / 2) ease-in-out;
       }
-      &:focus-within {
+      &:focus-within,
+      &.active {
          .active {
             width: 100%;
          }
          i {
             color: var(--scoreSaberYellow);
+         }
+      }
+      .clear {
+         color: var(--danger);
+         flex: 0;
+         margin: 0 5px;
+         &:hover {
+            cursor: pointer;
          }
       }
    }
