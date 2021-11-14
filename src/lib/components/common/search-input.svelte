@@ -6,13 +6,13 @@
 
    let searchTimout = null;
 
-   $: value && onChange();
-
    function onChange() {
+      console.log(value);
       if (searchTimout) {
          clearTimeout(searchTimout);
       }
       searchTimout = setTimeout(() => {
+         if (value === '') value = null;
          onSearch(value);
       }, 500);
    }
@@ -23,7 +23,7 @@
       <i class="fas {icon}" />
    {/if}
    <div>
-      <input type="text" bind:value {placeholder} />
+      <input type="text" bind:value {placeholder} on:input={onChange} />
       <div class="active" />
    </div>
 </div>

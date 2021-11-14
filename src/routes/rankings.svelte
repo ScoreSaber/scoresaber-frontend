@@ -102,6 +102,14 @@
       }
    }
 
+   function searchUpdated(search: string) {
+      filterChanged = true;
+      pageQuery.update({
+         page: 1,
+         search
+      });
+   }
+
    onDestroy(pageUnsubscribe);
 </script>
 
@@ -127,7 +135,7 @@
       </div>
       <div class="divider" />
       <div class="advancedSearch">
-         <SearchInput icon="fa-search" onSearch={(v) => console.log(v)} />
+         <SearchInput icon="fa-search" onSearch={searchUpdated} />
       </div>
    </div>
    <div class="window has-shadow noheading">
