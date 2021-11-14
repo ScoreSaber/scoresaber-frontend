@@ -29,7 +29,7 @@
                <span title="Performance Points" class="info">
                   {score.score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}pp
                </span>
-               <span class="small info" title="Weighted Performance Points">
+               <span class="small info" title={`Weighted ${score.score.weight * 100}`}>
                   [{getWeightedPP().toLocaleString('en-US', {
                      minimumFractionDigits: 2,
                      maximumFractionDigits: 2

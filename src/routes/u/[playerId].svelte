@@ -54,17 +54,13 @@
       data: playerData,
       error: playerDataError,
       refresh: refreshRankings
-   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios, onSuccess: playerDataLoaded });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios });
 
    const {
       data: scoreData,
       error: scoreDataError,
       refresh: refreshScores
    } = useAccio<PlayerScore[]>(getPlayerScoresUrl($page.params.playerId, $page.query.toString()), { fetcher: axios });
-
-   function playerDataLoaded(playerData: Player) {
-      document.title = `${playerData.name}'s Profile | ScoreSaber!`;
-   }
 
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser) {
@@ -114,7 +110,7 @@
 </script>
 
 <head>
-   <title>ScoreSaber!</title>
+   <title>{$playerData ? $playerData.name + "'s Profile" : 'Profile'} | ScoreSaber!</title>
    {#if metadata}
       <Meta
          description={`Player Ranking: #${metadata.rank}\r\nPerformance Points: ${metadata.pp.toLocaleString('en-US', {
