@@ -135,7 +135,7 @@
       </div>
       <div class="divider" />
       <div class="advancedSearch">
-         <SearchInput icon="fa-search" onSearch={searchUpdated} />
+         <SearchInput icon="fa-search" onSearch={searchUpdated} value={$pageQuery.search} />
       </div>
    </div>
    <div class="window has-shadow noheading">

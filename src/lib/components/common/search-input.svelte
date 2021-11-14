@@ -7,7 +7,6 @@
    let searchTimout = null;
 
    function onChange() {
-      console.log(value);
       if (searchTimout) {
          clearTimeout(searchTimout);
       }
