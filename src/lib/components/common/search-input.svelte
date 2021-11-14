@@ -13,6 +13,8 @@
          clearTimeout(searchTimout);
       }
       searchTimout = setTimeout(() => {
+         $requestCancel.cancel('Search Changed');
+         updateCancelToken();
          if (value === '') value = null;
          onSearch(value);
       }, 500);
@@ -25,7 +27,7 @@
    }
 
    function clearSearch() {
-      $requestCancel.cancel('Filter Changed');
+      $requestCancel.cancel('Search Changed');
       value = null;
       updateCancelToken();
       onSearch(value);

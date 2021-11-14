@@ -16,6 +16,7 @@
    import type { FilterItem } from '$lib/models/Filter';
    import { browser } from '$app/env';
    import SearchInput from '$lib/components/common/search-input.svelte';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
 
    const playersPerPage = 50;
 
@@ -53,6 +54,8 @@
    );
 
    function changePage(newPage: number) {
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       pageQuery.updateSingle('page', newPage);
    }
 
@@ -78,6 +81,8 @@
 
    function countryFilterUpdated(items: FilterItem[]) {
       filterChanged = true;
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       if (items.length === 0) {
          pageQuery.updateSingle('countries', null);
       } else {
@@ -91,6 +96,8 @@
 
    function regionFilterUpdated(items: FilterItem[]) {
       filterChanged = true;
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       if (items.length === 0) {
          pageQuery.updateSingle('regions', null);
       } else {
@@ -104,6 +111,8 @@
 
    function searchUpdated(search: string) {
       filterChanged = true;
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       pageQuery.update({
          page: 1,
          search
