@@ -6,6 +6,12 @@
    export let onSearch: (value: string) => void = () => {};
    export let icon: string = null;
 
+   export let expandable: boolean = false;
+   export let expanded: boolean = false;
+
+   let inputElement: HTMLInputElement = null;
+   let searchContainer: HTMLDivElement = null;
+
    let searchTimout = null;
 
    function onChange() {
@@ -28,18 +34,37 @@
 
    function clearSearch() {
       $requestCancel.cancel('Search Changed');
-      value = null;
       updateCancelToken();
+      value = null;
       onSearch(value);
+   }
+
+   function handleClick() {
+      if (expandable) {
+         expanded = !expanded;
+         if (expanded && inputElement) inputElement.focus();
+      } else {
+         $requestCancel.cancel('Search Changed');
+         updateCancelToken();
+         onSearch(value);
+      }
+   }
+
+   function clickOut(e: MouseEvent) {
+      if (expandable && expanded && !searchContainer?.contains(e.target as Node)) {
+         expanded = false;
+      }
    }
 </script>
 
-<div class="searchInput" class:active={value !== null}>
+<svelte:window on:click={clickOut} />
+
+<div bind:this={searchContainer} class="searchInput" class:expandable class:expanded class:active={value !== null}>
    {#if icon}
-      <i class="fas {icon}" />
+      <i on:click={handleClick} class="fas {icon}" />
    {/if}
    <div>
-      <input type="text" bind:value {placeholder} on:input={onChange} on:keydown={onKeyDown} />
+      <input bind:this={inputElement} type="text" bind:value {placeholder} on:input={onChange} on:keydown={onKeyDown} />
       <div class="active" />
    </div>
    {#if value}
@@ -55,8 +80,15 @@
       padding: 0.5rem;
       border-radius: 0.25rem;
       background-color: var(--foregroundItem);
+      transition: max-width var(--transitionTime) ease-in-out;
       width: 100%;
       font-size: 1rem;
+      &.expandable {
+         max-width: calc(16px + 1rem);
+         &.expanded {
+            max-width: 100%;
+         }
+      }
       > div {
          position: relative;
          width: 100%;
@@ -64,6 +96,9 @@
       i {
          margin-right: 0.25rem;
          transition: color var(--transitionTime) ease-out;
+         &:hover {
+            cursor: pointer;
+         }
       }
       input {
          background-color: transparent;
