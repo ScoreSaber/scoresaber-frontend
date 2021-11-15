@@ -25,6 +25,7 @@
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
 
    import Slider from '@bulatdashiev/svelte-slider';
+   import FormattedDate from '$lib/components/common/formatted-date.svelte';
 
    const playersPerPage = 50;
 
@@ -156,15 +157,19 @@
                   <table>
                      <thead>
                         <tr class="headers">
+                           <th class="created_at" />
                            <th class="map" />
                            <th class="plays centered">Plays</th>
-                           <th class="plays-daily centered">Plays (24h)</th>
+                           <th class="plays-daily centered">Last 24h</th>
                         </tr>
                      </thead>
                      <tbody>
                         {#each $leaderboards.leaderboards as leaderboard}
                            <tr class="table-item">
-                              <td class="map"><SmallSongInfo {leaderboard} /></td>
+                              <td class="created_at">
+                                 <FormattedDate date={new Date(leaderboard.createdDate)} />
+                              </td>
+                              <td class="map"><SmallSongInfo {leaderboard} margin={false} /></td>
                               <td class="plays centered">
                                  {leaderboard.plays.toLocaleString('en-US')}
                               </td>
