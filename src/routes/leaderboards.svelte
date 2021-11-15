@@ -1,7 +1,5 @@
 <script lang="ts">
    import { onDestroy, onMount } from 'svelte';
-   import Navbar from '$lib/components/common/navbar.svelte';
-   import Footer from '$lib/components/common/footer.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import axios from '$lib/utils/fetcher';
@@ -239,8 +237,6 @@
       </div>
    </div>
 </div>
-
-<Footer />
 
 <style>
    table {
