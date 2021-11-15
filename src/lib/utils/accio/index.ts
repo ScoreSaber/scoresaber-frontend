@@ -5,6 +5,7 @@ import { DefaultCache, CacheItem } from './cache';
 import queryString from 'query-string';
 import { browser } from '$app/env';
 import { requestCancel } from './canceler';
+import axios from 'axios';
 
 export class Accio {
    useAccio<D = any, E = Error>(key: string, options?: Partial<AccioOptions<D>>) {
@@ -57,6 +58,10 @@ export class Accio {
                options.onSuccess(rawData);
             }
          } catch (ex) {
+            if (axios.isCancel(ex)) {
+               console.warn('Request cancelled:', ex.message);
+               return;
+            }
             error.set(ex);
             if (options.onError) {
                options.onError(ex);

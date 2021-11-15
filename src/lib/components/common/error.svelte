@@ -1,6 +1,6 @@
 <script lang="ts">
    export let message: string = '';
-   export let status: number;
+   export let status: number = undefined;
    export let fullpage = false;
 
    console.error({ message, status });
