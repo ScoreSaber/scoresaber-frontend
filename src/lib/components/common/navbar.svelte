@@ -141,7 +141,7 @@
    .hamburger {
       position: absolute;
       background: transparent;
-      color: inherit;
+      color: var(--textColor);
       top: 10px;
       display: none;
       right: 10px;
@@ -273,6 +273,7 @@
 
       header.expanded {
          height: 45vh;
+         background-color: var(--background-color);
       }
       .hamburger {
          display: block;
