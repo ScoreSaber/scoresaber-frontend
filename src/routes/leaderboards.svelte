@@ -101,13 +101,15 @@
    }
 
    function searchUpdated(search: string) {
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       if (search.length > 3) {
-         $requestCancel.cancel('Filter Changed');
-         updateCancelToken();
          pageQuery.update({
             page: 1,
             search
          });
+      } else {
+         pageQuery.updateSingle('search', '');
       }
    }
 
