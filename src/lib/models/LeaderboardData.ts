@@ -5,9 +5,58 @@ export interface Leaderboard {
    scores: Score[] | null;
 }
 
+export interface LeaderboardInfo {
+   id: number;
+   songHash: string;
+   songName: string;
+   songSubName: string;
+   songAuthorName: string;
+   levelAuthorName: string;
+   difficulty: number;
+   difficultyRaw: string;
+   maxScore: number;
+   createdDate: Date;
+   rankedDate: Date;
+   qualifiedDate: Date;
+   lovedDate: Date;
+   ranked: boolean;
+   qualified: boolean;
+   loved: boolean;
+   maxPP: number;
+   stars: number;
+   plays: number;
+   dailyPlays: number;
+   coverImage: string;
+   playerScore: Score | null;
+   difficulties: Difficulty[];
+}
+
+export interface LeaderboardInfoCollection {
+   leaderboards: LeaderboardInfo[];
+   totalCount: number;
+}
+
 export interface Difficulty {
    leaderboardId: number;
    difficulty: number;
+}
+
+export interface Score {
+   id: number;
+   leaderboardPlayerInfo?: LeaderboardPlayer;
+   rank: number;
+   baseScore: number;
+   modifiedScore: number;
+   pp: number;
+   weight: number;
+   modifiers: string;
+   multiplier: number;
+   badCuts: number;
+   missedNotes: number;
+   maxCombo: number;
+   fullCombo: boolean;
+   hmd: number;
+   timeSet: Date;
 }
 
 export interface LeaderboardFilterOptions {
@@ -53,6 +102,27 @@ export function getCategoryFromNumber(category: number): Category {
    return Category.Trending;
 }
 
+export function getNumberFromCategory(category: Category): number {
+   switch (category) {
+      case Category.Trending: {
+         return 0;
+      }
+      case Category.DateRanked: {
+         return 1;
+      }
+      case Category.ScoresSet: {
+         return 2;
+      }
+      case Category.StarDifficulty: {
+         return 3;
+      }
+      case Category.Author: {
+         return 4;
+      }
+   }
+   return 0;
+}
+
 export function getSortDirectionFromNumber(direction: number): SortDirection {
    switch (direction) {
       case 0: {
@@ -65,46 +135,14 @@ export function getSortDirectionFromNumber(direction: number): SortDirection {
    return SortDirection.Descending;
 }
 
-export interface LeaderboardInfo {
-   id: number;
-   songHash: string;
-   songName: string;
-   songSubName: string;
-   songAuthorName: string;
-   levelAuthorName: string;
-   difficulty: number;
-   difficultyRaw: string;
-   maxScore: number;
-   createdDate: Date;
-   rankedDate: Date;
-   qualifiedDate: Date;
-   lovedDate: Date;
-   ranked: boolean;
-   qualified: boolean;
-   loved: boolean;
-   maxPP: number;
-   stars: number;
-   plays: number;
-   dailyPlays: number;
-   coverImage: string;
-   playerScore: Score | null;
-   difficulties: Difficulty[];
-}
-
-export interface Score {
-   id: number;
-   leaderboardPlayerInfo?: LeaderboardPlayer;
-   rank: number;
-   baseScore: number;
-   modifiedScore: number;
-   pp: number;
-   weight: number;
-   modifiers: string;
-   multiplier: number;
-   badCuts: number;
-   missedNotes: number;
-   maxCombo: number;
-   fullCombo: boolean;
-   hmd: number;
-   timeSet: Date;
+export function getNumberFromSortDirection(direction: SortDirection): number {
+   switch (direction) {
+      case SortDirection.Descending: {
+         return 0;
+      }
+      case SortDirection.Ascending: {
+         return 1;
+      }
+   }
+   return 0;
 }

@@ -1,7 +1,10 @@
 <script lang="ts">
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
+
    export let leaderboard: LeaderboardInfo;
+   export let margin: boolean | undefined;
+
    import type SearchView from '$lib/components/common/search.svelte';
    import { searchView } from '$lib/global-store';
    let searchModal: SearchView;
@@ -16,7 +19,7 @@
 
 <div class="song-container">
    <div class="song-image-wrapper">
-      <figure>
+      <figure style={margin === false ? 'margin: 0;' : ''}>
          <img class="song-image" src={leaderboard.coverImage} alt="{leaderboard.songName} Cover" />
          <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
             {getDifficultyOrStarValue(leaderboard)}
@@ -27,13 +30,15 @@
       <div class="song-info">
          <a href={`/leaderboard/${leaderboard.id}`}>
             <span class="song-name">
-               {leaderboard.songName}
+               {leaderboard.songName.length < 30 ? leaderboard.songName : leaderboard.songName.slice(0, margin === false ? 18 : 29).trim() + '…'}
             </span>
          </a>
          by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.songAuthorName)}>
             <span>
-               {leaderboard.songAuthorName}
+               {leaderboard.songAuthorName.length < 30
+                  ? leaderboard.songAuthorName
+                  : leaderboard.songAuthorName.slice(0, margin === false ? 18 : 29).trim() + '…'}
             </span>
          </a>
       </div>
@@ -41,7 +46,9 @@
          Mapped by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.levelAuthorName)}>
             <span class="mapper-name">
-               {leaderboard.levelAuthorName}
+               {leaderboard.levelAuthorName.length < 30
+                  ? leaderboard.levelAuthorName
+                  : leaderboard.levelAuthorName.slice(0, margin === false ? 18 : 29).trim() + '…'}
             </span>
          </a>
       </div>
