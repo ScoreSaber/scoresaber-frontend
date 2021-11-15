@@ -44,8 +44,9 @@
 <div class="root">
    <div class="behind-background" />
    {#key $background}
-      <div transition:fly={{ y: -10, duration: 1300 }} class="dynamic-background" style={`--background: ${$background};`} />
+      <div transition:fly={{ y: -20, duration: 1300 }} class="dynamic-background" style={`--background: ${$background};`} />
    {/key}
+   <div class="cover" />
    <Navbar />
    <div class="page-container content">
       <slot />
