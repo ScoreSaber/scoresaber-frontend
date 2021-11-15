@@ -258,18 +258,6 @@
       vertical-align: middle;
    }
 
-   td.map img {
-      width: 24px;
-      height: 24px;
-      border-radius: 15%;
-      vertical-align: middle;
-   }
-
-   td.map .songInfo {
-      overflow-wrap: break-word;
-      padding-left: 7px;
-   }
-
    tr.table-item td {
       background-color: var(--gray);
    }
