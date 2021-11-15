@@ -184,7 +184,7 @@
       {/if}
    </div>
 
-   <div class="content">
+   <div class="window has-shadow noheading">
       {#if $playerData && !$playerData.banned && !$playerData.inactive}
          <Badges player={$playerData} />
          <RankChart player={$playerData} />
