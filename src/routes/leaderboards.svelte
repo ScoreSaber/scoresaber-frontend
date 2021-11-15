@@ -7,7 +7,7 @@
    import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
    import { useAccio } from '$lib/utils/accio';
-   import { createQueryStore } from '$lib/query-store';
+   import { createQueryStore, pageQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
    import { browser } from '$app/env';
@@ -26,8 +26,9 @@
 
    import Slider from '@bulatdashiev/svelte-slider';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
+   import SearchInput from '$lib/components/common/search-input.svelte';
 
-   const playersPerPage = 50;
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
 
    $: currentPage = createQueryStore('page', 1);
    $: verified = createQueryStore('verified', 1);
@@ -40,25 +41,19 @@
 
    let rangeStars: number[] = [];
 
-   let filters: LeaderboardFilterOptions;
-
-   function refreshFilters() {
-      filters = {
-         verified: $verified == 1 ? true : false,
-         ranked: $ranked == 1 ? true : false,
-         minStar: $minStar,
-         maxStar: $maxStar,
-         category: getCategoryFromNumber(parseInt($category)),
-         sortDirection: getSortDirectionFromNumber(parseInt($sort))
-      };
-   }
-
-   let searchValue;
+   $: pageQuery = pageQueryStore({
+      page: 1,
+      verified: 1,
+      ranked: 0,
+      minStar: 1,
+      maxStar: 20,
+      category: 1,
+      sort: 0,
+      search: ''
+   });
 
    onMount(() => {
       rangeStars = [parseInt($minStar), parseInt($maxStar)];
-      searchValue = $search;
-      refreshFilters();
    });
 
    const {
@@ -74,59 +69,55 @@
    );
 
    function changePage(newPage: number) {
-      $currentPage = newPage;
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.updateSingle('page', newPage);
    }
 
    function toggleVerified(event) {
-      $verified = $verified === 1 ? 0 : 1;
-      toggleFilters();
-      setTimeout(() => (event.target.checked = filters.verified), 0);
+      //setTimeout(() => (event.target.checked = filters.verified), 0);
+
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.updateSingle('verified', event.target.checked ? 1 : 0);
    }
 
    function toggleRanked(event) {
-      $ranked = $ranked === 1 ? 0 : 1;
-      toggleFilters();
-      setTimeout(() => (event.target.checked = filters.ranked), 0);
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.updateSingle('ranked', event.target.checked ? 1 : 0);
    }
 
    function changeCategory(event) {
-      $category = getNumberFromCategory(event.target.value);
-      toggleFilters();
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.updateSingle('category', getNumberFromCategory(event.currentTarget.value));
    }
 
    function changeSortDirection(event) {
-      $sort = getNumberFromSortDirection(event.currentTarget.value);
-      toggleFilters();
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.updateSingle('sort', getNumberFromSortDirection(event.currentTarget.value));
    }
 
-   function changeSearch(event) {
-      if (event.target.value.length > 3) {
-         $search = event.target.value;
-         toggleFilters();
-      } else {
-         $search = null;
+   function searchUpdated(search: string) {
+      if (search.length > 3) {
+         $requestCancel.cancel('Filter Changed');
+         updateCancelToken();
+         pageQuery.update({
+            page: 1,
+            search
+         });
       }
    }
 
-   let debounceTimer;
    function changeRangeStars(event) {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-         $minStar = event.detail[0];
-         setTimeout(() => {
-            $maxStar = event.detail[1];
-            toggleFilters();
-         }, 10);
-      }, 300);
-   }
-
-   function toggleFilters() {
-      refreshFilters();
-      refreshLeaderboards({
-         newUrl: queryString.stringifyUrl({
-            url: '/api/leaderboards',
-            query: queryString.parse($page.query.toString())
-         })
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.update({
+         page: 1,
+         minStar: parseInt(event.detail[0]),
+         maxStar: parseInt(event.detail[1])
       });
    }
 
@@ -187,29 +178,29 @@
                <Loader />
             {/if}
             {#if $leaderboardsError}
-               <Error message={$leaderboardsError.toString()} />
+               <Error message={$leaderboardsError.toString()} status={JSON.parse(JSON.stringify($leaderboardsError)).status} />
             {/if}
          </div>
       </div>
       <div class="column is-4">
          <div class="window has-shadow noheading">
             <div class="mb-2">Search Terms</div>
-            <input class="input mb-2" value={searchValue} on:input={(e) => changeSearch(e)} placeholder="Search..." />
+            <SearchInput icon="fa-search" onSearch={searchUpdated} value={$pageQuery.search} />
          </div>
          <div class="window has-shadow noheading">
             <label class="checkbox">
-               <input type="checkbox" checked={filters?.verified} on:click|preventDefault={toggleVerified} />
+               <input type="checkbox" checked={$pageQuery.verified == 1} on:click|preventDefault={toggleVerified} />
                Only show verified leaderboards
             </label>
             <label class="checkbox">
-               <input type="checkbox" checked={filters?.ranked} on:click|preventDefault={toggleRanked} />
+               <input type="checkbox" checked={$pageQuery.ranked == 1} on:click|preventDefault={toggleRanked} />
                Only show ranked leaderboards
             </label>
          </div>
          <div class="window has-shadow noheading">
             <div class="mb-2">Sort By</div>
             <div class="select">
-               <select value={filters?.category} on:change={changeCategory}>
+               <select value={getCategoryFromNumber(parseInt($pageQuery.category))} on:change={changeCategory}>
                   <option value={Category.Trending}>Trending</option>
                   <option value={Category.DateRanked}>Date Ranked</option>
                   <option value={Category.ScoresSet}>Scores Set</option>
@@ -223,7 +214,7 @@
                      type="radio"
                      name="sortOrder"
                      on:change={changeSortDirection}
-                     checked={filters?.sortDirection === SortDirection.Descending}
+                     checked={getSortDirectionFromNumber(parseInt($pageQuery.sort)) === SortDirection.Descending}
                      value={SortDirection.Descending}
                   />
                   Descending
@@ -233,7 +224,7 @@
                      type="radio"
                      name="sortOrder"
                      on:change={changeSortDirection}
-                     checked={filters?.sortDirection === SortDirection.Ascending}
+                     checked={getSortDirectionFromNumber(parseInt($pageQuery.sort)) === SortDirection.Ascending}
                      value={SortDirection.Ascending}
                   />
                   Ascending
