@@ -6,6 +6,7 @@
    import { useAccio } from '$lib/utils/accio';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
+   import '../styles/scoresaber.scss';
 
    let tokenCheckAttempts: number = 0;
 

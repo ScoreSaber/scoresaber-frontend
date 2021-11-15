@@ -1,8 +1,6 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
    import { onDestroy } from 'svelte';
-   import Navbar from '$lib/components/common/navbar.svelte';
-   import Footer from '$lib/components/common/footer.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import PlayerRow from '$lib/components/player/player-row.svelte';
@@ -10,19 +8,24 @@
    import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
    import { useAccio } from '$lib/utils/accio';
-   import { createQueryStore } from '$lib/query-store';
+   import { createQueryStore, pageQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
    import Filter from '$lib/components/common/filter.svelte';
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
    import { browser } from '$app/env';
+   import SearchInput from '$lib/components/common/search-input.svelte';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
 
    const playersPerPage = 50;
 
-   $: currentPage = createQueryStore('page', 1);
-   $: countries = createQueryStore('countries', undefined);
-   $: regions = createQueryStore('regions', undefined);
+   $: pageQuery = pageQueryStore({
+      page: 1,
+      countries: null,
+      regions: null,
+      search: null
+   });
 
    let filterChanged: boolean = false;
 
@@ -51,7 +54,9 @@
    );
 
    function changePage(newPage: number) {
-      $currentPage = newPage;
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.updateSingle('page', newPage);
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
@@ -76,20 +81,42 @@
 
    function countryFilterUpdated(items: FilterItem[]) {
       filterChanged = true;
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       if (items.length === 0) {
-         $countries = null;
+         pageQuery.updateSingle('countries', null);
       } else {
-         $countries = items.map((i) => i.key).join(',');
+         pageQuery.update({
+            page: 1,
+            countries: items.map((i) => i.key).join(','),
+            regions: null
+         });
       }
    }
 
    function regionFilterUpdated(items: FilterItem[]) {
       filterChanged = true;
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       if (items.length === 0) {
-         $regions = null;
+         pageQuery.updateSingle('regions', null);
       } else {
-         $regions = items.map((i) => i.key).join(',');
+         pageQuery.update({
+            page: 1,
+            regions: items.map((i) => i.key).join(','),
+            countries: null
+         });
       }
+   }
+
+   function searchUpdated(search: string) {
+      filterChanged = true;
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.update({
+         page: 1,
+         search
+      });
    }
 
    onDestroy(pageUnsubscribe);
@@ -100,23 +127,29 @@
 </head>
 
 <div class="section">
-   <div class="window has-shadow noheading">
-      {#if $regions === undefined}
-         <Filter
-            items={filters.countryFilter}
-            initialItems={$countries}
-            filterName={'Country'}
-            withCountryImages={true}
-            filterUpdated={countryFilterUpdated}
-         />
-      {/if}
-      {#if $countries === undefined}
-         <Filter items={filters.regionFilter} initialItems={$regions} filterName={'Region'} filterUpdated={regionFilterUpdated} />
-      {/if}
+   <div class="window has-shadow noheading filters">
+      <div>
+         {#if $pageQuery.regions === null}
+            <Filter
+               items={filters.countryFilter}
+               initialItems={$pageQuery.countries}
+               filterName={'Country'}
+               withCountryImages={true}
+               filterUpdated={countryFilterUpdated}
+            />
+         {/if}
+         {#if $pageQuery.countries === null}
+            <Filter items={filters.regionFilter} initialItems={$pageQuery.regions} filterName={'Region'} filterUpdated={regionFilterUpdated} />
+         {/if}
+      </div>
+      <div class="divider" />
+      <div class="advancedSearch">
+         <SearchInput icon="fa-search" onSearch={searchUpdated} value={$pageQuery.search} />
+      </div>
    </div>
    <div class="window has-shadow noheading">
       {#if $playerCount && $rankings && $playerCount}
-         <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+         <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
       {#if $rankings && $playerCount}
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
@@ -147,12 +180,27 @@
          <Error message={$rankingsError.toString() || $playerCountError.toString()} />
       {/if}
       {#if $playerCount && $rankings && $playerCount}
-         <ArrowPagination pageClicked={changePage} page={parseInt($currentPage)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+         <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
    </div>
 </div>
 
-<style>
+<style lang="scss">
+   .filters {
+      display: flex;
+      flex-flow: row nowrap;
+      > div:not(:last-child) {
+         margin-right: 1rem;
+      }
+      .divider {
+         border: 1px solid #fff;
+      }
+      .advancedSearch {
+         display: flex;
+         align-items: center;
+         flex: 1;
+      }
+   }
    table {
       border-collapse: separate;
       white-space: nowrap;
@@ -172,6 +220,16 @@
 
       .headers th:not(.player, .rank) {
          display: none;
+      }
+
+      .filters {
+         flex-flow: column nowrap;
+         > div:not(:last-child) {
+            margin-bottom: 1rem;
+         }
+         .divider {
+            display: none;
+         }
       }
    }
 </style>
