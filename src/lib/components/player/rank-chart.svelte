@@ -112,8 +112,6 @@
    .rank-chart {
       width: 100%;
       position: relative;
-      margin-left: -20px;
-      margin-top: 5px;
       min-height: 250px;
    }
 </style>

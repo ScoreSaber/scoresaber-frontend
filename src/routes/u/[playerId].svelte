@@ -125,7 +125,7 @@
 </head>
 
 <div class="section">
-   <div class="window has-shadow noheading">
+   <div class="content">
       {#if $playerData}
          {#if !$playerData.banned}
             <div in:fly={{ x: 20, duration: 1000 }} class="columns">
@@ -178,9 +178,6 @@
                   <div class="mobile">
                      <Badges player={$playerData} />
                   </div>
-                  {#if !$playerData.inactive}
-                     <RankChart player={$playerData} />
-                  {/if}
                </div>
             </div>
          {:else}
@@ -193,6 +190,13 @@
          <Error message={$playerDataError.toString()} />
       {/if}
    </div>
+
+   <div class="content">
+      {#if $playerData && !$playerData.banned && !$playerData.inactive}
+         <RankChart player={$playerData} />
+      {/if}
+   </div>
+
    <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
       <div class="button-container">
          <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
