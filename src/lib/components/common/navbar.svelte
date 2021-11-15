@@ -273,7 +273,7 @@
       }
 
       header.expanded {
-         height: 100vh;
+         height: 45vh;
       }
       .hamburger {
          display: block;
