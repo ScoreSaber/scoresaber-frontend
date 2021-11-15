@@ -306,6 +306,10 @@ div.is-center {
    box-shadow: 0 0 0 0.125em rgba(72, 95, 199, 0.25);
 }
 
+.text-muted {
+   color: var(--muted);
+}
+
 .textarea::-webkit-input-placeholder {
    color: var(--muted);
 }

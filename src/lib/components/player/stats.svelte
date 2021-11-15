@@ -45,8 +45,8 @@
       display: inline-block;
       background-color: var(--foregroundItem);
       color: var(--textColor);
-      padding: 4px 8px 4px 8px;
-      border-radius: 2px;
+      padding: 5px 10px 5px 10px;
+      border-radius: 10px;
       margin: 0px 5px 5px 0px;
       cursor: default;
    }

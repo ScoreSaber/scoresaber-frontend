@@ -150,22 +150,26 @@
                   </h5>
 
                   <h5 class="title is-5 player has-text-centered-mobile">
-                     <small>
-                        <span class="title-header">
-                           <i class="fas fa-globe-americas" title="Global Ranking" />
-                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
-                              >#{$playerData.rank.toLocaleString('en-US')}</a
-                           >
-                        </span>
-                        <span class="title-header spacer">
-                           <CountryImage country={$playerData.country} />
-                           <a
-                              title="Country Ranking"
-                              href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
-                              >#{$playerData.countryRank.toLocaleString('en-US')}</a
-                           >
-                        </span>
-                     </small>
+                     {#if !$playerData.inactive}
+                        <small>
+                           <span class="title-header">
+                              <i class="fas fa-globe-americas" title="Global Ranking" />
+                              <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
+                                 >#{$playerData.rank.toLocaleString('en-US')}</a
+                              >
+                           </span>
+                           <span class="title-header spacer">
+                              <CountryImage country={$playerData.country} />
+                              <a
+                                 title="Country Ranking"
+                                 href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
+                                 >#{$playerData.countryRank.toLocaleString('en-US')}</a
+                              >
+                           </span>
+                        </small>
+                     {:else}
+                        <div class="text-inactive text-muted mb-3">Inactive account</div>
+                     {/if}
                   </h5>
 
                   <div class="stats has-text-centered-mobile">
@@ -184,12 +188,12 @@
       {/if}
    </div>
 
-   <div class="window has-shadow noheading">
-      {#if $playerData && !$playerData.banned && !$playerData.inactive}
+   {#if $playerData && !$playerData.banned && !$playerData.inactive}
+      <div class="window has-shadow noheading">
          <Badges player={$playerData} />
          <RankChart player={$playerData} />
-      {/if}
-   </div>
+      </div>
+   {/if}
 
    <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
       <div class="button-container">
@@ -261,6 +265,8 @@
    }
 
    h5.player {
+      display: flex;
+      gap: 10px;
       margin-bottom: 0px !important;
    }
    .column.is-narrow {
@@ -274,6 +280,11 @@
 
    .title-header {
       font-size: smaller;
+   }
+
+   .text-inactive {
+      font-size: 14px;
+      font-weight: 400;
    }
 
    .title-header.spacer {
@@ -311,6 +322,9 @@
       }
       .desktop {
          display: none;
+      }
+      .player {
+         justify-content: center;
       }
    }
 </style>
