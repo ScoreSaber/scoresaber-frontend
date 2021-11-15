@@ -264,7 +264,6 @@
    .fake-searchbox kbd {
       padding: 2px 4px;
       color: #fff;
-      opacity: 0.2;
    }
 
    @media all and (max-width: 720px) {
@@ -325,7 +324,8 @@
    }
 
    .fake-searchbox span {
-      color: #555;
+      color: #fff;
+      opacity: 0.2;
    }
 
    kbd {
