@@ -111,14 +111,18 @@
       }
    }
 
+   let debounceTimer;
    function changeRangeStars(event) {
-      $requestCancel.cancel('Filter Changed');
-      updateCancelToken();
-      pageQuery.update({
-         page: 1,
-         minStar: parseInt(event.detail[0]),
-         maxStar: parseInt(event.detail[1])
-      });
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+         $requestCancel.cancel('Filter Changed');
+         updateCancelToken();
+         pageQuery.update({
+            page: 1,
+            minStar: parseInt(event.detail[0]),
+            maxStar: parseInt(event.detail[1])
+         });
+      }, 500);
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
