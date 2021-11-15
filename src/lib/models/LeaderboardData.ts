@@ -98,6 +98,11 @@ export function getNumberFromSortDirection(direction: SortDirection): number {
    return 0;
 }
 
+export interface LeaderboardInfoCollection {
+   leaderboards: LeaderboardInfo[];
+   totalCount: number;
+}
+
 export interface LeaderboardInfo {
    id: number;
    songHash: string;

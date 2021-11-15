@@ -1,21 +1,15 @@
 <script lang="ts">
-   import type { Player } from '$lib/models/PlayerData';
    import { onDestroy, onMount } from 'svelte';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
-   import PlayerRow from '$lib/components/player/player-row.svelte';
-   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
    import { useAccio } from '$lib/utils/accio';
    import { createQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
-   import Filter from '$lib/components/common/filter.svelte';
-   import filters from '$lib/utils/filters';
-   import type { FilterItem } from '$lib/models/Filter';
    import { browser } from '$app/env';
    import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import {
@@ -25,7 +19,7 @@
       getNumberFromSortDirection,
       getSortDirectionFromNumber,
       LeaderboardFilterOptions,
-      LeaderboardInfo,
+      LeaderboardInfoCollection,
       SortDirection
    } from '$lib/models/LeaderboardData';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
@@ -70,21 +64,9 @@
       data: leaderboards,
       error: leaderboardsError,
       refresh: refreshLeaderboards
-   } = useAccio<LeaderboardInfo[]>(
+   } = useAccio<LeaderboardInfoCollection>(
       queryString.stringifyUrl({
          url: '/api/leaderboards',
-         query: queryString.parse($page.query.toString())
-      }),
-      { fetcher: axios }
-   );
-
-   const {
-      data: leaderboardsCount,
-      error: leaderboardsCountError,
-      refresh: refreshLeaderboardsCount //TODO: Refresh on filter change (not page change)
-   } = useAccio<number>(
-      queryString.stringifyUrl({
-         url: '/api/leaderboards/get-pages',
          query: queryString.parse($page.query.toString())
       }),
       { fetcher: axios }
@@ -145,23 +127,11 @@
             query: queryString.parse($page.query.toString())
          })
       });
-      refreshLeaderboardsCount({
-         newUrl: queryString.stringifyUrl({
-            url: '/api/leaderboards/get-pages',
-            query: queryString.parse($page.query.toString())
-         })
-      });
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser) {
          refreshLeaderboards({
-            newUrl: queryString.stringifyUrl({
-               url: '/api/leaderboards',
-               query: queryString.parse(p.query.toString())
-            })
-         });
-         refreshLeaderboardsCount({
             newUrl: queryString.stringifyUrl({
                url: '/api/leaderboards',
                query: queryString.parse(p.query.toString())
@@ -181,7 +151,7 @@
    <div class="columns">
       <div class="column is-8">
          <div class="window has-shadow noheading">
-            {#if $leaderboards && $leaderboardsCount}
+            {#if $leaderboards}
                <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
                   <table>
                      <thead>
@@ -192,7 +162,7 @@
                         </tr>
                      </thead>
                      <tbody>
-                        {#each $leaderboards as leaderboard}
+                        {#each $leaderboards.leaderboards as leaderboard}
                            <tr class="table-item">
                               <td class="map"><SmallSongInfo {leaderboard} /></td>
                               <td class="plays centered">
@@ -207,12 +177,12 @@
                   </table>
                </div>
                <br />
-               <ClassicPagination totalItems={$leaderboardsCount} pageSize={14} currentPage={$currentPage} changePage={(e) => changePage(e)} />
-            {:else if !$leaderboardsError && !$leaderboardsCountError}
+               <ClassicPagination totalItems={$leaderboards.totalCount} pageSize={14} currentPage={$currentPage} changePage={(e) => changePage(e)} />
+            {:else if !$leaderboardsError}
                <Loader />
             {/if}
-            {#if $leaderboardsError || $leaderboardsCountError}
-               <Error message={$leaderboardsError.toString() || $leaderboardsCountError.toString()} />
+            {#if $leaderboardsError}
+               <Error message={$leaderboardsError.toString()} />
             {/if}
          </div>
       </div>
