@@ -43,16 +43,9 @@
       font-size: 14px;
       height: 2.3em;
       line-height: 1;
-      background-color: var(--foregroundItem);
       border-color: var(--foreground);
       border: transparent;
-      color: #eeeeee;
       margin-left: 5px;
       margin-right: 5px;
-   }
-   .button:disabled {
-      background-color: #174491;
-      border-color: var(--foreground);
-      color: white;
    }
 </style>

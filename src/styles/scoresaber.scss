@@ -165,6 +165,8 @@ div.is-center {
    outline: none !important;
    box-shadow: none !important;
    outline-style: none !important;
+   background-color: var(--foregroundItem);
+   color: var(--textColor);
 }
 
 .button:disabled {
