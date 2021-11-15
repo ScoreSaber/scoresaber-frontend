@@ -5,7 +5,7 @@
    import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
    import { useAccio } from '$lib/utils/accio';
-   import { createQueryStore, pageQueryStore } from '$lib/query-store';
+   import { pageQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
    import { browser } from '$app/env';
@@ -16,7 +16,6 @@
       getNumberFromCategory,
       getNumberFromSortDirection,
       getSortDirectionFromNumber,
-      LeaderboardFilterOptions,
       LeaderboardInfoCollection,
       SortDirection
    } from '$lib/models/LeaderboardData';
@@ -27,15 +26,6 @@
    import SearchInput from '$lib/components/common/search-input.svelte';
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
-
-   $: currentPage = createQueryStore('page', 1);
-   $: verified = createQueryStore('verified', 1);
-   $: ranked = createQueryStore('ranked', 0);
-   $: minStar = createQueryStore('minStar', 1);
-   $: maxStar = createQueryStore('maxStar', 20);
-   $: category = createQueryStore('category', 1);
-   $: sort = createQueryStore('sort', 0);
-   $: search = createQueryStore('search', '');
 
    let rangeStars: number[] = [];
 
@@ -51,7 +41,7 @@
    });
 
    onMount(() => {
-      rangeStars = [parseInt($minStar), parseInt($maxStar)];
+      rangeStars = [parseInt($pageQuery.minStar), parseInt($pageQuery.maxStar)];
    });
 
    const {
@@ -177,7 +167,12 @@
                   </table>
                </div>
                <br />
-               <ClassicPagination totalItems={$leaderboards.totalCount} pageSize={14} currentPage={$currentPage} changePage={(e) => changePage(e)} />
+               <ClassicPagination
+                  totalItems={$leaderboards.totalCount}
+                  pageSize={14}
+                  currentPage={$pageQuery.currentPage}
+                  changePage={(e) => changePage(e)}
+               />
             {:else if !$leaderboardsError}
                <Loader />
             {/if}
