@@ -5,9 +5,58 @@ export interface Leaderboard {
    scores: Score[] | null;
 }
 
+export interface LeaderboardInfo {
+   id: number;
+   songHash: string;
+   songName: string;
+   songSubName: string;
+   songAuthorName: string;
+   levelAuthorName: string;
+   difficulty: number;
+   difficultyRaw: string;
+   maxScore: number;
+   createdDate: Date;
+   rankedDate: Date;
+   qualifiedDate: Date;
+   lovedDate: Date;
+   ranked: boolean;
+   qualified: boolean;
+   loved: boolean;
+   maxPP: number;
+   stars: number;
+   plays: number;
+   dailyPlays: number;
+   coverImage: string;
+   playerScore: Score | null;
+   difficulties: Difficulty[];
+}
+
+export interface LeaderboardInfoCollection {
+   leaderboards: LeaderboardInfo[];
+   totalCount: number;
+}
+
 export interface Difficulty {
    leaderboardId: number;
    difficulty: number;
+}
+
+export interface Score {
+   id: number;
+   leaderboardPlayerInfo?: LeaderboardPlayer;
+   rank: number;
+   baseScore: number;
+   modifiedScore: number;
+   pp: number;
+   weight: number;
+   modifiers: string;
+   multiplier: number;
+   badCuts: number;
+   missedNotes: number;
+   maxCombo: number;
+   fullCombo: boolean;
+   hmd: number;
+   timeSet: Date;
 }
 
 export interface LeaderboardFilterOptions {
@@ -96,53 +145,4 @@ export function getNumberFromSortDirection(direction: SortDirection): number {
       }
    }
    return 0;
-}
-
-export interface LeaderboardInfoCollection {
-   leaderboards: LeaderboardInfo[];
-   totalCount: number;
-}
-
-export interface LeaderboardInfo {
-   id: number;
-   songHash: string;
-   songName: string;
-   songSubName: string;
-   songAuthorName: string;
-   levelAuthorName: string;
-   difficulty: number;
-   difficultyRaw: string;
-   maxScore: number;
-   createdDate: Date;
-   rankedDate: Date;
-   qualifiedDate: Date;
-   lovedDate: Date;
-   ranked: boolean;
-   qualified: boolean;
-   loved: boolean;
-   maxPP: number;
-   stars: number;
-   plays: number;
-   dailyPlays: number;
-   coverImage: string;
-   playerScore: Score | null;
-   difficulties: Difficulty[];
-}
-
-export interface Score {
-   id: number;
-   leaderboardPlayerInfo?: LeaderboardPlayer;
-   rank: number;
-   baseScore: number;
-   modifiedScore: number;
-   pp: number;
-   weight: number;
-   modifiers: string;
-   multiplier: number;
-   badCuts: number;
-   missedNotes: number;
-   maxCombo: number;
-   fullCombo: boolean;
-   hmd: number;
-   timeSet: Date;
 }
