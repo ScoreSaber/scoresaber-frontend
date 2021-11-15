@@ -12,6 +12,6 @@
 
 <style>
    .footer {
-      background-color: var(--background);
+      background-color: rgba(0, 0, 0, 0);
    }
 </style>

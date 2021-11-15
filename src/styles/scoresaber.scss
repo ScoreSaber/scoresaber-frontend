@@ -56,12 +56,32 @@ html {
 .root {
    min-height: 100%;
    margin: 0;
-   background: var(--background);
    font-family: 'Heebo', sans-serif;
+   font-size: 14px;
+}
+
+.dynamic-background {
+   background: var(--background);
    font-size: 14px;
    background-position: 50% !important;
    background-repeat: no-repeat !important;
    background-size: cover !important;
+   position: fixed;
+   height: 100%;
+   width: 100%;
+   top: 0;
+   left: 0;
+   z-index: -1;
+}
+
+.behind-background {
+   background: var(--background-color);
+   position: fixed;
+   height: 100%;
+   width: 100%;
+   top: 0;
+   left: 0;
+   z-index: -2;
 }
 
 .container {

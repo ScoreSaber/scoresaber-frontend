@@ -8,6 +8,7 @@
    import Footer from '$lib/components/common/footer.svelte';
    import '../styles/scoresaber.scss';
    import { onDestroy } from 'svelte';
+   import { fly } from 'svelte/transition';
 
    let tokenCheckAttempts: number = 0;
 
@@ -40,7 +41,11 @@
    } = useAccio<UserData>('/api/user/@me', { fetcher, onSuccess: onUserCheckSuccess, onError: onUserCheckFailed, ignoreSubscriptions: true });
 </script>
 
-<div class="root" style={`--background: ${$background};`}>
+<div class="root">
+   <div class="behind-background" />
+   {#key $background}
+      <div transition:fly={{ y: -10, duration: 1300 }} class="dynamic-background" style={`--background: ${$background};`} />
+   {/key}
    <Navbar />
    <div class="page-container content">
       <slot />
