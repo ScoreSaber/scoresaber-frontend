@@ -134,9 +134,6 @@
                   <div class="profile-picture">
                      <img alt={$playerData.name} title={$playerData.name} src={$playerData.profilePicture} class="image is-128x128 rounded" />
                   </div>
-                  <div class="desktop">
-                     <Badges player={$playerData} />
-                  </div>
                </div>
                <div class="column">
                   <!-- Player name -->
@@ -174,10 +171,6 @@
                   <div class="stats has-text-centered-mobile">
                      <Stats player={$playerData} />
                   </div>
-
-                  <div class="mobile">
-                     <Badges player={$playerData} />
-                  </div>
                </div>
             </div>
          {:else}
@@ -193,6 +186,7 @@
 
    <div class="content">
       {#if $playerData && !$playerData.banned && !$playerData.inactive}
+         <Badges player={$playerData} />
          <RankChart player={$playerData} />
       {/if}
    </div>
