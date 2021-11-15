@@ -170,7 +170,7 @@
                <ClassicPagination
                   totalItems={$leaderboards.totalCount}
                   pageSize={14}
-                  currentPage={$pageQuery.currentPage}
+                  currentPage={$pageQuery.page}
                   changePage={(e) => changePage(e)}
                />
             {:else if !$leaderboardsError}
