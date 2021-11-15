@@ -76,7 +76,7 @@
       {
          label: 'Top Scores',
          value: 'top',
-         icon: 'chevron-down'
+         icon: 'trophy'
       },
       {
          label: 'Recent Scores',

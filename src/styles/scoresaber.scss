@@ -167,6 +167,12 @@ div.is-center {
    outline-style: none !important;
 }
 
+.button:disabled {
+   background-color: var(--scoreSaberYellow);
+   border-color: var(--foreground);
+   color: var(--gray);
+}
+
 .button:hover:enabled {
    color: var(--scoreSaberYellow);
 }
