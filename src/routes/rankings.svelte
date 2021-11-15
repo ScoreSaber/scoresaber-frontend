@@ -17,6 +17,7 @@
    import { browser } from '$app/env';
    import SearchInput from '$lib/components/common/search-input.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import { background, defaultBackground } from '$lib/global-store';
 
    const playersPerPage = 50;
 
@@ -118,6 +119,8 @@
          search
       });
    }
+
+   defaultBackground();
 
    onDestroy(pageUnsubscribe);
 </script>

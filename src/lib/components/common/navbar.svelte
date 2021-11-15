@@ -101,7 +101,7 @@
       width: 100%;
       z-index: 100;
       transition: all 0.25s ease;
-      background: #202020;
+      background: none;
    }
 
    header.scrolled {

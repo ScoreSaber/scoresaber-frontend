@@ -32,7 +32,7 @@
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import { modal } from '$lib/global-store';
+   import { modal, setBackground } from '$lib/global-store';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
 
    export let metadata: Player = undefined;
@@ -54,7 +54,7 @@
       data: playerData,
       error: playerDataError,
       refresh: refreshRankings
-   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios, onSuccess: (data) => setBackground(data.profilePicture) });
 
    const {
       data: scoreData,

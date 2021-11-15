@@ -2,7 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-   --background: #202020;
+   --background-color: #202020;
+
+   --background: var(--background-color);
    --foreground: #252525;
    --foregroundItem: #2d2d2d;
    --textColor: #eee;
@@ -51,12 +53,15 @@ html {
    margin: 0;
 }
 
-body {
+.root {
    min-height: 100%;
    margin: 0;
-   background-color: var(--background);
+   background: var(--background);
    font-family: 'Heebo', sans-serif;
    font-size: 14px;
+   background-position: 50% !important;
+   background-repeat: no-repeat !important;
+   background-size: cover !important;
 }
 
 .container {

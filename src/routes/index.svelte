@@ -1,6 +1,9 @@
 <script lang="ts">
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
+   import { background, defaultBackground } from '$lib/global-store';
+
+   defaultBackground();
 </script>
 
 <head>
