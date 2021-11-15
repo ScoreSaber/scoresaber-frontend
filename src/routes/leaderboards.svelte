@@ -177,7 +177,7 @@
                <Loader />
             {/if}
             {#if $leaderboardsError}
-               <Error message={$leaderboardsError.toString()} status={JSON.parse(JSON.stringify($leaderboardsError)).status} />
+               <Error message={$leaderboardsError.toString()} />
             {/if}
          </div>
       </div>

@@ -68,7 +68,7 @@
                            <div class="scores">
                               {#if score.modifiers.length > 0}
                                  <div class="score">
-                                    Mods<br /><b>{score.modifiers}</b> (x{score.multiplier})
+                                    Mods<br /><b>{score.modifiers}</b> (x{score.multiplier.toFixed(2)})
                                  </div>
                               {/if}
                               <div class="score">
