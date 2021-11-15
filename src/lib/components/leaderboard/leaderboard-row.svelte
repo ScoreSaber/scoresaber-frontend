@@ -1,17 +1,11 @@
 <script type="ts">
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
+   import { onMount } from 'svelte';
    import FormattedDate from '../common/formatted-date.svelte';
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
-
-   function getAccuracy() {
-      let scoreCalc = score.baseScore;
-      let maxScore = leaderboard.maxScore;
-
-      return (scoreCalc / maxScore) * 100;
-   }
 
    export let showScoreModal: any;
    function openScoreDetails(score: Score): any {
@@ -45,7 +39,7 @@
    {/if}
    {#if leaderboard.maxScore}
       <td class="accuracy centered {new Date(score.timeSet).getTime() / 1000 <= 1558474032 ? 'old-score' : ''}">
-         <span>{getAccuracy().toFixed(2)}%</span>
+         <span>{((score.baseScore / leaderboard.maxScore) * 100).toFixed(2)}%</span>
       </td>
    {/if}
    {#if leaderboard.ranked}
