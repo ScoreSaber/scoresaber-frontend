@@ -1,7 +1,5 @@
 <script lang="ts">
    import { onDestroy, onMount } from 'svelte';
-   import Navbar from '$lib/components/common/navbar.svelte';
-   import Footer from '$lib/components/common/footer.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import axios from '$lib/utils/fetcher';
@@ -242,8 +240,6 @@
    </div>
 </div>
 
-<Footer />
-
 <style>
    table {
       border-collapse: separate;
@@ -262,18 +258,6 @@
       border-style: solid none;
       align-items: center;
       vertical-align: middle;
-   }
-
-   td.map img {
-      width: 24px;
-      height: 24px;
-      border-radius: 15%;
-      vertical-align: middle;
-   }
-
-   td.map .songInfo {
-      overflow-wrap: break-word;
-      padding-left: 7px;
    }
 
    tr.table-item td {
