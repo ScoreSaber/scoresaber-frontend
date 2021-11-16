@@ -26,6 +26,7 @@
    import SearchInput from '$lib/components/common/search-input.svelte';
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import { background, defaultBackground } from '$lib/global-store';
 
    let rangeStars: number[] = [];
 
@@ -125,6 +126,8 @@
          });
       }
    });
+
+   defaultBackground();
 
    onDestroy(pageUnsubscribe);
 </script>

@@ -101,7 +101,7 @@
       width: 100%;
       z-index: 100;
       transition: all 0.25s ease;
-      background: #202020;
+      background: none;
    }
 
    header.scrolled {
@@ -141,7 +141,7 @@
    .hamburger {
       position: absolute;
       background: transparent;
-      color: inherit;
+      color: var(--textColor);
       top: 10px;
       display: none;
       right: 10px;
@@ -264,7 +264,6 @@
    .fake-searchbox kbd {
       padding: 2px 4px;
       color: #fff;
-      opacity: 0.2;
    }
 
    @media all and (max-width: 720px) {
@@ -273,7 +272,8 @@
       }
 
       header.expanded {
-         height: 100vh;
+         height: 45vh;
+         background-color: var(--background-color);
       }
       .hamburger {
          display: block;
@@ -325,7 +325,8 @@
    }
 
    .fake-searchbox span {
-      color: #555;
+      color: #fff;
+      opacity: 0.2;
    }
 
    kbd {

@@ -17,11 +17,7 @@
 </script>
 
 <div class="card map-card">
-   <div
-      class="bg-image"
-      style={`background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(${leaderboardInfo.coverImage}) repeat scroll 0% 0%`}
-   />
-   <div class="card-content">
+   <div class="window card-content">
       <div class="media">
          <div class="media-content is-clipped">
             <div title={getDifficultyLabel(leaderboardInfo.difficulty)} class="tag mb-2 {getDifficultyStyle(leaderboardInfo.difficulty)}">

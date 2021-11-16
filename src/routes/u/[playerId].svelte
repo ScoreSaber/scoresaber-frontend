@@ -32,7 +32,7 @@
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import { modal } from '$lib/global-store';
+   import { modal, setBackground } from '$lib/global-store';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
 
    export let metadata: Player = undefined;
@@ -54,7 +54,7 @@
       data: playerData,
       error: playerDataError,
       refresh: refreshRankings
-   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios, onSuccess: (data) => setBackground(data.profilePicture) });
 
    const {
       data: scoreData,
@@ -125,7 +125,7 @@
 </head>
 
 <div class="section">
-   <div class="window has-shadow noheading">
+   <div class="content">
       {#if $playerData}
          {#if !$playerData.banned}
             <div in:fly={{ x: 20, duration: 1000 }} class="columns">
@@ -133,9 +133,6 @@
                <div class="column is-narrow">
                   <div class="profile-picture">
                      <img alt={$playerData.name} title={$playerData.name} src={$playerData.profilePicture} class="image is-128x128 rounded" />
-                  </div>
-                  <div class="desktop">
-                     <Badges player={$playerData} />
                   </div>
                </div>
                <div class="column">
@@ -153,34 +150,31 @@
                   </h5>
 
                   <h5 class="title is-5 player has-text-centered-mobile">
-                     <small>
-                        <span class="title-header">
-                           <i class="fas fa-globe-americas" title="Global Ranking" />
-                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
-                              >#{$playerData.rank.toLocaleString('en-US')}</a
-                           >
-                        </span>
-                        <span class="title-header spacer">
-                           <CountryImage country={$playerData.country} />
-                           <a
-                              title="Country Ranking"
-                              href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
-                              >#{$playerData.countryRank.toLocaleString('en-US')}</a
-                           >
-                        </span>
-                     </small>
+                     {#if !$playerData.inactive}
+                        <small>
+                           <span class="title-header">
+                              <i class="fas fa-globe-americas" title="Global Ranking" />
+                              <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
+                                 >#{$playerData.rank.toLocaleString('en-US')}</a
+                              >
+                           </span>
+                           <span class="title-header spacer">
+                              <CountryImage country={$playerData.country} />
+                              <a
+                                 title="Country Ranking"
+                                 href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
+                                 >#{$playerData.countryRank.toLocaleString('en-US')}</a
+                              >
+                           </span>
+                        </small>
+                     {:else}
+                        <div class="text-inactive text-muted mb-3">Inactive account</div>
+                     {/if}
                   </h5>
 
                   <div class="stats has-text-centered-mobile">
                      <Stats player={$playerData} />
                   </div>
-
-                  <div class="mobile">
-                     <Badges player={$playerData} />
-                  </div>
-                  {#if !$playerData.inactive}
-                     <RankChart player={$playerData} />
-                  {/if}
                </div>
             </div>
          {:else}
@@ -193,6 +187,14 @@
          <Error message={$playerDataError.toString()} />
       {/if}
    </div>
+
+   {#if $playerData && !$playerData.banned && !$playerData.inactive}
+      <div class="window has-shadow noheading">
+         <Badges player={$playerData} />
+         <RankChart player={$playerData} />
+      </div>
+   {/if}
+
    <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
       <div class="button-container">
          <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
@@ -263,6 +265,8 @@
    }
 
    h5.player {
+      display: flex;
+      gap: 10px;
       margin-bottom: 0px !important;
    }
    .column.is-narrow {
@@ -276,6 +280,11 @@
 
    .title-header {
       font-size: smaller;
+   }
+
+   .text-inactive {
+      font-size: 14px;
+      font-weight: 400;
    }
 
    .title-header.spacer {
@@ -313,6 +322,9 @@
       }
       .desktop {
          display: none;
+      }
+      .player {
+         justify-content: center;
       }
    }
 </style>

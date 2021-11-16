@@ -11,6 +11,7 @@
    import Button from '$lib/components/common/button.svelte';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info.svelte';
    import { fly } from 'svelte/transition';
+   import { background, defaultBackground } from '$lib/global-store';
 
    const {
       data: topRequests,
@@ -42,6 +43,8 @@
          refreshBelowTopRequests();
       }
    }
+
+   defaultBackground();
 </script>
 
 <head>

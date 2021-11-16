@@ -20,7 +20,7 @@
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
-   import { userData } from '$lib/global-store';
+   import { background, setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
 
    $: currentPage = createQueryStore('page', 1);
@@ -44,7 +44,10 @@
       data: leaderboard,
       error: leaderboardError,
       refresh: refreshLeaderboard
-   } = useAccio<LeaderboardInfo>(getLeaderboardInfoUrl($page.params.leaderboardId), { fetcher: axios });
+   } = useAccio<LeaderboardInfo>(getLeaderboardInfoUrl($page.params.leaderboardId), {
+      fetcher: axios,
+      onSuccess: (data) => setBackground(data.coverImage)
+   });
 
    const {
       data: leaderboardScores,
@@ -93,7 +96,7 @@
    <title>{$leaderboard ? $leaderboard.songName + ' - Leaderboard' : 'Leaderboard'} | ScoreSaber!</title>
 </head>
 
-<div>
+<div class="bg-content">
    <div class="section">
       <div class="columns">
          {#if $leaderboard}
@@ -183,6 +186,20 @@
 
    .leaderboard {
       overflow-x: auto;
+   }
+
+   .bg-image {
+      background: linear-gradient(180deg, rgba(36, 36, 36, 0.8), rgb(33, 33, 33)) repeat scroll 0% 0%,
+         rgba(0, 0, 0, 0) var(--cover) repeat scroll 0% 0%;
+      position: fixed;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background-position: 50% !important;
+      background-repeat: no-repeat !important;
+      background-size: cover !important;
+      z-index: -1;
    }
 
    table {

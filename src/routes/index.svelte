@@ -1,6 +1,9 @@
 <script lang="ts">
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
+   import { background, defaultBackground, setBackground } from '$lib/global-store';
+
+   setBackground('/images/banner.jpg');
 </script>
 
 <head>
@@ -8,13 +11,6 @@
 </head>
 
 <div>
-   <section class="section is-fullwidth no-padding">
-      <div>
-         <section class="hero is-custom is-banner is-bold" style="background-image: url('/images/banner.jpg');">
-            <div class="hero-body" />
-         </section>
-      </div>
-   </section>
    <div class="section breakout">
       <div class="window has-shadow">
          <h3>Welcome to ScoreSaber</h3>

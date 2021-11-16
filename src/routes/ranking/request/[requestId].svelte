@@ -15,7 +15,7 @@
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import { onDestroy } from 'svelte';
 
-   import { userData } from '$lib/global-store';
+   import { background, setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
    import { browser } from '$app/env';
    import poster from '$lib/utils/poster';
@@ -25,7 +25,10 @@
       data: request,
       error: requestError,
       refresh: refreshRequest
-   } = useAccio<RankRequestInformation>(`/api/ranking/request/${$page.params.requestId}`, { fetcher: axios });
+   } = useAccio<RankRequestInformation>(`/api/ranking/request/${$page.params.requestId}`, {
+      fetcher: axios,
+      onSuccess: (data) => setBackground(data.leaderboardInfo.coverImage)
+   });
 
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser) {

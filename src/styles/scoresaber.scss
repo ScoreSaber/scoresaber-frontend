@@ -2,7 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-   --background: #202020;
+   --background-color: #202020;
+
+   --background: var(--background-color);
    --foreground: #252525;
    --foregroundItem: #2d2d2d;
    --textColor: #eee;
@@ -49,14 +51,73 @@
 html {
    height: 100%;
    margin: 0;
+   overflow: hidden;
 }
 
-body {
+.root {
    min-height: 100%;
    margin: 0;
-   background-color: var(--background);
    font-family: 'Heebo', sans-serif;
    font-size: 14px;
+}
+
+.dynamic-background {
+   background: var(--background);
+   font-size: 14px;
+   background-position: 50% !important;
+   background-repeat: no-repeat !important;
+   background-size: cover !important;
+   position: fixed;
+   height: 100%;
+   width: 100%;
+   top: 0;
+   left: 0;
+   z-index: -2;
+
+   filter: blur(5px);
+   -webkit-filter: blur(5px);
+}
+
+.cover {
+   position: fixed;
+   top: 50vh;
+
+   width: 100%;
+   min-height: 100%;
+   background: var(--background);
+
+   z-index: -1;
+   margin: 0 auto;
+}
+
+@media only screen and (max-width: 769px) {
+   .cover {
+      top: 32vh;
+   }
+}
+
+.cover::before {
+   content: 'bbb';
+   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpolygon points='0,100 100,0 100,100' style='fill:%23202020%3B' /%3E%3C/svg%3E");
+   background-repeat: no-repeat;
+   background-size: 100% 100%;
+   content: '';
+   display: block;
+   height: 10em;
+   position: absolute;
+   width: 100%;
+   left: 0;
+   top: -10em;
+}
+
+.behind-background {
+   background: var(--background-color);
+   position: fixed;
+   height: 100%;
+   width: 100%;
+   top: 0;
+   left: 0;
+   z-index: -3;
 }
 
 .container {
@@ -243,6 +304,10 @@ div.is-center {
 .select select.is-active {
    border-color: var(--scoreSaberYellow);
    box-shadow: 0 0 0 0.125em rgba(72, 95, 199, 0.25);
+}
+
+.text-muted {
+   color: var(--muted);
 }
 
 .textarea::-webkit-input-placeholder {

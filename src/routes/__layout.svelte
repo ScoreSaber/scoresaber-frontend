@@ -2,11 +2,13 @@
    import fetcher from '$lib/utils/fetcher';
    import poster from '$lib/utils/poster';
    import type { UserData, TokenResponse } from '$lib/models/UserData';
-   import { userData } from '$lib/global-store';
+   import { background, userData } from '$lib/global-store';
    import { useAccio } from '$lib/utils/accio';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
    import '../styles/scoresaber.scss';
+   import { onDestroy } from 'svelte';
+   import { fly } from 'svelte/transition';
 
    let tokenCheckAttempts: number = 0;
 
@@ -40,8 +42,12 @@
 </script>
 
 <div class="root">
+   <div class="behind-background" />
+   {#key $background}
+      <div transition:fly={{ y: -20, duration: 1300 }} class="dynamic-background" style={`--background: ${$background};`} />
+   {/key}
+   <div class="cover" />
    <Navbar />
-
    <div class="page-container content">
       <slot />
    </div>
