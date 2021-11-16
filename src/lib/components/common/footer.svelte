@@ -21,9 +21,14 @@
 
 <style type="scss">
    .site-footer {
-      background-color: #1c1c1c;
+      background: #1c1c1c;
       font-size: 1.25em;
       padding: 3rem;
+      --slice-height: 18vh;
+      padding-top: calc(3rem + var(--slice-height));
+      clip-path: polygon(0 var(--slice-height), 100% 0, 100% 100%, 0 100%);
+      margin-top: calc(-20vh - 90px);
+      z-index: -1;
    }
 
    .logoSection {
