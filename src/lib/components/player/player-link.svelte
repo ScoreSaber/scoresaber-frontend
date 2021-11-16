@@ -74,6 +74,24 @@
 {/if}
 
 <style>
+   .williums {
+      width: max-content;
+      background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet, indigo, blue, green, yellow, orange, red);
+      color: transparent;
+      background-size: 300px 100%;
+      background-position: top 50%;
+      animation: gay 8s linear infinite;
+      background-clip: text;
+      -webkit-background-clip: text;
+   }
+   @keyframes gay {
+      0% {
+         background-position: 300px 0;
+      }
+      100% {
+         background-position: 0 0;
+      }
+   }
    .player-link {
       display: inline-flex;
       gap: 5px;
