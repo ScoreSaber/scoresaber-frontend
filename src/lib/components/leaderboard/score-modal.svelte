@@ -8,6 +8,8 @@
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
 
+   let y;
+
    $: isVisible = false;
 
    function getAccuracy() {
@@ -19,6 +21,7 @@
 
    export function setVisibility(visible: boolean): any {
       isVisible = visible;
+      y = 1;
    }
 </script>
 
@@ -95,6 +98,8 @@
       </div>
    </div>
 {/if}
+
+<svelte:window bind:scrollY={y} />
 
 <style>
    .text-muted {
