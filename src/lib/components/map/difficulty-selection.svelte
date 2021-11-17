@@ -1,7 +1,7 @@
 <script lang="ts">
    import type { Difficulty } from '$lib/models/LeaderboardData';
    import type { RankingDifficulty } from '$lib/models/Ranking';
-   import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus } from '$lib/utils/helpers';
+   import { getDifficultyStyle, getDifficultyLabel } from '$lib/utils/helpers';
 
    export let diffs: Difficulty[] = null;
    export let rankingDiffs: RankingDifficulty[] = null;
@@ -37,22 +37,6 @@
 </div>
 
 <style>
-   .tabs a.selected {
-      border-bottom-width: 2px;
-      font-weight: 700;
-   }
-
-   .tabs li > .selected {
-      background-color: var(--gray-dark);
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-   }
-
-   .tabs a {
-      color: white;
-      font-size: 14px;
-   }
-
    .tabs a.easy {
       border-bottom-color: var(--easy);
       color: var(--easy);
@@ -76,9 +60,5 @@
    .tabs a.expert-plus {
       border-bottom-color: var(--expert-plus);
       color: var(--expert-plus);
-   }
-
-   .tabs ul {
-      border-bottom-color: var(--dimmed);
    }
 </style>
