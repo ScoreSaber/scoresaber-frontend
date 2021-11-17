@@ -83,6 +83,7 @@
       transition: max-width var(--transitionTime) ease-in-out;
       width: 100%;
       font-size: 1rem;
+      color: #fff;
       &.expandable {
          max-width: calc(16px + 1rem);
          &.expanded {
