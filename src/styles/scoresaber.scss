@@ -376,3 +376,29 @@ hr {
 .select:not(.is-multiple):not(.is-loading):hover::after {
    border-color: var(--scoreSaberYellow);
 }
+
+.tabs a.selected {
+   border-bottom-width: 2px;
+   font-weight: 700;
+   border-bottom-color: var(--scoreSaberYellow);
+   color: var(--scoreSaberYellow);
+}
+
+.tabs li > .selected {
+   background-color: var(--gray-dark);
+   border-top-left-radius: 5px;
+   border-top-right-radius: 5px;
+}
+
+.tabs a {
+   color: white;
+   font-size: 14px;
+}
+.tabs ul {
+   border-bottom-color: var(--dimmed);
+}
+
+.tabs a {
+   border-bottom-color: var(--muted);
+   color: var(--muted);
+}

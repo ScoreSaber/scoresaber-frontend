@@ -15,7 +15,7 @@
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
    import { browser } from '$app/env';
-   import SearchInput from '$lib/components/common/search-input.svelte';
+   import TextInput from '$lib/components/common/text-input.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import { background, defaultBackground } from '$lib/global-store';
 
@@ -147,7 +147,7 @@
       </div>
       <div class="divider" />
       <div class="advancedSearch">
-         <SearchInput icon="fa-search" onSearch={searchUpdated} value={$pageQuery.search} />
+         <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
       </div>
    </div>
    <div class="window has-shadow noheading">

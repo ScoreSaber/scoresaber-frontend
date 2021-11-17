@@ -32,8 +32,10 @@
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import { modal, setBackground } from '$lib/global-store';
+   import { modal, setBackground, userData } from '$lib/global-store';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
+   import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
+   import fetcher from '$lib/utils/fetcher';
 
    export let metadata: Player = undefined;
    const scoresPerPage = 8;
@@ -53,7 +55,7 @@
    const {
       data: playerData,
       error: playerDataError,
-      refresh: refreshRankings
+      refresh: refreshPlayerData
    } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios, onSuccess: (data) => setBackground(data.profilePicture) });
 
    const {
@@ -67,7 +69,7 @@
          refreshScores({
             newUrl: getPlayerScoresUrl(p.params.playerId, p.query.toString())
          });
-         refreshRankings({ newUrl: getPlayerInfoUrl(p.params.playerId) });
+         refreshPlayerData({ newUrl: getPlayerInfoUrl(p.params.playerId) });
       }
    });
    onDestroy(pageUnsubscribe);
@@ -104,8 +106,33 @@
       updateCancelToken();
    }
 
-   function openModal(score: PlayerScore) {
+   function openScoreModal(score: PlayerScore) {
       modal.set(bind(ScoreModal, { player: $playerData, score: score }));
+   }
+
+   function openAdminModel() {
+      modal.set(bind(AdminModal, { player: $playerData, onBanClick: handleBan, onGiveRoleClick: handleGiveRole, onUnbanClick: handleUnban }));
+   }
+
+   async function handleRefresh(player: Player) {
+      playerData.set(undefined);
+      await fetcher(`/api/user/${player.id}/refresh`);
+      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+   }
+
+   async function handleBan(player: Player, reason: string) {
+      console.log(player.id);
+      playerData.set(undefined);
+   }
+
+   async function handleUnban(player: Player) {
+      console.log(player.id);
+      playerData.set(undefined);
+   }
+
+   async function handleGiveRole(player: Player, role: string) {
+      console.log(player.id);
+      playerData.set(undefined);
    }
 </script>
 
@@ -133,6 +160,18 @@
                <div class="column is-narrow">
                   <div class="profile-picture">
                      <img alt={$playerData.name} title={$playerData.name} src={$playerData.profilePicture} class="image is-128x128 rounded" />
+                     {#if parseInt($playerData.id) >= 70000000000000000}
+                        <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
+                           <span class="icon is-small">
+                              <i class="fas fa-sync-alt" />
+                           </span>
+                        </button>
+                     {/if}
+                     <button on:click={() => openAdminModel()} class="button admin is-small is-dark mt-2" title="Admin Actions">
+                        <span class="icon is-small">
+                           <i class="fas fa-users-cog" />
+                        </span>
+                     </button>
                   </div>
                </div>
                <div class="column">
@@ -212,7 +251,7 @@
             <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each $scoreData as score, i (score.score.id)}
-                     <Score {openModal} {pageDirection} {score} row={i + 1} />
+                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} />
                   {/each}
                </div>
             </div>
@@ -273,9 +312,24 @@
       position: relative;
       width: 200px;
    }
+
    .profile-picture {
       display: flex;
       justify-content: center;
+   }
+   .profile-picture .button {
+      position: absolute;
+      border-radius: 20px;
+   }
+
+   .profile-picture .refresh {
+      bottom: 76%;
+      right: 35px;
+   }
+
+   .profile-picture .admin {
+      bottom: 55%;
+      right: 23px;
    }
 
    .title-header {

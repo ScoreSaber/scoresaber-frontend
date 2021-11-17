@@ -23,10 +23,10 @@
 
    import Slider from '@bulatdashiev/svelte-slider';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
-   import SearchInput from '$lib/components/common/search-input.svelte';
+   import TextInput from '$lib/components/common/text-input.svelte';
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
-   import { background, defaultBackground } from '$lib/global-store';
+   import { defaultBackground } from '$lib/global-store';
 
    let rangeStars: number[] = [];
 
@@ -187,7 +187,7 @@
       <div class="column is-4">
          <div class="window has-shadow noheading">
             <div class="mb-2">Search Terms</div>
-            <SearchInput icon="fa-search" onSearch={searchUpdated} value={$pageQuery.search} />
+            <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
          </div>
          <div class="window has-shadow noheading">
             <label class="checkbox">

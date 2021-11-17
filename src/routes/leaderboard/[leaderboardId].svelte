@@ -1,6 +1,4 @@
 <script lang="ts">
-   import Navbar from '$lib/components/common/navbar.svelte';
-   import Footer from '$lib/components/common/footer.svelte';
    import { useAccio } from '$lib/utils/accio';
    import axios from '$lib/utils/fetcher';
    import Loader from '$lib/components/common/loader.svelte';
@@ -20,13 +18,12 @@
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
-   import { background, setBackground, userData } from '$lib/global-store';
+   import { setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
 
    $: currentPage = createQueryStore('page', 1);
    $: countries = createQueryStore('countries', undefined);
 
-   let filterChanged: boolean = false;
    let leaderboardId = $page.params.leaderboardId;
 
    function getLeaderboardInfoUrl(leaderboardId: string) {
@@ -56,8 +53,6 @@
    } = useAccio<Score[]>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.query.toString()), { fetcher: axios });
 
    function countryFilterUpdated(items: FilterItem[]) {
-      filterChanged = true;
-
       if (items.length === 0) {
          $countries = null;
       } else {
