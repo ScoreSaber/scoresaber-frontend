@@ -1,6 +1,4 @@
 <script lang="ts">
-   import Navbar from '$lib/components/common/navbar.svelte';
-   import Footer from '$lib/components/common/footer.svelte';
    import { useAccio } from '$lib/utils/accio';
    import type { RankRequestInformation } from '$lib/models/Ranking';
    import axios from '$lib/utils/fetcher';
@@ -15,7 +13,7 @@
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import { onDestroy } from 'svelte';
 
-   import { background, setBackground, userData } from '$lib/global-store';
+   import { setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
    import { browser } from '$app/env';
    import poster from '$lib/utils/poster';

@@ -84,6 +84,7 @@
       background-clip: text;
       -webkit-background-clip: text;
    }
+
    @keyframes gay {
       0% {
          background-position: 300px 0;
