@@ -34,6 +34,8 @@
    import Modal, { bind } from '$lib/components/common/modal.svelte';
    import { modal, setBackground } from '$lib/global-store';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
+   import TextInput from '$lib/components/common/text-input.svelte';
+   import TextInput from '$lib/components/common/text-input.svelte';
 
    export let metadata: Player = undefined;
    const scoresPerPage = 8;
@@ -134,6 +136,7 @@
                   <div class="profile-picture">
                      <img alt={$playerData.name} title={$playerData.name} src={$playerData.profilePicture} class="image is-128x128 rounded" />
                   </div>
+                  <TextInput placeholder="Ban Reason" />
                </div>
                <div class="column">
                   <!-- Player name -->
