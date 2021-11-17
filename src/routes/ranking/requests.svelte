@@ -11,7 +11,9 @@
    import Button from '$lib/components/common/button.svelte';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info.svelte';
    import { fly } from 'svelte/transition';
-   import { background, defaultBackground } from '$lib/global-store';
+   import { background, defaultBackground, userData } from '$lib/global-store';
+   import { goto } from '$app/navigation';
+   import Permissions from '$lib/utils/permissions';
 
    const {
       data: topRequests,
@@ -123,6 +125,16 @@
          title={showBelowTop ? 'Hide all requests' : 'Show all requests'}
          icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
       />
+      {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT)}
+         <Button
+            isDisabled={false}
+            onClicked={() => {
+               goto('/ranking/request/create');
+            }}
+            title={'Create Rank Request'}
+            icon={'list'}
+         />
+      {/if}
       {#if showBelowTop}
          <div in:fly={{ x: 20, duration: 500 }} class="window has-shadow below-top">
             {#if $belowTopRequests}
