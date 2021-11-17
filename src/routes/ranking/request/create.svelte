@@ -15,6 +15,7 @@
    import { goto } from '$app/navigation';
    import { browser } from '$app/env';
    import poster from '$lib/utils/poster';
+   import { fly } from 'svelte/transition';
 
    $: pageQuery = pageQueryStore({
       leaderboardId: ''
@@ -86,7 +87,7 @@
 </head>
 
 <div class="section">
-   <div class="window has-shadow">
+   <div in:fly={{ y: -20, duration: 1000 }} class="window has-shadow">
       <h1 class="text-center">Create a Rank Request</h1>
       <div>
          <SearchInput icon="fa-list" placeholder="Leaderboard ID" onSearch={searchUpdated} value={$pageQuery.leaderboardId} />
@@ -94,6 +95,7 @@
             <div class="smallSongInfo"><SmallSongInfo leaderboard={searchData} margin={false} /></div>
 
             {#if requestData}
+               <h1 class="text-center">Existing Request</h1>
                <div class="existing">
                   <table>
                      <thead>
@@ -142,7 +144,6 @@
       padding: 10px;
       padding-top: 15px;
       border-radius: 4px;
-      margin-top: 2rem;
    }
 
    .smallSongInfo {

@@ -173,7 +173,7 @@
             {:else}
                {#each searchResults.leaderboards as leaderboard, i}
                   <div class="result map {i == focusElement - searchResults.players.length ? 'focus' : ''}">
-                     <div><SmallSongInfo {leaderboard} /></div>
+                     <div><SmallSongInfo {leaderboard} margin={false} /></div>
                   </div>
                {/each}
             {/if}
