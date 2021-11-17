@@ -9,14 +9,20 @@
    import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import { onMount } from 'svelte';
    import Button from '$lib/components/common/button.svelte';
-   import { defaultBackground, setBackground } from '$lib/global-store';
+   import { defaultBackground, setBackground, userData } from '$lib/global-store';
    import type { RankRequestInformation } from '$lib/models/Ranking';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info-offlisting.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
+   import Permissions from '$lib/utils/permissions';
+   import { goto } from '$app/navigation';
+   import { browser } from '$app/env';
+   import poster from '$lib/utils/poster';
 
    $: pageQuery = pageQueryStore({
       leaderboardId: ''
    });
+
+   if (browser) if (!($userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT))) goto('/');
 
    onMount(() => {
       if ($pageQuery.leaderboardId.length > 0) {
@@ -63,8 +69,13 @@
       }
    }
 
-   function handleSubmit() {
-      console.log('submit');
+   async function handleSubmit() {
+      let createdRequest = await poster(
+         `/api/ranking/request/action/rt/create`,
+         { leaderboardId: searchData.id, requestType: 1, description },
+         { withCredentials: true }
+      );
+      goto(`/ranking/request/${createdRequest.data}`);
    }
 </script>
 
@@ -76,13 +87,12 @@
    <div class="window has-shadow">
       <h1 class="text-center">Create a Rank Request</h1>
       <div>
-         <SearchInput icon="fa-search" onSearch={searchUpdated} value={$pageQuery.leaderboardId} />
+         <SearchInput icon="fa-list" placeholder="Leaderboard ID" onSearch={searchUpdated} value={$pageQuery.leaderboardId} />
          {#if searchData}
             <div class="smallSongInfo"><SmallSongInfo leaderboard={searchData} margin={false} /></div>
 
             {#if requestData}
                <div class="existing">
-                  <h4>An existing ranking request was found</h4>
                   <table>
                      <thead>
                         <tr>
@@ -128,6 +138,7 @@
    .existing {
       background-color: var(--gray);
       padding: 10px;
+      padding-top: 15px;
       border-radius: 4px;
       margin-top: 2rem;
    }

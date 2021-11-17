@@ -19,7 +19,6 @@
    import Permissions from '$lib/utils/permissions';
    import { browser } from '$app/env';
    import poster from '$lib/utils/poster';
-   import permissions from '$lib/utils/permissions';
 
    const {
       data: request,
