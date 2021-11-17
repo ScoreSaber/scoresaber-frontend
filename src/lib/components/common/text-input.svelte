@@ -4,6 +4,7 @@
    export let value: string = null;
    export let placeholder: string = 'Search...';
    export let onInput: (value: string) => void = () => {};
+   export let isSmall: boolean = false;
    export let icon: string = null;
 
    export let expandable: boolean = false;
@@ -59,7 +60,7 @@
 
 <svelte:window on:click={clickOut} />
 
-<div bind:this={container} class="ss-input" class:expandable class:expanded class:active={value !== null}>
+<div bind:this={container} class={'ss-input ' + (isSmall === true ? 'is-small' : '')} class:expandable class:expanded class:active={value !== null}>
    {#if icon}
       <i on:click={handleClick} class="fas {icon}" />
    {/if}
@@ -135,5 +136,8 @@
             cursor: pointer;
          }
       }
+   }
+   .ss-input.is-small {
+      padding: 0.2rem;
    }
 </style>
