@@ -36,6 +36,7 @@
    import ScoreModal from '$lib/components/player/score-modal.svelte';
    import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
    import fetcher from '$lib/utils/fetcher';
+   import Permissions from '$lib/utils/permissions';
 
    export let metadata: Player = undefined;
    const scoresPerPage = 8;
@@ -110,7 +111,7 @@
       modal.set(bind(ScoreModal, { player: $playerData, score: score }));
    }
 
-   function openAdminModel() {
+   function openAdminModal() {
       modal.set(bind(AdminModal, { player: $playerData, onBanClick: handleBan, onGiveRoleClick: handleGiveRole, onUnbanClick: handleUnban }));
    }
 
@@ -159,19 +160,22 @@
                <!-- Profile picture & badges -->
                <div class="column is-narrow">
                   <div class="profile-picture">
-                     <img alt={$playerData.name} title={$playerData.name} src={$playerData.profilePicture} class="image is-128x128 rounded" />
-                     {#if parseInt($playerData.id) >= 70000000000000000}
-                        <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
-                           <span class="icon is-small">
-                              <i class="fas fa-sync-alt" />
-                           </span>
-                        </button>
-                     {/if}
-                     <button on:click={() => openAdminModel()} class="button admin is-small is-dark mt-2" title="Admin Actions">
-                        <span class="icon is-small">
-                           <i class="fas fa-users-cog" />
-                        </span>
-                     </button>
+                     <div class="image is-128x128 rounded" style="background-image: url({$playerData.profilePicture}); background-size: cover;">
+                        {#if parseInt($playerData.id) >= 70000000000000000}
+                           <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
+                              <span class="icon is-small">
+                                 <i class="fas fa-sync-alt" />
+                              </span>
+                           </button>
+                        {/if}
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+                           <button on:click={() => openAdminModal()} class="button admin is-small is-dark mt-2" title="Admin Actions">
+                              <span class="icon is-small">
+                                 <i class="fas fa-users-cog" />
+                              </span>
+                           </button>
+                        {/if}
+                     </div>
                   </div>
                </div>
                <div class="column">
@@ -323,13 +327,12 @@
    }
 
    .profile-picture .refresh {
-      bottom: 76%;
-      right: 35px;
+      right: 3px;
    }
 
    .profile-picture .admin {
-      bottom: 55%;
-      right: 23px;
+      top: 30px;
+      right: -15px;
    }
 
    .title-header {
