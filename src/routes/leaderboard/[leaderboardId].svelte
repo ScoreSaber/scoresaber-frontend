@@ -85,8 +85,6 @@
    }
 
    onDestroy(pageUnsubscribe);
-
-   $userData.permissions = Permissions.security.RT;
 </script>
 
 <head>
