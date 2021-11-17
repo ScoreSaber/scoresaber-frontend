@@ -2,15 +2,13 @@
    import SearchInput from '$lib/components/common/search-input.svelte';
    import { pageQueryStore } from '$lib/query-store';
    import fetcher from '$lib/utils/fetcher';
-   import queryString from 'query-string';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
-   import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
    import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import { onMount } from 'svelte';
    import Button from '$lib/components/common/button.svelte';
    import { defaultBackground, setBackground, userData } from '$lib/global-store';
-   import type { RankRequestInformation } from '$lib/models/Ranking';
+   import type { RankRequestInformation, CreateRequestResponse } from '$lib/models/Ranking';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info-offlisting.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Permissions from '$lib/utils/permissions';
@@ -75,7 +73,11 @@
          { leaderboardId: searchData.id, requestType: 1, description },
          { withCredentials: true }
       );
-      goto(`/ranking/request/${createdRequest.data}`);
+
+      if (createdRequest.status == 200) {
+         const requestData = <CreateRequestResponse>createdRequest.data;
+         goto(`/ranking/request/${requestData.requestId}`);
+      }
    }
 </script>
 
