@@ -74,7 +74,7 @@
       <div class="window has-shadow">
          {#if $topRequests}
             <div in:fly={{ x: 20, duration: 1000 }}>
-               <h3>Next items in queue</h3>
+               <h3 style="margin-bottom: -1rem;">Next items in queue</h3>
                <div class="ranking">
                   <table>
                      <thead>
