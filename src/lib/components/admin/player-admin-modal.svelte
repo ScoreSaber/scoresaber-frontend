@@ -6,6 +6,9 @@
    export let onUnbanClick: (player: Player) => void;
    export let onGiveRoleClick: (player: Player, role: string) => void;
    export let player: Player;
+
+   $: banReason = '';
+   $: givenRole = 'rtr';
 </script>
 
 <div class="media">
@@ -21,15 +24,15 @@
          {#if player.banned}
             <div class="window tool mt-3">
                <div class="title is-6 mb-3">Unban User</div>
-               <button on:click={() => onBanClick(player, 'Yes')} class="button is-success is-small ">
+               <button on:click={() => onUnbanClick(player)} class="button is-success is-small ">
                   <span>Unban</span>
                </button>
             </div>
          {:else}
             <div class="window tool mt-3">
                <div class="title is-6 mb-3">Ban User</div>
-               <TextInput isSmall={true} placeholder="Ban Reason" />
-               <button on:click={() => onBanClick(player, 'Yes')} class="button is-danger is-small mt-1">
+               <TextInput bind:value={banReason} isSmall={true} placeholder="Ban Reason" />
+               <button on:click={() => onBanClick(player, banReason)} class="button is-danger is-small mt-1">
                   <span>Ban</span>
                </button>
             </div>
@@ -39,7 +42,7 @@
             <div class="title is-6 mb-3">Give Role</div>
             <div class="role-container">
                <div class="select is-small">
-                  <select id="roles">
+                  <select bind:value={givenRole} id="roles">
                      <option value="rtr">RT Recruit</option>
                      <option value="rt">RT</option>
                      <option value="qat">QAT</option>
@@ -48,7 +51,7 @@
                      <option value="qathead">QAT Head</option>
                   </select>
                </div>
-               <button class="button is-small is-success mt-1">
+               <button on:click={() => onGiveRoleClick(player, givenRole)} class="button is-small is-success mt-1">
                   <span>Give Role</span>
                </button>
             </div>
