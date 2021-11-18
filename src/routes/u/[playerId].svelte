@@ -122,18 +122,21 @@
    }
 
    async function handleBan(player: Player, reason: string) {
-      console.log(player.id);
       playerData.set(undefined);
+      await fetcher(`/api/user/${player.id}/ban/${reason}`, { withCredentials: true });
+      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 
    async function handleUnban(player: Player) {
-      console.log(player.id);
       playerData.set(undefined);
+      await fetcher(`/api/user/${player.id}/unban`, { withCredentials: true });
+      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 
    async function handleGiveRole(player: Player, role: string) {
-      console.log(player.id);
       playerData.set(undefined);
+      await fetcher(`/api/user/${player.id}/giveRole/${role}`, { withCredentials: true });
+      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 </script>
 
@@ -155,77 +158,81 @@
 <div class="section">
    <div class="content">
       {#if $playerData}
-         {#if !$playerData.banned}
-            <div in:fly={{ x: 20, duration: 1000 }} class="columns">
-               <!-- Profile picture & badges -->
-               <div class="column is-narrow">
-                  <div class="profile-picture">
-                     <div class="image is-128x128 rounded" style="background-image: url({$playerData.profilePicture}); background-size: cover;">
-                        {#if parseInt($playerData.id) >= 70000000000000000}
-                           <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
-                              <span class="icon is-small">
-                                 <i class="fas fa-sync-alt" />
-                              </span>
-                           </button>
-                        {/if}
-                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
-                           <button on:click={() => openAdminModal()} class="button admin is-small is-dark mt-2" title="Admin Actions">
-                              <span class="icon is-small">
-                                 <i class="fas fa-users-cog" />
-                              </span>
-                           </button>
-                        {/if}
-                     </div>
-                  </div>
-               </div>
-               <div class="column">
-                  <!-- Player name -->
-                  <h5 class="title is-5 player has-text-centered-mobile">
-                     <PlayerLink
-                        player={$playerData}
-                        external={true}
-                        countryImage={true}
-                        destination={`https://steamcommunity.com/profiles/${$playerData.id}`}
-                     />
-                     <span title="Performance Points" class="title-header spacer pp">
-                        {$playerData.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
-                     </span>
-                  </h5>
-
-                  <h5 class="title is-5 player has-text-centered-mobile">
-                     {#if !$playerData.inactive}
-                        <small>
-                           <span class="title-header">
-                              <i class="fas fa-globe-americas" title="Global Ranking" />
-                              <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
-                                 >#{$playerData.rank.toLocaleString('en-US')}</a
-                              >
+         <div in:fly={{ x: 20, duration: 1000 }} class="columns">
+            <!-- Profile picture & badges -->
+            <div class="column is-narrow">
+               <div class="profile-picture">
+                  <div class="image is-128x128 rounded" style="background-image: url({$playerData.profilePicture}); background-size: cover;">
+                     {#if parseInt($playerData.id) >= 70000000000000000}
+                        <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
+                           <span class="icon is-small">
+                              <i class="fas fa-sync-alt" />
                            </span>
-                           <span class="title-header spacer">
-                              <CountryImage country={$playerData.country} />
-                              <a
-                                 title="Country Ranking"
-                                 href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
-                                 >#{$playerData.countryRank.toLocaleString('en-US')}</a
-                              >
-                           </span>
-                        </small>
-                     {:else}
-                        <div class="text-inactive text-muted mb-3">Inactive account</div>
+                        </button>
                      {/if}
-                  </h5>
-
-                  <div class="stats has-text-centered-mobile">
-                     <Stats player={$playerData} />
+                     {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+                        <button on:click={() => openAdminModal()} class="button admin is-small is-dark mt-2" title="Admin Actions">
+                           <span class="icon is-small">
+                              <i class="fas fa-users-cog" />
+                           </span>
+                        </button>
+                     {/if}
                   </div>
                </div>
             </div>
-         {:else}
-            <span>Player banned</span>
-         {/if}
+            <div class="column">
+               <!-- Player name -->
+               <h5 class="title is-5 player has-text-centered-mobile">
+                  <PlayerLink
+                     player={$playerData}
+                     external={true}
+                     countryImage={true}
+                     destination={`https://steamcommunity.com/profiles/${$playerData.id}`}
+                  />
+                  {#if !$playerData.banned}
+                     <span title="Performance Points" class="title-header spacer pp">
+                        {$playerData.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
+                     </span>
+                  {/if}
+               </h5>
+
+               <h5 class="title is-5 player has-text-centered-mobile">
+                  {#if !$playerData.inactive && !$playerData.banned}
+                     <small>
+                        <span class="title-header">
+                           <i class="fas fa-globe-americas" title="Global Ranking" />
+                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
+                              >#{$playerData.rank.toLocaleString('en-US')}</a
+                           >
+                        </span>
+                        <span class="title-header spacer">
+                           <CountryImage country={$playerData.country} />
+                           <a
+                              title="Country Ranking"
+                              href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
+                              >#{$playerData.countryRank.toLocaleString('en-US')}</a
+                           >
+                        </span>
+                     </small>
+                  {/if}
+                  {#if $playerData.inactive}
+                     <div class="text-inactive text-muted mb-3">Inactive account</div>
+                  {/if}
+                  {#if $playerData.banned}
+                     <div class="text-inactive text-muted mb-3">Banned account</div>
+                  {/if}
+               </h5>
+               {#if !$playerData.banned}
+                  <div class="stats has-text-centered-mobile">
+                     <Stats player={$playerData} />
+                  </div>
+               {/if}
+            </div>
+         </div>
       {:else if !$playerDataError}
          <Loader />
       {/if}
+
       {#if $playerDataError}
          <Error message={$playerDataError.toString()} />
       {/if}
@@ -238,13 +245,12 @@
       </div>
    {/if}
 
-   <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
-      <div class="button-container">
-         <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
-      </div>
-
-      {#if $scoreData && $playerData}
-         {#if !$playerData.banned}
+   {#if $scoreData && $playerData}
+      {#if !$playerData.banned}
+         <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
+            <div class="button-container">
+               <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
+            </div>
             <div class="mobile top-arrowpagination">
                <ArrowPagination
                   pageClicked={changePage}
@@ -274,14 +280,16 @@
                   maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
                />
             </div>
-         {/if}
-      {:else if !$scoreData}
-         <Loader />
+         </div>
       {/if}
-      {#if $scoreDataError}
-         <Error message={$scoreDataError.toString()} />
-      {/if}
-   </div>
+   {/if}
+
+   {#if !$scoreData && !$scoreDataError}
+      <Loader />
+   {/if}
+   {#if $scoreDataError}
+      <Error message={$scoreDataError.toString()} />
+   {/if}
 </div>
 
 <Modal show={$modal} />
