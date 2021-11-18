@@ -252,7 +252,7 @@
                   maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
                />
             </div>
-            <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
+            <div class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each $scoreData as score, i (score.score.id)}
                      <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} />
@@ -292,7 +292,7 @@
    }
    .gridTable {
       display: grid;
-      grid-template-columns: 1fr 6fr 3fr;
+      grid-template-columns: 1fr;
       padding: 10px;
    }
 

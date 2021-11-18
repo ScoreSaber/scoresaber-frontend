@@ -3,7 +3,7 @@
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
 
    export let leaderboard: LeaderboardInfo;
-   export let margin: boolean | undefined;
+   export let margin: boolean | undefined = undefined;
 
    import type SearchView from '$lib/components/common/search.svelte';
    import { searchView } from '$lib/global-store';
