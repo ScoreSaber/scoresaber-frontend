@@ -168,7 +168,7 @@
                      withCountryImages={true}
                      filterUpdated={countryFilterUpdated}
                   />
-                  <div class="mb-2">Search Terms</div>
+                  <div class="title is-6 mb-2 mt-2">Search Terms</div>
                   <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
                </div>
                {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
