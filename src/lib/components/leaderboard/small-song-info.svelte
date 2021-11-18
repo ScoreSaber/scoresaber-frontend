@@ -65,7 +65,6 @@
       width: 46px;
       height: 46px;
       border-radius: 15%;
-      margin-right: 25px;
       display: block;
    }
 
@@ -90,7 +89,7 @@
       font-size: xx-small;
       position: absolute;
       bottom: 20%;
-      right: 20px;
+      right: -10px;
       min-width: 20px;
       color: white;
       background-color: MediumSeaGreen;
@@ -99,7 +98,7 @@
    }
 
    figure {
-      margin: 0px;
+      margin: 0px 1rem !important;
       position: relative;
    }
 </style>

@@ -86,32 +86,34 @@
    <div class="leaderboard" class:expanded>
       <div>
          {#if leaderboardData && !loadLeaderboardDataLoading}
-            <table>
-               <thead>
-                  <tr class="headers">
-                     <th class="rank" />
-                     <th class="player" />
-                     <th class="timeSet centered">Time Set</th>
-                     <th class="score centered">Score</th>
-                     {#if leaderboardData.filter((score) => score.modifiers.length > 0).length > 0}
-                        <th class="mods centered">Mods</th>
-                     {/if}
-                     {#if score.leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
-                     {#if score.leaderboard.ranked}<th class="pp centered">PP</th>{/if}
-                  </tr>
-               </thead>
-               <tbody>
-                  {#each leaderboardData as lScore}
-                     <LeaderboardRow
-                        score={lScore}
-                        leaderboard={score.leaderboard}
-                        otherScores={leaderboardData}
-                        showScoreModal={() => openModal({ score: lScore, leaderboard: score.leaderboard }, lScore.leaderboardPlayerInfo)}
-                        highlighted={lScore.id === score.score.id}
-                     />
-                  {/each}
-               </tbody>
-            </table>
+            <div class="tableWrapper">
+               <table>
+                  <thead>
+                     <tr class="headers">
+                        <th class="rank" />
+                        <th class="player" />
+                        <th class="timeSet centered">Time Set</th>
+                        <th class="score centered">Score</th>
+                        {#if leaderboardData.filter((score) => score.modifiers.length > 0).length > 0}
+                           <th class="mods centered">Mods</th>
+                        {/if}
+                        {#if score.leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
+                        {#if score.leaderboard.ranked}<th class="pp centered">PP</th>{/if}
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {#each leaderboardData as lScore}
+                        <LeaderboardRow
+                           score={lScore}
+                           leaderboard={score.leaderboard}
+                           otherScores={leaderboardData}
+                           showScoreModal={() => openModal({ score: lScore, leaderboard: score.leaderboard }, lScore.leaderboardPlayerInfo)}
+                           highlighted={lScore.id === score.score.id}
+                        />
+                     {/each}
+                  </tbody>
+               </table>
+            </div>
             <div class="pagination desktop tablet">
                <ClassicPagination totalItems={score.leaderboard.plays} pageSize={scoresPerPage} currentPage={leaderboardPage} {changePage} />
             </div>
@@ -269,39 +271,6 @@
       align-items: center;
       margin: 15px 0;
    }
-   @media (max-width: 512px) {
-      .table-item > div {
-         grid-row: calc(var(--row) * 3 + 1) / span 1 !important;
-      }
-      .table-item > div:nth-child(2),
-      .table-item > div:nth-child(3) {
-         padding: 8px;
-         margin-bottom: 0px;
-      }
-      .table-item > div:nth-child(2) {
-         grid-row: calc(var(--row) * 3) / span 1 !important;
-         grid-column: 1 / span 2;
-         margin-top: 5px;
-         margin-bottom: 0px;
-         padding-bottom: 0px;
-      }
-      .table-item > div:nth-child(2) > div {
-         flex-direction: row;
-         justify-content: space-around;
-         width: 100%;
-      }
-      .table-item > div:nth-child(3) {
-         grid-column: 1 / span 2;
-      }
-      .table-item > div:nth-child(4) {
-         margin-top: 0px;
-         grid-column: 1 / span 2;
-         grid-row: calc(var(--row) * 3 + 2) / span 1 !important;
-      }
-      .table-item > div.background {
-         grid-row: calc(var(--row) * 3) / span 3 !important;
-      }
-   }
 
    @media only screen and (min-width: 769px) {
       .mobile {
@@ -312,8 +281,48 @@
       .desktop {
          display: none;
       }
-      .player {
-         justify-content: center;
+      .table-item {
+         grid-template-columns: 20px 1fr;
+         padding: 12px;
+         > div:not(.background, .leaderboard) {
+            grid-row: 2 !important;
+         }
+         > div:nth-child(2) {
+            grid-row: 1 !important;
+            grid-column: 1 / span 2;
+            .rank-info {
+               flex-flow: row nowrap;
+               justify-content: space-between;
+               width: 100%;
+            }
+         }
+         > div:nth-child(3) {
+            grid-column: 1;
+         }
+         > div:nth-child(4) {
+            grid-column: 2;
+         }
+         > div:nth-child(5) {
+            grid-row: 3 !important;
+            grid-column: 1 / span 2;
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+            > div {
+               display: contents;
+            }
+         }
+
+         .leaderboard {
+            grid-row: 4 !important;
+            > div {
+               padding: 5px 0px;
+            }
+            .tableWrapper {
+               overflow-x: auto;
+               margin-bottom: 8px;
+            }
+         }
       }
    }
 </style>
