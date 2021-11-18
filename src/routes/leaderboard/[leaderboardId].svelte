@@ -20,6 +20,8 @@
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
    import { setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
+   import permissions from '$lib/utils/permissions';
+   import poster from '$lib/utils/poster';
 
    $: currentPage = createQueryStore('page', 1);
    $: countries = createQueryStore('countries', undefined);
@@ -82,6 +84,20 @@
    function showScoreModal(score: Score) {
       scoreChosen = score;
       setVisibility(true);
+   }
+
+   let manualPP: number;
+   async function handleManualPP(event) {
+      event.preventDefault();
+      let createdRequest = await poster(
+         `/api/ranking/request/action/nat/replace`,
+         { leaderboardId: $page.params.leaderboardId, manualPP },
+         { withCredentials: true }
+      );
+
+      if (createdRequest.status == 200) {
+         refreshLeaderboard({ newUrl: getLeaderboardInfoUrl($page.params.leaderboardId) });
+      }
    }
 
    onDestroy(pageUnsubscribe);
@@ -147,7 +163,7 @@
                      filterUpdated={countryFilterUpdated}
                   />
                </div>
-               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT) && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
                   <div class="window has-shadow mt-3">
                      <div class="title is-6 mb-3">Ranking Tool</div>
                      <a href="/ranking/request/create?leaderboardId={leaderboardId}" class="button is-small is-dark">
@@ -156,6 +172,16 @@
                         </span>
                         <span>Create Rank Request</span>
                      </a>
+                     {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+                        <div class="field has-addons mt-3">
+                           <div class="control">
+                              <input class="input is-small" type="number" bind:value={manualPP} placeholder="PP" />
+                           </div>
+                           <div class="control">
+                              <button on:click={(ev) => handleManualPP(ev)} class="button is-small is-info">Set PP</button>
+                           </div>
+                        </div>
+                     {/if}
                   </div>
                {/if}
             </div>

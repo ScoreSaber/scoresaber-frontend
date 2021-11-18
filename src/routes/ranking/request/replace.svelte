@@ -23,6 +23,8 @@
    });
 
    onMount(() => {
+      if (browser) if (!($userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.NAT))) return goto('/');
+
       if ($pageQuery.requestId.length > 0) {
          searchUpdated($pageQuery.requestId);
       }
