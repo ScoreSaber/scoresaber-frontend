@@ -91,6 +91,7 @@
    $: selOption = $pageQuery['sort'] ? sortButtons.find((x) => x.value == $pageQuery['sort']) : sortButtons[0];
    function sortChanged(option: buttonGroupItem) {
       $requestCancel.cancel('Filter Changed');
+      pageDirection = option.value === 'recent' ? 1 : -1;
       pageQuery.update({
          page: 1,
          sort: option.value
