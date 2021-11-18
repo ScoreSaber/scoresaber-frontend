@@ -20,6 +20,7 @@
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
    import { setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
 
    $: currentPage = createQueryStore('page', 1);
    $: countries = createQueryStore('countries', undefined);
@@ -60,7 +61,12 @@
       }
    }
 
+   let pageDirection = 1;
+
    function changePage(newPage: number) {
+      $requestCancel.cancel('Page Changed');
+      updateCancelToken();
+      pageDirection = newPage > $currentPage ? 1 : -1;
       $currentPage = newPage;
    }
 
@@ -99,27 +105,35 @@
                <div class="window has-shadow">
                   <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
                   <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard">
+                     <div
+                        class="gridTable"
+                        style="--rows: 1fr 5fr {($leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length
+                           ? '2fr 2fr 2fr 2fr 2fr'
+                           : '2fr 2fr 2fr 2fr'}"
+                     >
+                        <div class="header">
+                           <div />
+                           <div />
+                           <div class="centered">Time Set</div>
+                           <div class="centered">Score</div>
+                           {#if ($leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0}
+                              <div class="centered">Mods</div>
+                           {/if}
+                           <div class="centered">Accuracy</div>
+                           <div class="centered">PP</div>
+                        </div>
+                        {#each $leaderboardScores ?? [] as score, i (score.id)}
+                           <LeaderboardRow
+                              {score}
+                              leaderboard={$leaderboard}
+                              otherScores={$leaderboardScores ?? []}
+                              {showScoreModal}
+                              row={i + 2}
+                              {pageDirection}
+                           />
+                        {/each}
+                     </div>
                      {#if $leaderboardScores}
-                        <table>
-                           <thead>
-                              <tr class="headers">
-                                 <th class="rank" />
-                                 <th class="player" />
-                                 <th class="timeSet centered">Time Set</th>
-                                 <th class="score centered">Score</th>
-                                 {#if $leaderboardScores.filter((score) => score.modifiers.length > 0).length > 0}
-                                    <th class="mods centered">Mods</th>
-                                 {/if}
-                                 {#if $leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
-                                 {#if $leaderboard.ranked}<th class="pp centered">PP</th>{/if}
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {#each $leaderboardScores as score}
-                                 <LeaderboardRow {score} leaderboard={$leaderboard} otherScores={$leaderboardScores} {showScoreModal} />
-                              {/each}
-                           </tbody>
-                        </table>
                         <ClassicPagination
                            totalItems={$leaderboard.plays}
                            pageSize={12}
@@ -171,7 +185,23 @@
 
 <ScoreModal score={scoreChosen} leaderboard={$leaderboard} otherScores={$leaderboardScores} bind:setVisibility />
 
-<style>
+<style lang="scss">
+   .gridTable {
+      display: grid;
+      grid-template-columns: 1fr;
+      min-width: 500px;
+      .header {
+         font-weight: bold;
+         grid-row: 1;
+      }
+      .centered {
+         text-align: center;
+      }
+      > div {
+         display: grid;
+         grid-template-columns: var(--rows);
+      }
+   }
    @media screen and (max-width: 769px), print {
       .columns {
          display: flex;
@@ -183,14 +213,14 @@
       overflow-x: auto;
    }
 
-   table {
-      border-collapse: separate;
-      border-spacing: 0 5px;
-      white-space: nowrap;
-      margin-top: -15px;
-   }
+   // table {
+   //    border-collapse: separate;
+   //    border-spacing: 0 5px;
+   //    white-space: nowrap;
+   //    margin-top: -15px;
+   // }
 
-   .content table th {
-      border: none !important;
-   }
+   // .content table th {
+   //    border: none !important;
+   // }
 </style>

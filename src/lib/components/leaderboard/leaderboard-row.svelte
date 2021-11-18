@@ -1,6 +1,7 @@
 <script type="ts">
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
+   import { fly } from 'svelte/transition';
    import FormattedDate from '../common/formatted-date.svelte';
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
@@ -11,13 +12,22 @@
    function openScoreDetails(score: Score): any {
       showScoreModal(score);
    }
+
+   export let row = 1;
+   export let pageDirection = 1;
 </script>
 
-<tr class="table-item" class:highlighted>
-   <td class="rank" width="5px">
+<div
+   class="table-item"
+   class:highlighted
+   in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+   out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+   style="grid-row: {row} / span 1;"
+>
+   <div class="rank" width="5px">
       #{score.rank.toLocaleString('en-US')}
-   </td>
-   <td class="player">
+   </div>
+   <div class="player">
       <img
          src={score.leaderboardPlayerInfo.profilePicture}
          alt={score.leaderboardPlayerInfo.name}
@@ -25,48 +35,63 @@
          class="image rounded is-24x24"
       />
       <span class="playerName"><PlayerLink player={score.leaderboardPlayerInfo} destination={`/u/${score.leaderboardPlayerInfo.id}`} /></span>
-   </td>
-   <td class="timeSet centered">
+   </div>
+   <div class="timeSet centered">
       <span><FormattedDate date={new Date(score.timeSet)} /></span>
-   </td>
-   <td class="score centered">
+   </div>
+   <div class="score centered">
       <span class="score" on:click={openScoreDetails(score)}>{score.modifiedScore.toLocaleString('en-US')}</span>
-   </td>
+   </div>
    {#if otherScores.filter((score) => score.modifiers.length > 0).length > 0}
-      <td class="mods centered">
+      <div class="mods centered">
          <span>{score.modifiers.length === 0 ? '-' : score.modifiers}</span>
-      </td>
+      </div>
    {/if}
    {#if leaderboard.maxScore}
-      <td class="accuracy centered {new Date(score.timeSet).getTime() / 1000 <= 1558474032 ? 'old-score' : ''}">
+      <div class="accuracy centered {new Date(score.timeSet).getTime() / 1000 <= 1558474032 ? 'old-score' : ''}">
          <span>{((score.baseScore / leaderboard.maxScore) * 100).toFixed(2)}%</span>
-      </td>
+      </div>
    {/if}
    {#if leaderboard.ranked}
-      <td class="pp centered">
+      <div class="pp centered">
          <span title="Performance Points" class="pp">{score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span
          ><span class="pp ppLabel">pp</span>
-      </td>
+      </div>
    {/if}
-</tr>
+</div>
 
-<style>
+<style lang="scss">
+   .table-item {
+      display: grid;
+      grid-template-columns: var(--rows);
+      background-color: var(--gray);
+      margin: 5px 0;
+      padding: 5px;
+      border-radius: 5px;
+      grid-column: 1;
+      .centered {
+         text-align: center;
+      }
+      &:hover {
+         background-color: var(--gray-light);
+      }
+   }
    .old-score {
       color: red;
    }
-   td {
+   div {
       border: none !important;
       border-style: solid none;
       align-items: center;
       vertical-align: bottom;
    }
-   td.player {
+   div.player {
       white-space: nowrap;
       display: flex;
       align-items: flex-end;
       overflow: hidden;
    }
-   td.player span {
+   div.player span {
       overflow: hidden;
       text-overflow: ellipsis;
    }
@@ -81,30 +106,6 @@
       margin-left: 10px;
       display: flex;
    }
-   tr.table-item {
-      border-radius: 5px;
-      overflow: hidden;
-   }
-   tr.table-item td {
-      background-color: #323232;
-   }
-   tr.table-item td {
-      background-color: var(--gray);
-   }
-   tr.table-item:hover td {
-      background-color: var(--gray-light);
-   }
-   td:first-child {
-      border-left-style: solid;
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-   }
-   td:last-child {
-      border-right-style: solid;
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
-   }
-
    span.score {
       border-bottom: 1px dotted white;
       cursor: pointer;
