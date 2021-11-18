@@ -150,12 +150,12 @@
                {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
                   <div class="window has-shadow mt-3">
                      <div class="title is-6 mb-3">Ranking Tool</div>
-                     <button class="button is-small is-dark">
+                     <a href="/ranking/request/create?leaderboardId={leaderboardId}" class="button is-small is-dark">
                         <span class="icon is-small">
                            <i class="fas fa-stream" />
                         </span>
                         <span>Create Rank Request</span>
-                     </button>
+                     </a>
                   </div>
                {/if}
             </div>
