@@ -184,6 +184,7 @@
             border-collapse: separate;
             border-spacing: 0 5px;
             white-space: nowrap;
+            margin: 0 2px;
             tbody {
                position: relative;
             }

@@ -73,6 +73,7 @@
    @media (max-width: 1024px) {
       .player {
          max-width: 55vw;
+         min-width: 170px;
       }
    }
    span.playerName {

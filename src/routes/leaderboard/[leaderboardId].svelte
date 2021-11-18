@@ -183,20 +183,6 @@
       overflow-x: auto;
    }
 
-   .bg-image {
-      background: linear-gradient(180deg, rgba(36, 36, 36, 0.8), rgb(33, 33, 33)) repeat scroll 0% 0%,
-         rgba(0, 0, 0, 0) var(--cover) repeat scroll 0% 0%;
-      position: fixed;
-      height: 100%;
-      width: 100%;
-      top: 0;
-      left: 0;
-      background-position: 50% !important;
-      background-repeat: no-repeat !important;
-      background-size: cover !important;
-      z-index: -1;
-   }
-
    table {
       border-collapse: separate;
       border-spacing: 0 5px;
