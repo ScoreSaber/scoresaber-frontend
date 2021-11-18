@@ -90,9 +90,6 @@
          goto(`/ranking/request/${searchData.requestId}`);
       }
    }
-
-   $userData.permissions = Permissions.groups.NAT;
-   if (browser) if (!($userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.NAT))) goto('/');
 </script>
 
 <head>
@@ -137,14 +134,16 @@
                   </tbody>
                </table>
             </div>
+
+            <h1 class="text-center">New Leaderboard</h1>
             <SearchInput icon="fa-list" placeholder="New Leaderboard ID" onSearch={newLeaderboardUpdated} value={$pageQuery.leaderboardId} />
             {#if newLeaderboard}
                <div class="smallSongInfo"><SmallSongInfo leaderboard={newLeaderboard} margin={false} /></div>
+               <textarea class="textarea mt-3" bind:value={description} placeholder="Updated description..." />
+               <div class="text-center mt-3">
+                  <Button title="Replace Rank Request" size="" poggleable={true} onClicked={() => handleSubmit()} isDisabled={!searchData} />
+               </div>
             {/if}
-            <textarea class="textarea mt-3" bind:value={description} placeholder="Description..." />
-            <div class="text-center mt-3">
-               <Button title="Replace Rank Request" size="" poggleable={true} onClicked={() => handleSubmit()} isDisabled={!searchData} />
-            </div>
          {/if}
       </div>
    </div>
@@ -152,10 +151,10 @@
 
 <style>
    .existing {
-      padding: 10px;
       padding-top: 15px;
       border-radius: 4px;
       margin-top: 1rem;
+      margin-bottom: 1rem;
    }
 
    .smallSongInfo {
