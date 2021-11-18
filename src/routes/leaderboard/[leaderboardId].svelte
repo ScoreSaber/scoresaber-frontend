@@ -21,6 +21,7 @@
    import { setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';
 
    $: currentPage = createQueryStore('page', 1);
    $: countries = createQueryStore('countries', undefined);
@@ -105,34 +106,7 @@
                <div class="window has-shadow">
                   <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
                   <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard">
-                     <div
-                        class="gridTable"
-                        style="--rows: 1fr 5fr {($leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length
-                           ? '2fr 2fr 2fr 2fr 2fr'
-                           : '2fr 2fr 2fr 2fr'}"
-                     >
-                        <div class="header">
-                           <div />
-                           <div />
-                           <div class="centered">Time Set</div>
-                           <div class="centered">Score</div>
-                           {#if ($leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0}
-                              <div class="centered">Mods</div>
-                           {/if}
-                           <div class="centered">Accuracy</div>
-                           <div class="centered">PP</div>
-                        </div>
-                        {#each $leaderboardScores ?? [] as score, i (score.id)}
-                           <LeaderboardRow
-                              {score}
-                              leaderboard={$leaderboard}
-                              otherScores={$leaderboardScores ?? []}
-                              {showScoreModal}
-                              row={i + 2}
-                              {pageDirection}
-                           />
-                        {/each}
-                     </div>
+                     <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
                      {#if $leaderboardScores}
                         <ClassicPagination
                            totalItems={$leaderboard.plays}
@@ -186,22 +160,6 @@
 <ScoreModal score={scoreChosen} leaderboard={$leaderboard} otherScores={$leaderboardScores} bind:setVisibility />
 
 <style lang="scss">
-   .gridTable {
-      display: grid;
-      grid-template-columns: 1fr;
-      min-width: 500px;
-      .header {
-         font-weight: bold;
-         grid-row: 1;
-      }
-      .centered {
-         text-align: center;
-      }
-      > div {
-         display: grid;
-         grid-template-columns: var(--rows);
-      }
-   }
    @media screen and (max-width: 769px), print {
       .columns {
          display: flex;
@@ -212,15 +170,4 @@
    .leaderboard {
       overflow-x: auto;
    }
-
-   // table {
-   //    border-collapse: separate;
-   //    border-spacing: 0 5px;
-   //    white-space: nowrap;
-   //    margin-top: -15px;
-   // }
-
-   // .content table th {
-   //    border: none !important;
-   // }
 </style>

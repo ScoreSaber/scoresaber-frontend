@@ -18,6 +18,7 @@
    import axios from '$lib/utils/fetcher';
    import type { Writable } from 'svelte/store';
    import Error from '../common/error.svelte';
+   import LeaderboardGrid from '../leaderboard/leaderboard-grid.svelte';
    export let score: PlayerScore;
    export let row: number = 0;
    export let pageDirection: number = 1;
@@ -29,6 +30,7 @@
    let leaderboardData: Score[];
    let loadLeaderboardDataLoading: boolean = false;
    let leaderboardPage: number = Math.ceil(score.score.rank / 12);
+   let leaderboardPageDirection: number = 1;
 
    $: expanded && loadLeaderboardData();
 
@@ -42,12 +44,15 @@
    let scoreDataError: Writable<globalThis.Error>;
    let refreshScores: (refreshOptions?: AccioRefreshOptions) => Promise<void>;
 
-   function changePage(page: number) {
+   async function changePage(page: number) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
-      pageDirection = page > leaderboardPage ? 1 : -1;
-      leaderboardPage = page;
-      getLeaderboardData();
+      let oldPage = leaderboardPage;
+      leaderboardPageDirection = page > oldPage ? 1 : -1;
+      setTimeout(async () => {
+         leaderboardPage = page;
+         await getLeaderboardData();
+      });
    }
 
    async function getLeaderboardData() {
@@ -57,7 +62,7 @@
             data: tmpScoreData,
             error: tmpScoreDataError,
             refresh: tmpRefreshScores
-         } = await useAccio<Score[]>(
+         } = useAccio<Score[]>(
             queryString.stringifyUrl({
                url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
                query: { page: leaderboardPage }
@@ -75,6 +80,17 @@
          })
       });
       loadLeaderboardDataLoading = false;
+   }
+
+   function modalOpen(newScore: Score) {
+      let leaderboardScore = leaderboardData.find((score) => score.id === newScore.id);
+      openModal(
+         {
+            score: newScore,
+            leaderboard: score.leaderboard
+         },
+         leaderboardScore.leaderboardPlayerInfo
+      );
    }
 </script>
 
@@ -109,35 +125,15 @@
    </div>
    <div class="leaderboard" class:expanded>
       <div>
+         <div class="tableWrapper">
+            <LeaderboardGrid
+               leaderboardScores={$scoreData}
+               leaderboard={score.leaderboard}
+               pageDirection={leaderboardPageDirection}
+               showScoreModal={modalOpen}
+            />
+         </div>
          {#if $scoreData && !loadLeaderboardDataLoading}
-            <div class="tableWrapper">
-               <table>
-                  <thead>
-                     <tr class="headers">
-                        <th class="rank" />
-                        <th class="player" />
-                        <th class="timeSet centered">Time Set</th>
-                        <th class="score centered">Score</th>
-                        {#if $scoreData.filter((score) => score.modifiers.length > 0).length > 0}
-                           <th class="mods centered">Mods</th>
-                        {/if}
-                        {#if score.leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
-                        {#if score.leaderboard.ranked}<th class="pp centered">PP</th>{/if}
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {#each $scoreData as lScore}
-                        <LeaderboardRow
-                           score={lScore}
-                           leaderboard={score.leaderboard}
-                           otherScores={$scoreData}
-                           showScoreModal={() => openModal({ score: lScore, leaderboard: score.leaderboard }, lScore.leaderboardPlayerInfo)}
-                           highlighted={lScore.id === score.score.id}
-                        />
-                     {/each}
-                  </tbody>
-               </table>
-            </div>
             <div class="pagination desktop tablet">
                <ClassicPagination totalItems={score.leaderboard.plays} pageSize={scoresPerPage} currentPage={leaderboardPage} {changePage} />
             </div>
@@ -206,15 +202,6 @@
          * {
             z-index: 1;
             position: relative;
-         }
-         table {
-            border-collapse: separate;
-            border-spacing: 0 5px;
-            white-space: nowrap;
-            margin: 0 2px;
-            tbody {
-               position: relative;
-            }
          }
       }
    }
