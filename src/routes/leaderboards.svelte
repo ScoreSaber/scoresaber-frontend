@@ -38,7 +38,7 @@
       maxStar: 20,
       category: 1,
       sort: 0,
-      search: ''
+      search: null
    });
 
    onMount(() => {
@@ -92,16 +92,19 @@
    function searchUpdated(search: string) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
-      if (search.length > 3) {
-         pageQuery.update({
-            page: 1,
-            search
-         });
+      if (search) {
+         if (search.length > 3) {
+            pageQuery.update({
+               page: 1,
+               search
+            });
+         } else {
+            pageQuery.updateSingle('search', null);
+         }
       } else {
-         pageQuery.updateSingle('search', '');
+         pageQuery.updateSingle('search', null);
       }
    }
-
    let debounceTimer;
    function changeRangeStars(event) {
       clearTimeout(debounceTimer);
