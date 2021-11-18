@@ -12,7 +12,7 @@
    import Loader from '../common/loader.svelte';
    import ClassicPagination from '../common/classic-pagination.svelte';
    import ArrowPagination from '../common/arrow-pagination.svelte';
-   import { requestCancel } from '$lib/utils/accio/canceler';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    export let score: PlayerScore;
    export let row: number = 0;
    export let pageDirection: number = 1;
@@ -35,6 +35,7 @@
 
    function changePage(page: number) {
       $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       pageDirection = page > leaderboardPage ? 1 : -1;
       leaderboardPage = page;
       getLeaderboardData();
@@ -105,6 +106,7 @@
                      leaderboard={score.leaderboard}
                      otherScores={leaderboardData}
                      showScoreModal={() => openModal({ score: lScore, leaderboard: score.leaderboard }, lScore.leaderboardPlayerInfo)}
+                     highlighted={lScore.id === score.score.id}
                   />
                {/each}
             </tbody>
@@ -157,14 +159,15 @@
       grid-row: var(--row) / span 1;
       grid-column: 1;
       margin: 3px 0px;
+      padding: 7px 0;
       .leaderboard {
          grid-row: 2;
          grid-column: 1 / span 4;
          max-height: 0px;
          transition: max-height var(--transitionTime) ease-out;
-         padding: 5px 20px;
          overflow: hidden;
          &.expanded {
+            padding: 5px 20px;
             max-height: 800px;
          }
          * {

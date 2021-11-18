@@ -1,11 +1,11 @@
 <script type="ts">
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
-   import { onMount } from 'svelte';
    import FormattedDate from '../common/formatted-date.svelte';
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
+   export let highlighted: boolean = false;
 
    export let showScoreModal: any;
    function openScoreDetails(score: Score): any {
@@ -13,7 +13,7 @@
    }
 </script>
 
-<tr class="table-item">
+<tr class="table-item" class:highlighted>
    <td class="rank" width="5px">
       #{score.rank.toLocaleString('en-US')}
    </td>
@@ -107,5 +107,9 @@
    span.score {
       border-bottom: 1px dotted white;
       cursor: pointer;
+   }
+
+   .highlighted {
+      outline: 1px solid var(--scoreSaberYellow);
    }
 </style>
