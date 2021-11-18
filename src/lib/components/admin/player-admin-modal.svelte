@@ -1,7 +1,9 @@
 <script type="ts">
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
+   const { close } = getContext('simple-modal');
    import type { Player } from '$lib/models/PlayerData';
+   import { getContext } from 'svelte';
    export let onBanClick: (player: Player, reason: string) => void;
    export let onUnbanClick: (player: Player) => void;
    export let onGiveRoleClick: (player: Player, role: string) => void;
@@ -24,7 +26,13 @@
          {#if player.banned}
             <div class="window tool mt-3">
                <div class="title is-6 mb-3">Unban User</div>
-               <button on:click={() => onUnbanClick(player)} class="button is-success is-small ">
+               <button
+                  on:click={() => {
+                     onUnbanClick(player);
+                     close();
+                  }}
+                  class="button is-success is-small "
+               >
                   <span>Unban</span>
                </button>
             </div>
@@ -32,7 +40,13 @@
             <div class="window tool mt-3">
                <div class="title is-6 mb-3">Ban User</div>
                <TextInput bind:value={banReason} isSmall={true} placeholder="Ban Reason" />
-               <button on:click={() => onBanClick(player, banReason)} class="button is-danger is-small mt-1">
+               <button
+                  on:click={() => {
+                     onBanClick(player, banReason);
+                     close();
+                  }}
+                  class="button is-danger is-small mt-1"
+               >
                   <span>Ban</span>
                </button>
             </div>
@@ -51,7 +65,13 @@
                      <option value="qathead">QAT Head</option>
                   </select>
                </div>
-               <button on:click={() => onGiveRoleClick(player, givenRole)} class="button is-small is-success mt-1">
+               <button
+                  on:click={() => {
+                     onGiveRoleClick(player, givenRole);
+                     close();
+                  }}
+                  class="button is-small is-success mt-1"
+               >
                   <span>Give Role</span>
                </button>
             </div>
