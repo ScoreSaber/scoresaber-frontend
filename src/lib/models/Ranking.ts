@@ -36,6 +36,10 @@ export interface RankRequestListing {
    difficultyCount: number;
 }
 
+export interface CreateRequestResponse {
+   requestId: string;
+}
+
 export class VoteGroup {
    public upvotes: number;
    public downvotes: number;

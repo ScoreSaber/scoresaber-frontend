@@ -32,9 +32,11 @@
 </script>
 
 <button on:click={() => onButtonClicked()} class="button {size}" disabled={isDisabled}>
-   <span class="icon">
-      <i class="fas fa-{icon}" />
-   </span>
+   {#if icon}
+      <span class="icon">
+         <i class="fas fa-{icon}" />
+      </span>
+   {/if}
    <span>{title}</span>
 </button>
 
@@ -45,7 +47,5 @@
       line-height: 1;
       border-color: var(--foreground);
       border: transparent;
-      margin-left: 5px;
-      margin-right: 5px;
    }
 </style>

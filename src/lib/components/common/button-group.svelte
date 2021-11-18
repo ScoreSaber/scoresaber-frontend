@@ -21,7 +21,7 @@
    }
 </script>
 
-<div>
+<div class="btn-group">
    {#each options as option}
       <Button
          title={option.label}
@@ -33,3 +33,10 @@
       />
    {/each}
 </div>
+
+<style>
+   .btn-group {
+      display: flex;
+      gap: 5px;
+   }
+</style>
