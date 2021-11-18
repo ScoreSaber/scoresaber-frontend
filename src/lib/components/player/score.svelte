@@ -84,42 +84,44 @@
       <PlayerScoreComponent {openModal} {score} />
    </div>
    <div class="leaderboard" class:expanded>
-      {#if leaderboardData && !loadLeaderboardDataLoading}
-         <table>
-            <thead>
-               <tr class="headers">
-                  <th class="rank" />
-                  <th class="player" />
-                  <th class="timeSet centered">Time Set</th>
-                  <th class="score centered">Score</th>
-                  {#if leaderboardData.filter((score) => score.modifiers.length > 0).length > 0}
-                     <th class="mods centered">Mods</th>
-                  {/if}
-                  {#if score.leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
-                  {#if score.leaderboard.ranked}<th class="pp centered">PP</th>{/if}
-               </tr>
-            </thead>
-            <tbody>
-               {#each leaderboardData as lScore}
-                  <LeaderboardRow
-                     score={lScore}
-                     leaderboard={score.leaderboard}
-                     otherScores={leaderboardData}
-                     showScoreModal={() => openModal({ score: lScore, leaderboard: score.leaderboard }, lScore.leaderboardPlayerInfo)}
-                     highlighted={lScore.id === score.score.id}
-                  />
-               {/each}
-            </tbody>
-         </table>
-         <div class="pagination desktop tablet">
-            <ClassicPagination totalItems={score.leaderboard.plays} pageSize={scoresPerPage} currentPage={leaderboardPage} {changePage} />
-         </div>
-         <div class="mobile">
-            <ArrowPagination pageClicked={changePage} page={leaderboardPage} maxPages={Math.ceil(score.leaderboard.plays / scoresPerPage)} />
-         </div>
-      {:else}
-         <Loader />
-      {/if}
+      <div>
+         {#if leaderboardData && !loadLeaderboardDataLoading}
+            <table>
+               <thead>
+                  <tr class="headers">
+                     <th class="rank" />
+                     <th class="player" />
+                     <th class="timeSet centered">Time Set</th>
+                     <th class="score centered">Score</th>
+                     {#if leaderboardData.filter((score) => score.modifiers.length > 0).length > 0}
+                        <th class="mods centered">Mods</th>
+                     {/if}
+                     {#if score.leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
+                     {#if score.leaderboard.ranked}<th class="pp centered">PP</th>{/if}
+                  </tr>
+               </thead>
+               <tbody>
+                  {#each leaderboardData as lScore}
+                     <LeaderboardRow
+                        score={lScore}
+                        leaderboard={score.leaderboard}
+                        otherScores={leaderboardData}
+                        showScoreModal={() => openModal({ score: lScore, leaderboard: score.leaderboard }, lScore.leaderboardPlayerInfo)}
+                        highlighted={lScore.id === score.score.id}
+                     />
+                  {/each}
+               </tbody>
+            </table>
+            <div class="pagination desktop tablet">
+               <ClassicPagination totalItems={score.leaderboard.plays} pageSize={scoresPerPage} currentPage={leaderboardPage} {changePage} />
+            </div>
+            <div class="mobile">
+               <ArrowPagination pageClicked={changePage} page={leaderboardPage} maxPages={Math.ceil(score.leaderboard.plays / scoresPerPage)} />
+            </div>
+         {:else}
+            <Loader />
+         {/if}
+      </div>
    </div>
 </div>
 
@@ -166,8 +168,10 @@
          max-height: 0px;
          transition: max-height var(--transitionTime) ease-out;
          overflow: hidden;
-         &.expanded {
+         > div {
             padding: 5px 20px;
+         }
+         &.expanded {
             max-height: 800px;
          }
          * {
