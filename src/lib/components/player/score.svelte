@@ -1,5 +1,5 @@
 <script type="ts">
-   import type { PlayerScore } from '$lib/models/PlayerData';
+   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
    import FormattedDate from '../common/formatted-date.svelte';
    import SmallSongInfo from '../leaderboard/small-song-info.svelte';
    import { rankToPage } from '$lib/utils/helpers';
@@ -10,28 +10,46 @@
    import queryString from 'query-string';
    import LeaderboardRow from '../leaderboard/leaderboard-row.svelte';
    import Loader from '../common/loader.svelte';
+   import ClassicPagination from '../common/classic-pagination.svelte';
+   import ArrowPagination from '../common/arrow-pagination.svelte';
+   import { requestCancel } from '$lib/utils/accio/canceler';
    export let score: PlayerScore;
    export let row: number = 0;
    export let pageDirection: number = 1;
-   export let openModal: (score: PlayerScore) => void;
+   export let openModal: (score: PlayerScore, player?: LeaderboardPlayer | Player) => void;
    export let expanded: boolean = false;
 
+   const scoresPerPage = 12;
+
    let leaderboardData: Score[];
+   let loadLeaderboardDataLoading: boolean = false;
+   let leaderboardPage: number = Math.ceil(score.score.rank / 12);
 
    $: expanded && loadLeaderboardData();
 
    async function loadLeaderboardData() {
       if (expanded && !leaderboardData) {
-         console.log('fetching leaderboard data');
-         await fetcher<Score[]>(
-            queryString.stringifyUrl({
-               url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
-               query: { page: Math.floor(score.score.rank / 12) }
-            }),
-            { withCredentials: true }
-         ).then((info) => (leaderboardData = info));
-         console.log(leaderboardData);
+         getLeaderboardData();
       }
+   }
+
+   function changePage(page: number) {
+      $requestCancel.cancel('Filter Changed');
+      pageDirection = page > leaderboardPage ? 1 : -1;
+      leaderboardPage = page;
+      getLeaderboardData();
+   }
+
+   async function getLeaderboardData() {
+      loadLeaderboardDataLoading = true;
+      await fetcher<Score[]>(
+         queryString.stringifyUrl({
+            url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
+            query: { page: leaderboardPage }
+         }),
+         { withCredentials: true }
+      ).then((info) => (leaderboardData = info));
+      loadLeaderboardDataLoading = false;
    }
 </script>
 
@@ -65,7 +83,7 @@
       <PlayerScoreComponent {openModal} {score} />
    </div>
    <div class="leaderboard" class:expanded>
-      {#if leaderboardData}
+      {#if leaderboardData && !loadLeaderboardDataLoading}
          <table>
             <thead>
                <tr class="headers">
@@ -82,10 +100,21 @@
             </thead>
             <tbody>
                {#each leaderboardData as lScore}
-                  <LeaderboardRow score={lScore} leaderboard={score.leaderboard} otherScores={leaderboardData} showScoreModal={() => {}} />
+                  <LeaderboardRow
+                     score={lScore}
+                     leaderboard={score.leaderboard}
+                     otherScores={leaderboardData}
+                     showScoreModal={() => openModal({ score: lScore, leaderboard: score.leaderboard }, lScore.leaderboardPlayerInfo)}
+                  />
                {/each}
             </tbody>
          </table>
+         <div class="pagination desktop tablet">
+            <ClassicPagination totalItems={score.leaderboard.plays} pageSize={scoresPerPage} currentPage={leaderboardPage} {changePage} />
+         </div>
+         <div class="mobile">
+            <ArrowPagination pageClicked={changePage} page={leaderboardPage} maxPages={Math.ceil(score.leaderboard.plays / scoresPerPage)} />
+         </div>
       {:else}
          <Loader />
       {/if}
@@ -104,8 +133,6 @@
    .table-item > div:not(.background, .leaderboard) {
       position: relative;
       grid-row: 1;
-      padding: 5px;
-      margin: 5px 0;
    }
    .table-item > div:nth-child(2) {
       grid-column: 1;
@@ -142,12 +169,12 @@
          }
          * {
             z-index: 1;
+            position: relative;
          }
          table {
             border-collapse: separate;
             border-spacing: 0 5px;
             white-space: nowrap;
-            margin-top: -15px;
             tbody {
                position: relative;
             }
@@ -227,6 +254,14 @@
       background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%,
          rgba(0, 0, 0, 0) var(--bgURL) repeat scroll 0% 0%;
    }
+
+   .pagination {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0;
+   }
    @media (max-width: 512px) {
       .table-item > div {
          grid-row: calc(var(--row) * 3 + 1) / span 1 !important;
@@ -258,6 +293,20 @@
       }
       .table-item > div.background {
          grid-row: calc(var(--row) * 3) / span 3 !important;
+      }
+   }
+
+   @media only screen and (min-width: 769px) {
+      .mobile {
+         display: none;
+      }
+   }
+   @media only screen and (max-width: 769px) {
+      .desktop {
+         display: none;
+      }
+      .player {
+         justify-content: center;
       }
    }
 </style>

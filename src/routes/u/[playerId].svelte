@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-   import type { Player, PlayerScore } from '$lib/models/PlayerData';
+   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
    import Error from '$lib/components/common/error.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
@@ -107,8 +107,8 @@
       updateCancelToken();
    }
 
-   function openScoreModal(score: PlayerScore) {
-      modal.set(bind(ScoreModal, { player: $playerData, score: score }));
+   function openScoreModal(score: PlayerScore, player?: LeaderboardPlayer | Player) {
+      modal.set(bind(ScoreModal, { player: player ?? $playerData, score: score }));
    }
 
    function openAdminModal() {
