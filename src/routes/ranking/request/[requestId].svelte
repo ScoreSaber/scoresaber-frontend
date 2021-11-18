@@ -137,12 +137,12 @@
                <RequestMapInfo request={$request} />
                {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
                   <div class="window has-shadow mt-3">
-                     <div class="title is-6 mb-3">Ranking Tool</div>
+                     <div class="title is-6 mb-3">Voting Tool</div>
 
                      <div class="tooling mb-2">
                         {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.RT)}
                            <div class="voting-tool">
-                              <span class="tag mb-2 rank rt">Ranking Team</span>
+                              <span class="tag mb-2 rank rt">RT</span>
                               <div class="field has-addons">
                                  <p class="control m-0">
                                     <button on:click={() => handleVote('rt', 1)} class="button is-small is-dark">
@@ -163,7 +163,7 @@
                         {/if}
                         {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.QAT)}
                            <div class="voting-tool">
-                              <span class="tag mb-2 rank qat">Quality Assurance Team</span>
+                              <span class="tag mb-2 rank qat">QAT</span>
                               <div class="field has-addons">
                                  <p class="control m-0">
                                     <button on:click={() => handleVote('qat', 1)} class="button is-small is-dark">
@@ -194,7 +194,7 @@
                      <div class="tooling">
                         {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.NAT)}
                            <div class="voting-tool">
-                              <span class="tag mb-2 rank nat">Nomination Assessment Team</span>
+                              <span class="tag mb-2 rank nat">NAT</span>
                               <div class="field has-addons">
                                  <p class="control m-0">
                                     <button on:click={() => handleAction('nat', 'qualify')} class="button is-small is-dark">
@@ -209,6 +209,13 @@
                                           <i class="fas fa-times-circle" />
                                        </span>
                                     </button>
+                                 </p>
+                                 <p class="control m-0">
+                                    <a href="/ranking/request/replace?requestId={$page.params.requestId}" class="button is-small is-dark">
+                                       <span class="icon is-small mr-2">
+                                          <i class="fas fa-list" />
+                                       </span> Replace
+                                    </a>
                                  </p>
                               </div>
                            </div>
