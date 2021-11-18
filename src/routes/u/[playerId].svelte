@@ -189,9 +189,11 @@
                      countryImage={true}
                      destination={`https://steamcommunity.com/profiles/${$playerData.id}`}
                   />
-                  <span title="Performance Points" class="title-header spacer pp">
-                     {$playerData.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
-                  </span>
+                  {#if !$playerData.banned}
+                     <span title="Performance Points" class="title-header spacer pp">
+                        {$playerData.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
+                     </span>
+                  {/if}
                </h5>
 
                <h5 class="title is-5 player has-text-centered-mobile">
@@ -220,10 +222,11 @@
                      <div class="text-inactive text-muted mb-3">Banned account</div>
                   {/if}
                </h5>
-
-               <div class="stats has-text-centered-mobile">
-                  <Stats player={$playerData} />
-               </div>
+               {#if !$playerData.banned}
+                  <div class="stats has-text-centered-mobile">
+                     <Stats player={$playerData} />
+                  </div>
+               {/if}
             </div>
          </div>
       {:else if !$playerDataError}
@@ -242,13 +245,12 @@
       </div>
    {/if}
 
-   <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
-      <div class="button-container">
-         <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
-      </div>
-
-      {#if $scoreData && $playerData}
-         {#if !$playerData.banned}
+   {#if $scoreData && $playerData}
+      {#if !$playerData.banned}
+         <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
+            <div class="button-container">
+               <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
+            </div>
             <div class="mobile top-arrowpagination">
                <ArrowPagination
                   pageClicked={changePage}
@@ -278,14 +280,16 @@
                   maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
                />
             </div>
-         {/if}
-      {:else if !$scoreData}
-         <Loader />
+         </div>
       {/if}
-      {#if $scoreDataError}
-         <Error message={$scoreDataError.toString()} />
-      {/if}
-   </div>
+   {/if}
+
+   {#if !$scoreData && !$scoreDataError}
+      <Loader />
+   {/if}
+   {#if $scoreDataError}
+      <Error message={$scoreDataError.toString()} />
+   {/if}
 </div>
 
 <Modal show={$modal} />
