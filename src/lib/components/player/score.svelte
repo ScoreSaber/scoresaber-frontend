@@ -13,6 +13,11 @@
    import ClassicPagination from '../common/classic-pagination.svelte';
    import ArrowPagination from '../common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import { useAccio } from '$lib/utils/accio';
+   import type { AccioRefreshOptions } from '$lib/utils/accio';
+   import axios from '$lib/utils/fetcher';
+   import type { Writable } from 'svelte/store';
+   import Error from '../common/error.svelte';
    export let score: PlayerScore;
    export let row: number = 0;
    export let pageDirection: number = 1;
@@ -33,6 +38,10 @@
       }
    }
 
+   let scoreData: Writable<Score[]>;
+   let scoreDataError: Writable<globalThis.Error>;
+   let refreshScores: (refreshOptions?: AccioRefreshOptions) => Promise<void>;
+
    function changePage(page: number) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
@@ -43,13 +52,28 @@
 
    async function getLeaderboardData() {
       loadLeaderboardDataLoading = true;
-      await fetcher<Score[]>(
-         queryString.stringifyUrl({
+      if (!scoreData) {
+         let {
+            data: tmpScoreData,
+            error: tmpScoreDataError,
+            refresh: tmpRefreshScores
+         } = await useAccio<Score[]>(
+            queryString.stringifyUrl({
+               url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
+               query: { page: leaderboardPage }
+            }),
+            { fetcher: axios }
+         );
+         scoreData = tmpScoreData;
+         scoreDataError = tmpScoreDataError;
+         refreshScores = tmpRefreshScores;
+      }
+      await refreshScores({
+         newUrl: queryString.stringifyUrl({
             url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
             query: { page: leaderboardPage }
-         }),
-         { withCredentials: true }
-      ).then((info) => (leaderboardData = info));
+         })
+      });
       loadLeaderboardDataLoading = false;
    }
 </script>
@@ -85,7 +109,7 @@
    </div>
    <div class="leaderboard" class:expanded>
       <div>
-         {#if leaderboardData && !loadLeaderboardDataLoading}
+         {#if $scoreData && !loadLeaderboardDataLoading}
             <div class="tableWrapper">
                <table>
                   <thead>
@@ -94,7 +118,7 @@
                         <th class="player" />
                         <th class="timeSet centered">Time Set</th>
                         <th class="score centered">Score</th>
-                        {#if leaderboardData.filter((score) => score.modifiers.length > 0).length > 0}
+                        {#if $scoreData.filter((score) => score.modifiers.length > 0).length > 0}
                            <th class="mods centered">Mods</th>
                         {/if}
                         {#if score.leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
@@ -102,11 +126,11 @@
                      </tr>
                   </thead>
                   <tbody>
-                     {#each leaderboardData as lScore}
+                     {#each $scoreData as lScore}
                         <LeaderboardRow
                            score={lScore}
                            leaderboard={score.leaderboard}
-                           otherScores={leaderboardData}
+                           otherScores={$scoreData}
                            showScoreModal={() => openModal({ score: lScore, leaderboard: score.leaderboard }, lScore.leaderboardPlayerInfo)}
                            highlighted={lScore.id === score.score.id}
                         />
@@ -122,6 +146,9 @@
             </div>
          {:else}
             <Loader />
+         {/if}
+         {#if $scoreDataError}
+            <Error message={$scoreDataError.toString()} />
          {/if}
       </div>
    </div>
