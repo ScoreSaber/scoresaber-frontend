@@ -50,7 +50,7 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement>
+<Announcement style="background: var(--hard);">
    <div class="icon-container">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
          <path
@@ -61,7 +61,7 @@
          />
       </svg>
    </div>
-   Welcome to the new ScoreSaber!</Announcement
+   Welcome to the new ScoreSaber! This version of the website is beta software. Please report bugs in the Discord.</Announcement
 >
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
