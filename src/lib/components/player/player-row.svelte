@@ -38,8 +38,8 @@
    </div>
 </div>
 <div class="infobox-row">
-   <td colspan="2" class="infobox-container"
-      ><div class="infobox{isExpanded ? ' is-expanded' : ''}">
+   <div colspan="2" class="infobox-container">
+      <div class="infobox{isExpanded ? ' is-expanded' : ''}">
          <div class="infobox-content">
             <div class="infobox-upper">
                <img
@@ -63,7 +63,7 @@
             <a href="/u/{player.id}" class="full-profile-link">Full profile &rsaquo;</a>
          </div>
       </div>
-   </td>
+   </div>
 </div>
 
 <style lang="scss">
@@ -71,7 +71,7 @@
       display: grid;
       grid-template-columns: 0.6fr 4fr 2fr 2fr 2fr 3fr 2fr;
       border-radius: 5px;
-      margin: 2.5px 0;
+      margin: 2.5px 2px;
       background-color: var(--gray);
       padding: 5px;
       &:hover {
@@ -80,12 +80,6 @@
       .centered {
          text-align: center;
       }
-   }
-   td {
-      border: none !important;
-      border-style: solid none;
-      align-items: center;
-      vertical-align: bottom;
    }
    .player {
       white-space: nowrap;
@@ -97,38 +91,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
    }
-   @media (max-width: 1024px) {
-      .table-item {
-         grid-template-columns: 1fr 7fr 2fr 2fr 2fr 3fr 2fr;
-      }
-   }
    span.playerName {
       font-weight: 700;
       margin-left: 10px;
       display: flex;
-   }
-   tr.table-item {
-      border-radius: 5px;
-      overflow: hidden;
-   }
-   tr.table-item td {
-      background-color: #323232;
-   }
-   tr.table-item td {
-      background-color: var(--gray);
-   }
-   tr.table-item:hover td {
-      background-color: var(--gray-light);
-   }
-   td:first-child {
-      border-left-style: solid;
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-   }
-   td:last-child {
-      border-right-style: solid;
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
    }
 
    .infobox-upper {
@@ -172,7 +138,7 @@
 
    .infobox-row,
    .infobox-container {
-      margin: 0;
+      margin: 0 1px;
       padding: 0;
    }
 
@@ -218,8 +184,12 @@
       .infobox-row {
          margin-bottom: 5px;
       }
-      .table-item td:not(.player, .rank) {
+      .table-item div:not(.player, .rank) {
          display: none;
+      }
+
+      .table-item {
+         grid-template-columns: 40px 55vw;
       }
    }
 

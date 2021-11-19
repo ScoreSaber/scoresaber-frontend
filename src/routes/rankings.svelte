@@ -205,8 +205,9 @@
 <style lang="scss">
    .gridTable {
       display: grid;
-      grid-template-columns: 1fr;
-      min-width: 600px;
+      grid-template-columns: 100%;
+
+      // min-width: 600px;
       .header {
          font-weight: bold;
          grid-row: 1;
@@ -234,27 +235,11 @@
          flex: 1;
       }
    }
-   table {
-      border-collapse: separate;
-      white-space: nowrap;
-      border-spacing: 0 5px;
-   }
    div.ranking {
       overflow-x: auto;
    }
-   .content table th {
-      border: none !important;
-   }
 
    @media (max-width: 512px) {
-      .headers {
-         display: none;
-      }
-
-      .headers th:not(.player, .rank) {
-         display: none;
-      }
-
       .filters {
          flex-flow: column nowrap;
          > div:not(:last-child) {
@@ -264,11 +249,18 @@
             display: none;
          }
       }
-   }
+      .ranking {
+         overflow-x: hidden !important;
+      }
 
-   @media (max-width: 1024px) {
-      .gridTable > div {
-         grid-template-columns: 1fr 7fr 2fr 2fr 2fr 3fr 2fr;
+      .gridTable {
+         max-width: 100%;
+         .header {
+            display: none;
+         }
+         > div {
+            grid-template-columns: 40px 55vw;
+         }
       }
    }
 </style>
