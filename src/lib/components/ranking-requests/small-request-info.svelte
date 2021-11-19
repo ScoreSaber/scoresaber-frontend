@@ -15,7 +15,7 @@
 
 <div class="song-container">
    <div class="song-image-wrapper">
-      <img class="song-image" src={request.leaderboardInfo.coverImage} alt="cock" />
+      <img class="song-image" src={request.leaderboardInfo.coverImage} alt="Cover Image" />
       <!-- <div class="tag">
          {request.difficultyCount} diff{request.difficultyCount > 1 ? 's' : ''}
       </div> -->

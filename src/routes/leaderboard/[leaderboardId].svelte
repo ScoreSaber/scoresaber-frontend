@@ -8,7 +8,7 @@
    import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import queryString from 'query-string';
-   import { createQueryStore } from '$lib/query-store';
+   import { pageQueryStore } from '$lib/query-store';
    import { fly } from 'svelte/transition';
    import LeaderboardRow from '$lib/components/leaderboard/leaderboard-row.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
@@ -22,9 +22,13 @@
    import Permissions from '$lib/utils/permissions';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';
+   import TextInput from '$lib/components/common/text-input.svelte';
 
-   $: currentPage = createQueryStore('page', 1);
-   $: countries = createQueryStore('countries', undefined);
+   $: pageQuery = pageQueryStore({
+      page: 1,
+      search: null,
+      countries: null
+   });
 
    let leaderboardId = $page.params.leaderboardId;
 
@@ -56,9 +60,9 @@
 
    function countryFilterUpdated(items: FilterItem[]) {
       if (items.length === 0) {
-         $countries = null;
+         pageQuery.updateSingle('countries', null);
       } else {
-         $countries = items.map((i) => i.key).join(',');
+         pageQuery.updateSingle('countries', items.map((i) => i.key).join(','));
       }
    }
 
@@ -67,8 +71,25 @@
    function changePage(newPage: number) {
       $requestCancel.cancel('Page Changed');
       updateCancelToken();
-      pageDirection = newPage > $currentPage ? 1 : -1;
-      $currentPage = newPage;
+      pageDirection = newPage > $pageQuery.page ? 1 : -1;
+      pageQuery.updateSingle('page', newPage);
+   }
+
+   function searchUpdated(search: string) {
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      if (search) {
+         if (search.length > 3) {
+            pageQuery.update({
+               page: 1,
+               search
+            });
+         } else {
+            pageQuery.updateSingle('search', null);
+         }
+      } else {
+         pageQuery.updateSingle('search', null);
+      }
    }
 
    const pageUnsubscribe = page.subscribe((p) => {
@@ -111,7 +132,7 @@
                         <ClassicPagination
                            totalItems={$leaderboard.plays}
                            pageSize={12}
-                           currentPage={$currentPage}
+                           currentPage={$pageQuery.page}
                            changePage={(e) => changePage(e)}
                         />
                      {:else}
@@ -129,11 +150,13 @@
                   <div class="title is-6 mb-3">Filters</div>
                   <Filter
                      items={filters.countryFilter}
-                     initialItems={$countries}
+                     initialItems={$pageQuery.countries}
                      filterName={'Country'}
                      withCountryImages={true}
                      filterUpdated={countryFilterUpdated}
                   />
+                  <div class="title is-6 mb-2 mt-2">Search Terms</div>
+                  <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
                </div>
                {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
                   <div class="window has-shadow mt-3">
