@@ -99,9 +99,6 @@
       span:not(:first-child) {
          margin-left: 5px;
       }
-      span {
-         height: 18px;
-      }
    }
    .player-link {
       display: inline-flex;
