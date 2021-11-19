@@ -210,7 +210,7 @@
    .arrowWrapper {
       display: flex;
       flex-direction: column;
-      justify-content: end;
+      justify-content: center;
       height: 100%;
       &:hover {
          cursor: pointer;
