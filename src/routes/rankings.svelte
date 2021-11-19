@@ -195,6 +195,8 @@
       .header {
          font-weight: bold;
          grid-row: 1;
+         padding: 4px 8px;
+         margin: 2.5px 2px;
       }
       .centered {
          text-align: center;

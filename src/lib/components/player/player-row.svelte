@@ -82,7 +82,7 @@
       border-radius: 5px;
       margin: 2.5px 2px;
       background-color: var(--gray);
-      padding: 5px;
+      padding: 8px;
       transition: all 0.25s ease;
       grid-column: 1;
       &:hover {
