@@ -84,13 +84,12 @@
    }
 
    function modalOpen(newScore: Score) {
-      let leaderboardScore = leaderboardData.find((score) => score.id === newScore.id);
       openModal(
          {
             score: newScore,
             leaderboard: score.leaderboard
          },
-         leaderboardScore.leaderboardPlayerInfo
+         newScore.leaderboardPlayerInfo
       );
    }
 </script>
