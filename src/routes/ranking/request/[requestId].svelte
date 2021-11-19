@@ -58,15 +58,17 @@
    let manualPP: number;
    async function handleManualPP(event) {
       event.preventDefault();
-      let createdRequest = await poster(
-         `/api/ranking/request/action/nat/replace`,
-         { leaderboardId: $request.leaderboardInfo.id, manualPP },
+      const ranked = $request.leaderboardInfo.ranked;
+      request.set(undefined);
+      await poster(
+         `/api/ranking/request/action/admin/pp-manual`,
+         { leaderboardId: $request.leaderboardInfo.id, pp: manualPP },
          { withCredentials: true }
       );
-
-      if (createdRequest.status == 200) {
-         refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
+      if (ranked) {
+         await new Promise((f) => setTimeout(f, 2000));
       }
+      refreshRequest({ forceRevalidate: true });
    }
 
    onDestroy(pageUnsubscribe);
