@@ -73,7 +73,7 @@
    </a>
 {/if}
 
-<style>
+<style lang="scss">
    .williums {
       width: max-content;
       background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet, indigo, blue, green, yellow, orange, red);
@@ -91,6 +91,16 @@
       }
       100% {
          background-position: 0 0;
+      }
+   }
+   a {
+      display: flex;
+      align-items: flex-start;
+      span:not(:first-child) {
+         margin-left: 5px;
+      }
+      span {
+         height: 18px;
       }
    }
    .player-link {
