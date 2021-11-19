@@ -74,6 +74,7 @@
       margin: 2.5px 2px;
       background-color: var(--gray);
       padding: 5px;
+      transition: all 0.25s ease;
       &:hover {
          background-color: var(--gray-light);
       }
@@ -115,6 +116,9 @@
       pointer-events: none;
       background-color: #3c3c3c;
       border-radius: 0 0 5px 5px;
+      &:not(.is-expanded) {
+         background-color: var(--gray);
+      }
    }
 
    .full-profile-link {
