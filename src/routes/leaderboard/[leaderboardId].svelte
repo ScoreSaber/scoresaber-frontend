@@ -16,8 +16,11 @@
    import Filter from '$lib/components/common/filter.svelte';
    import filters from '$lib/utils/filters';
    import type { FilterItem } from '$lib/models/Filter';
+
+   import Modal, { bind } from '$lib/components/common/modal.svelte';
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
-   import { setBackground, userData } from '$lib/global-store';
+
+   import { modal, setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
    import poster from '$lib/utils/poster';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
@@ -104,12 +107,8 @@
       }
    });
 
-   let scoreChosen: Score = null;
-   let setVisibility;
-
-   function showScoreModal(score: Score) {
-      scoreChosen = score;
-      setVisibility(true);
+   function showScoreModal(score: Score, leaderboard: LeaderboardInfo) {
+      modal.set(bind(ScoreModal, { score, leaderboard }));
    }
 
    let manualPP: number;
@@ -165,15 +164,17 @@
             <div class="column is-4">
                <LeaderboardMapInfo leaderboardInfo={$leaderboard} />
                <div class="window has-shadow mt-3">
-                  <div class="title is-6 mb-3">Filters</div>
-                  <Filter
-                     items={filters.countryFilter}
-                     initialItems={$pageQuery.countries}
-                     filterName={'Country'}
-                     withCountryImages={true}
-                     filterUpdated={countryFilterUpdated}
-                  />
-                  <div class="title is-6 mb-2 mt-2">Search Terms</div>
+                  <div class="title is-6 mb-2">Filters</div>
+                  <div class="negative-margin-filters">
+                     <Filter
+                        items={filters.countryFilter}
+                        initialItems={$pageQuery.countries}
+                        filterName={'Country'}
+                        withCountryImages={true}
+                        filterUpdated={countryFilterUpdated}
+                     />
+                  </div>
+                  <div class="title is-6 mb-2 mt-3">Search Terms</div>
                   <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
                </div>
                {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT) && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
@@ -208,7 +209,7 @@
    </div>
 </div>
 
-<ScoreModal score={scoreChosen} leaderboard={$leaderboard} otherScores={$leaderboardScores} bind:setVisibility />
+<Modal show={$modal} />
 
 <style lang="scss">
    @media screen and (max-width: 769px), print {
@@ -220,5 +221,9 @@
 
    .leaderboard {
       overflow-x: auto;
+   }
+
+   .negative-margin-filters {
+      margin-left: -0.4rem;
    }
 </style>

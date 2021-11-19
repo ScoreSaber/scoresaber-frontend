@@ -9,8 +9,8 @@
    export let highlighted: boolean = false;
 
    export let showScoreModal: any;
-   function openScoreDetails(score: Score): any {
-      showScoreModal(score);
+   function openScoreDetails(score: Score, leaderboard: LeaderboardInfo): any {
+      showScoreModal(score, leaderboard);
    }
 
    export let row = 1;
@@ -40,7 +40,7 @@
       <span><FormattedDate date={new Date(score.timeSet)} /></span>
    </div>
    <div class="score centered">
-      <span class="score" on:click={openScoreDetails(score)}>{score.modifiedScore.toLocaleString('en-US')}</span>
+      <span class="score" on:click={openScoreDetails(score, leaderboard)}>{score.modifiedScore.toLocaleString('en-US')}</span>
    </div>
    {#if otherScores.filter((score) => score.modifiers.length > 0).length > 0}
       <div class="mods centered">

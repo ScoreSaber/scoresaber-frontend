@@ -4,12 +4,9 @@
    import { fly } from 'svelte/transition';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import { HMDs } from '$lib/utils/helpers';
+
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
-
-   let y;
-
-   $: isVisible = false;
 
    function getAccuracy() {
       let scoreCalc = score.baseScore;
@@ -17,88 +14,63 @@
 
       return (scoreCalc / maxScore) * 100;
    }
-
-   export function setVisibility(visible: boolean): any {
-      isVisible = visible;
-      y = 1;
-   }
 </script>
 
-{#if isVisible}
-   <div style="position: absolute;">
-      <div class="modal {isVisible ? 'is-active' : ''} modal-radius" transition:fly={{ y: 50 }} on:introstart on:outroend>
-         <div class="modal-background" on:click={() => setVisibility(false)} />
-         <div class="modal-content">
-            <div class="card map-card">
-               <div
-                  class="bg-image"
-                  style={`background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(${leaderboard.coverImage}) repeat scroll 0% 0%`}
-               />
-               <div class="card-content">
-                  <div class="content">
-                     <button class="modal-close is-large" aria-label="close" on:click={() => setVisibility(false)} />
-
-                     <div class="media">
-                        <div class="media-content is-clipped">
-                           <div class="player-info mb-2">
-                              <img
-                                 src={score.leaderboardPlayerInfo.profilePicture}
-                                 alt={score.leaderboardPlayerInfo.name}
-                                 title={score.leaderboardPlayerInfo.name}
-                                 class="image rounded is-24x24"
-                              />
-                              <b><PlayerLink player={score.leaderboardPlayerInfo} destination={`/u/${score.leaderboardPlayerInfo.id}`} /></b>
-                              <span class="text-muted"><FormattedDate date={new Date(score.timeSet)} /> on <b>{HMDs[score.hmd]}</b></span>
-                           </div>
-                           <div class="scores">
-                              <div class="score">Score<br /><b>{score.modifiedScore.toLocaleString('en-US')}</b></div>
-                              {#if leaderboard.maxScore}
-                                 <div class="score {new Date(score.timeSet).getTime() / 1000 <= 1558474032 ? 'old-score' : ''}">
-                                    Accuracy<br /><b>{getAccuracy().toFixed(2)}%</b>
-                                 </div>
-                              {/if}
-                              {#if leaderboard.ranked}
-                                 <div class="score" style="background-color: var(--ppColour)">
-                                    PP<br /><b
-                                       ><span title="Performance Points"
-                                          >{score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span
-                                       ><span class="ppLabel">pp</span></b
-                                    >
-                                 </div>
-                              {/if}
-                           </div>
-                           <div class="scores">
-                              {#if score.modifiers.length > 0}
-                                 <div class="score">
-                                    Mods<br /><b>{score.modifiers}</b> (x{score.multiplier.toFixed(2)})
-                                 </div>
-                              {/if}
-                              <div class="score">
-                                 Full Combo<br /><b><i class="fas {score.fullCombo ? 'fa-check' : 'fa-times'}" /></b>
-                              </div>
-                              {#if !score.fullCombo}
-                                 <div class="score">
-                                    Max Combo<br /><b>{score.maxCombo}</b>
-                                 </div>
-                                 <div class="score">
-                                    Bad Cuts<br /><b>{score.badCuts}</b>
-                                 </div>
-                                 <div class="score">
-                                    Missed Notes<br /><b>{score.missedNotes}</b>
-                                 </div>
-                              {/if}
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+<div
+   class="bg-image"
+   style={`background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%, rgba(0, 0, 0, 0) url(${leaderboard.coverImage}) repeat scroll 0% 0%`}
+/>
+<div class="media">
+   <div class="media-content is-clipped">
+      <div class="player-info mb-2">
+         <img
+            src={score.leaderboardPlayerInfo.profilePicture}
+            alt={score.leaderboardPlayerInfo.name}
+            title={score.leaderboardPlayerInfo.name}
+            class="image rounded is-24x24"
+         />
+         <b><PlayerLink player={score.leaderboardPlayerInfo} destination={`/u/${score.leaderboardPlayerInfo.id}`} /></b>
+         <span class="text-muted"><FormattedDate date={new Date(score.timeSet)} /> on <b>{HMDs[score.hmd]}</b></span>
+      </div>
+      <div class="scores">
+         <div class="score">Score<br /><b>{score.modifiedScore.toLocaleString('en-US')}</b></div>
+         {#if leaderboard.maxScore}
+            <div class="score {new Date(score.timeSet).getTime() / 1000 <= 1558474032 ? 'old-score' : ''}">
+               Accuracy<br /><b>{getAccuracy().toFixed(2)}%</b>
             </div>
+         {/if}
+         {#if leaderboard.ranked}
+            <div class="score" style="background-color: var(--ppColour)">
+               PP<br /><b
+                  ><span title="Performance Points">{score.pp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span
+                  ><span class="ppLabel">pp</span></b
+               >
+            </div>
+         {/if}
+      </div>
+      <div class="scores">
+         {#if score.modifiers.length > 0}
+            <div class="score">
+               Mods<br /><b>{score.modifiers}</b> (x{score.multiplier.toFixed(2)})
+            </div>
+         {/if}
+         <div class="score">
+            Full Combo<br /><b><i class="fas {score.fullCombo ? 'fa-check' : 'fa-times'}" /></b>
          </div>
+         {#if !score.fullCombo}
+            <div class="score">
+               Max Combo<br /><b>{score.maxCombo}</b>
+            </div>
+            <div class="score">
+               Bad Cuts<br /><b>{score.badCuts}</b>
+            </div>
+            <div class="score">
+               Missed Notes<br /><b>{score.missedNotes}</b>
+            </div>
+         {/if}
       </div>
    </div>
-{/if}
-
-<svelte:window bind:scrollY={y} />
+</div>
 
 <style>
    .text-muted {
@@ -126,16 +98,6 @@
       background-color: rgb(163, 0, 0);
    }
 
-   .modal-radius {
-      border-radius: 0.5rem;
-   }
-
-   .modal-close {
-      position: absolute;
-      right: 1rem;
-      top: 1rem;
-   }
-
    .player-info {
       display: flex;
       align-items: center;
@@ -153,17 +115,13 @@
       background-position: 50% !important;
       background-repeat: no-repeat !important;
       background-size: cover !important;
-      z-index: -1;
+      z-index: 0;
       border-radius: 10px;
    }
 
-   .card {
-      background: none;
-   }
-
-   .map-card {
+   .media {
+      padding: 1rem;
+      position: relative;
       z-index: 1;
-      color: var(--textColor);
-      background: none;
    }
 </style>
