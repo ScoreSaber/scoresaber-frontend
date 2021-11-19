@@ -20,6 +20,8 @@
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
    import { setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
+   import permissions from '$lib/utils/permissions';
+   import poster from '$lib/utils/poster';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import TextInput from '$lib/components/common/text-input.svelte';
 
@@ -106,6 +108,24 @@
       setVisibility(true);
    }
 
+   let manualPP: number;
+   async function handleManualPP(event) {
+      event.preventDefault();
+      const ranked = $leaderboard.ranked;
+      leaderboard.set(undefined);
+      leaderboardScores.set(undefined);
+      await poster(
+         `/api/ranking/request/action/admin/pp-manual`,
+         { leaderboardId: $page.params.leaderboardId, pp: manualPP },
+         { withCredentials: true }
+      );
+      if (ranked) {
+         await new Promise((f) => setTimeout(f, 2000));
+      }
+      refreshLeaderboard({ forceRevalidate: true });
+      refreshLeaderboardScores({ forceRevalidate: true });
+   }
+
    onDestroy(pageUnsubscribe);
 </script>
 
@@ -171,7 +191,7 @@
                   <div class="title is-6 mb-2 mt-2">Search Terms</div>
                   <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
                </div>
-               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT) && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
                   <div class="window has-shadow mt-3">
                      <div class="title is-6 mb-3">Ranking Tool</div>
                      <a href="/ranking/request/create?leaderboardId={leaderboardId}" class="button is-small is-dark">
@@ -180,6 +200,16 @@
                         </span>
                         <span>Create Rank Request</span>
                      </a>
+                     {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+                        <div class="field has-addons mt-3">
+                           <div class="control">
+                              <input class="input is-small" type="number" bind:value={manualPP} placeholder="PP" />
+                           </div>
+                           <div class="control">
+                              <button on:click={(ev) => handleManualPP(ev)} class="button is-small is-info">Set PP</button>
+                           </div>
+                        </div>
+                     {/if}
                   </div>
                {/if}
             </div>

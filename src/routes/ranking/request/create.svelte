@@ -21,9 +21,8 @@
       leaderboardId: ''
    });
 
-   if (browser) if (!($userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT))) goto('/');
-
    onMount(() => {
+      if (browser) if (!($userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT))) return goto('/');
       if ($pageQuery.leaderboardId.length > 0) {
          searchUpdated($pageQuery.leaderboardId);
       }

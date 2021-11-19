@@ -55,6 +55,22 @@
       await refreshRequest({ forceRevalidate: true, softRefresh: true });
    }
 
+   let manualPP: number;
+   async function handleManualPP(event) {
+      event.preventDefault();
+      const ranked = $request.leaderboardInfo.ranked;
+      request.set(undefined);
+      await poster(
+         `/api/ranking/request/action/admin/pp-manual`,
+         { leaderboardId: $request.leaderboardInfo.id, pp: manualPP },
+         { withCredentials: true }
+      );
+      if (ranked) {
+         await new Promise((f) => setTimeout(f, 2000));
+      }
+      refreshRequest({ forceRevalidate: true });
+   }
+
    onDestroy(pageUnsubscribe);
 </script>
 
@@ -135,6 +151,19 @@
             </div>
             <div in:fly={{ y: -20, duration: 1000 }} class="column is-4">
                <RequestMapInfo request={$request} />
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+                  <div class="window has-shadow mt-3">
+                     <div class="title is-6 mb-3">Admin Tool</div>
+                     <div class="field has-addons mt-3">
+                        <div class="control">
+                           <input class="input is-small" type="number" bind:value={manualPP} placeholder="PP" />
+                        </div>
+                        <div class="control">
+                           <button on:click={(ev) => handleManualPP(ev)} class="button is-small is-info">Set PP</button>
+                        </div>
+                     </div>
+                  </div>
+               {/if}
                {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_STAFF)}
                   <div class="window has-shadow mt-3">
                      <div class="title is-6 mb-3">Voting Tool</div>
