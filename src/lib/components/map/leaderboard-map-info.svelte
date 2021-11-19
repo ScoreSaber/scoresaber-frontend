@@ -50,12 +50,6 @@
 </div>
 
 <style>
-   hr {
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      background-color: var(--dimmed);
-   }
-
    .bg-image {
       position: absolute;
       height: 100%;

@@ -1,10 +1,11 @@
 <script lang="ts">
    import type { RankRequestInformation } from '$lib/models/Ranking';
    import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus } from '$lib/utils/helpers';
-   import FormattedDate from '../common/formatted-date.svelte';
-   export let request: RankRequestInformation;
+   import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import type SearchView from '$lib/components/common/search.svelte';
    import { searchView } from '$lib/global-store';
+
+   export let request: RankRequestInformation;
    let searchModal: SearchView;
 
    searchView.subscribe((v) => (searchModal = v));

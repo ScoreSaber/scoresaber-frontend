@@ -1,5 +1,5 @@
 <script lang="ts">
-   import type { RankRequestInformation, RankRequestListing } from '$lib/models/Ranking';
+   import type { RankRequestInformation } from '$lib/models/Ranking';
    export let request: RankRequestInformation;
    import type SearchView from '$lib/components/common/search.svelte';
    import { searchView } from '$lib/global-store';
@@ -15,10 +15,7 @@
 
 <div class="song-container">
    <div class="song-image-wrapper">
-      <img class="song-image" src={request.leaderboardInfo.coverImage} alt="Cover Image" />
-      <!-- <div class="tag">
-         {request.difficultyCount} diff{request.difficultyCount > 1 ? 's' : ''}
-      </div> -->
+      <img class="song-image" src={request.leaderboardInfo.coverImage} alt="Cover" />
    </div>
    <div class="song-info-container">
       <div class="song-info">
@@ -77,24 +74,5 @@
       align-items: center;
       justify-content: center;
       position: relative;
-   }
-   .tag {
-      display: flex;
-      align-items: center;
-      font-size: xx-small;
-      position: absolute;
-      bottom: 0.5em;
-      right: 20px;
-      min-width: 20px;
-      color: black;
-      background-color: var(--ppColour);
-      padding: 4px 4px 3px 4px;
-      cursor: help;
-   }
-
-   @media only screen and (max-width: 769px) {
-      .tag {
-         bottom: auto !important;
-      }
    }
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts">
    import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
 
-   import LeaderboardRow from './leaderboard-row.svelte';
+   import LeaderboardRow from '$lib/components/leaderboard/leaderboard-row.svelte';
 
    export let leaderboardScores: Score[];
    export let leaderboard: LeaderboardInfo;

@@ -8,8 +8,6 @@
 </script>
 
 <script type="ts">
-   import Footer from '$lib/components/common/footer.svelte';
-   import Navbar from '$lib/components/common/navbar.svelte';
    import Error from '$lib/components/common/error.svelte';
 
    export let status: number;

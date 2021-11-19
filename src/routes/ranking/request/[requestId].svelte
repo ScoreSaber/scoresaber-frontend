@@ -317,10 +317,6 @@
       overflow-wrap: anywhere;
    }
 
-   .comment-content {
-      white-space: pre-line;
-   }
-
    span.rank {
       font-size: x-small;
    }

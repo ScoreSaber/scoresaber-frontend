@@ -64,8 +64,6 @@
    }
 
    function toggleVerified(event) {
-      //setTimeout(() => (event.target.checked = filters.verified), 0);
-
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
       pageQuery.updateSingle('verified', event.target.checked ? 1 : 0);

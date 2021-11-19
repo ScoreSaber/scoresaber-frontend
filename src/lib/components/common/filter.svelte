@@ -1,8 +1,8 @@
 <script lang="ts">
    import { slide } from 'svelte/transition';
    import { browser } from '$app/env';
-   import Autocomplete from './autocomplete.svelte';
-   import Chip from './chip.svelte';
+   import Autocomplete from '$lib/components/common/autocomplete.svelte';
+   import Chip from '$lib/components/common/chip.svelte';
    import { onDestroy, onMount } from 'svelte';
    import type { FilterItem } from '$lib/models/Filter';
    export let filterName: string;

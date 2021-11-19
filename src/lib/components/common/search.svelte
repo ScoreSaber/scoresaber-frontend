@@ -1,11 +1,11 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
    import type { LeaderboardInfo, LeaderboardInfoCollection } from '$lib/models/LeaderboardData';
-   import SmallSongInfo from '../leaderboard/small-song-info.svelte';
+   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import queryString from 'query-string';
    import fetcher from '$lib/utils/fetcher';
    import axios from 'axios';
-   import PlayerLink from '../player/player-link.svelte';
+   import PlayerLink from '$lib/components/player/player-link.svelte';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
@@ -13,15 +13,6 @@
    let resultsElement: HTMLDivElement;
 
    export const isVisible = () => visible;
-
-   const diffNames = ['E', 'N', 'H', 'X', 'X+'];
-   const colours = {
-      Easy: '#4eb677',
-      Normal: '#66b2ea',
-      Hard: '#fc6e51',
-      Expert: '#c23a4c',
-      ExpertPlus: '#904fd4'
-   };
 
    interface SearchResults {
       players: Player[] | 'loading';

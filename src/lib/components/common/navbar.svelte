@@ -1,8 +1,7 @@
 <script lang="ts">
-   import { writable } from 'svelte/store';
    import SearchView from '$lib/components/common/search.svelte';
    import { userData, searchView } from '$lib/global-store';
-   import { API_URL, CDN_URL } from '../../utils/env';
+   import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
    import { onMount } from 'svelte';
    $: loggedIn = $userData != undefined;

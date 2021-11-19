@@ -1,12 +1,11 @@
 <script lang="ts">
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
+   import type SearchView from '$lib/components/common/search.svelte';
+   import { searchView } from '$lib/global-store';
 
    export let leaderboard: LeaderboardInfo;
    export let margin: boolean | undefined = undefined;
-
-   import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView } from '$lib/global-store';
    let searchModal: SearchView;
 
    searchView.subscribe((v) => (searchModal = v));

@@ -1,6 +1,4 @@
 <script lang="ts">
-   import Navbar from '$lib/components/common/navbar.svelte';
-   import Footer from '$lib/components/common/footer.svelte';
    import { useAccio } from '$lib/utils/accio';
    import queryString from 'query-string';
    import type { RankRequestListing } from '$lib/models/Ranking';
@@ -11,7 +9,7 @@
    import Button from '$lib/components/common/button.svelte';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info.svelte';
    import { fly } from 'svelte/transition';
-   import { background, defaultBackground, userData } from '$lib/global-store';
+   import { defaultBackground, userData } from '$lib/global-store';
    import { goto } from '$app/navigation';
    import Permissions from '$lib/utils/permissions';
 
@@ -202,19 +200,6 @@
       align-items: center;
       vertical-align: middle;
    }
-
-   td.map img {
-      width: 24px;
-      height: 24px;
-      border-radius: 15%;
-      vertical-align: middle;
-   }
-
-   td.map .songInfo {
-      overflow-wrap: break-word;
-      padding-left: 7px;
-   }
-
    tr.table-item td {
       background-color: var(--gray);
    }

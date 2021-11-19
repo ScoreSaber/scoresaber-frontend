@@ -118,10 +118,6 @@
    .text-muted {
       color: var(--muted);
    }
-   .modal-content {
-      margin-top: 0.8rem;
-      gap: 0.5rem;
-   }
 
    @media only screen and (max-width: 769px) {
       .tools {

@@ -1,5 +1,5 @@
 <script type="ts">
-   import PaginationNav from './pagination/pagination-nav.svelte';
+   import PaginationNav from '$lib/components/common/pagination/pagination-nav.svelte';
 
    export let totalItems: number;
    export let pageSize: number;

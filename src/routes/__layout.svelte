@@ -7,7 +7,6 @@
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
    import '../styles/scoresaber.scss';
-   import { onDestroy } from 'svelte';
    import { fly } from 'svelte/transition';
 
    let tokenCheckAttempts: number = 0;

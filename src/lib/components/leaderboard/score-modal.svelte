@@ -6,7 +6,6 @@
    import { HMDs } from '$lib/utils/helpers';
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
-   export let otherScores: Score[];
 
    let y;
 

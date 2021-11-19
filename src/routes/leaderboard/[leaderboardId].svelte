@@ -10,7 +10,6 @@
    import queryString from 'query-string';
    import { pageQueryStore } from '$lib/query-store';
    import { fly } from 'svelte/transition';
-   import LeaderboardRow from '$lib/components/leaderboard/leaderboard-row.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import { onDestroy } from 'svelte';
    import { browser } from '$app/env';
@@ -20,7 +19,6 @@
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
    import { setBackground, userData } from '$lib/global-store';
    import Permissions from '$lib/utils/permissions';
-   import permissions from '$lib/utils/permissions';
    import poster from '$lib/utils/poster';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';

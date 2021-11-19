@@ -8,7 +8,7 @@
    import { onMount } from 'svelte';
    import Button from '$lib/components/common/button.svelte';
    import { defaultBackground, setBackground, userData } from '$lib/global-store';
-   import type { RankRequestInformation, CreateRequestResponse } from '$lib/models/Ranking';
+   import type { RankRequestInformation } from '$lib/models/Ranking';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info-offlisting.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Permissions from '$lib/utils/permissions';
@@ -143,7 +143,14 @@
                <div class="smallSongInfo"><SmallSongInfo leaderboard={newLeaderboard} margin={false} /></div>
                <textarea class="textarea mt-3" bind:value={description} placeholder="Updated description..." />
                <div class="text-center mt-3">
-                  <Button title="Replace Rank Request" size="" poggleable={true} onClicked={() => handleSubmit()} isDisabled={!searchData} />
+                  <Button
+                     icon="redo"
+                     title="Replace Rank Request"
+                     size=""
+                     poggleable={true}
+                     onClicked={() => handleSubmit()}
+                     isDisabled={!searchData}
+                  />
                </div>
             {/if}
          {/if}
@@ -173,9 +180,6 @@
       white-space: nowrap;
       margin-top: -15px;
    }
-   div.ranking {
-      overflow-x: auto;
-   }
    .content table th {
       border: none !important;
    }
@@ -184,18 +188,6 @@
       border-style: solid none;
       align-items: center;
       vertical-align: middle;
-   }
-
-   td.map img {
-      width: 24px;
-      height: 24px;
-      border-radius: 15%;
-      vertical-align: middle;
-   }
-
-   td.map .songInfo {
-      overflow-wrap: break-word;
-      padding-left: 7px;
    }
 
    tr.table-item td {

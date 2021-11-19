@@ -2,7 +2,7 @@
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
    import { fly } from 'svelte/transition';
-   import FormattedDate from '../common/formatted-date.svelte';
+   import FormattedDate from '$lib/components/common/formatted-date.svelte';
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
