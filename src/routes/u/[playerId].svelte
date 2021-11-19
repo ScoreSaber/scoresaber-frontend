@@ -191,7 +191,8 @@
                      destination={`https://steamcommunity.com/profiles/${$playerData.id}`}
                   />
                   {#if !$playerData.banned}
-                     <span title="Performance Points" class="title-header spacer pp">
+                     <div class="divider" />
+                     <span title="Performance Points" class="title-header pp">
                         {$playerData.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
                      </span>
                   {/if}
@@ -295,7 +296,7 @@
 
 <Modal show={$modal} />
 
-<style>
+<style lang="scss">
    .top-arrowpagination {
       margin-top: 15px;
    }
@@ -303,10 +304,6 @@
       display: grid;
       grid-template-columns: 1fr;
       padding: 10px;
-   }
-
-   .pp {
-      align-self: flex-end;
    }
 
    .button-container {
@@ -318,6 +315,12 @@
       display: flex;
       gap: 10px;
       margin-bottom: 0px !important;
+      .pp {
+         align-self: flex-end;
+      }
+      .divider {
+         border-left: 1px solid var(--dimmed);
+      }
    }
    .column.is-narrow {
       position: relative;
