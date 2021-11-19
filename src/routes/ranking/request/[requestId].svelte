@@ -106,16 +106,18 @@
                   {#each $request.rankComments as comment}
                      <div class="window has-shadow">
                         <article class="media">
-                           <figure class="media-left m-0 mr-4 ml-0">
-                              <p class="image is-48x48">
-                                 <AvatarImage userId={comment.userId} />
-                              </p>
-                           </figure>
+                           {#if comment.userId != null}
+                              <figure class="media-left m-0 mr-4 ml-0">
+                                 <p class="image is-48x48">
+                                    <AvatarImage userId={comment.userId} />
+                                 </p>
+                              </figure>
+                           {/if}
                            <div class="media-content">
                               <div class="content">
                                  <p>
                                     <span class="tag mb-2 rank rt float">Ranking Team</span>
-                                    <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
+                                    <strong><a href={comment.userId != null ? `/u/${comment.userId}` : ''}>{comment.username}</a></strong>
                                     <small class="text-muted"><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
                                     <code class="mt-1">{decode(comment.comment)}</code>
@@ -128,16 +130,18 @@
                   {#each $request.qatComments as comment}
                      <div class="window has-shadow">
                         <article class="media">
-                           <figure class="media-left m-0 mr-4 ml-0">
-                              <p class="image is-48x48">
-                                 <AvatarImage userId={comment.userId} />
-                              </p>
-                           </figure>
+                           {#if comment.userId != null}
+                              <figure class="media-left m-0 mr-4 ml-0">
+                                 <p class="image is-48x48">
+                                    <AvatarImage userId={comment.userId} />
+                                 </p>
+                              </figure>
+                           {/if}
                            <div class="media-content">
                               <div class="content">
                                  <p>
                                     <span class="tag mb-2 rank qat float">Quality Assurance Team</span>
-                                    <strong><a href={`/u/${comment.userId}`}>{comment.username}</a></strong>
+                                    <strong><a href={comment.userId != null ? `/u/${comment.userId}` : ''}>{comment.username}</a></strong>
                                     <small class="text-muted"><FormattedDate date={new Date(comment.timeStamp)} /></small>
                                     <br />
                                     <code class="mt-1">{decode(comment.comment)}</code>
