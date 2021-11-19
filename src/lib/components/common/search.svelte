@@ -1,6 +1,6 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
-   import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
+   import type { LeaderboardInfo, LeaderboardInfoCollection } from '$lib/models/LeaderboardData';
    import SmallSongInfo from '../leaderboard/small-song-info.svelte';
    import queryString from 'query-string';
    import fetcher from '$lib/utils/fetcher';
@@ -95,7 +95,7 @@
          }),
          { cancelToken: cancel.token, withCredentials: true }
       ).then((players) => (searchResults.players = players));
-      fetcher<LeaderboardInfo[]>(
+      fetcher<LeaderboardInfoCollection>(
          queryString.stringifyUrl({
             url: '/api/leaderboards',
             query: {
@@ -106,7 +106,7 @@
          }),
          { cancelToken: cancel.token, withCredentials: true }
       )
-         .then((leaderboards) => (searchResults.leaderboards = leaderboards))
+         .then((leaderboards) => (searchResults.leaderboards = leaderboards.leaderboards))
          .catch(absorbCancel);
    };
 
