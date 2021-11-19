@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-   import type { Player, PlayerScore } from '$lib/models/PlayerData';
+   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
    import Error from '$lib/components/common/error.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
@@ -91,6 +91,7 @@
    $: selOption = $pageQuery['sort'] ? sortButtons.find((x) => x.value == $pageQuery['sort']) : sortButtons[0];
    function sortChanged(option: buttonGroupItem) {
       $requestCancel.cancel('Filter Changed');
+      pageDirection = option.value === 'recent' ? 1 : -1;
       pageQuery.update({
          page: 1,
          sort: option.value
@@ -107,8 +108,8 @@
       updateCancelToken();
    }
 
-   function openScoreModal(score: PlayerScore) {
-      modal.set(bind(ScoreModal, { player: $playerData, score: score }));
+   function openScoreModal(score: PlayerScore, player?: LeaderboardPlayer | Player) {
+      modal.set(bind(ScoreModal, { player: player ?? $playerData, score: score }));
    }
 
    function openAdminModal() {
@@ -190,7 +191,8 @@
                      destination={`https://steamcommunity.com/profiles/${$playerData.id}`}
                   />
                   {#if !$playerData.banned}
-                     <span title="Performance Points" class="title-header spacer pp">
+                     <div class="divider" />
+                     <span title="Performance Points" class="title-header pp">
                         {$playerData.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
                      </span>
                   {/if}
@@ -258,10 +260,10 @@
                   maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
                />
             </div>
-            <div in:fly={{ x: 20, duration: 1000 }} class="ranking songs">
+            <div class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each $scoreData as score, i (score.score.id)}
-                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} />
+                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData.id} />
                   {/each}
                </div>
             </div>
@@ -294,20 +296,14 @@
 
 <Modal show={$modal} />
 
-<style>
+<style lang="scss">
    .top-arrowpagination {
       margin-top: 15px;
    }
    .gridTable {
       display: grid;
-      grid-template-columns: 1fr 6fr 3fr;
+      grid-template-columns: 1fr;
       padding: 10px;
-   }
-
-   @media (max-width: 512px) {
-      .gridTable {
-         grid-template-columns: 80px 8fr;
-      }
    }
 
    .button-container {
@@ -319,6 +315,12 @@
       display: flex;
       gap: 10px;
       margin-bottom: 0px !important;
+      .pp {
+         align-self: flex-end;
+      }
+      .divider {
+         border-left: 1px solid var(--dimmed);
+      }
    }
    .column.is-narrow {
       position: relative;

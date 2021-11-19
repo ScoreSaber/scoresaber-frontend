@@ -184,6 +184,11 @@ th.centered {
    text-align: center !important;
 }
 
+.content table th,
+.content table td {
+   border: none;
+}
+
 div.is-center {
    margin-left: auto;
    margin-right: auto;

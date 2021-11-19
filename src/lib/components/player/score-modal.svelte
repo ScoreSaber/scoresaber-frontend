@@ -2,9 +2,9 @@
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import { HMDs } from '$lib/utils/helpers';
-   import type { Player, PlayerScore } from '$lib/models/PlayerData';
+   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
    export let score: PlayerScore;
-   export let player: Player;
+   export let player: Player | LeaderboardPlayer;
 
    function getAccuracy() {
       let scoreCalc = score.score.baseScore;

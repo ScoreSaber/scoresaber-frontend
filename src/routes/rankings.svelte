@@ -8,7 +8,7 @@
    import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
    import { useAccio } from '$lib/utils/accio';
-   import { createQueryStore, pageQueryStore } from '$lib/query-store';
+   import { pageQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
    import Filter from '$lib/components/common/filter.svelte';
@@ -17,9 +17,12 @@
    import { browser } from '$app/env';
    import TextInput from '$lib/components/common/text-input.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
-   import { background, defaultBackground } from '$lib/global-store';
+   import { defaultBackground } from '$lib/global-store';
 
    const playersPerPage = 50;
+   $: loading = true;
+   $: firstLoad = true;
+   let pageDirection = 1;
 
    $: pageQuery = pageQueryStore({
       page: 1,
@@ -39,13 +42,13 @@
          url: '/api/players',
          query: queryString.parse($page.query.toString())
       }),
-      { fetcher: axios }
+      { fetcher: axios, onSuccess: onRankingsSuccess }
    );
 
    const {
       data: playerCount,
       error: playerCountError,
-      refresh: refreshPlayerCount //TODO: Refresh on filter change (not page change)
+      refresh: refreshPlayerCount
    } = useAccio<number>(
       queryString.stringifyUrl({
          url: '/api/players/count',
@@ -54,29 +57,40 @@
       { fetcher: axios }
    );
 
+   function onRankingsSuccess() {
+      if (firstLoad) {
+         firstLoad = false;
+      }
+   }
+
    function changePage(newPage: number) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
+      pageDirection = newPage > $pageQuery.page ? 1 : -1;
       pageQuery.updateSingle('page', newPage);
    }
 
-   const pageUnsubscribe = page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe(async (p) => {
       if (browser) {
-         refreshRankings({
+         loading = true;
+         await refreshRankings({
             newUrl: queryString.stringifyUrl({
                url: '/api/players',
                query: queryString.parse(p.query.toString())
-            })
+            }),
+            softRefresh: true
          });
          if (filterChanged) {
-            refreshPlayerCount({
+            await refreshPlayerCount({
                newUrl: queryString.stringifyUrl({
                   url: '/api/players/count',
                   query: queryString.parse(p.query.toString())
-               })
+               }),
+               softRefresh: true
             });
             filterChanged = false;
          }
+         loading = false;
       }
    });
 
@@ -150,45 +164,71 @@
          <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
       </div>
    </div>
-   <div class="window has-shadow noheading">
-      {#if $playerCount && $rankings && $playerCount}
-         <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
-      {/if}
-      {#if $rankings && $playerCount}
-         <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
-            <table>
-               <thead>
-                  <tr class="headers">
-                     <th class="rank" />
-                     <th class="player" />
-                     <th class="pp centered">Performance Points</th>
-                     <th class="total-play-count centered">Total Play Count</th>
-                     <th class="ranked-play-count centered">Ranked Play Count</th>
-                     <th class="ranked-acc centered">Average Ranked Accuracy</th>
-                     <th class="difference centered">Weekly Change</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {#each $rankings as player}
-                     <PlayerRow {player} />
+   {#if !firstLoad}
+      <div class="window has-shadow noheading">
+         {#if loading}
+            <Loader displayOver={true} />
+         {/if}
+         <div class={loading ? ' blur' : ''}>
+            <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+            <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
+               <div class="gridTable mb-4">
+                  <div class="header">
+                     <div />
+                     <div />
+                     <div class="centered">Performance Points</div>
+                     <div class="centered">Total Play Count</div>
+                     <div class="centered">Ranked Play Count</div>
+                     <div class="centered">Average Ranked Accuracy</div>
+                     <div class="centered">Weekly Change</div>
+                  </div>
+                  {#each $rankings ?? [] as player, i (player.id)}
+                     <PlayerRow row={i + 1} {pageDirection} {player} />
                   {/each}
-               </tbody>
-            </table>
+               </div>
+            </div>
          </div>
-         <br />
-      {:else if !$rankingsError && !$playerCountError}
-         <Loader />
-      {/if}
-      {#if $rankingsError || $playerCountError}
-         <Error message={$rankingsError.toString() || $playerCountError.toString()} />
-      {/if}
-      {#if $playerCount && $rankings && $playerCount}
-         <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
-      {/if}
-   </div>
+
+         {#if $rankingsError || $playerCountError}
+            <Error message={$rankingsError.toString() || $playerCountError.toString()} />
+         {/if}
+         {#if !firstLoad}
+            <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+         {/if}
+      </div>
+   {:else if loading}
+      <Loader />
+   {/if}
 </div>
 
 <style lang="scss">
+   .gridTable {
+      display: grid;
+      grid-template-columns: 100%;
+
+      // min-width: 600px;
+      .header {
+         font-weight: bold;
+         grid-row: 1;
+         padding: 4px 8px;
+         margin: 2.5px 2px;
+      }
+      .centered {
+         text-align: center;
+      }
+      > div {
+         display: grid;
+         grid-template-columns: 0.6fr 4fr 2fr 2fr 2fr 3fr 2fr;
+      }
+   }
+
+   .blur {
+      filter: blur(3px) saturate(1.2);
+      transition: 0.25s filter linear;
+   }
+   .window {
+      position: relative;
+   }
    .filters {
       display: flex;
       flex-flow: row nowrap;
@@ -204,27 +244,11 @@
          flex: 1;
       }
    }
-   table {
-      border-collapse: separate;
-      white-space: nowrap;
-      border-spacing: 0 5px;
-   }
    div.ranking {
       overflow-x: auto;
    }
-   .content table th {
-      border: none !important;
-   }
 
    @media (max-width: 512px) {
-      .headers {
-         display: none;
-      }
-
-      .headers th:not(.player, .rank) {
-         display: none;
-      }
-
       .filters {
          flex-flow: column nowrap;
          > div:not(:last-child) {
@@ -232,6 +256,19 @@
          }
          .divider {
             display: none;
+         }
+      }
+      .ranking {
+         overflow-x: hidden !important;
+      }
+
+      .gridTable {
+         max-width: 100%;
+         .header {
+            display: none;
+         }
+         > div {
+            grid-template-columns: 40px 55vw;
          }
       }
    }
