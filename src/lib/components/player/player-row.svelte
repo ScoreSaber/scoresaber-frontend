@@ -11,33 +11,33 @@
    const toggleExpanded = () => (isExpanded = !isExpanded);
 </script>
 
-<tr class="table-item {isExpanded ? 'expanded' : ''}" on:click={toggleExpanded}>
-   <td class="rank" width="5px">
+<div class="table-item {isExpanded ? 'expanded' : ''}" on:click={toggleExpanded}>
+   <div class="rank" width="5px">
       <span class="rank">#{player.rank.toLocaleString('en-US')}</span>
-   </td>
-   <td class="player">
+   </div>
+   <div class="player">
       <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" />
       <span class="playerName"><PlayerLink {player} destination={`/u/${player.id}`} /></span>
       <!-- <span class="playerName">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span> -->
-   </td>
-   <td class="pp centered">
+   </div>
+   <div class="pp centered">
       <span class="pp">{player.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span><span class="pp ppLabel">pp</span>
-   </td>
+   </div>
 
-   <td class="total-play-count centered">
+   <div class="total-play-count centered">
       <span>{player.scoreStats.totalPlayCount.toLocaleString('en-US')}</span>
-   </td>
-   <td class="ranked-play-count centered">
+   </div>
+   <div class="ranked-play-count centered">
       <span>{player.scoreStats.rankedPlayCount.toLocaleString('en-US')}</span>
-   </td>
-   <td class="ranked-acc centered">
+   </div>
+   <div class="ranked-acc centered">
       <span>{player.scoreStats.averageRankedAccuracy.toFixed(2)}%</span>
-   </td>
-   <td class="difference centered">
+   </div>
+   <div class="difference centered">
       <WeeklyChange {player} />
-   </td>
-</tr>
-<tr class="infobox-row">
+   </div>
+</div>
+<div class="infobox-row">
    <td colspan="2" class="infobox-container"
       ><div class="infobox{isExpanded ? ' is-expanded' : ''}">
          <div class="infobox-content">
@@ -64,34 +64,42 @@
          </div>
       </div>
    </td>
-</tr>
+</div>
 
-<style>
+<style lang="scss">
+   .table-item {
+      display: grid;
+      grid-template-columns: 0.6fr 4fr 2fr 2fr 2fr 3fr 2fr;
+      border-radius: 5px;
+      margin: 2.5px 0;
+      background-color: var(--gray);
+      padding: 5px;
+      &:hover {
+         background-color: var(--gray-light);
+      }
+      .centered {
+         text-align: center;
+      }
+   }
    td {
       border: none !important;
       border-style: solid none;
       align-items: center;
       vertical-align: bottom;
    }
-   td.player {
+   .player {
       white-space: nowrap;
       display: flex;
       align-items: flex-end;
       overflow: hidden;
    }
-   td.player span {
+   .player span {
       overflow: hidden;
       text-overflow: ellipsis;
    }
-
-   @media (min-width: 1024px) {
-      .player {
-         max-width: 250px;
-      }
-   }
    @media (max-width: 1024px) {
-      .player {
-         max-width: 55vw;
+      .table-item {
+         grid-template-columns: 1fr 7fr 2fr 2fr 2fr 3fr 2fr;
       }
    }
    span.playerName {
@@ -181,23 +189,23 @@
       background: #7f7f7f;
    }
    @media (max-width: 512px) {
-      tr.table-item:hover td,
-      tr.table-item.expanded td {
+      div.table-item:hover,
+      div.table-item.expanded {
          background-color: #3c3c3c;
       }
 
-      tr.table-item {
+      div.table-item {
          cursor: pointer;
          background-color: #323232;
       }
 
-      tr.table-item.expanded {
+      div.table-item.expanded {
          border-radius: 5px 5px 0 0;
       }
       .rank {
          width: max-content;
       }
-      .table-item,
+
       .infobox-row {
          display: flex;
          align-items: center;

@@ -156,7 +156,7 @@
       {/if}
       {#if $rankings && $playerCount}
          <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
-            <table>
+            <!-- <table>
                <thead>
                   <tr class="headers">
                      <th class="rank" />
@@ -173,7 +173,21 @@
                      <PlayerRow {player} />
                   {/each}
                </tbody>
-            </table>
+            </table> -->
+            <div class="gridTable">
+               <div class="header">
+                  <div />
+                  <div />
+                  <div class="centered">Performance Points</div>
+                  <div class="centered">Total Play Count</div>
+                  <div class="centered">Ranked Play Count</div>
+                  <div class="centered">Average Ranked Accuracy</div>
+                  <div class="centered">Weekly Change</div>
+               </div>
+               {#each $rankings ?? [] as player, i (player.id)}
+                  <PlayerRow {player} />
+               {/each}
+            </div>
          </div>
          <br />
       {:else if !$rankingsError && !$playerCountError}
@@ -189,6 +203,22 @@
 </div>
 
 <style lang="scss">
+   .gridTable {
+      display: grid;
+      grid-template-columns: 1fr;
+      min-width: 600px;
+      .header {
+         font-weight: bold;
+         grid-row: 1;
+      }
+      .centered {
+         text-align: center;
+      }
+      > div {
+         display: grid;
+         grid-template-columns: 0.6fr 4fr 2fr 2fr 2fr 3fr 2fr;
+      }
+   }
    .filters {
       display: flex;
       flex-flow: row nowrap;
@@ -233,6 +263,12 @@
          .divider {
             display: none;
          }
+      }
+   }
+
+   @media (max-width: 1024px) {
+      .gridTable > div {
+         grid-template-columns: 1fr 7fr 2fr 2fr 2fr 3fr 2fr;
       }
    }
 </style>

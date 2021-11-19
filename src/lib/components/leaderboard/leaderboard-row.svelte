@@ -65,7 +65,7 @@
       display: grid;
       grid-template-columns: var(--rows);
       background-color: var(--gray);
-      margin: 5px 0;
+      margin: 2.5px 0;
       padding: 5px;
       border-radius: 5px;
       grid-column: 1;
