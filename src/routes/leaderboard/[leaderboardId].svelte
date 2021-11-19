@@ -23,6 +23,7 @@
    import permissions from '$lib/utils/permissions';
    import poster from '$lib/utils/poster';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
 
    $: pageQuery = pageQueryStore({
@@ -67,7 +68,12 @@
       }
    }
 
+   let pageDirection = 1;
+
    function changePage(newPage: number) {
+      $requestCancel.cancel('Page Changed');
+      updateCancelToken();
+      pageDirection = newPage > $pageQuery.page ? 1 : -1;
       pageQuery.updateSingle('page', newPage);
    }
 
@@ -141,27 +147,8 @@
                <div class="window has-shadow">
                   <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
                   <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard">
+                     <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
                      {#if $leaderboardScores}
-                        <table>
-                           <thead>
-                              <tr class="headers">
-                                 <th class="rank" />
-                                 <th class="player" />
-                                 <th class="timeSet centered">Time Set</th>
-                                 <th class="score centered">Score</th>
-                                 {#if $leaderboardScores.filter((score) => score.modifiers.length > 0).length > 0}
-                                    <th class="mods centered">Mods</th>
-                                 {/if}
-                                 {#if $leaderboard.maxScore}<th class="accuracy centered">Accuracy</th>{/if}
-                                 {#if $leaderboard.ranked}<th class="pp centered">PP</th>{/if}
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {#each $leaderboardScores as score}
-                                 <LeaderboardRow {score} leaderboard={$leaderboard} otherScores={$leaderboardScores} {showScoreModal} />
-                              {/each}
-                           </tbody>
-                        </table>
                         <ClassicPagination
                            totalItems={$leaderboard.plays}
                            pageSize={12}
@@ -225,7 +212,7 @@
 
 <ScoreModal score={scoreChosen} leaderboard={$leaderboard} otherScores={$leaderboardScores} bind:setVisibility />
 
-<style>
+<style lang="scss">
    @media screen and (max-width: 769px), print {
       .columns {
          display: flex;
@@ -235,30 +222,5 @@
 
    .leaderboard {
       overflow-x: auto;
-   }
-
-   .bg-image {
-      background: linear-gradient(180deg, rgba(36, 36, 36, 0.8), rgb(33, 33, 33)) repeat scroll 0% 0%,
-         rgba(0, 0, 0, 0) var(--cover) repeat scroll 0% 0%;
-      position: fixed;
-      height: 100%;
-      width: 100%;
-      top: 0;
-      left: 0;
-      background-position: 50% !important;
-      background-repeat: no-repeat !important;
-      background-size: cover !important;
-      z-index: -1;
-   }
-
-   table {
-      border-collapse: separate;
-      border-spacing: 0 5px;
-      white-space: nowrap;
-      margin-top: -15px;
-   }
-
-   .content table th {
-      border: none !important;
    }
 </style>
