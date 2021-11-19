@@ -20,6 +20,8 @@
    import { defaultBackground } from '$lib/global-store';
 
    const playersPerPage = 50;
+   $: loading = true;
+   $: firstLoad = true;
    let pageDirection = 1;
 
    $: pageQuery = pageQueryStore({
@@ -40,13 +42,13 @@
          url: '/api/players',
          query: queryString.parse($page.query.toString())
       }),
-      { fetcher: axios }
+      { fetcher: axios, onSuccess: onRankingsSuccess }
    );
 
    const {
       data: playerCount,
       error: playerCountError,
-      refresh: refreshPlayerCount //TODO: Refresh on filter change (not page change)
+      refresh: refreshPlayerCount
    } = useAccio<number>(
       queryString.stringifyUrl({
          url: '/api/players/count',
@@ -55,6 +57,12 @@
       { fetcher: axios }
    );
 
+   function onRankingsSuccess() {
+      if (firstLoad) {
+         firstLoad = false;
+      }
+   }
+
    function changePage(newPage: number) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
@@ -62,23 +70,27 @@
       pageQuery.updateSingle('page', newPage);
    }
 
-   const pageUnsubscribe = page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe(async (p) => {
       if (browser) {
-         refreshRankings({
+         loading = true;
+         await refreshRankings({
             newUrl: queryString.stringifyUrl({
                url: '/api/players',
                query: queryString.parse(p.query.toString())
-            })
+            }),
+            softRefresh: true
          });
          if (filterChanged) {
-            refreshPlayerCount({
+            await refreshPlayerCount({
                newUrl: queryString.stringifyUrl({
                   url: '/api/players/count',
                   query: queryString.parse(p.query.toString())
-               })
+               }),
+               softRefresh: true
             });
             filterChanged = false;
          }
+         loading = false;
       }
    });
 
@@ -152,38 +164,41 @@
          <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
       </div>
    </div>
-   <div class="window has-shadow noheading">
-      {#if $playerCount && $rankings && $playerCount}
-         <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
-      {/if}
-      <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
-         <div class="gridTable">
-            <div class="header">
-               <div />
-               <div />
-               <div class="centered">Performance Points</div>
-               <div class="centered">Total Play Count</div>
-               <div class="centered">Ranked Play Count</div>
-               <div class="centered">Average Ranked Accuracy</div>
-               <div class="centered">Weekly Change</div>
+   {#if !firstLoad}
+      <div class="window has-shadow noheading">
+         {#if loading}
+            <Loader displayOver={true} />
+         {/if}
+         <div class={loading ? ' blur' : ''}>
+            <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+            <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
+               <div class="gridTable mb-4">
+                  <div class="header">
+                     <div />
+                     <div />
+                     <div class="centered">Performance Points</div>
+                     <div class="centered">Total Play Count</div>
+                     <div class="centered">Ranked Play Count</div>
+                     <div class="centered">Average Ranked Accuracy</div>
+                     <div class="centered">Weekly Change</div>
+                  </div>
+                  {#each $rankings ?? [] as player, i (player.id)}
+                     <PlayerRow row={i + 1} {pageDirection} {player} />
+                  {/each}
+               </div>
             </div>
-            {#each $rankings ?? [] as player, i (player.id)}
-               <PlayerRow row={i + 1} {pageDirection} {player} />
-            {/each}
          </div>
+
+         {#if $rankingsError || $playerCountError}
+            <Error message={$rankingsError.toString() || $playerCountError.toString()} />
+         {/if}
+         {#if !firstLoad}
+            <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+         {/if}
       </div>
-      {#if $rankings && $playerCount}
-         <br />
-      {:else if !$rankingsError && !$playerCountError}
-         <Loader displayOver={true} />
-      {/if}
-      {#if $rankingsError || $playerCountError}
-         <Error message={$rankingsError.toString() || $playerCountError.toString()} />
-      {/if}
-      {#if $playerCount && $rankings && $playerCount}
-         <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
-      {/if}
-   </div>
+   {:else if loading}
+      <Loader />
+   {/if}
 </div>
 
 <style lang="scss">
@@ -205,6 +220,11 @@
          display: grid;
          grid-template-columns: 0.6fr 4fr 2fr 2fr 2fr 3fr 2fr;
       }
+   }
+
+   .blur {
+      filter: blur(3px) saturate(1.2);
+      transition: 0.25s filter linear;
    }
    .window {
       position: relative;

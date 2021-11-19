@@ -12,6 +12,7 @@
       top: 100px;
       left: 50%;
       transform: translateX(-50%);
+      z-index: 1;
    }
    .scoresaber-loader {
       animation: loading 2s ease infinite;
