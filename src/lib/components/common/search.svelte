@@ -6,6 +6,9 @@
    import fetcher from '$lib/utils/fetcher';
    import axios from 'axios';
    import PlayerLink from '$lib/components/player/player-link.svelte';
+   import { browser } from '$app/env';
+   import { page } from '$app/stores';
+   import { onDestroy } from 'svelte';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
@@ -34,6 +37,13 @@
       visible = value;
       if (value) inputBox.focus();
    };
+
+   const pageUnsubscribe = page.subscribe((p) => {
+      if (browser) {
+         setVisibility(false);
+      }
+   });
+   onDestroy(pageUnsubscribe);
 
    let debounceTimer;
 

@@ -66,7 +66,7 @@
    } = useAccio<PlayerScore[]>(getPlayerScoresUrl($page.params.playerId, $page.query.toString()), { fetcher: axios });
 
    const pageUnsubscribe = page.subscribe((p) => {
-      if (browser) {
+      if (browser && p.path.indexOf('/u/') > -1) {
          refreshScores({
             newUrl: getPlayerScoresUrl(p.params.playerId, p.query.toString())
          });
@@ -236,6 +236,7 @@
       {/if}
 
       {#if $playerDataError}
+         aaaaaaaaaaaaaaaaa
          <Error message={$playerDataError.toString()} />
       {/if}
    </div>
