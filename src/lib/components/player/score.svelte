@@ -24,6 +24,7 @@
    export let pageDirection: number = 1;
    export let openModal: (score: PlayerScore, player?: LeaderboardPlayer | Player) => void;
    export let expanded: boolean = false;
+   export let playerId: string = undefined;
 
    const scoresPerPage = 12;
 
@@ -131,6 +132,7 @@
                leaderboard={score.leaderboard}
                pageDirection={leaderboardPageDirection}
                showScoreModal={modalOpen}
+               playerHighlight={playerId}
             />
          </div>
          {#if $scoreData && !loadLeaderboardDataLoading}

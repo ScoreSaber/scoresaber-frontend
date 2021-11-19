@@ -262,7 +262,7 @@
             <div class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each $scoreData as score, i (score.score.id)}
-                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} />
+                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData.id} />
                   {/each}
                </div>
             </div>

@@ -7,6 +7,7 @@
    export let leaderboard: LeaderboardInfo;
    export let showScoreModal: (score: Score) => void;
    export let pageDirection: number = 1;
+   export let playerHighlight: string = undefined;
 </script>
 
 <div
@@ -27,7 +28,15 @@
       <div class="centered">PP</div>
    </div>
    {#each leaderboardScores ?? [] as score, i (score.id)}
-      <LeaderboardRow {score} {leaderboard} otherScores={leaderboardScores ?? []} {showScoreModal} row={i + 2} {pageDirection} />
+      <LeaderboardRow
+         highlighted={playerHighlight === score.leaderboardPlayerInfo.id}
+         {score}
+         {leaderboard}
+         otherScores={leaderboardScores ?? []}
+         {showScoreModal}
+         row={i + 2}
+         {pageDirection}
+      />
    {/each}
 </div>
 
