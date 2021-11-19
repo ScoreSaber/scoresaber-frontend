@@ -36,6 +36,7 @@
       display: grid;
       grid-template-columns: 1fr;
       min-width: 500px;
+      margin-bottom: 10px;
       .header {
          font-weight: bold;
          grid-row: 1;
