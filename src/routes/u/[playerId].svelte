@@ -236,7 +236,6 @@
       {/if}
 
       {#if $playerDataError}
-         aaaaaaaaaaaaaaaaa
          <Error message={$playerDataError.toString()} />
       {/if}
    </div>
