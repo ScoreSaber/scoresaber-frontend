@@ -5,13 +5,22 @@
    import WeeklyChange from '$lib/components/player/weekly-change.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import { rankToPage } from '$lib/utils/helpers';
+   import { fly } from 'svelte/transition';
    let isExpanded: boolean = false;
    export let player: Player;
+   export let row: number = 1;
+   export let pageDirection: number = 1;
 
    const toggleExpanded = () => (isExpanded = !isExpanded);
 </script>
 
-<div class="table-item {isExpanded ? 'expanded' : ''}" on:click={toggleExpanded}>
+<div
+   in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 10 * (row - 1) }}
+   out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 10 * (row - 1) }}
+   class="table-item {isExpanded ? 'expanded' : ''}"
+   on:click={toggleExpanded}
+   style="grid-row: {row * 2};"
+>
    <div class="rank" width="5px">
       <span class="rank">#{player.rank.toLocaleString('en-US')}</span>
    </div>
@@ -37,7 +46,7 @@
       <WeeklyChange {player} />
    </div>
 </div>
-<div class="infobox-row">
+<div class="infobox-row" style="grid-row: {row * 2 + 1};">
    <div colspan="2" class="infobox-container">
       <div class="infobox{isExpanded ? ' is-expanded' : ''}">
          <div class="infobox-content">
@@ -75,6 +84,7 @@
       background-color: var(--gray);
       padding: 5px;
       transition: all 0.25s ease;
+      grid-column: 1;
       &:hover {
          background-color: var(--gray-light);
       }
@@ -116,6 +126,7 @@
       pointer-events: none;
       background-color: #3c3c3c;
       border-radius: 0 0 5px 5px;
+      grid-column: 1;
       &:not(.is-expanded) {
          background-color: var(--gray);
       }

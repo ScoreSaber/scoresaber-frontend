@@ -8,7 +8,7 @@
    import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
    import { useAccio } from '$lib/utils/accio';
-   import { createQueryStore, pageQueryStore } from '$lib/query-store';
+   import { pageQueryStore } from '$lib/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
    import Filter from '$lib/components/common/filter.svelte';
@@ -17,9 +17,10 @@
    import { browser } from '$app/env';
    import TextInput from '$lib/components/common/text-input.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
-   import { background, defaultBackground } from '$lib/global-store';
+   import { defaultBackground } from '$lib/global-store';
 
    const playersPerPage = 50;
+   let pageDirection = 1;
 
    $: pageQuery = pageQueryStore({
       page: 1,
@@ -57,6 +58,7 @@
    function changePage(newPage: number) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
+      pageDirection = newPage > $pageQuery.page ? 1 : -1;
       pageQuery.updateSingle('page', newPage);
    }
 
@@ -154,41 +156,23 @@
       {#if $playerCount && $rankings && $playerCount}
          <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
       {/if}
-      {#if $rankings && $playerCount}
-         <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
-            <!-- <table>
-               <thead>
-                  <tr class="headers">
-                     <th class="rank" />
-                     <th class="player" />
-                     <th class="pp centered">Performance Points</th>
-                     <th class="total-play-count centered">Total Play Count</th>
-                     <th class="ranked-play-count centered">Ranked Play Count</th>
-                     <th class="ranked-acc centered">Average Ranked Accuracy</th>
-                     <th class="difference centered">Weekly Change</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {#each $rankings as player}
-                     <PlayerRow {player} />
-                  {/each}
-               </tbody>
-            </table> -->
-            <div class="gridTable">
-               <div class="header">
-                  <div />
-                  <div />
-                  <div class="centered">Performance Points</div>
-                  <div class="centered">Total Play Count</div>
-                  <div class="centered">Ranked Play Count</div>
-                  <div class="centered">Average Ranked Accuracy</div>
-                  <div class="centered">Weekly Change</div>
-               </div>
-               {#each $rankings ?? [] as player, i (player.id)}
-                  <PlayerRow {player} />
-               {/each}
+      <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
+         <div class="gridTable">
+            <div class="header">
+               <div />
+               <div />
+               <div class="centered">Performance Points</div>
+               <div class="centered">Total Play Count</div>
+               <div class="centered">Ranked Play Count</div>
+               <div class="centered">Average Ranked Accuracy</div>
+               <div class="centered">Weekly Change</div>
             </div>
+            {#each $rankings ?? [] as player, i (player.id)}
+               <PlayerRow row={i + 1} {pageDirection} {player} />
+            {/each}
          </div>
+      </div>
+      {#if $rankings && $playerCount}
          <br />
       {:else if !$rankingsError && !$playerCountError}
          <Loader />
