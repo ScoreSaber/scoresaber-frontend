@@ -112,6 +112,13 @@
       setVisibility(true);
    }
 
+   async function handleGivePP() {
+      const leaderboardId = $leaderboard.id;
+      leaderboard.set(undefined);
+      await poster('/api/ranking/request/action/admin/pp', { leaderboardId }, { withCredentials: true });
+      refreshLeaderboard({ forceRevalidate: true, softRefresh: true });
+   }
+
    let manualPP: number;
    async function handleManualPP(event) {
       event.preventDefault();
@@ -192,6 +199,17 @@
                            </div>
                            <div class="control">
                               <button on:click={(ev) => handleManualPP(ev)} class="button is-small is-info">Set PP</button>
+                           </div>
+                        </div>
+                        <div class="voting-tool">
+                           <div class="field has-addons">
+                              <p class="control m-0">
+                                 <button on:click={() => handleGivePP()} class="button is-small is-danger">
+                                    <span class="icon is-small">
+                                       <i class="fab fa-pied-piper-pp" />
+                                    </span>
+                                 </button>
+                              </p>
                            </div>
                         </div>
                      {/if}
