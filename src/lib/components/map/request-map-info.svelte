@@ -1,9 +1,10 @@
 <script lang="ts">
    import type { RankRequestInformation } from '$lib/models/Ranking';
-   import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus } from '$lib/utils/helpers';
+   import Permissions from '$lib/utils/permissions';
+   import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus, getDifficultyOrStarValue } from '$lib/utils/helpers';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView } from '$lib/global-store';
+   import { searchView, userData } from '$lib/global-store';
 
    export let request: RankRequestInformation;
    let searchModal: SearchView;
@@ -24,7 +25,7 @@
                title={getDifficultyLabel(request.leaderboardInfo.difficulty)}
                class="tag mb-2 {getDifficultyStyle(request.leaderboardInfo.difficulty)}"
             >
-               {getDifficultyLabel(request.leaderboardInfo.difficulty)}
+               {getDifficultyOrStarValue(request.leaderboardInfo)}
             </div>
             <div class="title is-5 mb-0">
                <a href={`/leaderboard/${request.leaderboardInfo.id}`}>{request.leaderboardInfo.songName}</a>
@@ -39,7 +40,11 @@
       </div>
 
       <div class="content">
-         Mapped by <a href={'#'} on:click|preventDefault={() => openSearch(request.leaderboardInfo.levelAuthorName)}
+         {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+            Max PP: <strong>{request.leaderboardInfo.maxPP}</strong> <br />
+         {/if}
+         Mapped by
+         <a href={'#'} on:click|preventDefault={() => openSearch(request.leaderboardInfo.levelAuthorName)}
             ><b>{request.leaderboardInfo.levelAuthorName}</b></a
          ><br />
          Status: <strong>{getRankingApprovalStatus(request.approved)}</strong><br />

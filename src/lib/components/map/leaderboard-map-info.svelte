@@ -1,11 +1,12 @@
 <script lang="ts">
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
+   import Permissions from '$lib/utils/permissions';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
 
    export let leaderboardInfo: LeaderboardInfo;
 
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView } from '$lib/global-store';
+   import { searchView, userData } from '$lib/global-store';
    let searchModal: SearchView;
 
    searchView.subscribe((v) => (searchModal = v));
@@ -38,9 +39,11 @@
       </div>
 
       <div class="content">
-         Mapped by <a href={'#'} on:click|preventDefault={() => openSearch(leaderboardInfo.levelAuthorName)}
-            ><b>{leaderboardInfo.levelAuthorName}</b></a
-         ><br />
+         {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+            Max PP: <strong>{leaderboardInfo.maxPP}</strong> <br />
+         {/if}
+         Mapped by
+         <a href={'#'} on:click|preventDefault={() => openSearch(leaderboardInfo.levelAuthorName)}><b>{leaderboardInfo.levelAuthorName}</b></a><br />
          Plays: <b>{leaderboardInfo.plays.toLocaleString('en-US')}</b> ({leaderboardInfo.dailyPlays.toLocaleString('en-US')} daily)<br />
          Status: <b>{leaderboardInfo.ranked ? 'Ranked' : leaderboardInfo.qualified ? 'Qualified' : 'Unranked'}</b><br />
          <br />

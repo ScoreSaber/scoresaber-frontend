@@ -55,6 +55,13 @@
       await refreshRequest({ forceRevalidate: true, softRefresh: true });
    }
 
+   async function handleGivePP() {
+      const leaderboardId = $request.leaderboardInfo.id;
+      request.set(undefined);
+      await poster(`${requestActionEndpoint}/admin/pp`, { leaderboardId }, { withCredentials: true });
+      refreshRequest({ forceRevalidate: true, softRefresh: true });
+   }
+
    let manualPP: number;
    async function handleManualPP(event) {
       event.preventDefault();
@@ -258,7 +265,7 @@
                               <span class="tag mb-2 rank admin">Admin</span>
                               <div class="field has-addons">
                                  <p class="control m-0">
-                                    <button on:click={() => handleAction('admin', 'pp')} class="button is-small is-danger">
+                                    <button on:click={() => handleGivePP()} class="button is-small is-danger">
                                        <span class="icon is-small">
                                           <i class="fab fa-pied-piper-pp" />
                                        </span>
