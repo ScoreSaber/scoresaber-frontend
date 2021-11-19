@@ -5,7 +5,7 @@
 
    export let leaderboardScores: Score[];
    export let leaderboard: LeaderboardInfo;
-   export let showScoreModal: (score: Score) => void;
+   export let showScoreModal: (score: Score, leaderboard: LeaderboardInfo) => void;
    export let pageDirection: number = 1;
    export let playerHighlight: string = undefined;
 </script>
