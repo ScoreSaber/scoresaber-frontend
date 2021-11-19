@@ -18,6 +18,12 @@
    import { browser } from '$app/env';
    import poster from '$lib/utils/poster';
 
+   import { getCDNUrl } from '$lib/utils/helpers';
+
+   function getBloq(rank: string) {
+      return getCDNUrl(`/badges/name/${rank}.png`);
+   }
+
    const {
       data: request,
       error: requestError,
@@ -113,13 +119,15 @@
                   {#each $request.rankComments as comment}
                      <div class="window has-shadow">
                         <article class="media">
-                           {#if comment.userId != null}
-                              <figure class="media-left m-0 mr-4 ml-0">
-                                 <p class="image is-48x48">
+                           <figure class="media-left m-0 mr-4 ml-0">
+                              <p class="image is-48x48">
+                                 {#if comment.userId != null}
                                     <AvatarImage userId={comment.userId} />
-                                 </p>
-                              </figure>
-                           {/if}
+                                 {:else}
+                                    <img src={getBloq('ranking-team')} alt="Ranking Team" />
+                                 {/if}
+                              </p>
+                           </figure>
                            <div class="media-content">
                               <div class="content">
                                  <p>
@@ -137,13 +145,15 @@
                   {#each $request.qatComments as comment}
                      <div class="window has-shadow">
                         <article class="media">
-                           {#if comment.userId != null}
-                              <figure class="media-left m-0 mr-4 ml-0">
-                                 <p class="image is-48x48">
+                           <figure class="media-left m-0 mr-4 ml-0">
+                              <p class="image is-48x48">
+                                 {#if comment.userId != null}
                                     <AvatarImage userId={comment.userId} />
-                                 </p>
-                              </figure>
-                           {/if}
+                                 {:else}
+                                    <img src={getBloq('qat')} alt="Quality Assurance Team" />
+                                 {/if}
+                              </p>
+                           </figure>
                            <div class="media-content">
                               <div class="content">
                                  <p>
