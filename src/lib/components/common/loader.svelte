@@ -1,8 +1,18 @@
-<div class="columns is-centered">
+<script lang="ts">
+   export let displayOver: boolean = false;
+</script>
+
+<div class="columns is-centered" class:displayOver>
    <img alt="loading" class="scoresaber-loader" src="/images/logo.svg" />
 </div>
 
 <style>
+   .displayOver {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+   }
    .scoresaber-loader {
       animation: loading 2s ease infinite;
       height: 48px;

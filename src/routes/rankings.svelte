@@ -175,7 +175,7 @@
       {#if $rankings && $playerCount}
          <br />
       {:else if !$rankingsError && !$playerCountError}
-         <Loader />
+         <Loader displayOver={true} />
       {/if}
       {#if $rankingsError || $playerCountError}
          <Error message={$rankingsError.toString() || $playerCountError.toString()} />
@@ -205,6 +205,9 @@
          display: grid;
          grid-template-columns: 0.6fr 4fr 2fr 2fr 2fr 3fr 2fr;
       }
+   }
+   .window {
+      position: relative;
    }
    .filters {
       display: flex;
