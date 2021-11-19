@@ -10,6 +10,7 @@
       return parseInt(item);
    });
 
+   history.push(player.rank);
    onMount(() => {
       window.addEventListener('resize', () => {
          options = getOptions();
@@ -34,12 +35,12 @@
    };
 
    let labels = [];
-   for (let i = history.length - 1; i > 0; i--) {
+   for (let i = history.length; i > 0; i--) {
       let label = `${i} days ago`;
-      if (i === 0) {
+      if (i === 1) {
          label = 'now';
       }
-      if (i === 1) {
+      if (i === 2) {
          label = 'yesterday';
       }
       labels.push(label);
