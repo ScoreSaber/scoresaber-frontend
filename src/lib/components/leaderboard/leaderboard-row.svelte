@@ -37,7 +37,7 @@
       <span class="playerName"><PlayerLink player={score.leaderboardPlayerInfo} destination={`/u/${score.leaderboardPlayerInfo.id}`} /></span>
    </div>
    <div class="timeSet centered">
-      <span><FormattedDate date={new Date(score.timeSet)} /></span>
+      <span><FormattedDate short={true} date={new Date(score.timeSet)} /></span>
    </div>
    <div class="score centered">
       <span class="score" on:click={openScoreDetails(score, leaderboard)}>{score.modifiedScore.toLocaleString('en-US')}</span>

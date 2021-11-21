@@ -24,8 +24,12 @@
       {#if (leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0}
          <div class="centered">Mods</div>
       {/if}
-      <div class="centered">Accuracy</div>
-      <div class="centered">PP</div>
+      {#if leaderboard.maxScore}
+         <div class="centered">Accuracy</div>
+      {/if}
+      {#if leaderboard.ranked}
+         <div class="centered">PP</div>
+      {/if}
    </div>
    {#each leaderboardScores ?? [] as score, i (score.id)}
       <LeaderboardRow
