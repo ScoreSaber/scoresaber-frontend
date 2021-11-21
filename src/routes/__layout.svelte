@@ -8,6 +8,8 @@
    import Footer from '$lib/components/common/footer.svelte';
    import '../styles/scoresaber.scss';
    import { fly } from 'svelte/transition';
+   import { browser } from '$app/env';
+   import { page } from '$app/stores';
 
    let tokenCheckAttempts: number = 0;
 
@@ -38,6 +40,16 @@
       error: loginError,
       refresh: refreshLogin
    } = useAccio<UserData>('/api/user/@me', { fetcher, onSuccess: onUserCheckSuccess, onError: onUserCheckFailed, ignoreSubscriptions: true });
+
+   if (browser) {
+      page.subscribe((p) => {
+         document.body.style.position = '';
+         document.body.style.top = '';
+         document.body.style.overflow = '';
+         document.body.style.width = '';
+         window.scrollTo(0, scrollY);
+      });
+   }
 </script>
 
 <div class="root">

@@ -6,6 +6,10 @@
    import fetcher from '$lib/utils/fetcher';
    import axios from 'axios';
    import PlayerLink from '$lib/components/player/player-link.svelte';
+   import { browser } from '$app/env';
+   import { page } from '$app/stores';
+   import { onDestroy } from 'svelte';
+   import { goto } from '$app/navigation';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
@@ -35,6 +39,13 @@
       if (value) inputBox.focus();
    };
 
+   const pageUnsubscribe = page.subscribe((p) => {
+      if (browser) {
+         setVisibility(false);
+      }
+   });
+   onDestroy(pageUnsubscribe);
+
    let debounceTimer;
 
    const scrollToActive = () => {
@@ -57,10 +68,10 @@
             break;
          case 'Enter':
             if (focusElement < searchResults.players.length && searchResults.players !== 'loading') {
-               location.href = `/u/${searchResults.players[focusElement].id}`;
+               goto(`/u/${searchResults.players[focusElement].id}`);
             } else if (searchResults.leaderboards !== 'loading') {
                const leaderboard = searchResults.leaderboards[focusElement - searchResults.players.length];
-               location.href = `/leaderboard/${leaderboard.id}`;
+               goto(`/leaderboard/${leaderboard.id}`);
             }
       }
    };

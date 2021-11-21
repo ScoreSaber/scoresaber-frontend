@@ -54,6 +54,10 @@ html {
    overflow: hidden;
 }
 
+body {
+   overflow-y: hidden;
+}
+
 .root {
    min-height: 100%;
    margin: 0;
