@@ -36,6 +36,7 @@ export interface ScoreStats {
    averageRankedAccuracy: number;
    totalPlayCount: number;
    rankedPlayCount: number;
+   replaysWatched: number;
 }
 export interface Badge {
    description: string;

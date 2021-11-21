@@ -33,6 +33,12 @@
       <span class="stat-spacer" />
       <span class="stat-content">{player.scoreStats.averageRankedAccuracy.toFixed(2)}%</span>
    </div>
+
+   <div class="stat-item">
+      <span class="stat-title">Replays Watched by Others</span>
+      <span class="stat-spacer" />
+      <span class="stat-content">{player.scoreStats.replaysWatched.toLocaleString('en-US')}</span>
+   </div>
 </div>
 
 <style>
