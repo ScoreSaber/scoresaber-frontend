@@ -60,7 +60,8 @@
          />
       </svg>
    </div>
-   Welcome to the new ScoreSaber! This version of the website is beta software. Please report bugs in the Discord.</Announcement
+   Welcome to the new ScoreSaber!<a href={'#'}>&nbsp;Click here&nbsp;</a>to read our Patreon post! If you experience any bugs please report them in
+   the<a class="announcement" target="_blank" rel="external" href="https://discord.gg/scoresaber">&nbsp;Discord</a></Announcement
 >
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
