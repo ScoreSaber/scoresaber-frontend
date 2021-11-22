@@ -3,7 +3,7 @@
    export let title: string = 'ScoreSaber';
    export let description: string = 'ScoreSaber';
    export let url: string = 'https://new.scoresaber.com';
-   let descriptionTag = `<meta property="og:description" content=${description} />`;
+   let descriptionTag = `<meta property="og:description" content="${description}" />`;
 </script>
 
 <meta property="og:image" content={image} />
