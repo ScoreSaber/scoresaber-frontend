@@ -5,51 +5,37 @@
 </script>
 
 <script lang="ts">
+   import ArrowButton from '$lib/components/common/pagination/arrow-button.svelte';
+
    export let page: number;
    export let maxPages: number;
    export let pageClicked: PageCallback;
+   export let withFirstLast: boolean = false;
 </script>
 
 <nav class="pagination">
-   {#if page > 1}
-      <button on:click={() => pageClicked(page - 1)} class="button arrow">
-         <span class="icon is-small">
-            <i class="fas fa-arrow-left" />
-         </span>
-      </button>
-   {:else}
-      <button class="button arrow" disabled>
-         <span class="icon is-small">
-            <i class="fas fa-arrow-left" />
-         </span>
-      </button>
-   {/if}
-   {#if page < maxPages}
-      <button on:click={() => pageClicked(page + 1)} class="button arrow">
-         <span class="icon is-small">
-            <i class="fas fa-arrow-right" />
-         </span>
-      </button>
-   {:else}
-      <button class="button arrow" disabled>
-         <span class="icon is-small">
-            <i class="fas fa-arrow-right" />
-         </span>
-      </button>
-   {/if}
+  <section class="btn-group">
+    {#if withFirstLast}
+      <ArrowButton icon="fa-step-backward" on:click={() => pageClicked(1)} disabled={page <= 1}/>
+    {/if}
+    <ArrowButton icon="fa-arrow-left" on:click={() => pageClicked(page - 1)} disabled={page <= 1}/>
+  </section>
+
+  <section class="btn-group">
+    <ArrowButton icon="fa-arrow-right" on:click={() => pageClicked(page + 1)} disabled={page >= maxPages}/>
+
+    {#if withFirstLast}
+      <ArrowButton icon="fa-step-forward" on:click={() => pageClicked(maxPages)} disabled={page >= maxPages}/>
+    {/if}
+  </section>
 </nav>
 
 <style>
-   .pagination .button {
-      background-color: #2d2d2d !important;
-      border-color: var(--foreground) !important;
-      color: var(--alternate) !important;
-      display: flex;
-   }
-   .pagination .button:hover {
-      color: var(--scoreSaberYellow) !important;
-   }
    .pagination {
       margin-bottom: 0.1rem;
+   }
+
+   .btn-group {
+       display: inline-flex;
    }
 </style>
