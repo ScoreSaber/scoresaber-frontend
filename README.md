@@ -4,8 +4,7 @@ Once you've cloned the project and installed dependencies with `npm install` (or
 
 ```
 VITE_CDN_URL=https://cdn.scoresaber.com
-VITE_API_URL=https://novus.scoresaber.com
-VITE_API_KEY=YOUR_API_KEY
+VITE_API_URL=https://scoresaber.com
 ```
 
 To start a development server:
@@ -14,7 +13,7 @@ To start a development server:
 npm run dev
 
 # or start the server and open the app in a new browser tab
-npm run dev -- --open
+npm run dev -- --https
 ```
 
 ## Building
