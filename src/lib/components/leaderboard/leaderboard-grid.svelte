@@ -8,6 +8,7 @@
    export let showScoreModal: (score: Score, leaderboard: LeaderboardInfo) => void;
    export let pageDirection: number = 1;
    export let playerHighlight: string = undefined;
+   let transitioning: boolean[] = [];
 </script>
 
 <div
@@ -15,6 +16,7 @@
    style="--rows: 1fr 5fr {(leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length
       ? '2fr 2fr 2fr 2fr 2fr'
       : '2fr 2fr 2fr 2fr'}"
+   class:transitioning={transitioning.some((t) => t)}
 >
    <div class="header">
       <div />
@@ -36,6 +38,7 @@
          {showScoreModal}
          row={i + 2}
          {pageDirection}
+         bind:transitioning={transitioning[i]}
       />
    {/each}
 </div>
@@ -46,6 +49,9 @@
       grid-template-columns: 1fr;
       min-width: 500px;
       margin-bottom: 10px;
+      &.transitioning {
+         overflow: hidden;
+      }
       .header {
          font-weight: bold;
          grid-row: 1;
