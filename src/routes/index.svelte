@@ -24,8 +24,8 @@
    <div class="window has-shadow">
       <h3>Welcome to ScoreSaber</h3>
       <p>
-         ScoreSaber is Beat Sabers largest leaderboard system for custom songs, hosting 60 million scores across 170,000+ leaderboards, with more than
-         1 million users worldwide
+         ScoreSaber is Beat Saber's largest leaderboard system for custom songs, hosting 60 million scores across 170,000+ leaderboards, with more
+         than 1 million users worldwide
       </p>
    </div>
 </div>
