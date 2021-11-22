@@ -39,7 +39,7 @@
       </div>
 
       <div class="content">
-         {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+         {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
             Max PP: <strong>{leaderboardInfo.maxPP}</strong> <br />
          {/if}
          Mapped by

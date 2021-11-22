@@ -178,7 +178,7 @@
                            </span>
                         </button>
                      {/if}
-                     {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+                     {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
                         <button on:click={() => openAdminModal()} class="button admin is-small is-dark mt-2" title="Admin Actions">
                            <span class="icon is-small">
                               <i class="fas fa-users-cog" />
