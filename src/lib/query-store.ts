@@ -15,6 +15,9 @@ export function pageQueryStore<T extends object, Key extends keyof T>(props: T) 
             for (let key in query) {
                if (key in props) newParams[key] = query[key];
             }
+            for (const key in props) {
+               if (!(key in query)) newParams[key] = null;
+            }
             h(newParams);
          });
       },
