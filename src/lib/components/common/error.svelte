@@ -9,7 +9,7 @@
 
 <div class="error {fullpage ? 'fullpage' : ''}">
    {#if error.status == 404}
-      <h1>404</h1>
+      <h1>Error 404</h1>
       {#if error.message}
          <p>{error.message}</p>
       {/if}
