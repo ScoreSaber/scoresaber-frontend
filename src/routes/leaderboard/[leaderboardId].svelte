@@ -160,7 +160,7 @@
          description={`Status: ${metadata.ranked ? 'Ranked' : metadata.qualified ? 'Qualified' : 'Unranked'}
       Total Scores: ${metadata.plays.toLocaleString('en-US')}
       Total Scores (today): ${metadata.dailyPlays.toLocaleString('en-US')}
-      Stars: ${metadata.stars}%`}
+      Stars: ${metadata.stars}★`}
          image={metadata.coverImage}
          title="{metadata.songAuthorName} - {metadata.songName} mapped by {metadata.levelAuthorName}"
       />
