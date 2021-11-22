@@ -1,13 +1,10 @@
-import { dev } from '$app/env';
 import { API_URL } from '$lib/utils/env';
 import { browser } from '$app/env';
 
 export async function loadMetadata(fetch: Function, url: string) {
    if (!browser) {
-      if (dev) {
-         if (url.startsWith('/api')) {
-            url = `${API_URL}${url}`;
-         }
+      if (url.startsWith('/api')) {
+         url = `${API_URL}${url}`;
       }
       const res = await fetch(url);
       if (res.url.includes('cloudflareaccess')) {
