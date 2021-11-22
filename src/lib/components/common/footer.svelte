@@ -29,7 +29,7 @@
          >
       </nav>
       <p>
-         <a href="https://scoresaber.com/legal/privacy">Privacy Policy</a>
+         <a href="/legal/privacy">Privacy Policy</a>
       </p>
    </div>
 </footer>
