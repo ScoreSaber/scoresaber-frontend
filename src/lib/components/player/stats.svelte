@@ -1,6 +1,7 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
    export let player: Player;
+   export let small: boolean = false;
 </script>
 
 <div class="stats-container">
@@ -23,19 +24,31 @@
    </div>
 
    <div class="stat-item ranked">
-      <span class="stat-title">Total Ranked Score</span>
+      {#if small}
+         <span class="stat-title">Ranked Score</span>
+      {:else}
+         <span class="stat-title">Total Ranked Score</span>
+      {/if}
       <span class="stat-spacer" />
       <span class="stat-content">{player.scoreStats.totalRankedScore.toLocaleString('en-US')}</span>
    </div>
 
    <div class="stat-item ranked">
-      <span class="stat-title">Average Ranked Accuracy</span>
+      {#if small}
+         <span class="stat-title">Avg Ranked Acc</span>
+      {:else}
+         <span class="stat-title">Average Ranked Accuracy</span>
+      {/if}
       <span class="stat-spacer" />
       <span class="stat-content">{player.scoreStats.averageRankedAccuracy.toFixed(2)}%</span>
    </div>
 
    <div class="stat-item">
-      <span class="stat-title">Replays Watched by Others</span>
+      {#if small}
+         <span class="stat-title">Replay Views</span>
+      {:else}
+         <span class="stat-title">Replays Watched by Others</span>
+      {/if}
       <span class="stat-spacer" />
       <span class="stat-content">{player.scoreStats.replaysWatched.toLocaleString('en-US')}</span>
    </div>
