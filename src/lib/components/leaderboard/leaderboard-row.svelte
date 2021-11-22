@@ -15,6 +15,8 @@
 
    export let row = 1;
    export let pageDirection = 1;
+
+   export let transitioning: boolean = false;
 </script>
 
 <div
@@ -22,6 +24,10 @@
    class:highlighted
    in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
    out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
+   on:introstart={() => (transitioning = true)}
+   on:outrostart={() => (transitioning = true)}
+   on:introend={() => (transitioning = false)}
+   on:outroend={() => (transitioning = false)}
    style="grid-row: {row} / span 1;"
 >
    <div class="rank" width="5px">

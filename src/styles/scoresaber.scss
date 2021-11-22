@@ -54,8 +54,8 @@ html {
    overflow: hidden;
 }
 
-body {
-   overflow-y: hidden;
+.section.is-fullwidth.no-padding {
+   width: 99vw !important;
 }
 
 .root {

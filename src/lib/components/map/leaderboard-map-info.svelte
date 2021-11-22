@@ -44,7 +44,7 @@
          {/if}
          Mapped by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboardInfo.levelAuthorName)}><b>{leaderboardInfo.levelAuthorName}</b></a><br />
-         Plays: <b>{leaderboardInfo.plays.toLocaleString('en-US')}</b> ({leaderboardInfo.dailyPlays.toLocaleString('en-US')} daily)<br />
+         Plays: <b>{leaderboardInfo.plays.toLocaleString('en-US')}</b> ({leaderboardInfo.dailyPlays.toLocaleString('en-US')} in the last 24h)<br />
          Status: <b>{leaderboardInfo.ranked ? 'Ranked' : leaderboardInfo.qualified ? 'Qualified' : 'Unranked'}</b><br />
          <br />
          <strong class="text-muted">{leaderboardInfo.songHash}</strong><br />

@@ -27,7 +27,7 @@
    const scoresPerPage = 12;
 
    let leaderboardData: Score[];
-   let loadLeaderboardDataLoading: boolean = false;
+   let leaderboardDataLoading: boolean = false;
    let leaderboardPage: number = Math.ceil(score.score.rank / 12);
    let leaderboardPageDirection: number = 1;
 
@@ -55,7 +55,7 @@
    }
 
    async function getLeaderboardData() {
-      loadLeaderboardDataLoading = true;
+      leaderboardDataLoading = true;
       if (!scoreData) {
          let {
             data: tmpScoreData,
@@ -78,7 +78,7 @@
             query: { page: leaderboardPage }
          })
       });
-      loadLeaderboardDataLoading = false;
+      leaderboardDataLoading = false;
    }
 
    function modalOpen(newScore: Score) {
@@ -122,7 +122,10 @@
       <PlayerScoreComponent {openModal} {score} />
    </div>
    <div class="leaderboard" class:expanded>
-      <div>
+      {#if leaderboardDataLoading}
+         <Loader displayOver={true} />
+      {/if}
+      <div class:blur={leaderboardDataLoading}>
          <div class="tableWrapper">
             <LeaderboardGrid
                leaderboardScores={$scoreData}
@@ -132,15 +135,13 @@
                playerHighlight={playerId}
             />
          </div>
-         {#if $scoreData && !loadLeaderboardDataLoading}
+         {#if $scoreData && !leaderboardDataLoading}
             <div class="pagination desktop tablet">
                <ClassicPagination totalItems={score.leaderboard.plays} pageSize={scoresPerPage} currentPage={leaderboardPage} {changePage} />
             </div>
             <div class="mobile">
                <ArrowPagination pageClicked={changePage} page={leaderboardPage} maxPages={Math.ceil(score.leaderboard.plays / scoresPerPage)} />
             </div>
-         {:else}
-            <Loader />
          {/if}
          {#if $scoreDataError}
             <Error error={$scoreDataError} />
@@ -192,6 +193,11 @@
          max-height: 0px;
          transition: max-height var(--transitionTime) ease-out;
          overflow: hidden;
+         position: relative;
+         .blur {
+            filter: blur(3px) saturate(1.2);
+            transition: 0.25s filter linear;
+         }
          > div {
             padding: 5px 20px;
          }

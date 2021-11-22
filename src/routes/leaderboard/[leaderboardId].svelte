@@ -32,6 +32,7 @@
       search: null,
       countries: null
    });
+   $: loading = true;
 
    let leaderboardId = $page.params.leaderboardId;
 
@@ -95,15 +96,17 @@
       }
    }
 
-   const pageUnsubscribe = page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe(async (p) => {
       if (browser) {
-         refreshLeaderboardScores({
+         loading = true;
+         await refreshLeaderboardScores({
             newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, p.query.toString())
          });
          if (leaderboardId != p.params.leaderboardId) {
-            refreshLeaderboard({ newUrl: getLeaderboardInfoUrl(p.params.leaderboardId) });
+            await refreshLeaderboard({ newUrl: getLeaderboardInfoUrl(p.params.leaderboardId) });
             leaderboardId = p.params.leaderboardId;
          }
+         loading = false;
       }
    });
 
@@ -150,21 +153,17 @@
             <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
          {/if}
          {#if $leaderboardError}
-            <div class="column is-12"><div class="window has-shadow"><Error error={$leaderboardError} /></div></div>
+            <Error error={$leaderboardError} />
          {/if}
          {#if $leaderboard}
             <div class="column is-8">
                <div class="window has-shadow">
+                  {#if loading}
+                     <Loader displayOver={true} />
+                  {/if}
                   <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
-                  <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard">
+                  <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
                      <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
-
-                     {#if !$leaderboardScores && !$leaderboardScoresError}
-                        <div class="window has-shadow"><Loader /></div>
-                     {/if}
-                     {#if $leaderboardScoresError}
-                        <Error error={$leaderboardScoresError} />
-                     {/if}
                      {#if $leaderboardScores}
                         <ClassicPagination
                            totalItems={$leaderboard.plays}
@@ -172,6 +171,9 @@
                            currentPage={$pageQuery.page}
                            changePage={(e) => changePage(e)}
                         />
+                     {/if}
+                     {#if $leaderboardScoresError}
+                        <Error error={$leaderboardScoresError} />
                      {/if}
                   </div>
                </div>
@@ -242,6 +244,14 @@
 
    .leaderboard {
       overflow-x: auto;
+      &.blur {
+         filter: blur(3px) saturate(1.2);
+         transition: 0.25s filter linear;
+      }
+   }
+
+   .window {
+      position: relative;
    }
 
    .negative-margin-filters {
