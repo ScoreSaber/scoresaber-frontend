@@ -182,7 +182,7 @@
             </div>
             <div in:fly={{ y: -20, duration: 1000 }} class="column is-4">
                <RequestMapInfo request={$request} />
-               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
                   <div class="window has-shadow mt-3">
                      <div class="title is-6 mb-3">Admin Tool</div>
                      <div class="field has-addons mt-3">

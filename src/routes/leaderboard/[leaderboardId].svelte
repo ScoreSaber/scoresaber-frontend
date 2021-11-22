@@ -214,7 +214,7 @@
                   <div class="title is-6 mb-2 mt-3">Search Terms</div>
                   <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
                </div>
-               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT) && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+               {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT) && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
                   <div class="window has-shadow mt-3">
                      <div class="title is-6 mb-3">Ranking Tool</div>
                      <a href="/ranking/request/create?leaderboardId={leaderboardId}" class="button is-small is-dark">
@@ -223,7 +223,7 @@
                         </span>
                         <span>Create Rank Request</span>
                      </a>
-                     {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ADMIN)}
+                     {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
                         <div class="field has-addons mt-3">
                            <div class="control">
                               <input class="input is-small" type="number" bind:value={manualPP} placeholder="PP" />
