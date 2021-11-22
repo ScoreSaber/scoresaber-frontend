@@ -12,6 +12,7 @@
    let isExpanded = false;
    let scrollProbe: HTMLDivElement;
    let headerIncreaseContrast = false;
+   let header: HTMLElement;
 
    const showSearchModal = () => searchModal?.setVisibility(true);
    onMount(() => {
@@ -35,6 +36,9 @@
          preventDefault();
       }
    }
+   function handleClick() {
+      isExpanded = false;
+   }
 </script>
 
 <SearchView bind:this={searchModal} />
@@ -44,6 +48,9 @@
       if ((loggedIn && target instanceof Node && menuButton.contains(target)) || menuButton == target) return;
       else {
          userMenuVisible = false;
+      }
+      if (header && target instanceof Node && !header.contains(target)) {
+         isExpanded = false;
       }
    }}
    on:keydown={handleWindowKeydown}
@@ -69,15 +76,17 @@
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->
 <div bind:this={scrollProbe} />
-<header class="{isExpanded ? 'expanded' : ''} {headerIncreaseContrast ? 'scrolled' : ''}">
+<header class="{isExpanded ? 'expanded' : ''} {headerIncreaseContrast ? 'scrolled' : ''}" bind:this={header}>
    <div class="container">
       <button class="hamburger" on:click={() => (isExpanded = !isExpanded)}><i class="fa fa-bars" /></button>
       <nav>
-         <a href="/" class="logo-container"
+         <a on:click={handleClick} href="/" class="logo-container"
             ><img src="/images/logo.svg" class="logo" alt="ScoreSaber" /><span class="navbar-label"><strong>ScoreSaber</strong></span></a
-         > <a href="/leaderboards" aria-label="Maps"><i class="fa fa-map" /><span class="navbar-label">Maps</span></a>
-         <a href="/rankings" aria-label="Rankings"><i class="fa fa-medal" /><span class="navbar-label">Rankings</span></a>
-         <a href="/ranking/requests" aria-label="Rank Requests"><i class="fa fa-list" /><span class="navbar-label">Rank Requests</span></a>
+         > <a on:click={handleClick} href="/leaderboards" aria-label="Maps"><i class="fa fa-map" /><span class="navbar-label">Maps</span></a>
+         <a on:click={handleClick} href="/rankings" aria-label="Rankings"><i class="fa fa-medal" /><span class="navbar-label">Rankings</span></a>
+         <a on:click={handleClick} href="/ranking/requests" aria-label="Rank Requests"
+            ><i class="fa fa-list" /><span class="navbar-label">Rank Requests</span></a
+         >
       </nav>
       <button class="searchbox-container" on:click={showSearchModal}>
          <div class="fake-searchbox">
