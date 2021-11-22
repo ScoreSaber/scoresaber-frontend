@@ -72,12 +72,9 @@
    async function handleManualPP(event) {
       event.preventDefault();
       const ranked = $request.leaderboardInfo.ranked;
+      const leaderboardId = $request.leaderboardInfo.id;
       request.set(undefined);
-      await poster(
-         `/api/ranking/request/action/admin/pp-manual`,
-         { leaderboardId: $request.leaderboardInfo.id, pp: manualPP },
-         { withCredentials: true }
-      );
+      await poster(`/api/ranking/request/action/admin/pp-manual`, { leaderboardId: leaderboardId, pp: manualPP }, { withCredentials: true });
       if (ranked) {
          await new Promise((f) => setTimeout(f, 2000));
       }
