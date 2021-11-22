@@ -26,7 +26,6 @@
    out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
    on:introstart={() => (transitioning = true)}
    on:outrostart={() => (transitioning = true)}
-   on:introend={() => (transitioning = false)}
    on:outroend={() => (transitioning = false)}
    style="grid-row: {row} / span 1;"
 >
