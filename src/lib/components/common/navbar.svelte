@@ -303,7 +303,7 @@
    }
 
    .hamburger {
-      padding: 15px 15px;
+      padding: 5px 5px;
       display: inline-block;
       cursor: pointer;
       transition-property: opacity, filter;
@@ -316,7 +316,7 @@
       border: 0;
       margin: 0;
       overflow: visible;
-      scale: 0.8;
+      scale: 0.5;
    }
 
    .hamburger:hover {
