@@ -5,43 +5,17 @@ import queryString from 'query-string';
 
 export const queryChangeTimeout = writable(null);
 
-export function createQueryStore(prop: any, initialValue: any) {
-   var query = undefined;
-   return {
-      subscribe: (h) => {
-         return page.subscribe((p) => {
-            query = queryString.parse(p.query.toString());
-            if (query[prop]) {
-               h(query[prop]);
-            } else {
-               h(initialValue);
-            }
-         });
-      },
-      set: async (v: any) => {
-         if (v === null) {
-            delete query[prop];
-         } else {
-            query[prop] = v;
-         }
-         const urlSearchParams = new URLSearchParams(query);
-         const g = `?${urlSearchParams.toString()}`;
-         goto(g, { keepfocus: true, noscroll: true });
-      }
-   };
-}
-
 export function pageQueryStore<T extends object, Key extends keyof T>(props: T) {
    var query = undefined;
    return {
       subscribe: (h): T => {
          return page.subscribe((p) => {
-            query = queryString.parse(p.query.toString());
-            h(Object.keys(props).map((p) => {
-               return {
-                  [p]: query[p] || props[p]
-               }
-            }).reduce((a, b) => { return { ...a, ...b } }));
+            query = queryString.parse(p.query.toString(), { parseNumbers: true });
+            let newParams: T = props;
+            for (let key in query) {
+               if (key in props) newParams[key] = query[key];
+            }
+            h(newParams);
          });
       },
       updateSingle: async (prop: Key, v: any): Promise<void> => {
