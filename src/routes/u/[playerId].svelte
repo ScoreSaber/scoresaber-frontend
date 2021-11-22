@@ -304,7 +304,7 @@
    .gridTable {
       display: grid;
       grid-template-columns: 1fr;
-      padding: 10px;
+      margin-top: 1rem;
    }
 
    .button-container {
