@@ -27,6 +27,7 @@
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import { defaultBackground } from '$lib/global-store';
+   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
 
    let rangeStars: number[] = [];
 
@@ -177,12 +178,18 @@
                   </table>
                </div>
                <br />
-               <ClassicPagination
+               <div class="desktop">
+                  <ClassicPagination totalItems={$leaderboards.totalCount} pageSize={14} currentPage={$pageQuery.page} {changePage} />
+               </div>
+               <div class="mobile">
+                  <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($leaderboards.totalCount / 14)} />
+               </div>
+               <!-- <ClassicPagination
                   totalItems={$leaderboards.totalCount}
                   pageSize={14}
                   currentPage={$pageQuery.page}
                   changePage={(e) => changePage(e)}
-               />
+               /> -->
             {/if}
          </div>
       </div>
@@ -292,6 +299,16 @@
       .columns {
          display: flex;
          flex-direction: column-reverse;
+      }
+
+      .desktop {
+         display: none;
+      }
+   }
+
+   @media only screen and (min-width: 769px) {
+      .mobile {
+         display: none;
       }
    }
 

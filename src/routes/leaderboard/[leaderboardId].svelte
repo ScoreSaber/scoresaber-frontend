@@ -261,16 +261,14 @@
          display: flex;
          flex-direction: column-reverse;
       }
-   }
 
-   @media only screen and (min-width: 769px) {
-      .mobile {
+      .desktop {
          display: none;
       }
    }
 
-   @media only screen and (max-width: 769px) {
-      .desktop {
+   @media only screen and (min-width: 769px) {
+      .mobile {
          display: none;
       }
    }
