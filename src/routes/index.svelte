@@ -1,10 +1,16 @@
 <script lang="ts">
+   import Meta from '$lib/components/common/meta.svelte';
    import { defaultBackground } from '$lib/global-store';
    defaultBackground();
 </script>
 
 <head>
    <title>ScoreSaber!</title>
+   <Meta
+      title="ScoreSaber"
+      description="Beat Saber's largest leaderboard system for custom songs, earn PP from ranked maps, and compare scores with others."
+      image="https://novus.scoresaber.com/android-chrome-512x512.png"
+   />
 </head>
 
 <section class="section is-fullwidth no-padding">

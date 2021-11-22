@@ -1,8 +1,8 @@
 <script lang="ts">
-   export let image: string = 'https://new.scoresaber.com/android-chrome-512x512.png';
+   export let image: string = 'https://novus.scoresaber.com/android-chrome-512x512.png';
    export let title: string = 'ScoreSaber';
    export let description: string = 'ScoreSaber';
-   export let url: string = 'https://new.scoresaber.com';
+   export let url: string = 'https://scoresaber.com';
    let descriptionTag = `<meta property="og:description" content="${description}" />`;
 </script>
 
