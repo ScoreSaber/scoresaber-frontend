@@ -68,10 +68,13 @@
       </svg>
    </div>
    <div>
-      Welcome to the new ScoreSaber!<a href={'https://www.patreon.com/posts/58995454'}>&nbsp;Click here&nbsp;</a>to read our Patreon post! If you
-      experience any bugs please report them in the<a class="announcement" target="_blank" rel="external" href="https://discord.gg/scoresaber"
-         >&nbsp;Discord</a
-      >
+      Welcome to the new ScoreSaber!<a href={'https://www.patreon.com/posts/58995454'} class="announcement-link">&nbsp;Click here&nbsp;</a>to read our
+      Patreon post! If you experience any bugs please report them in the<a
+         class="announcement announcement-link"
+         target="_blank"
+         rel="external"
+         href="https://discord.gg/scoresaber">&nbsp;Discord</a
+      >.
    </div>
 </Announcement>
 
@@ -489,5 +492,10 @@
       height: 1em;
       transform: scale(1.5);
       display: block;
+   }
+
+   .announcement-link {
+      color: #fff;
+      font-weight: 600;
    }
 </style>
