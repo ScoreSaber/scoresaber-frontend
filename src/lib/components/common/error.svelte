@@ -16,7 +16,6 @@
    {:else}
       <h1>Error {error.status ?? ''}</h1>
       <p>Looks like something's gone wrong.</p>
-      <p>This website' beta software, for now it's pretty safe to just ignore this.</p>
       <p class="status">Error info has been logged to console.</p>
    {/if}
 </div>
