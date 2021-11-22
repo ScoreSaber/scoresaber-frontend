@@ -159,6 +159,9 @@
       height: 100%;
       justify-content: center;
    }
+   .table-item > div {
+      z-index: 1;
+   }
    .table-item > div:not(.background, .leaderboard) {
       position: relative;
       grid-row: 1;
