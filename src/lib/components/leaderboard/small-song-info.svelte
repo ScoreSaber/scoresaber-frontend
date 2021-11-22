@@ -17,7 +17,7 @@
 </script>
 
 <div class="song-container">
-   <div class="song-image-wrapper">
+   <div class="song-image-wrapper mobile-hide">
       <figure style={margin === false ? 'margin: 0;' : ''}>
          <img class="song-image" src={leaderboard.coverImage} alt="{leaderboard.songName} Cover" />
          <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
@@ -25,8 +25,11 @@
          </div>
       </figure>
    </div>
-   <div class="song-info-container">
+   <div class="song-info-container mobile-enhance">
       <div class="song-info">
+         <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag mobile-show {getDifficultyStyle(leaderboard.difficulty)}">
+            {getDifficultyOrStarValue(leaderboard)}
+         </div>
          <a href={`/leaderboard/${leaderboard.id}`}>
             <span class="song-name">
                {leaderboard.songName.length < 30 ? leaderboard.songName : leaderboard.songName.slice(0, margin === false ? 18 : 29).trim() + '…'}
@@ -99,5 +102,29 @@
    figure {
       margin: 0px 1rem !important;
       position: relative;
+   }
+
+   .mobile-show {
+      display: none;
+   }
+
+   @media (max-width: 512px) {
+      .mobile-hide {
+         display: none;
+      }
+      .mobile-enhance {
+         margin-left: 10px;
+      }
+      .mobile-show.tag {
+         display: inline;
+         position: relative;
+         width: 44px;
+         bottom: 0;
+         right: 0;
+         margin-right: 5px;
+      }
+      .song-info-container {
+         margin-bottom: 5px;
+      }
    }
 </style>
