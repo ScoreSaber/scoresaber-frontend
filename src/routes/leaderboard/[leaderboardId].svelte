@@ -1,3 +1,11 @@
+<script lang="ts" context="module">
+   import { loadMetadata } from '$lib/metadata-loader';
+
+   export async function load({ fetch, page }) {
+      return await loadMetadata(fetch, `/api/leaderboard/by-id/${page.params.leaderboardId}/info`);
+   }
+</script>
+
 <script lang="ts">
    import { useAccio } from '$lib/utils/accio';
    import axios from '$lib/utils/fetcher';
@@ -26,6 +34,9 @@
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
+   import Meta from '$lib/components/common/meta.svelte';
+
+   export let metadata: LeaderboardInfo = undefined;
 
    $: pageQuery = pageQueryStore({
       page: 1,
@@ -144,6 +155,16 @@
 
 <head>
    <title>{$leaderboard ? $leaderboard.songName + ' - Leaderboard' : 'Leaderboard'} | ScoreSaber!</title>
+   {#if metadata}
+      <Meta
+         description={`Status: ${metadata.ranked ? 'Ranked' : metadata.qualified ? 'Qualified' : 'Unranked'}
+      Total Scores: ${metadata.plays.toLocaleString('en-US')}
+      Total Scores (today): ${metadata.dailyPlays.toLocaleString('en-US')}
+      Stars: ${metadata.stars}%`}
+         image={metadata.coverImage}
+         title="{metadata.songAuthorName} - {metadata.songName} mapped by {metadata.levelAuthorName}"
+      />
+   {/if}
 </head>
 
 <div class="bg-content">
