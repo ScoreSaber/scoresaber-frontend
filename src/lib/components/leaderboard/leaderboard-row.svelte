@@ -81,6 +81,9 @@
          background-color: var(--gray-light);
       }
    }
+   .rank {
+      padding-right: 7px;
+   }
    .old-score {
       color: red;
    }

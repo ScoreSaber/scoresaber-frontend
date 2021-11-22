@@ -164,14 +164,13 @@
                   <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
                   <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
                      <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
-                     {#if $leaderboardScores}
-                        <ClassicPagination
-                           totalItems={$leaderboard.plays}
-                           pageSize={12}
-                           currentPage={$pageQuery.page}
-                           changePage={(e) => changePage(e)}
-                        />
-                     {/if}
+
+                     <ClassicPagination
+                        totalItems={$leaderboard.plays}
+                        pageSize={12}
+                        currentPage={$pageQuery.page}
+                        changePage={(e) => changePage(e)}
+                     />
                      {#if $leaderboardScoresError}
                         <Error error={$leaderboardScoresError} />
                      {/if}
