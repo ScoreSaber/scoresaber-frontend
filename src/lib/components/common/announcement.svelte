@@ -1,7 +1,25 @@
 <script type="ts">
+   import { onMount } from 'svelte';
+
    export let extraClasses: string = '';
+   export let rememberClose: boolean = false;
+   export let id: string;
    export let style = '';
    let hidden = false;
+   let formattedId = `announcement-${id}`;
+
+   onMount(() => {
+      if (localStorage.getItem(formattedId) === 'closed') {
+         hidden = true;
+      }
+   });
+
+   function hideAnnouncement() {
+      if (rememberClose) {
+         localStorage.setItem(formattedId, 'closed');
+      }
+      hidden = true;
+   }
 </script>
 
 <div class="announcement {extraClasses} {hidden ? 'hidden' : ''}" {style}>
@@ -9,7 +27,7 @@
       <div class="announcement-content">
          <slot />
       </div>
-      <button on:click={() => (hidden = true)}>
+      <button on:click={() => hideAnnouncement()}>
          <i class="fa fa-times" />
       </button>
    </div>
