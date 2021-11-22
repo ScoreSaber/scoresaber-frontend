@@ -128,7 +128,7 @@
    }
 
    .infobox {
-      height: 0;
+      max-height: 0;
       transition: all 0.25s ease;
       margin-top: -10px;
       margin-bottom: 5px;
@@ -220,7 +220,7 @@
    }
 
    .infobox.is-expanded {
-      height: 405px;
+      max-height: 800px;
       pointer-events: all;
       opacity: 1;
    }
