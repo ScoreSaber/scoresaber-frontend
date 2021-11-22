@@ -35,6 +35,7 @@
    import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
    import Meta from '$lib/components/common/meta.svelte';
+   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
 
    export let metadata: LeaderboardInfo = undefined;
 
@@ -186,12 +187,12 @@
                   <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
                      <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
 
-                     <ClassicPagination
-                        totalItems={$leaderboard.plays}
-                        pageSize={12}
-                        currentPage={$pageQuery.page}
-                        changePage={(e) => changePage(e)}
-                     />
+                     <div class="desktop">
+                        <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$pageQuery.page} {changePage} />
+                     </div>
+                     <div class="mobile">
+                        <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($leaderboard.plays / 12)} />
+                     </div>
                      {#if $leaderboardScoresError}
                         <Error error={$leaderboardScoresError} />
                      {/if}
@@ -259,6 +260,18 @@
       .columns {
          display: flex;
          flex-direction: column-reverse;
+      }
+   }
+
+   @media only screen and (min-width: 769px) {
+      .mobile {
+         display: none;
+      }
+   }
+
+   @media only screen and (max-width: 769px) {
+      .desktop {
+         display: none;
       }
    }
 
