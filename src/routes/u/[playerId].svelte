@@ -241,11 +241,13 @@
       {/if}
    </div>
 
-   {#if $playerData && !$playerData.banned && !$playerData.inactive}
+   {#if $playerData?.id && !$playerData.banned && !$playerData.inactive}
+      {#key $playerData.id}
       <div class="window has-shadow noheading">
          <Badges player={$playerData} />
          <RankChart player={$playerData} />
       </div>
+      {/key}
    {/if}
 
    {#if $scoreData && $playerData}
