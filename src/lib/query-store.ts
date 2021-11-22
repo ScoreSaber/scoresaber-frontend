@@ -32,23 +32,27 @@ export function createQueryStore(prop: any, initialValue: any) {
 }
 
 export function pageQueryStore<T extends object, Key extends keyof T>(props: T) {
-   var query = undefined;
+   let query = undefined;
+
+   const intParams = ['page'];
+
+   const processProp = (name, value) => intParams.includes(name) ? parseInt(value, 10) : value;
+
    return {
       subscribe: (h): T => {
          return page.subscribe((p) => {
             query = queryString.parse(p.query.toString());
-            h(Object.keys(props).map((p) => {
-               return {
-                  [p]: query[p] || props[p]
-               }
-            }).reduce((a, b) => { return { ...a, ...b } }));
+
+            h(Object.keys(props).map((p) => ({
+                  [p]: processProp(p, query[p] || props[p])
+            })).reduce((a, b) => ({ ...a, ...b }), {}));
          });
       },
       updateSingle: async (prop: Key, v: any): Promise<void> => {
          if (v === null) {
             delete query[prop];
          } else {
-            query[prop] = v;
+            query[prop] = processProp(prop, v);
          }
          const urlSearchParams = new URLSearchParams(query);
          const g = `?${urlSearchParams.toString()}`;
@@ -59,7 +63,7 @@ export function pageQueryStore<T extends object, Key extends keyof T>(props: T) 
             if (props[p] === null) {
                delete query[p];
             } else {
-               query[p] = props[p];
+               query[p] = processProp(p, props[p]);
             }
          });
          const urlSearchParams = new URLSearchParams(query);
