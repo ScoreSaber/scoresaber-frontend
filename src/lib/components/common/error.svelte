@@ -1,17 +1,20 @@
 <script lang="ts">
-   export let message: string = '';
-   export let status: number = undefined;
+   import type { AccioError } from '$lib/utils/accio';
+
+   export let error: AccioError;
    export let fullpage = false;
 
-   console.error({ message, status });
+   console.error(error);
 </script>
 
 <div class="error {fullpage ? 'fullpage' : ''}">
-   {#if status == 404}
-      <h1>Page not found</h1>
-      <p>This website is beta software, there's a fair few dead links.</p>
+   {#if error.status == 404}
+      <h1>404</h1>
+      {#if error.message}
+         <p>{error.message}</p>
+      {/if}
    {:else}
-      <h1>Error {status ?? ''}</h1>
+      <h1>Error {error.status ?? ''}</h1>
       <p>Looks like something's gone wrong.</p>
       <p>This website' beta software, for now it's pretty safe to just ignore this.</p>
       <p class="status">Error info has been logged to console.</p>

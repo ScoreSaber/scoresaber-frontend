@@ -70,6 +70,12 @@
          </nav>
       {/if}
       <div class="window has-shadow">
+         {#if !$topRequests && !$topRequestsError}
+            <Loader />
+         {/if}
+         {#if $topRequestsError}
+            <Error error={$topRequestsError} />
+         {/if}
          {#if $topRequests}
             <div in:fly={{ x: 20, duration: 1000 }}>
                <h3 style="margin-bottom: -1rem;">Next items in queue</h3>
@@ -108,11 +114,6 @@
                   </table>
                </div>
             </div>
-         {:else if !$topRequests}
-            <Loader />
-         {/if}
-         {#if $topRequestsError}
-            <Error message={$topRequestsError.toString()} />
          {/if}
       </div>
       <Button
@@ -174,7 +175,7 @@
                <Loader />
             {/if}
             {#if $belowTopRequestsError}
-               <Error message={$belowTopRequestsError.toString()} />
+               <Error error={$belowTopRequestsError} />
             {/if}
          </div>
       {/if}

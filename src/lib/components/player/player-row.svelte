@@ -99,6 +99,9 @@
          display: flex;
          align-items: center;
       }
+      .rank {
+         padding-right: 5px;
+      }
    }
    .player {
       white-space: nowrap;

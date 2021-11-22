@@ -164,6 +164,12 @@
          <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
       </div>
    </div>
+   {#if firstLoad && loading && !$playerCountError}
+      <Loader />
+   {/if}
+   {#if $rankingsError || $playerCountError}
+      <Error error={$rankingsError || $playerCountError} />
+   {/if}
    {#if !firstLoad}
       <div class="window has-shadow noheading">
          {#if loading}
@@ -190,14 +196,12 @@
          </div>
 
          {#if $rankingsError || $playerCountError}
-            <Error message={$rankingsError.toString() || $playerCountError.toString()} />
+            <Error error={$rankingsError || $playerCountError} />
          {/if}
          {#if !firstLoad}
             <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
          {/if}
       </div>
-   {:else if loading}
-      <Loader />
    {/if}
 </div>
 

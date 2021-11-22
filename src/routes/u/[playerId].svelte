@@ -158,6 +158,12 @@
 
 <div class="section">
    <div class="content">
+      {#if !$playerDataError && !$playerData}
+         <Loader />
+      {/if}
+      {#if $playerDataError}
+         <Error error={$playerDataError} />
+      {/if}
       {#if $playerData}
          <div in:fly={{ x: 20, duration: 1000 }} class="columns">
             <!-- Profile picture & badges -->
@@ -231,12 +237,6 @@
                {/if}
             </div>
          </div>
-      {:else if !$playerDataError}
-         <Loader />
-      {/if}
-
-      {#if $playerDataError}
-         <Error message={$playerDataError.toString()} />
       {/if}
    </div>
 

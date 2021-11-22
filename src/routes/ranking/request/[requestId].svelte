@@ -94,6 +94,16 @@
 <div>
    <div class="section">
       <div class="columns">
+         {#if !$request && !$requestError}
+            <div class="column is-12">
+               <div class="window has-shadow">
+                  <Loader />
+               </div>
+            </div>
+         {/if}
+         {#if $requestError}
+            <Error error={$requestError} />
+         {/if}
          {#if $request}
             <div in:fly={{ y: -20, duration: 1000 }} class="column is-8">
                <div class="window has-shadow">
@@ -295,11 +305,6 @@
                   </div>
                {/if}
             </div>
-         {:else if !$request}
-            <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
-         {/if}
-         {#if $requestError}
-            <Error message={$requestError.toString()} />
          {/if}
       </div>
    </div>

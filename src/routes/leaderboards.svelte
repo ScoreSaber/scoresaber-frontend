@@ -141,6 +141,12 @@
    <div class="columns">
       <div class="column is-8">
          <div class="window has-shadow noheading">
+            {#if !$leaderboards && !$leaderboardsError}
+               <Loader />
+            {/if}
+            {#if $leaderboardsError}
+               <Error error={$leaderboardsError} />
+            {/if}
             {#if $leaderboards}
                <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
                   <table>
@@ -177,11 +183,6 @@
                   currentPage={$pageQuery.page}
                   changePage={(e) => changePage(e)}
                />
-            {:else if !$leaderboardsError}
-               <Loader />
-            {/if}
-            {#if $leaderboardsError}
-               <Error message={$leaderboardsError.toString()} />
             {/if}
          </div>
       </div>

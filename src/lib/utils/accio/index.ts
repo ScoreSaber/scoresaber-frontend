@@ -2,15 +2,14 @@ import { onMount, onDestroy } from 'svelte';
 import { CACHE_EXPIRY_IN_MINUTES } from '$lib/utils/env';
 import { get, writable } from 'svelte/store';
 import { DefaultCache, CacheItem } from './cache';
-import queryString from 'query-string';
 import { browser } from '$app/env';
 import { requestCancel } from './canceler';
 import axios from 'axios';
+import type { ScoreSaberError } from '$lib/models/GenericResponses';
 
 export class Accio {
-   useAccio<D = any, E = Error>(key: string, options?: Partial<AccioOptions<D>>) {
+   useAccio<D = any, E = AccioError>(key: string, options?: Partial<AccioOptions<D>>) {
       let unsubscribe: undefined | (() => void) = undefined;
-      const rootKey = queryString.parseUrl(key).url;
       const data = writable<D | undefined>(undefined, () => () => unsubscribe?.());
       const error = writable<E | undefined>(undefined, () => () => unsubscribe?.());
 
@@ -25,8 +24,8 @@ export class Accio {
             }
             if (!refreshOptions.softRefresh) {
                data.set(null);
-               error.set(null);
             }
+            error.set(null);
          }
 
          await loadData(key, refreshOptions?.forceRevalidate);
@@ -62,7 +61,16 @@ export class Accio {
                console.warn('Request cancelled:', ex.message);
                return;
             }
-            error.set(ex);
+            if (axios.isAxiosError(ex)) {
+               const scoreSaberError = ex.response.data as ScoreSaberError;
+               if (scoreSaberError && scoreSaberError.errorMessage) {
+                  error.set(new AccioError(ex.name, scoreSaberError.errorMessage, ex.stack, ex.response.status) as any); //Typescript, what the fuck
+               } else {
+                  error.set(new AccioError(ex.name, 'Unknown', ex.stack, ex.response.status) as any);
+               }
+            } else {
+               error.set(new AccioError(ex.name, ex.message, ex.stack) as any);
+            }
             if (options.onError) {
                options.onError(ex);
             }
@@ -137,6 +145,20 @@ export interface OnError {
    (error: any): void;
 }
 
+export class AccioError {
+   public name: string;
+   public message: string;
+   public stack?: string;
+   public status?: number;
+
+   constructor(name: string, message: string, stack?: string, status?: number) {
+      this.name = name;
+      this.message = message;
+      this.stack = stack;
+      this.status = status;
+   }
+}
+
 export type AccioFetcher<D = any> = (...props: any[]) => Promise<D>;
 export interface AccioOptions<D = any> {
    fetcher: AccioFetcher<D>;
@@ -173,6 +195,6 @@ export const createAccio = <D = any>(options?: Partial<AccioOptions<D>>) => new 
 export let accio = createAccio();
 const cache = new DefaultCache();
 
-export const useAccio = <D = any, E = Error>(key: string, options?: Partial<AccioOptions<D>>) => {
+export const useAccio = <D = any, E = AccioError>(key: string, options?: Partial<AccioOptions<D>>) => {
    return accio.useAccio<D, E>(key, options);
 };

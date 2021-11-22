@@ -9,13 +9,16 @@
 
 <script type="ts">
    import Error from '$lib/components/common/error.svelte';
+   import { AccioError } from '$lib/utils/accio';
 
-   export let status: number;
+   export let name: string;
    export let message: string;
+   export let stack: string = '';
+   export let status: number;
 </script>
 
 <div class="page-container">
-   <Error {status} {message} fullpage />
+   <Error error={new AccioError(name, message, stack, status)} fullpage />
 </div>
 
 <style>

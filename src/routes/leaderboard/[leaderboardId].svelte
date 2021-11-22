@@ -146,12 +146,25 @@
 <div class="bg-content">
    <div class="section">
       <div class="columns">
+         {#if !$leaderboard && !$leaderboardError}
+            <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
+         {/if}
+         {#if $leaderboardError}
+            <div class="column is-12"><div class="window has-shadow"><Error error={$leaderboardError} /></div></div>
+         {/if}
          {#if $leaderboard}
             <div class="column is-8">
                <div class="window has-shadow">
                   <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
                   <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard">
                      <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
+
+                     {#if !$leaderboardScores && !$leaderboardScoresError}
+                        <div class="window has-shadow"><Loader /></div>
+                     {/if}
+                     {#if $leaderboardScoresError}
+                        <Error error={$leaderboardScoresError} />
+                     {/if}
                      {#if $leaderboardScores}
                         <ClassicPagination
                            totalItems={$leaderboard.plays}
@@ -159,11 +172,6 @@
                            currentPage={$pageQuery.page}
                            changePage={(e) => changePage(e)}
                         />
-                     {:else}
-                        <div class="window has-shadow"><Loader /></div>
-                     {/if}
-                     {#if $leaderboardScoresError}
-                        <Error message={$leaderboardScoresError.toString()} />
                      {/if}
                   </div>
                </div>
@@ -217,11 +225,6 @@
                   </div>
                {/if}
             </div>
-         {:else}
-            <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
-         {/if}
-         {#if $leaderboardError}
-            <Error message={$leaderboardError.toString()} />
          {/if}
       </div>
    </div>

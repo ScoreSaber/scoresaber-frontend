@@ -20,6 +20,12 @@
 
 <div class="section">
    <div class="window has-shadow">
+      {#if !error && !$team}
+         <Loader />
+      {/if}
+      {#if $error}
+         <p>{$error}</p>
+      {/if}
       {#if $team}
          <h1 class="title is-4">The ScoreSaber Team</h1>
          <div>
@@ -33,11 +39,6 @@
             <TeamItem title="PC Mod" teamMembers={$team.TeamMembers.Mod} />
             <TeamItem title="PPv3" teamMembers={$team.TeamMembers.PPv3} removeUmbra={true} />
          </div>
-      {:else if !$error}
-         <Loader />
-      {/if}
-      {#if $error}
-         <p>{$error}</p>
       {/if}
    </div>
 </div>
