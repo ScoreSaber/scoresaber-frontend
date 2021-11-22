@@ -12,7 +12,9 @@ export default async function <T>(url: string, config?: AxiosRequestConfig): Pro
    }
 
    if (isAPI) {
-      config = { ...config, headers: { Authorization: API_KEY } };
+      if (API_KEY) {
+         config = { ...config, headers: { Authorization: API_KEY } };
+      }
    }
    const response = await axios.get<T>(url, config);
    return response.data;

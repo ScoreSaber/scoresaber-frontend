@@ -290,7 +290,7 @@
       <Loader />
    {/if}
    {#if $scoreDataError}
-      <Error message={$scoreDataError.toString()} />
+      <Error error={$scoreDataError} />
    {/if}
 </div>
 

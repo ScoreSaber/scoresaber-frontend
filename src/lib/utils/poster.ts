@@ -11,7 +11,9 @@ export default async function (url: string, data?: any, config?: AxiosRequestCon
    }
 
    if (isAPI) {
-      config = { ...config, headers: { Authorization: API_KEY } };
+      if (API_KEY) {
+         config = { ...config, headers: { Authorization: API_KEY } };
+      }
    }
    const response = await axios.post(url, data, config);
    return response;
