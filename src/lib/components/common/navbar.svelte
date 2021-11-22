@@ -122,7 +122,7 @@
             >
                <img src="{CDN_URL}/avatars/{$userData.playerId}.jpg" alt="" class="user-avatar" />
                <div class="userMenu {userMenuVisible ? 'visible' : ''}">
-                  <a href="/u/{$userData.playerId}">My Profile</a>
+                  <a on:click={handleClick} href="/u/{$userData.playerId}">My Profile</a>
                   <a href="/api/auth/logout" on:click={() => logout()}>Log Out</a>
                </div>
             </a>
