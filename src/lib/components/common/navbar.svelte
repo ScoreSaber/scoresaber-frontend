@@ -457,6 +457,12 @@
       }
    }
 
+   @media all and (min-width: 720px) {
+      .hamburger {
+         display: none;
+      }
+   }
+
    .searchbox-container {
       background: transparent;
       border: 0;
