@@ -11,7 +11,7 @@
    export let withCountryImages: boolean = false;
    export let filterUpdated = (items: FilterItem[]) => {};
 
-   $: selectedItems = [];
+   export let selectedItems: FilterItem[] = [];
    $: expanded = false;
 
    let input: HTMLInputElement;

@@ -45,6 +45,7 @@
       countries: null
    });
    $: loading = true;
+   $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).includes(x.key));
 
    let leaderboardId = $page.params.leaderboardId;
 
@@ -206,6 +207,7 @@
                   <div class="negative-margin-filters">
                      <Filter
                         items={filters.countryFilter}
+                        bind:selectedItems={countryFilters}
                         initialItems={$pageQuery.countries}
                         filterName={'Country'}
                         withCountryImages={true}
