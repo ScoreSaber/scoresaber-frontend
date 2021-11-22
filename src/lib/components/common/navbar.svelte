@@ -67,11 +67,13 @@
          />
       </svg>
    </div>
-   Welcome to the new ScoreSaber!<a href={'https://www.patreon.com/posts/58995454'}>&nbsp;Click here&nbsp;</a>to read our Patreon post! If you
-   experience any bugs please report them in the<a class="announcement" target="_blank" rel="external" href="https://discord.gg/scoresaber"
-      >&nbsp;Discord</a
-   ></Announcement
->
+   <div>
+      Welcome to the new ScoreSaber!<a href={'https://www.patreon.com/posts/58995454'}>&nbsp;Click here&nbsp;</a>to read our Patreon post! If you
+      experience any bugs please report them in the<a class="announcement" target="_blank" rel="external" href="https://discord.gg/scoresaber"
+         >&nbsp;Discord</a
+      >
+   </div>
+</Announcement>
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->
