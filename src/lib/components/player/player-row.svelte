@@ -57,7 +57,7 @@
                   title={player.name}
                   class="profile-image image rounded is-64x64 has-text-weight-semibold"
                />
-               <div class="player is-size-3">{player.name}</div>
+               <div class="player is-size-4">{player.name}</div>
                <div>
                   <CountryImage country={player.country} />
                   <a title="Country Ranking" href={`/rankings?page=${rankToPage(player.countryRank, 50)}&countries=${player.country.toLowerCase()}`}
@@ -67,7 +67,7 @@
                </div>
             </div>
             <div>
-               <Stats {player} />
+               <Stats {player} small={true} />
             </div>
             <a href="/u/{player.id}" class="full-profile-link">Full profile &rsaquo;</a>
          </div>
@@ -111,7 +111,6 @@
    }
    .player span {
       overflow: hidden;
-      text-overflow: ellipsis;
    }
    span.playerName {
       font-weight: 700;
@@ -128,7 +127,7 @@
    }
 
    .infobox {
-      max-height: 0;
+      height: 0;
       transition: all 0.25s ease;
       margin-top: -10px;
       margin-bottom: 5px;
@@ -220,7 +219,8 @@
    }
 
    .infobox.is-expanded {
-      max-height: 800px;
+      height: 100%;
+      width: 100%;
       pointer-events: all;
       opacity: 1;
    }
