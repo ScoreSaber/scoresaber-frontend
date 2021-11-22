@@ -292,11 +292,11 @@
 
    @media all and (max-width: 720px) {
       header {
-         height: 61px;
+         max-height: 61px;
       }
 
       header.expanded {
-         height: 45vh;
+         max-height: 45vh;
          background-color: var(--background-color);
       }
       .hamburger {
