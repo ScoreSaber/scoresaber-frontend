@@ -199,7 +199,13 @@
                      <div class="centered">Weekly Change</div>
                   </div>
                   {#each $rankings ?? [] as player, i (player.id)}
-                     <PlayerRow row={i + 1} {pageDirection} {player} />
+                     <PlayerRow
+                        row={i + 1}
+                        {pageDirection}
+                        {player}
+                        countryFiltered={$pageQuery.countries !== null}
+                        pageNumber={$pageQuery.page - 1}
+                     />
                   {/each}
                </div>
             </div>
