@@ -10,6 +10,10 @@ export function pageQueryStore<T extends object>(props: T) {
    let initialLoad = true;
    page.subscribe((p) => {
       let query = queryString.parse(p.query.toString(), { parseNumbers: true });
+
+      // set the default page to 1 after navigation if the query params do not contain the page parameter and the original props contained this field
+      if ('page' in props && !query?.page) query.page = 1;
+
       let newParams: T = props;
       for (let key in query) {
          if (key in props) newParams[key] = query[key];
