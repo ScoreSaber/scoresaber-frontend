@@ -198,7 +198,7 @@
                         <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$pageQuery.page} {changePage} />
                      </div>
                      <div class="mobile">
-                        <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($leaderboard.plays / 12)} />
+                        <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($leaderboard.plays / 12)} withFirstLast={true} />
                      </div>
                      {#if $leaderboardScoresError}
                         <Error error={$leaderboardScoresError} />

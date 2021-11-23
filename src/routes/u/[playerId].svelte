@@ -261,6 +261,7 @@
                   pageClicked={changePage}
                   page={$pageQuery.page}
                   maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
+                  withFirstLast={true}
                />
             </div>
             <div class="ranking songs">
@@ -278,11 +279,12 @@
                   changePage={(e) => changePage(e)}
                />
             </div>
-            <div class="mobile">
+            <div class="mobile bottom-arrowpagination">
                <ArrowPagination
                   pageClicked={changePage}
                   page={$pageQuery.page}
                   maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
+                  withFirstLast={true}
                />
             </div>
          </div>
@@ -300,7 +302,7 @@
 <Modal show={$modal} />
 
 <style lang="scss">
-   .top-arrowpagination {
+   .top-arrowpagination, .bottom-arrowpagination {
       margin-top: 15px;
    }
    .gridTable {
