@@ -1,4 +1,5 @@
 <script lang="ts">
+   // @ts-nocheck
    import fetcher from '$lib/utils/fetcher';
    import poster from '$lib/utils/poster';
    import type { UserData, TokenResponse } from '$lib/models/UserData';
@@ -48,6 +49,11 @@
          document.body.style.overflow = '';
          document.body.style.width = '';
          window.scrollTo(0, scrollY);
+         if (typeof gtag !== 'undefined') {
+            gtag('config', 'UA-121352342-1', {
+               page_path: $page.path
+            });
+         }
       });
    }
 </script>
