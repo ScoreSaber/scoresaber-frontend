@@ -24,7 +24,14 @@
    $: firstLoad = true;
    let pageDirection = 1;
 
-   $: pageQuery = pageQueryStore({
+   type rankingsQuery = {
+      page: number;
+      countries: string;
+      regions: string;
+      search: string;
+   };
+
+   $: pageQuery = pageQueryStore<rankingsQuery>({
       page: 1,
       countries: null,
       regions: null,
@@ -145,7 +152,6 @@
 <head>
    <title>Rankings | ScoreSaber!</title>
 </head>
-
 <div class="section">
    <div class="window has-shadow noheading filters">
       <div>
@@ -186,7 +192,7 @@
             <Loader displayOver={true} />
          {/if}
          <div class={loading ? ' blur' : ''}>
-            <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+            <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($playerCount / playersPerPage)} />
             <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
                <div class="gridTable mb-4">
                   <div class="header">
@@ -209,7 +215,7 @@
             <Error error={$rankingsError || $playerCountError} />
          {/if}
          {#if !firstLoad}
-            <ArrowPagination pageClicked={changePage} page={parseInt($pageQuery.page)} maxPages={Math.ceil($playerCount / playersPerPage)} />
+            <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($playerCount / playersPerPage)} />
          {/if}
       </div>
    {/if}

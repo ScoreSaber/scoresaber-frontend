@@ -243,10 +243,10 @@
 
    {#if $playerData?.id && !$playerData.banned && !$playerData.inactive}
       {#key $playerData.id}
-      <div class="window has-shadow noheading">
-         <Badges player={$playerData} />
-         <RankChart player={$playerData} />
-      </div>
+         <div class="window has-shadow noheading">
+            <Badges player={$playerData} />
+            <RankChart player={$playerData} />
+         </div>
       {/key}
    {/if}
 
@@ -259,7 +259,7 @@
             <div class="mobile top-arrowpagination">
                <ArrowPagination
                   pageClicked={changePage}
-                  page={parseInt($pageQuery.page)}
+                  page={$pageQuery.page}
                   maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
                />
             </div>
@@ -281,7 +281,7 @@
             <div class="mobile">
                <ArrowPagination
                   pageClicked={changePage}
-                  page={parseInt($pageQuery.page)}
+                  page={$pageQuery.page}
                   maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
                />
             </div>
