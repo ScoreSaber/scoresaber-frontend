@@ -23,15 +23,15 @@
    on:click={toggleExpanded}
    style="grid-row: {row * 2};"
 >
-   <div class="rank" width="5px">
-      <span class="rank">#{player.rank.toLocaleString('en-US')}</span>
-   </div>
    {#if countryFiltered}
-      <div class="country-rank" width="5px">
-         <span class="rank">({'#' + (row + pageNumber * 50).toLocaleString('en-US')})</span>
+      <div class="rank" width="5px">
+         <span class="rank">#{(row + pageNumber * 50).toLocaleString('en-US')}</span>
+         <span class="global-rank">(#{player.rank.toLocaleString('en-US')})</span>
       </div>
    {:else}
-      <div />
+      <div class="rank" width="5px">
+         <span class="rank">#{player.rank.toLocaleString('en-US')}</span>
+      </div>
    {/if}
    <div class="player">
       <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" />
@@ -87,7 +87,7 @@
 <style lang="scss">
    .table-item {
       display: grid;
-      grid-template-columns: 50px 50px 3fr 2fr 2fr 2fr 3fr 2fr;
+      grid-template-columns: 100px 3fr 2fr 2fr 2fr 3fr 2fr;
       border-radius: 5px;
       margin: 2.5px 2px;
       background-color: var(--gray);
@@ -113,15 +113,10 @@
       .country-rank {
          padding-right: 5px;
       }
-      span.rank,
-      span.country-rank {
-         display: block;
-         padding: 0;
+      .global-rank {
          text-overflow: ellipsis;
          overflow: hidden;
-         white-space: nowrap;
-      }
-      .country-rank {
+         margin-right: 5px;
          font-size: 12px;
       }
    }
