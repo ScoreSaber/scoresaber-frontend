@@ -4,7 +4,7 @@
     */
 
    import { createEventDispatcher } from 'svelte';
-   import generateNavigationOptions from './generateNavigationOptions';
+   import generateNavigationOptions, {PaginationOptions} from './generateNavigationOptions';
 
    const PREVIOUS_PAGE = 'PREVIOUS_PAGE';
    const NEXT_PAGE = 'NEXT_PAGE';
@@ -28,8 +28,13 @@
 
    $: totalPages = Math.ceil(totalItems / pageSize);
 
+   function isOptionDisabled(option: PaginationOptions) : boolean {
+      return (option.type === 'symbol' && option.symbol === NEXT_PAGE && currentPage >= totalPages) ||
+        (option.type === 'symbol' && option.symbol === PREVIOUS_PAGE && currentPage <= 1);
+   }
+
    function handleOptionClick(option) {
-      if (option.type === 'symbol' && option.symbol === ELLIPSIS) {
+      if (isOptionDisabled(option) || option.value === currentPage || (option.type === 'symbol' && option.symbol === ELLIPSIS)) {
          return;
       }
       dispatch('setPage', { page: option.value });
@@ -43,8 +48,7 @@
          class:number={option.type === 'number'}
          class:prev={option.type === 'symbol' && option.symbol === PREVIOUS_PAGE}
          class:next={option.type === 'symbol' && option.symbol === NEXT_PAGE}
-         class:disabled={(option.type === 'symbol' && option.symbol === NEXT_PAGE && currentPage >= totalPages) ||
-            (option.type === 'symbol' && option.symbol === PREVIOUS_PAGE && currentPage <= 1)}
+         class:disabled={isOptionDisabled(option)}
          class:ellipsis={option.type === 'symbol' && option.symbol === ELLIPSIS}
          class:active={option.type === 'number' && option.value == currentPage}
          on:click={() => handleOptionClick(option)}
