@@ -46,7 +46,7 @@
       page: 1,
       verified: 1,
       ranked: 0,
-      minStar: 1,
+      minStar: 0,
       maxStar: 20,
       category: 1,
       sort: 0,
