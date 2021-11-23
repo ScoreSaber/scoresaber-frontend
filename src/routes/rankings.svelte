@@ -138,10 +138,19 @@
       filterChanged = true;
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
-      pageQuery.update({
-         page: 1,
-         search
-      });
+      search = search.trim();
+      if (search) {
+         if (search.length >= 3) {
+            pageQuery.update({
+               page: 1,
+               search
+            });
+         } else {
+            pageQuery.updateSingle('search', null);
+         }
+      } else {
+         pageQuery.updateSingle('search', null);
+      }
    }
 
    defaultBackground();

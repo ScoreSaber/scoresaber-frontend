@@ -87,7 +87,7 @@
    };
 
    export const search = (value: string) => {
-      searchValue = value;
+      searchValue = value.trim();
       cancel.cancel('new search');
       cancel = axios.CancelToken.source();
       fetcher<Player[]>(
@@ -121,7 +121,7 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
          search(searchValue);
-      }, 200);
+      }, 1000);
    };
 </script>
 

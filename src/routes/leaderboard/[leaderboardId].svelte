@@ -101,8 +101,9 @@
    function searchUpdated(search: string) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
+      search = search.trim();
       if (search) {
-         if (search.length > 3) {
+         if (search.length >= 3) {
             pageQuery.update({
                page: 1,
                search
@@ -198,7 +199,12 @@
                         <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$pageQuery.page} {changePage} />
                      </div>
                      <div class="mobile">
-                        <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($leaderboard.plays / 12)} withFirstLast={true} />
+                        <ArrowPagination
+                           pageClicked={changePage}
+                           page={$pageQuery.page}
+                           maxPages={Math.ceil($leaderboard.plays / 12)}
+                           withFirstLast={true}
+                        />
                      </div>
                      {#if $leaderboardScoresError}
                         <Error error={$leaderboardScoresError} />

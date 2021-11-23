@@ -24,7 +24,7 @@
          updateCancelToken();
          if (value === '') value = null;
          onInput(value);
-      }, 500);
+      }, 1000);
    }
 
    function onKeyDown(e: KeyboardEvent) {
