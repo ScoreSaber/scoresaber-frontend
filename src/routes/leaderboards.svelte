@@ -31,7 +31,18 @@
 
    let rangeStars: number[] = [];
 
-   $: pageQuery = pageQueryStore({
+   type leaderboardsQuery = {
+      page: number;
+      verified: number;
+      ranked: 0 | 1;
+      minStar: number;
+      maxStar: number;
+      category: 1 | 2 | 3 | 4;
+      sort: 0 | 1;
+      search: string;
+   };
+
+   $: pageQuery = pageQueryStore<leaderboardsQuery>({
       page: 1,
       verified: 1,
       ranked: 0,
@@ -43,7 +54,7 @@
    });
 
    onMount(() => {
-      rangeStars = [parseInt($pageQuery.minStar), parseInt($pageQuery.maxStar)];
+      rangeStars = [$pageQuery.minStar, $pageQuery.maxStar];
    });
 
    const {
@@ -211,7 +222,7 @@
          <div class="window has-shadow noheading">
             <div class="mb-2">Sort By</div>
             <div class="select">
-               <select value={getCategoryFromNumber(parseInt($pageQuery.category))} on:change={changeCategory}>
+               <select value={getCategoryFromNumber($pageQuery.category)} on:change={changeCategory}>
                   <option value={Category.Trending}>Trending</option>
                   <option value={Category.DateRanked}>Date Ranked</option>
                   <option value={Category.ScoresSet}>Scores Set</option>
@@ -225,7 +236,7 @@
                      type="radio"
                      name="sortOrder"
                      on:change={changeSortDirection}
-                     checked={getSortDirectionFromNumber(parseInt($pageQuery.sort)) === SortDirection.Descending}
+                     checked={getSortDirectionFromNumber($pageQuery.sort) === SortDirection.Descending}
                      value={SortDirection.Descending}
                   />
                   Descending
@@ -235,7 +246,7 @@
                      type="radio"
                      name="sortOrder"
                      on:change={changeSortDirection}
-                     checked={getSortDirectionFromNumber(parseInt($pageQuery.sort)) === SortDirection.Ascending}
+                     checked={getSortDirectionFromNumber($pageQuery.sort) === SortDirection.Ascending}
                      value={SortDirection.Ascending}
                   />
                   Ascending

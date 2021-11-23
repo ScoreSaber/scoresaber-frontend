@@ -39,7 +39,13 @@
 
    export let metadata: LeaderboardInfo = undefined;
 
-   $: pageQuery = pageQueryStore({
+   type leaderboardQuery = {
+      page: number;
+      search: string;
+      countries: string;
+   };
+
+   $: pageQuery = pageQueryStore<leaderboardQuery>({
       page: 1,
       search: null,
       countries: null
