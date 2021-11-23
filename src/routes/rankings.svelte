@@ -38,6 +38,9 @@
       search: null
    });
 
+   $: regionFilters = filters.regionFilter.filter((x) => ($pageQuery.regions?.split(',') ?? []).includes(x.key));
+   $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).includes(x.key));
+
    let filterChanged: boolean = false;
 
    const {
@@ -155,6 +158,7 @@
          {#if $pageQuery.regions === null}
             <Filter
                items={filters.countryFilter}
+               bind:selectedItems={countryFilters}
                initialItems={$pageQuery.countries}
                filterName={'Country'}
                withCountryImages={true}
@@ -162,7 +166,13 @@
             />
          {/if}
          {#if $pageQuery.countries === null}
-            <Filter items={filters.regionFilter} initialItems={$pageQuery.regions} filterName={'Region'} filterUpdated={regionFilterUpdated} />
+            <Filter
+               items={filters.regionFilter}
+               bind:selectedItems={regionFilters}
+               initialItems={$pageQuery.regions}
+               filterName={'Region'}
+               filterUpdated={regionFilterUpdated}
+            />
          {/if}
       </div>
       <div class="divider" />
