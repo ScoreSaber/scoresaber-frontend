@@ -411,3 +411,18 @@ hr {
    border-bottom-color: var(--muted);
    color: var(--muted);
 }
+
+@media only screen and (max-width: 512px) {
+   .section {
+      padding-left: 1rem;
+      padding-right: 1rem;
+   }
+
+   .window {
+      padding: 1rem .5rem;
+   }
+
+   .window-wrap {
+      margin: 1rem!important;
+   }
+}
