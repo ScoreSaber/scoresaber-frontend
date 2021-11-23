@@ -102,7 +102,7 @@
             url: '/api/leaderboards',
             query: {
                search: searchValue,
-               category: 0,
+               category: 2,
                sort: 0
             }
          }),
