@@ -241,7 +241,7 @@
       {/if}
    </div>
 
-   {#if $playerData?.id && !$playerData.banned && !$playerData.inactive}
+   {#if $playerData?.id && !$playerData.banned}
       {#key $playerData.id}
          <div class="window has-shadow noheading">
             <Badges player={$playerData} />
