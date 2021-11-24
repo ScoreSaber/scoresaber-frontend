@@ -104,13 +104,13 @@
       </button>
 
       <nav class="social">
-         <a href="https://discord.gg/scoresaber" target="_blank" rel="external" title="Join our Discord!" class="square"
+         <a href="https://discord.gg/scoresaber" target="_blank" rel="external" title="Join our Discord!" class="square social"
             ><i class="fab fa-discord fa-2x" /></a
          >
-         <a href="https://www.patreon.com/scoresaber" target="_blank" rel="external" title="Support us on Patreon ❤️" class="square"
+         <a href="https://www.patreon.com/scoresaber" target="_blank" rel="external" title="Support us on Patreon ❤️" class="square social"
             ><i class="fab fa-patreon fa-2x" /></a
          >
-         <a href="https://twitter.com/scoresaber" target="_blank" rel="external" title="Follow us on Twitter" class="square"
+         <a href="https://twitter.com/scoresaber" target="_blank" rel="external" title="Follow us on Twitter" class="square social"
             ><i class="fab fa-twitter fa-2x" /></a
          >
          <div style="flex:1" />
@@ -464,6 +464,12 @@
 
    @media all and (min-width: 720px) {
       .hamburger {
+         display: none;
+      }
+   }
+
+   @media screen and (min-width: 721px) and (max-width: 872px) {
+      a.social {
          display: none;
       }
    }
