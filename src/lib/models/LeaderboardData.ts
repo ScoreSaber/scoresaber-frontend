@@ -12,8 +12,7 @@ export interface LeaderboardInfo {
    songSubName: string;
    songAuthorName: string;
    levelAuthorName: string;
-   difficulty: number;
-   difficultyRaw: string;
+   difficulty: Difficulty;
    maxScore: number;
    createdDate: Date;
    rankedDate: Date;
@@ -39,6 +38,8 @@ export interface LeaderboardInfoCollection {
 export interface Difficulty {
    leaderboardId: number;
    difficulty: number;
+   gameMode: string;
+   difficultyRaw: string;
 }
 
 export interface Score {
