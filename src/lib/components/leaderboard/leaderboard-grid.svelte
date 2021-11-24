@@ -57,6 +57,8 @@
       .header {
          font-weight: bold;
          grid-row: 1;
+         padding: 0 5px;
+         margin: 2.5px 1px;
       }
       .centered {
          text-align: center;
