@@ -146,11 +146,11 @@
    {#if metadata}
       <Meta
          description={`Player Ranking: #${metadata.rank.toLocaleString('en-US')}
-      Performance Points: ${metadata.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
-      Total Play Count: ${metadata.scoreStats.totalPlayCount.toLocaleString('en-US')}
-      Average Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%
-      Total Score: ${metadata.scoreStats.totalScore.toLocaleString('en-US')}
-      Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('en-US')}`}
+Performance Points: ${metadata.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
+Total Play Count: ${metadata.scoreStats.totalPlayCount.toLocaleString('en-US')}
+Average Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%
+Total Score: ${metadata.scoreStats.totalScore.toLocaleString('en-US')}
+Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('en-US')}`}
          image={metadata.profilePicture}
          title="{metadata.name}'s profile"
       />
