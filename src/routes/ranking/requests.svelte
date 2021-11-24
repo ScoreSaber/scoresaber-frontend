@@ -225,4 +225,14 @@
    .level-color {
       color: var(--textColor);
    }
+
+   @media only screen and (max-width: 512px) {
+      table {
+         margin-top: 0;
+      }
+
+      table thead {
+         display: none;
+      }
+   }
 </style>

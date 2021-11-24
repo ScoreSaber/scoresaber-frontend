@@ -40,7 +40,8 @@
       </div>
    {/if}
    <div>
-      <span title="Score" class="stat hide-details" class:oldScore={new Date(score.score.timeSet).getTime() / 1000 <= 1558474032}>
+      <span title="Score" class="stat" class:hide-details={score.leaderboard.maxScore || score.leaderboard.ranked} class:oldScore={new Date(score.score.timeSet).getTime() /
+      1000 <= 1558474032}>
          {score.score.modifiedScore.toLocaleString('en-US')}
       </span>
       {#if score.score.modifiers}
@@ -48,7 +49,7 @@
             {score.score.modifiers.split(',').join(', ')}
          </span>
       {/if}
-      <span class="stat hide-details">
+      <span class="stat" class:hide-details={score.leaderboard.maxScore || score.leaderboard.ranked}>
          {#if score.score.fullCombo}
             <span title="Full Combo" class="fc">
                FC &nbsp;

@@ -325,5 +325,9 @@
       .headers th:not(.player, .rank) {
          display: none;
       }
+
+      table {
+         margin-top: 0;
+      }
    }
 </style>

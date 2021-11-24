@@ -226,25 +226,27 @@ Stars: ${metadata.stars}★`}
                   <DifficultySelection diffs={filteredDiffs} currentDiff={$leaderboard.difficulty} />
 
                   <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
-                     {#if $leaderboardScores && $leaderboardScores.length > 0}
+                     {#if $leaderboardScores?.length > 0}
                         <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
-
-                        <div class="desktop">
-                           <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$pageQuery.page} {changePage} />
-                        </div>
-                        <div class="mobile">
-                           <ArrowPagination
-                              pageClicked={changePage}
-                              page={$pageQuery.page}
-                              maxPages={Math.ceil($leaderboard.plays / 12)}
-                              withFirstLast={true}
-                           />
-                        </div>
-                     {/if}
-                     {#if $leaderboardScoresError}
-                        <Error error={$leaderboardScoresError} />
                      {/if}
                   </div>
+
+                  {#if $leaderboardScores?.length > 0}
+                     <div class="desktop">
+                        <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$pageQuery.page} {changePage}/>
+                     </div>
+                     <div class="mobile">
+                        <ArrowPagination
+                          pageClicked={changePage}
+                          page={$pageQuery.page}
+                          maxPages={Math.ceil($leaderboard.plays / 12)}
+                          withFirstLast={true}
+                        />
+                     </div>
+                  {/if}
+                  {#if $leaderboardScoresError}
+                     <Error error={$leaderboardScoresError}/>
+                  {/if}
                </div>
             </div>
             <div class="column is-4">
@@ -338,6 +340,10 @@ Stars: ${metadata.stars}★`}
          filter: blur(3px) saturate(1.2);
          transition: 0.25s filter linear;
       }
+   }
+
+   .mobile {
+      margin-top: .5rem;
    }
 
    .window {
