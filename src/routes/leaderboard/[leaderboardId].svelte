@@ -152,7 +152,8 @@
       if (browser) {
          loading = true;
          await refreshLeaderboardScores({
-            newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, p.query.toString())
+            newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, p.query.toString()),
+            softRefresh: true
          });
          if (leaderboardId != p.params.leaderboardId) {
             await refreshLeaderboard({ newUrl: getLeaderboardInfoUrl(p.params.leaderboardId) });
