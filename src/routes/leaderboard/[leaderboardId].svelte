@@ -261,11 +261,13 @@ Stars: ${metadata.stars}★`}
                   </div>
                   {#if gameModes.length > 1}
                      <div class="title is-6 mb-2 mt-3">Game Mode</div>
-                     <select bind:value={selectedGameMode} on:change={() => gameModeChanged(true)} class="gameMode">
-                        {#each gameModes as gameMode}
-                           <option value={gameMode}>{gameMode}</option>
-                        {/each}
-                     </select>
+                     <div class="select">
+                        <select bind:value={selectedGameMode} on:change={() => gameModeChanged(true)} class="select">
+                           {#each gameModes as gameMode}
+                              <option value={gameMode}>{gameMode}</option>
+                           {/each}
+                        </select>
+                     </div>
                   {/if}
 
                   <div class="title is-6 mb-2 mt-3">Search Terms</div>
@@ -312,17 +314,6 @@ Stars: ${metadata.stars}★`}
 <Modal show={$modal} />
 
 <style lang="scss">
-   .gameMode {
-      margin: 5px;
-      background-color: var(--foregroundItem);
-      color: var(--textColor);
-      padding: 5px 12px;
-      border-radius: 7px;
-      position: relative;
-      font-weight: bold;
-      max-width: 100%;
-      margin-left: -1px;
-   }
    @media screen and (max-width: 769px), print {
       .columns {
          display: flex;
