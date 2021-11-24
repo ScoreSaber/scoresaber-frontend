@@ -245,7 +245,9 @@
       {#key $playerData.id}
          <div class="window has-shadow noheading">
             <Badges player={$playerData} />
-            <RankChart player={$playerData} />
+            {#if !$playerData.inactive}
+               <RankChart player={$playerData} />
+            {/if}
          </div>
       {/key}
    {/if}
@@ -302,7 +304,8 @@
 <Modal show={$modal} />
 
 <style lang="scss">
-   .top-arrowpagination, .bottom-arrowpagination {
+   .top-arrowpagination,
+   .bottom-arrowpagination {
       margin-top: 15px;
    }
    .gridTable {
