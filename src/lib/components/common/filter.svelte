@@ -136,7 +136,7 @@
       border-radius: 7px;
       position: relative;
       font-weight: bold;
-      max-width: 130px;
+      max-width: 100%;
       white-space: nowrap;
    }
    .hasSelected {

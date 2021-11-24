@@ -10,7 +10,9 @@
    <h2 class="title is-5">{title}</h2>
    <div class="columns is-multiline">
       {#each teamMembers as teamMember}
-         {#if removeUmbra && teamMember.Name === 'Umbranox'}{:else}
+         {#if removeUmbra && teamMember.Name === 'Umbranox'}
+            <div />
+         {:else}
             <TeamMemberItem {teamMember} />
          {/if}
       {/each}

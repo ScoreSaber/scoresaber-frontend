@@ -5,7 +5,7 @@
 
    export let diffs: Difficulty[] = null;
    export let rankingDiffs: RankingDifficulty[] = null;
-   export let currentDiff: number;
+   export let currentDiff: Difficulty;
 </script>
 
 <div class="tabs is-centered">
@@ -15,9 +15,9 @@
             <li>
                <a
                   href="/leaderboard/{difficulty.leaderboardId}"
-                  class={getDifficultyStyle(difficulty.difficulty) + ' ' + (currentDiff === difficulty.difficulty ? 'selected' : '')}
+                  class={getDifficultyStyle(difficulty) + ' ' + (currentDiff.difficulty === difficulty.difficulty ? 'selected' : '')}
                >
-                  <span>{getDifficultyLabel(difficulty.difficulty)}</span>
+                  <span>{getDifficultyLabel(difficulty)}</span>
                </a>
             </li>
          {/each}
@@ -26,9 +26,9 @@
             <li>
                <a
                   href="/ranking/request/{difficulty.requestId}"
-                  class={getDifficultyStyle(difficulty.difficulty) + ' ' + (currentDiff === difficulty.difficulty ? 'selected' : '')}
+                  class={getDifficultyStyle(difficulty) + ' ' + (currentDiff.difficulty === difficulty.difficulty ? 'selected' : '')}
                >
-                  <span>{getDifficultyLabel(difficulty.difficulty)}</span>
+                  <span>{getDifficultyLabel(difficulty)}</span>
                </a>
             </li>
          {/each}

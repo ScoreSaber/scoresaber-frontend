@@ -12,7 +12,7 @@
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import { page } from '$app/stores';
-   import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
+   import type { Difficulty, LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
    import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import queryString from 'query-string';
@@ -36,8 +36,10 @@
    import TextInput from '$lib/components/common/text-input.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
+   import { goto } from '$app/navigation';
 
    export let metadata: LeaderboardInfo = undefined;
+   let leaderboardId = $page.params.leaderboardId;
 
    type leaderboardQuery = {
       page: number;
@@ -50,10 +52,14 @@
       search: null,
       countries: null
    });
+
    $: loading = true;
    $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).includes(x.key));
 
-   let leaderboardId = $page.params.leaderboardId;
+   $: filteredDiffs = [];
+   $: selectedGameMode = '';
+
+   const gameModes: string[] = [];
 
    function getLeaderboardInfoUrl(leaderboardId: string) {
       return `/api/leaderboard/by-id/${leaderboardId}/info`;
@@ -72,7 +78,7 @@
       refresh: refreshLeaderboard
    } = useAccio<LeaderboardInfo>(getLeaderboardInfoUrl($page.params.leaderboardId), {
       fetcher: axios,
-      onSuccess: (data) => setBackground(data.coverImage)
+      onSuccess: onLeaderboardSuccess
    });
 
    const {
@@ -80,6 +86,32 @@
       error: leaderboardScoresError,
       refresh: refreshLeaderboardScores
    } = useAccio<Score[]>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.query.toString()), { fetcher: axios });
+
+   function onLeaderboardSuccess(data: LeaderboardInfo) {
+      setBackground(data.coverImage);
+      for (const diff of $leaderboard.difficulties) {
+         if (!gameModes.includes(diff.gameMode)) {
+            gameModes.push(diff.gameMode);
+         }
+      }
+      selectedGameMode = $leaderboard.difficulty.gameMode;
+      gameModeChanged(false);
+   }
+
+   function gameModeChanged(refresh: boolean) {
+      filteredDiffs = $leaderboard.difficulties.filter((x) => x.gameMode === selectedGameMode);
+
+      if (refresh) {
+         const sameDiff: Difficulty[] = filteredDiffs.filter((x: Difficulty) => x.difficulty == $leaderboard.difficulty.difficulty);
+         let newLeaderboardId: string;
+         if (sameDiff.length > 0) {
+            newLeaderboardId = sameDiff[0].leaderboardId.toString();
+         } else {
+            newLeaderboardId = filteredDiffs[0].leaderboardId.toString();
+         }
+         goto(`/leaderboard/${newLeaderboardId}`, { keepfocus: true, noscroll: true });
+      }
+   }
 
    function countryFilterUpdated(items: FilterItem[]) {
       if (items.length === 0) {
@@ -158,7 +190,6 @@
       refreshLeaderboard({ forceRevalidate: true });
       refreshLeaderboardScores({ forceRevalidate: true });
    }
-
    onDestroy(pageUnsubscribe);
 </script>
 
@@ -167,9 +198,9 @@
    {#if metadata}
       <Meta
          description={`Status: ${metadata.ranked ? 'Ranked' : metadata.qualified ? 'Qualified' : 'Unranked'}
-      Total Scores: ${metadata.plays.toLocaleString('en-US')}
-      Total Scores (today): ${metadata.dailyPlays.toLocaleString('en-US')}
-      Stars: ${metadata.stars}★`}
+Total Scores: ${metadata.plays.toLocaleString('en-US')}
+Total Scores (today): ${metadata.dailyPlays.toLocaleString('en-US')}
+Stars: ${metadata.stars}★`}
          image={metadata.coverImage}
          title="{metadata.songAuthorName} - {metadata.songName} mapped by {metadata.levelAuthorName}"
       />
@@ -191,31 +222,33 @@
                   {#if loading}
                      <Loader displayOver={true} />
                   {/if}
-                  <DifficultySelection diffs={$leaderboard.difficulties} currentDiff={$leaderboard.difficulty} />
-                  <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
-                     <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
-                  </div>
+                  <DifficultySelection diffs={filteredDiffs} currentDiff={$leaderboard.difficulty} />
 
-                  <div class="desktop">
-                     <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$pageQuery.page} {changePage} />
+                  <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
+                     {#if $leaderboardScores && $leaderboardScores.length > 0}
+                        <LeaderboardGrid leaderboardScores={$leaderboardScores} leaderboard={$leaderboard} {pageDirection} {showScoreModal} />
+
+                        <div class="desktop">
+                           <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$pageQuery.page} {changePage} />
+                        </div>
+                        <div class="mobile">
+                           <ArrowPagination
+                              pageClicked={changePage}
+                              page={$pageQuery.page}
+                              maxPages={Math.ceil($leaderboard.plays / 12)}
+                              withFirstLast={true}
+                           />
+                        </div>
+                     {/if}
+                     {#if $leaderboardScoresError}
+                        <Error error={$leaderboardScoresError} />
+                     {/if}
                   </div>
-                  <div class="mobile">
-                     <ArrowPagination
-                       pageClicked={changePage}
-                       page={$pageQuery.page}
-                       maxPages={Math.ceil($leaderboard.plays / 12)}
-                       withFirstLast={true}
-                     />
-                  </div>
-                  {#if $leaderboardScoresError}
-                     <Error error={$leaderboardScoresError} />
-                  {/if}
                </div>
             </div>
             <div class="column is-4">
                <LeaderboardMapInfo leaderboardInfo={$leaderboard} />
                <div class="window has-shadow mt-3">
-                  <div class="title is-6 mb-2">Filters</div>
                   <div class="negative-margin-filters">
                      <Filter
                         items={filters.countryFilter}
@@ -226,6 +259,17 @@
                         filterUpdated={countryFilterUpdated}
                      />
                   </div>
+                  {#if gameModes.length > 1}
+                     <div class="title is-6 mb-2 mt-3">Game Mode</div>
+                     <div class="select">
+                        <select bind:value={selectedGameMode} on:change={() => gameModeChanged(true)} class="select">
+                           {#each gameModes as gameMode}
+                              <option value={gameMode}>{gameMode}</option>
+                           {/each}
+                        </select>
+                     </div>
+                  {/if}
+
                   <div class="title is-6 mb-2 mt-3">Search Terms</div>
                   <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
                </div>

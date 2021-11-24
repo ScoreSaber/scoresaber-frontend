@@ -1,12 +1,12 @@
 <script lang="ts">
-   import Privacy from '$lib/markdown/legal/privacy.svx';
+   import CookiePolicy from '$lib/markdown/legal/cookie-policy.svx';
 </script>
 
 <div class="section">
    <div class="container">
       <div class="window has-shadow">
          <div class="content">
-            <Privacy />
+            <CookiePolicy />
          </div>
       </div>
    </div>

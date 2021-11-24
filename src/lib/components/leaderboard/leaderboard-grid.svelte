@@ -9,21 +9,18 @@
    export let pageDirection: number = 1;
    export let playerHighlight: string = undefined;
    let transitioning: boolean[] = [];
+
+   $: hasModifiers = (leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0 ? 1 : 0;
+   $: columns = (leaderboard.ranked ? 4 : leaderboard.maxScore ? 3 : 2) + hasModifiers;
 </script>
 
-<div
-   class="gridTable"
-   style="--rows: 1fr 5fr {(leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length
-      ? '2fr 2fr 2fr 2fr 2fr'
-      : '2fr 2fr 2fr 2fr'}"
-   class:transitioning={transitioning.some((t) => t)}
->
+<div class="gridTable" style="--columns: 1fr 5fr repeat({columns}, 2fr)" class:transitioning={transitioning.some((t) => t)}>
    <div class="header">
       <div />
       <div />
       <div class="centered">Time Set</div>
       <div class="centered">Score</div>
-      {#if (leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0}
+      {#if hasModifiers}
          <div class="centered">Mods</div>
       {/if}
       {#if leaderboard.maxScore}
@@ -59,13 +56,15 @@
       .header {
          font-weight: bold;
          grid-row: 1;
+         padding: 0 5px;
+         margin: 2.5px 1px;
       }
       .centered {
          text-align: center;
       }
       > div {
          display: grid;
-         grid-template-columns: var(--rows);
+         grid-template-columns: var(--columns);
       }
    }
 </style>

@@ -1,4 +1,5 @@
-import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
+import type { Difficulty, LeaderboardInfo } from '$lib/models/LeaderboardData';
+import type { RankingDifficulty } from '$lib/models/Ranking';
 import { CDN_URL } from './env';
 export function rankToPage(rank: number, perPage: number) {
    return Math.floor((rank + perPage - 1) / perPage);
@@ -7,8 +8,8 @@ export function getCDNUrl(input: string) {
    return CDN_URL + input;
 }
 
-export function getDifficultyStyle(input: number): string {
-   switch (input) {
+export function getDifficultyStyle(input: Difficulty | RankingDifficulty): string {
+   switch (input.difficulty) {
       case 1:
          return 'easy';
       case 3:
@@ -22,8 +23,8 @@ export function getDifficultyStyle(input: number): string {
    }
 }
 
-export function getDifficultyLabel(input: number): string {
-   switch (input) {
+export function getDifficultyLabel(input: Difficulty | RankingDifficulty): string {
+   switch (input.difficulty) {
       case 1:
          return 'Easy';
       case 3:
@@ -37,8 +38,8 @@ export function getDifficultyLabel(input: number): string {
    }
 }
 
-export function getDifficultyLabelSmall(input: number): string {
-   switch (input) {
+export function getDifficultyLabelSmall(input: Difficulty | RankingDifficulty): string {
+   switch (input.difficulty) {
       case 1:
          return 'E';
       case 3:

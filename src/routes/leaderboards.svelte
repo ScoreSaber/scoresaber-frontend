@@ -195,12 +195,6 @@
                <div class="mobile">
                   <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($leaderboards.totalCount / 14)} />
                </div>
-               <!-- <ClassicPagination
-                  totalItems={$leaderboards.totalCount}
-                  pageSize={14}
-                  currentPage={$pageQuery.page}
-                  changePage={(e) => changePage(e)}
-               /> -->
             {/if}
          </div>
       </div>

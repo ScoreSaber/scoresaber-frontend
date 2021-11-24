@@ -146,11 +146,11 @@
    {#if metadata}
       <Meta
          description={`Player Ranking: #${metadata.rank.toLocaleString('en-US')}
-      Performance Points: ${metadata.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
-      Total Play Count: ${metadata.scoreStats.totalPlayCount.toLocaleString('en-US')}
-      Average Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%
-      Total Score: ${metadata.scoreStats.totalScore.toLocaleString('en-US')}
-      Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('en-US')}`}
+Performance Points: ${metadata.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
+Total Play Count: ${metadata.scoreStats.totalPlayCount.toLocaleString('en-US')}
+Average Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%
+Total Score: ${metadata.scoreStats.totalScore.toLocaleString('en-US')}
+Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('en-US')}`}
          image={metadata.profilePicture}
          title="{metadata.name}'s profile"
       />
@@ -241,11 +241,13 @@
       {/if}
    </div>
 
-   {#if $playerData?.id && !$playerData.banned && !$playerData.inactive}
+   {#if $playerData?.id && !$playerData.banned}
       {#key $playerData.id}
          <div class="window has-shadow noheading">
             <Badges player={$playerData} />
-            <RankChart player={$playerData} />
+            {#if !$playerData.inactive}
+               <RankChart player={$playerData} />
+            {/if}
          </div>
       {/key}
    {/if}
@@ -302,7 +304,8 @@
 <Modal show={$modal} />
 
 <style lang="scss">
-   .top-arrowpagination, .bottom-arrowpagination {
+   .top-arrowpagination,
+   .bottom-arrowpagination {
       margin-top: 15px;
    }
    .gridTable {
