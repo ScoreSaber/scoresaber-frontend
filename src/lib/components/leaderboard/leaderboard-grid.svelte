@@ -15,7 +15,7 @@
    if (hasModifiers) columns++;
 </script>
 
-<div class="gridTable" style="--rows: 1fr 5fr repeat({columns}, 2fr)" class:transitioning={transitioning.some((t) => t)}>
+<div class="gridTable" style="--columns: 1fr 5fr repeat({columns}, 2fr)" class:transitioning={transitioning.some((t) => t)}>
    <div class="header">
       <div />
       <div />
@@ -63,7 +63,7 @@
       }
       > div {
          display: grid;
-         grid-template-columns: var(--rows);
+         grid-template-columns: var(--columns);
       }
    }
 </style>

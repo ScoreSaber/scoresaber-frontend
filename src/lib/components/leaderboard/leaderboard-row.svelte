@@ -68,7 +68,7 @@
 <style lang="scss">
    .table-item {
       display: grid;
-      grid-template-columns: var(--rows);
+      grid-template-columns: var(--columns);
       background-color: var(--gray);
       margin: 2.5px 0;
       padding: 5px;
