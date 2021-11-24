@@ -10,9 +10,8 @@
    export let playerHighlight: string = undefined;
    let transitioning: boolean[] = [];
 
-   const hasModifiers = (leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0;
-   $: columns = leaderboard.ranked ? 4 : leaderboard.maxScore ? 3 : 2;
-   if (hasModifiers) columns++;
+   $: hasModifiers = (leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0 ? 1 : 0;
+   $: columns = (leaderboard.ranked ? 4 : leaderboard.maxScore ? 3 : 2) + hasModifiers;
 </script>
 
 <div class="gridTable" style="--columns: 1fr 5fr repeat({columns}, 2fr)" class:transitioning={transitioning.some((t) => t)}>
