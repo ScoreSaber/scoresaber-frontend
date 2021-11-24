@@ -11,7 +11,7 @@
    let transitioning: boolean[] = [];
 
    const hasModifiers = (leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0;
-   let columns = leaderboard.ranked ? 4 : 2;
+   let columns = leaderboard.ranked ? 4 : leaderboard.maxScore ? 3 : 2;
    if (hasModifiers) columns++;
 </script>
 
