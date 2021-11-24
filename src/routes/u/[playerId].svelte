@@ -402,4 +402,10 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
          justify-content: center;
       }
    }
+   @media only screen and (max-width: 512px) {
+      .window {
+         padding-left: .5rem;
+         padding-right: .5rem;
+      }
+   }
 </style>
