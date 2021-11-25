@@ -8,6 +8,12 @@
    export let margin: boolean | undefined = undefined;
    let searchModal: SearchView;
 
+   let songName : string;
+   $: songName = `${leaderboard.songName}${leaderboard.songSubName ? ' ' + leaderboard.songSubName : ''}`;
+
+   let truncatedSongName : string;
+   $: truncatedSongName = songName.length < 30 ? songName : songName.slice(0, margin === false ? 18 : 29).trim() + '…';
+
    searchView.subscribe((v) => (searchModal = v));
 
    const openSearch = (val) => {
@@ -19,7 +25,7 @@
 <div class="song-container">
    <div class="song-image-wrapper mobile-hide">
       <figure style={margin === false ? 'margin: 0;' : ''}>
-         <img class="song-image" src={leaderboard.coverImage} alt="{leaderboard.songName} Cover" />
+         <img class="song-image" src={leaderboard.coverImage} alt="{songName} Cover" />
          <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
             {getDifficultyOrStarValue(leaderboard)}
          </div>
@@ -31,9 +37,7 @@
             {getDifficultyOrStarValue(leaderboard)}
          </div>
          <a href={`/leaderboard/${leaderboard.id}`}>
-            <span class="song-name">
-               {leaderboard.songName.length < 30 ? leaderboard.songName : leaderboard.songName.slice(0, margin === false ? 18 : 29).trim() + '…'}
-            </span>
+            <span class="song-name">{truncatedSongName}</span>
          </a>
          by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.songAuthorName)}>
