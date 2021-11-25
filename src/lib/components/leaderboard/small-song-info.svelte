@@ -37,7 +37,7 @@
             {getDifficultyOrStarValue(leaderboard)}
          </div>
          <a href={`/leaderboard/${leaderboard.id}`}>
-            <span class="song-name">{truncatedSongName}</span>
+            <span class="song-name" title={truncatedSongName !== songName ? songName : null}>{truncatedSongName}</span>
          </a>
          by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.songAuthorName)}>

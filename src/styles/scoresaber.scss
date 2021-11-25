@@ -412,6 +412,10 @@ hr {
    color: var(--muted);
 }
 
+.song-name[title] {
+   cursor: help;
+}
+
 @media only screen and (max-width: 512px) {
    .section {
       padding-left: 1rem;

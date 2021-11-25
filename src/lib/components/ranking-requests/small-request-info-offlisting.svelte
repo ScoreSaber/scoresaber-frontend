@@ -26,7 +26,7 @@
    <div class="song-info-container">
       <div class="song-info">
          <a href={`/ranking/request/${request.requestId}`}>
-            <span class="song-name">{truncatedSongName}</span>
+            <span class="song-name" title={truncatedSongName !== songName ? songName : null}>{truncatedSongName}</span>
          </a>
          by
          <a href={'#'}>
