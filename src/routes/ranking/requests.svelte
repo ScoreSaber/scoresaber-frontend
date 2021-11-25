@@ -44,6 +44,20 @@
       }
    }
 
+   $: $belowTopRequests && fakeAuth();
+
+   function fakeAuth() {
+      if (!$belowTopRequests) return;
+      for (const request of $belowTopRequests) {
+         if (Math.random() < 0.1) {
+            request.totalQATVotes.myVote = true;
+         }
+         if (Math.random() < 0.1) {
+            request.totalRankVotes.myVote = true;
+         }
+      }
+   }
+
    defaultBackground();
 </script>
 
@@ -94,7 +108,7 @@
                      </thead>
                      <tbody>
                         {#each $topRequests as request}
-                           <tr class="table-item">
+                           <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
                               <td class="diffs_created_at"
                                  ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
                                     date={new Date(request.created_at)}
@@ -103,11 +117,12 @@
                               <td class="map">
                                  <SmallRequestInfo {request} />
                               </td>
-                              <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
-                              <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
-                              <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
-                              <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
-                              <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
+                              <td class="rt_upvotes centered" class:highlight={request.totalRankVotes.myVote}>{request.totalRankVotes.upvotes}</td>
+                              <td class="rt_downvotes centered" class:highlight={request.totalRankVotes.myVote}>{request.totalRankVotes.downvotes}</td
+                              >
+                              <td class="qat_upvotes centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.upvotes}</td>
+                              <td class="qat_neutral centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.neutral}</td>
+                              <td class="qat_downvotes centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.downvotes}</td>
                            </tr>
                         {/each}
                      </tbody>
@@ -153,7 +168,7 @@
                      </thead>
                      <tbody>
                         {#each $belowTopRequests as request}
-                           <tr class="table-item">
+                           <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
                               <td class="diffs_created_at"
                                  ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
                                     date={new Date(request.created_at)}
@@ -161,11 +176,12 @@
                               ><td class="map">
                                  <SmallRequestInfo {request} />
                               </td>
-                              <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
-                              <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
-                              <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
-                              <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
-                              <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
+                              <td class="rt_upvotes centered" class:highlight={request.totalRankVotes.myVote}>{request.totalRankVotes.upvotes}</td>
+                              <td class="rt_downvotes centered" class:highlight={request.totalRankVotes.myVote}>{request.totalRankVotes.downvotes}</td
+                              >
+                              <td class="qat_upvotes centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.upvotes}</td>
+                              <td class="qat_neutral centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.neutral}</td>
+                              <td class="qat_downvotes centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.downvotes}</td>
                            </tr>
                         {/each}
                      </tbody>
@@ -182,7 +198,7 @@
    </div>
 </div>
 
-<style>
+<style lang="scss">
    table {
       border-collapse: separate;
       border-spacing: 0 5px;
@@ -200,6 +216,23 @@
       border-style: solid none;
       align-items: center;
       vertical-align: middle;
+   }
+   tr.highlight {
+      td {
+         border-top: 1px solid var(--scoreSaberYellow) !important;
+         border-bottom: 1px solid var(--scoreSaberYellow) !important;
+      }
+      td:first-child {
+         border-left: 1px solid var(--scoreSaberYellow) !important;
+      }
+      td:last-child {
+         border-right: 1px solid var(--scoreSaberYellow) !important;
+      }
+   }
+
+   td.highlight {
+      font-weight: bold;
+      color: var(--scoreSaberYellow);
    }
    tr.table-item td {
       background-color: var(--gray);
