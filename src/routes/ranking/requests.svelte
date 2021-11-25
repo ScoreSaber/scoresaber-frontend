@@ -44,20 +44,6 @@
       }
    }
 
-   $: $belowTopRequests && fakeAuth();
-
-   function fakeAuth() {
-      if (!$belowTopRequests) return;
-      for (const request of $belowTopRequests) {
-         if (Math.random() < 0.1) {
-            request.totalQATVotes.myVote = true;
-         }
-         if (Math.random() < 0.1) {
-            request.totalRankVotes.myVote = true;
-         }
-      }
-   }
-
    defaultBackground();
 </script>
 
