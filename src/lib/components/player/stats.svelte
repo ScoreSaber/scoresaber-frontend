@@ -5,22 +5,10 @@
 </script>
 
 <div class="stats-container">
-   <div class="stat-item">
-      <span class="stat-title">Total Play Count</span>
-      <span class="stat-spacer" />
-      <span class="stat-content">{player.scoreStats.totalPlayCount.toLocaleString('en-US')}</span>
-   </div>
-
    <div class="stat-item ranked">
       <span class="stat-title">Ranked Play Count</span>
       <span class="stat-spacer" />
       <span class="stat-content">{player.scoreStats.rankedPlayCount.toLocaleString('en-US')}</span>
-   </div>
-
-   <div class="stat-item">
-      <span class="stat-title">Total Score</span>
-      <span class="stat-spacer" />
-      <span class="stat-content">{player.scoreStats.totalScore.toLocaleString('en-US')}</span>
    </div>
 
    <div class="stat-item ranked">
@@ -44,6 +32,18 @@
    </div>
 
    <div class="stat-item">
+      <span class="stat-title">Total Play Count</span>
+      <span class="stat-spacer" />
+      <span class="stat-content">{player.scoreStats.totalPlayCount.toLocaleString('en-US')}</span>
+   </div>
+
+   <div class="stat-item">
+      <span class="stat-title">Total Score</span>
+      <span class="stat-spacer" />
+      <span class="stat-content">{player.scoreStats.totalScore.toLocaleString('en-US')}</span>
+   </div>
+
+   <div class="stat-item">
       {#if small}
          <span class="stat-title">Replay Views</span>
       {:else}
@@ -58,7 +58,6 @@
    .stats-container {
       display: flex;
       flex-wrap: wrap;
-      max-width: 500px;
    }
    .stat-item {
       display: inline-block;
