@@ -65,7 +65,7 @@
       color: var(--textColor);
       padding: 5px 10px 5px 10px;
       border-radius: 10px;
-      margin: 0px 5px 5px 0px;
+      margin: 0 5px 5px 0;
       cursor: default;
    }
    .stat-item.ranked {
