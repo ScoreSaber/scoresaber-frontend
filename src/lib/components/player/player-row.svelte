@@ -226,12 +226,43 @@
       .infobox-row {
          margin-bottom: 5px;
       }
-      .table-item div:not(.player, .rank) {
+      .table-item div:not(.player, .rank, .pp, .ranked-acc, .difference) {
          display: none;
       }
 
       .table-item {
-         grid-template-columns: 100px 55vw;
+         grid-template-columns: minmax(2.5rem, min-content) auto auto;
+         grid-template-rows: auto auto;
+         grid-row-gap: .25rem;
+         grid-column-gap: .25rem;
+      }
+
+      .table-item > .rank,
+      .table-item > .country-rank {
+         padding-right: 0;
+      }
+
+      .table-item > .player {
+         grid-column: 2/span 2;
+      }
+
+      .table-item > .pp {
+         grid-column-start: 2;
+         display: inline-flex;
+         justify-content: flex-start;
+      }
+
+      .table-item > .ranked-acc{
+         grid-column-start: 3;
+         display: inline-flex;
+         justify-content: flex-start;
+      }
+
+      .table-item > .difference {
+         grid-column-start: 1;
+         grid-row-start: 2;
+         justify-content: flex-start;
+         padding-left: .6rem;
       }
    }
 
