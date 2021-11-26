@@ -140,14 +140,8 @@
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 
-   let isOculusPlayer : boolean;
-   $: isOculusPlayer = !!$playerData?.profilePicture?.endsWith('oculus.png');
-
-   let playerId : string | null;
-   $: playerId = $playerData?.id ?? null;
-
-   let destination : string | null;
-   $: destination = playerId && !isOculusPlayer ? `https://steamcommunity.com/profiles/${playerId}` : null
+   let isSteamPlayer : boolean;
+   $: isSteamPlayer = $playerData?.id && parseInt($playerData.id, 10) >= 70000000000000000;
 </script>
 
 <head>
@@ -168,19 +162,19 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
 
 <div class="section">
    <div class="content">
-      {#if !$playerDataError && !$playerData}
-         <Loader />
-      {/if}
       {#if $playerDataError}
          <Error error={$playerDataError} />
+      {:else if !$playerData}
+         <Loader />
       {/if}
+
       {#if $playerData}
          <div in:fly={{ x: 20, duration: 1000 }} class="columns">
             <!-- Profile picture & badges -->
             <div class="column is-narrow">
                <div class="profile-picture">
                   <div class="image is-128x128 rounded" style="background-image: url({$playerData.profilePicture}); background-size: cover;">
-                     {#if parseInt(playerId) >= 70000000000000000}
+                     {#if isSteamPlayer}
                         <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
                            <span class="icon is-small">
                               <i class="fas fa-sync-alt" />
@@ -204,7 +198,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                      player={$playerData}
                      external={true}
                      countryImage={true}
-                     {destination}
+                     destination={isSteamPlayer ? `https://steamcommunity.com/profiles/${$playerData.id}` : null}
                   />
                   {#if !$playerData.banned}
                      <div class="divider" />
@@ -250,8 +244,8 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
       {/if}
    </div>
 
-   {#if playerId && !$playerData.banned}
-      {#key playerId}
+   {#if $playerData?.id && !$playerData.banned}
+      {#key $playerData.id}
          <div class="window has-shadow noheading">
             <Badges player={$playerData} />
             {#if !$playerData.inactive}
@@ -278,7 +272,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
             <div class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each $scoreData as score, i (score.score.id)}
-                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={playerId} />
+                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData?.id} />
                   {/each}
                </div>
             </div>
