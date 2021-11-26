@@ -236,7 +236,12 @@ div.is-center {
    box-shadow: none !important;
    outline-style: none !important;
    background-color: var(--foregroundItem);
-   color: var(--textColor);
+   &,
+   &:active,
+   &:focus {
+      color: var(--textColor);
+   }
+   transition: color var(--transitionTime);
 }
 
 .button:disabled {
@@ -423,10 +428,10 @@ hr {
    }
 
    .window {
-      padding: 1rem .75rem;
+      padding: 1rem 0.75rem;
    }
 
    .window-wrap {
-      margin: 1rem!important;
+      margin: 1rem !important;
    }
 }
