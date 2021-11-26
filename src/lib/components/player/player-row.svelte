@@ -106,13 +106,11 @@
          align-items: center;
       }
       .rank,
-      .player,
-      .country-rank {
+      .player {
          display: flex;
          align-items: center;
       }
-      .rank,
-      .country-rank {
+      .rank {
          padding-right: 5px;
       }
       &.highlighted {
