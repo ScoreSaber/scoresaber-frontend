@@ -1,7 +1,7 @@
 <script lang="ts">
    import { useAccio } from '$lib/utils/accio';
    import queryString from 'query-string';
-   import type { RankRequestListing } from '$lib/models/Ranking';
+   import type { RankRequestListing, VoteGroup } from '$lib/models/Ranking';
    import axios from '$lib/utils/fetcher';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
@@ -43,6 +43,14 @@
          refreshBelowTopRequests();
       }
    }
+
+   const votedRT = (request: RankRequestListing, key: keyof VoteGroup) => {
+      return request.totalRankVotes.myVote && request.totalRankVotes[key];
+   };
+
+   const votedQAT = (request: RankRequestListing, key: keyof VoteGroup) => {
+      return request.totalQATVotes.myVote && request.totalQATVotes[key];
+   };
 
    defaultBackground();
 </script>
@@ -103,12 +111,13 @@
                               <td class="map">
                                  <SmallRequestInfo {request} />
                               </td>
-                              <td class="rt_upvotes centered" class:highlight={request.totalRankVotes.myVote}>{request.totalRankVotes.upvotes}</td>
-                              <td class="rt_downvotes centered" class:highlight={request.totalRankVotes.myVote}>{request.totalRankVotes.downvotes}</td
+                              <td class="rt_upvotes centered" class:highlight={votedRT(request, 'upvotes')}>{request.totalRankVotes.upvotes}</td>
+                              <td class="rt_downvotes centered" class:highlight={votedRT(request, 'downvotes')}>{request.totalRankVotes.downvotes}</td
                               >
-                              <td class="qat_upvotes centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.upvotes}</td>
-                              <td class="qat_neutral centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.neutral}</td>
-                              <td class="qat_downvotes centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.downvotes}</td>
+                              <td class="qat_upvotes centered" class:highlight={votedQAT(request, 'upvotes')}>{request.totalQATVotes.upvotes}</td>
+                              <td class="qat_neutral centered" class:highlight={votedRT(request, 'neutral')}>{request.totalQATVotes.neutral}</td>
+                              <td class="qat_downvotes centered" class:highlight={votedRT(request, 'downvotes')}>{request.totalQATVotes.downvotes}</td
+                              >
                            </tr>
                         {/each}
                      </tbody>
@@ -162,12 +171,13 @@
                               ><td class="map">
                                  <SmallRequestInfo {request} />
                               </td>
-                              <td class="rt_upvotes centered" class:highlight={request.totalRankVotes.myVote}>{request.totalRankVotes.upvotes}</td>
-                              <td class="rt_downvotes centered" class:highlight={request.totalRankVotes.myVote}>{request.totalRankVotes.downvotes}</td
+                              <td class="rt_upvotes centered" class:highlight={votedRT(request, 'upvotes')}>{request.totalRankVotes.upvotes}</td>
+                              <td class="rt_downvotes centered" class:highlight={votedRT(request, 'downvotes')}>{request.totalRankVotes.downvotes}</td
                               >
-                              <td class="qat_upvotes centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.upvotes}</td>
-                              <td class="qat_neutral centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.neutral}</td>
-                              <td class="qat_downvotes centered" class:highlight={request.totalQATVotes.myVote}>{request.totalQATVotes.downvotes}</td>
+                              <td class="qat_upvotes centered" class:highlight={votedQAT(request, 'upvotes')}>{request.totalQATVotes.upvotes}</td>
+                              <td class="qat_neutral centered" class:highlight={votedRT(request, 'neutral')}>{request.totalQATVotes.neutral}</td>
+                              <td class="qat_downvotes centered" class:highlight={votedRT(request, 'downvotes')}>{request.totalQATVotes.downvotes}</td
+                              >
                            </tr>
                         {/each}
                      </tbody>
