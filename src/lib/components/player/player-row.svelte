@@ -11,6 +11,8 @@
    export let player: Player;
    export let row: number = 1;
    export let pageDirection: number = 1;
+   export let countryFiltered: boolean = false;
+   export let pageNumber: number = 1;
 
    const toggleExpanded = () => (isExpanded = !isExpanded);
 </script>
@@ -23,9 +25,16 @@
    style="grid-row: {row * 2};"
    class:highlighted={$userData?.playerId === player.id}
 >
-   <div class="rank" width="5px">
-      <span class="rank">#{player.rank.toLocaleString('en-US')}</span>
-   </div>
+   {#if countryFiltered}
+      <div class="rank" width="5px">
+         <span class="rank">#{(row + pageNumber * 50).toLocaleString('en-US')}</span>
+         <span class="global-rank">(#{player.rank.toLocaleString('en-US')})</span>
+      </div>
+   {:else}
+      <div class="rank" width="5px">
+         <span class="rank">#{player.rank.toLocaleString('en-US')}</span>
+      </div>
+   {/if}
    <div class="player">
       <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" />
       <span class="playerName"><PlayerLink {player} destination={`/u/${player.id}`} /></span>
@@ -80,7 +89,7 @@
 <style lang="scss">
    .table-item {
       display: grid;
-      grid-template-columns: 0.6fr 4fr 2fr 2fr 2fr 3fr 2fr;
+      grid-template-columns: 100px 3fr 2fr 2fr 2fr 3fr 2fr;
       border-radius: 5px;
       margin: 2.5px 2px;
       background-color: var(--gray);
@@ -97,15 +106,23 @@
          align-items: center;
       }
       .rank,
-      .player {
+      .player,
+      .country-rank {
          display: flex;
          align-items: center;
       }
-      .rank {
+      .rank,
+      .country-rank {
          padding-right: 5px;
       }
       &.highlighted {
          outline: 1px solid var(--scoreSaberYellow);
+      }
+      .global-rank {
+         text-overflow: ellipsis;
+         overflow: hidden;
+         margin-right: 5px;
+         font-size: 12px;
       }
    }
    .player {

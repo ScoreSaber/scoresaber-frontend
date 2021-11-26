@@ -5,6 +5,12 @@
    import { searchView } from '$lib/global-store';
    let searchModal: SearchView;
 
+   let songName : string;
+   $: songName = `${request.leaderboardInfo.songName}${request.leaderboardInfo.songSubName ? ' ' + request.leaderboardInfo.songSubName : ''}`;
+
+   let truncatedSongName : string;
+   $: truncatedSongName = songName.length < 30 ? songName : songName.slice(0, 29).trim() + '…';
+
    searchView.subscribe((v) => (searchModal = v));
 
    const openSearch = (val) => {
@@ -20,11 +26,7 @@
    <div class="song-info-container">
       <div class="song-info">
          <a href={`/ranking/request/${request.requestId}`}>
-            <span class="song-name">
-               {request.leaderboardInfo.songName.length < 30
-                  ? request.leaderboardInfo.songName
-                  : request.leaderboardInfo.songName.slice(0, 29).trim() + '…'}
-            </span>
+            <span class="song-name" title={truncatedSongName !== songName ? songName : null}>{truncatedSongName}</span>
          </a>
          by
          <a href={'#'}>

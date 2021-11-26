@@ -30,6 +30,11 @@
             <div class="title is-5 mb-0">
                <a href={`/leaderboard/${request.leaderboardInfo.id}`}>{request.leaderboardInfo.songName}</a>
             </div>
+            {#if request?.leaderboardInfo?.songSubName?.length}
+               <div class="title is-6 mb-0">
+                  <a href={`/leaderboard/${request.leaderboardInfo.id}`}>{request.leaderboardInfo.songSubName}</a>
+               </div>
+            {/if}
             <div class="subtitle is-6">by {request.leaderboardInfo.songAuthorName}</div>
          </div>
          <div class="media-right">

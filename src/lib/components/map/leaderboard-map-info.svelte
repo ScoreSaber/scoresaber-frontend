@@ -27,6 +27,11 @@
             <div class="title is-5 mb-0">
                <a href={`/leaderboard/${leaderboardInfo.id}`}>{leaderboardInfo.songName}</a>
             </div>
+            {#if leaderboardInfo?.songSubName?.length}
+               <div class="title is-6 mb-0">
+                  <a href={`/leaderboard/${leaderboardInfo.id}`}>{leaderboardInfo.songSubName}</a>
+               </div>
+            {/if}
             <div class="subtitle is-6">
                by <a href={'#'} on:click|preventDefault={() => openSearch(leaderboardInfo.songAuthorName)}><b>{leaderboardInfo.songAuthorName}</b></a>
             </div>
