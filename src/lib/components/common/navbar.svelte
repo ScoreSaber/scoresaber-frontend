@@ -234,7 +234,7 @@
       border-radius: 5px;
       display: flex;
       flex-direction: column;
-      width: 150px;
+      width: 170px;
       pointer-events: none;
       opacity: 0;
       transform: translate3d(0, -10px, 0);
