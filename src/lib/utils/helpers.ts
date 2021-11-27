@@ -1,5 +1,7 @@
 import type { Difficulty, LeaderboardInfo } from '$lib/models/LeaderboardData';
+import { Role } from '$lib/models/PlayerData';
 import type { RankingDifficulty } from '$lib/models/Ranking';
+import Permissions from '$lib/utils/permissions';
 import { CDN_URL } from './env';
 export function rankToPage(rank: number, perPage: number) {
    return Math.floor((rank + perPage - 1) / perPage);
@@ -80,6 +82,23 @@ export function groupBy(xs: any[], key: string) {
       (rv[x[key]] = rv[x[key]] || []).push(x);
       return rv;
    }, {});
+}
+
+export function getPermissionList(currentPermissions: number): Role[] {
+   const permissionList: Role[] = [];
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.RT)) {
+      permissionList.push(Role.RT);
+   }
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.QAT)) {
+      permissionList.push(Role.QAT);
+   }
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.QATHead)) {
+      permissionList.push(Role.QATHead);
+   }
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.NAT)) {
+      permissionList.push(Role.NAT);
+   }
+   return permissionList;
 }
 
 export const HMDs = {
