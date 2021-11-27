@@ -498,8 +498,10 @@
    }
 
    .logo {
-      height: 1em;
-      transform: scale(1.5);
+      height: 25px;
+      width: 25px;
+      /* height: 1em;
+      transform: scale(1.5); */
       display: block;
    }
 
