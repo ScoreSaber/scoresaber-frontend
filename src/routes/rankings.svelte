@@ -218,7 +218,7 @@
                         row={i + 1}
                         {pageDirection}
                         {player}
-                        countryFiltered={$pageQuery.countries !== null}
+                        countryFiltered={$pageQuery.countries !== null || $pageQuery.regions !== null}
                         pageNumber={$pageQuery.page - 1}
                      />
                   {/each}
