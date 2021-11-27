@@ -42,3 +42,12 @@ export interface Badge {
    description: string;
    image: string;
 }
+
+export enum Role {
+   RTR = 'rtr',
+   CAT = 'cat',
+   RT = 'rt',
+   QAT = 'qat',
+   NAT = 'nat',
+   QATHead = 'qathead'
+}

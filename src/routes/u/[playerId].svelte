@@ -113,7 +113,15 @@
    }
 
    function openAdminModal() {
-      modal.set(bind(AdminModal, { player: $playerData, onBanClick: handleBan, onGiveRoleClick: handleGiveRole, onUnbanClick: handleUnban }));
+      modal.set(
+         bind(AdminModal, {
+            player: $playerData,
+            onBanClick: handleBan,
+            onGiveRoleClick: handleGiveRole,
+            onUnbanClick: handleUnban,
+            onRemoveRoleClick: handleRemoveRole
+         })
+      );
    }
 
    async function handleRefresh(player: Player) {
@@ -137,6 +145,12 @@
    async function handleGiveRole(player: Player, role: string) {
       playerData.set(undefined);
       await fetcher(`/api/user/${player.id}/giveRole/${role}`, { withCredentials: true });
+      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+   }
+
+   async function handleRemoveRole(player: Player, role: string) {
+      playerData.set(undefined);
+      await fetcher(`/api/user/${player.id}/removeRole/${role}`, { withCredentials: true });
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 </script>
@@ -404,8 +418,8 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
    }
    @media only screen and (max-width: 512px) {
       .window {
-         padding-left: .5rem;
-         padding-right: .5rem;
+         padding-left: 0.5rem;
+         padding-right: 0.5rem;
       }
    }
 </style>
