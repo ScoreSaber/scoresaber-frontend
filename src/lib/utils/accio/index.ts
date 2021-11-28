@@ -21,14 +21,8 @@ export class Accio {
       });
 
       const refresh = async (refreshOptions?: Partial<AccioRefreshOptions>) => {
-         if (!initialLoadComplete) {
-            console.warn('refresh called before initial load complete');
-            return;
-         }
-         if (curRequest) {
-            console.warn('Refresh called while a request is in progress.');
-            return;
-         }
+         if (!initialLoadComplete) return console.warn('Refresh Canceled: Called before initial load');
+         if (curRequest) return console.warn('Refresh Canceled: Request in progress');
          if (refreshOptions) {
             if (refreshOptions.newUrl) {
                key = refreshOptions.newUrl;
