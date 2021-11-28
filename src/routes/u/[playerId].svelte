@@ -70,7 +70,8 @@
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser && p.path.indexOf('/u/') > -1) {
          refreshScores({
-            newUrl: getPlayerScoresUrl(p.params.playerId, p.query.toString())
+            newUrl: getPlayerScoresUrl(p.params.playerId, p.query.toString()),
+            softRefresh: true
          });
          refreshPlayerData({ newUrl: getPlayerInfoUrl(p.params.playerId) });
       }
