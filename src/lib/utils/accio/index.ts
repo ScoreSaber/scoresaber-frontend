@@ -49,17 +49,17 @@ export class Accio {
                }
             }
 
-            if (!curRequest) {
-               curRequest = options.fetcher(key, {
-                  withCredentials: options.withCredentials !== undefined ? options.withCredentials : true,
-                  cancelToken: get(requestCancel).token
-               });
+            if (!rawData) {
+               if (!curRequest) {
+                  curRequest = options.fetcher(key, {
+                     withCredentials: options.withCredentials !== undefined ? options.withCredentials : true,
+                     cancelToken: get(requestCancel).token
+                  });
+               }
                rawData = await curRequest;
                const expiry = new Date();
                expiry.setTime(expiry.getTime() + parseInt(CACHE_EXPIRY_IN_MINUTES) * 60000);
                cache.set(key, new CacheItem({ data: rawData, expiresAt: expiry }));
-            } else {
-               rawData = await curRequest;
             }
             data.set(rawData);
             if (options.onSuccess) {
