@@ -12,12 +12,17 @@ export class Accio {
       let unsubscribe: undefined | (() => void) = undefined;
       const data = writable<D | undefined>(undefined, () => () => unsubscribe?.());
       const error = writable<E | undefined>(undefined, () => () => unsubscribe?.());
+      let curRequest: Promise<D> = undefined;
 
       onMount(async () => {
          await loadData(key);
       });
 
       const refresh = async (refreshOptions?: Partial<AccioRefreshOptions>) => {
+         if (curRequest) {
+            console.warn('Refresh called while a request is in progress.');
+            return;
+         }
          if (refreshOptions) {
             if (refreshOptions.newUrl) {
                key = refreshOptions.newUrl;
@@ -43,14 +48,17 @@ export class Accio {
                }
             }
 
-            if (!rawData) {
-               rawData = await options.fetcher(key, {
+            if (!curRequest) {
+               curRequest = options.fetcher(key, {
                   withCredentials: options.withCredentials !== undefined ? options.withCredentials : true,
                   cancelToken: get(requestCancel).token
                });
+               rawData = await curRequest;
                const expiry = new Date();
                expiry.setTime(expiry.getTime() + parseInt(CACHE_EXPIRY_IN_MINUTES) * 60000);
                cache.set(key, new CacheItem({ data: rawData, expiresAt: expiry }));
+            } else {
+               rawData = await curRequest;
             }
             data.set(rawData);
             if (options.onSuccess) {
@@ -75,6 +83,7 @@ export class Accio {
                options.onError(ex);
             }
          }
+         curRequest = undefined;
       };
 
       if (browser) {
