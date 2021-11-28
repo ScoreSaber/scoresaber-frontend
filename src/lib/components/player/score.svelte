@@ -76,7 +76,8 @@
          newUrl: queryString.stringifyUrl({
             url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
             query: { page: leaderboardPage }
-         })
+         }),
+         bypassInitialCheck: true
       });
       leaderboardDataLoading = false;
    }
@@ -206,6 +207,7 @@
          }
          &.expanded {
             max-height: 800px;
+            min-height: 200px;
          }
          * {
             z-index: 1;

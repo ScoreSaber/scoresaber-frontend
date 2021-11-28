@@ -185,7 +185,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
             <div class="column is-narrow">
                <div class="profile-picture">
                   <div class="image is-128x128 rounded" style="background-image: url({$playerData.profilePicture}); background-size: cover;">
-                     {#if parseInt($playerData.id) >= 70000000000000000}
+                     {#if parseInt($playerData.id) >= 7e16}
                         <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
                            <span class="icon is-small">
                               <i class="fas fa-sync-alt" />

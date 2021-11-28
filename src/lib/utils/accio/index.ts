@@ -21,7 +21,7 @@ export class Accio {
       });
 
       const refresh = async (refreshOptions?: Partial<AccioRefreshOptions>) => {
-         if (!initialLoadComplete) return console.warn('Refresh Canceled: Called before initial load');
+         if (!initialLoadComplete && !refreshOptions?.bypassInitialCheck) return console.warn('Refresh Canceled: Called before initial load');
          if (curRequest) return console.warn('Refresh Canceled: Request in progress');
          if (refreshOptions) {
             if (refreshOptions.newUrl) {
@@ -184,6 +184,7 @@ export interface AccioRefreshOptions {
    newUrl?: string;
    softRefresh?: boolean;
    forceRevalidate?: boolean;
+   bypassInitialCheck?: boolean;
 }
 
 const fetcher = <D>(url: string): Promise<D> => {
