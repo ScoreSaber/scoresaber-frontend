@@ -236,7 +236,12 @@ div.is-center {
    box-shadow: none !important;
    outline-style: none !important;
    background-color: var(--foregroundItem);
-   color: var(--textColor);
+   &,
+   &:active,
+   &:focus {
+      color: var(--textColor);
+   }
+   transition: color var(--transitionTime);
 }
 
 .button:disabled {

@@ -6,6 +6,7 @@
    import Stats from '$lib/components/player/stats.svelte';
    import { rankToPage } from '$lib/utils/helpers';
    import { fly } from 'svelte/transition';
+   import { userData } from '$lib/global-store';
    let isExpanded: boolean = false;
    export let player: Player;
    export let row: number = 1;
@@ -22,6 +23,7 @@
    class="table-item {isExpanded ? 'expanded' : ''}"
    on:click={toggleExpanded}
    style="grid-row: {row * 2};"
+   class:highlighted={$userData?.playerId === player.id}
 >
    {#if countryFiltered}
       <div class="rank" width="5px">
@@ -104,14 +106,15 @@
          align-items: center;
       }
       .rank,
-      .player,
-      .country-rank {
+      .player {
          display: flex;
          align-items: center;
       }
-      .rank,
-      .country-rank {
+      .rank {
          padding-right: 5px;
+      }
+      &.highlighted {
+         outline: 1px solid var(--scoreSaberYellow);
       }
       .global-rank {
          text-overflow: ellipsis;
