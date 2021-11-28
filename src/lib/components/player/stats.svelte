@@ -52,6 +52,14 @@
       <span class="stat-spacer" />
       <span class="stat-content">{player.scoreStats.replaysWatched.toLocaleString('en-US')}</span>
    </div>
+
+   {#if player.role}
+      <div class="stat-item">
+         <span class="stat-title">Role</span>
+         <span class="stat-spacer" />
+         <span class="stat-content">{player.role}</span>
+      </div>
+   {/if}
 </div>
 
 <style>

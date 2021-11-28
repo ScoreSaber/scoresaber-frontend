@@ -9,7 +9,7 @@
    <Meta
       title="ScoreSaber"
       description="Beat Saber's largest leaderboard system for custom songs, earn PP from ranked maps, and compare scores with others."
-      image="https://scoresaber.com/android-chrome-512x512.png"
+      image="https://scoresaber.com/512x512.png"
    />
 </head>
 

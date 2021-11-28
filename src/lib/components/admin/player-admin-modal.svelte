@@ -2,15 +2,20 @@
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
    const { close } = getContext('simple-modal');
-   import type { Player } from '$lib/models/PlayerData';
+   import type { Player, Role } from '$lib/models/PlayerData';
    import { getContext } from 'svelte';
+   import { getPermissionList } from '$lib/utils/helpers';
    export let onBanClick: (player: Player, reason: string) => void;
    export let onUnbanClick: (player: Player) => void;
    export let onGiveRoleClick: (player: Player, role: string) => void;
+   export let onRemoveRoleClick: (player: Player, role: string) => void;
    export let player: Player;
+
+   let currentRoles: Role[] = getPermissionList(player.permissions);
 
    $: banReason = '';
    $: givenRole = 'rtr';
+   $: roleToRemove = '';
 </script>
 
 <div class="media">
@@ -73,6 +78,27 @@
                   class="button is-small is-success mt-1"
                >
                   <span>Give Role</span>
+               </button>
+            </div>
+         </div>
+         <div class="window tool mt-3">
+            <div class="title is-6 mb-3">Remove Role</div>
+            <div class="role-container">
+               <div class="select is-small">
+                  <select bind:value={roleToRemove} id="roles">
+                     {#each currentRoles as role}
+                        <option value={role}>{role}</option>
+                     {/each}
+                  </select>
+               </div>
+               <button
+                  on:click={() => {
+                     onRemoveRoleClick(player, roleToRemove);
+                     close();
+                  }}
+                  class="button is-small is-danger mt-1"
+               >
+                  <span>Remove Role</span>
                </button>
             </div>
          </div>

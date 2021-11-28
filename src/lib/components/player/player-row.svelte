@@ -234,7 +234,7 @@
       }
 
       .table-item {
-         grid-template-columns: 40px 55vw;
+         grid-template-columns: 100px 55vw;
       }
    }
 
