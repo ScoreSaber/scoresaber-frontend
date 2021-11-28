@@ -8,18 +8,23 @@ import axios from 'axios';
 import type { ScoreSaberError } from '$lib/models/GenericResponses';
 
 export class Accio {
-   useAccio<D extends object>(key: string, options?: Partial<AccioOptions<D>>) {
+   useAccio<D>(key: string, options?: Partial<AccioOptions<D>>) {
       type E = AccioError;
       let unsubscribe: undefined | (() => void) = undefined;
       const data = writable<D | undefined>(undefined, () => () => unsubscribe?.());
       const error = writable<E | undefined>(undefined, () => () => unsubscribe?.());
       let curRequest: Promise<D> = undefined;
+      let initialLoadComplete: boolean = false;
 
       onMount(async () => {
          await loadData(key);
       });
 
       const refresh = async (refreshOptions?: Partial<AccioRefreshOptions>) => {
+         if (!initialLoadComplete) {
+            console.warn('refresh called before initial load complete');
+            return;
+         }
          if (curRequest) {
             console.warn('Refresh called while a request is in progress.');
             return;
@@ -38,6 +43,7 @@ export class Accio {
       };
 
       const loadData = async (key: string, forceRevalidate = false) => {
+         console.log('Loading data from Accio.', key, curRequest, initialLoadComplete);
          try {
             let rawData = undefined;
             if (!forceRevalidate) {
@@ -85,6 +91,7 @@ export class Accio {
             }
          }
          curRequest = undefined;
+         if (!initialLoadComplete) initialLoadComplete = true;
       };
 
       if (browser) {
@@ -205,6 +212,6 @@ export const createAccio = <D = any>(options?: Partial<AccioOptions<D>>) => new 
 export let accio = createAccio();
 const cache = new DefaultCache();
 
-export const useAccio = <D extends object>(key: string, options?: Partial<AccioOptions<D>>) => {
+export const useAccio = <D>(key: string, options?: Partial<AccioOptions<D>>) => {
    return accio.useAccio<D>(key, options);
 };
