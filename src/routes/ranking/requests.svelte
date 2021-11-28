@@ -44,14 +44,6 @@
       }
    }
 
-   const votedRT = (request: RankRequestListing, key: keyof VoteGroup) => {
-      return request.totalRankVotes.myVote && request.totalRankVotes[key];
-   };
-
-   const votedQAT = (request: RankRequestListing, key: keyof VoteGroup) => {
-      return request.totalQATVotes.myVote && request.totalQATVotes[key];
-   };
-
    defaultBackground();
 </script>
 
@@ -111,13 +103,11 @@
                               <td class="map">
                                  <SmallRequestInfo {request} />
                               </td>
-                              <td class="rt_upvotes centered" class:highlight={votedRT(request, 'upvotes')}>{request.totalRankVotes.upvotes}</td>
-                              <td class="rt_downvotes centered" class:highlight={votedRT(request, 'downvotes')}>{request.totalRankVotes.downvotes}</td
-                              >
-                              <td class="qat_upvotes centered" class:highlight={votedQAT(request, 'upvotes')}>{request.totalQATVotes.upvotes}</td>
-                              <td class="qat_neutral centered" class:highlight={votedRT(request, 'neutral')}>{request.totalQATVotes.neutral}</td>
-                              <td class="qat_downvotes centered" class:highlight={votedRT(request, 'downvotes')}>{request.totalQATVotes.downvotes}</td
-                              >
+                              <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
+                              <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
+                              <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
+                              <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
+                              <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
                            </tr>
                         {/each}
                      </tbody>
