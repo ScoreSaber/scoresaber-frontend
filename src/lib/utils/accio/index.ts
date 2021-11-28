@@ -34,12 +34,11 @@ export class Accio {
             error.set(null);
          }
 
-         await loadData(key, refreshOptions?.forceRevalidate);
+         await loadData(key, refreshOptions?.forceRevalidate, refreshOptions?.silent);
       };
 
-      const loadData = async (key: string, forceRevalidate = false) => {
-         console.log('Loading data from Accio.', key, curRequest, get(initialLoadComplete), get(loading));
-         loading.set(true);
+      const loadData = async (key: string, forceRevalidate = false, silent = false) => {
+         if (!silent) loading.set(true);
          try {
             let rawData = undefined;
             if (!forceRevalidate) {
@@ -87,7 +86,7 @@ export class Accio {
             }
          }
          curRequest = undefined;
-         loading.set(false);
+         if (!silent) loading.set(false);
          if (!get(initialLoadComplete)) initialLoadComplete.set(true);
       };
 
@@ -101,7 +100,7 @@ export class Accio {
                   if (lastFocus === null || now - lastFocus > 5000) {
                      lastFocus = now;
                      console.log(`Regained focus, refreshing ${key}`);
-                     refresh({ forceRevalidate: true, softRefresh: true });
+                     refresh({ forceRevalidate: true, softRefresh: true, silent: true });
                   }
                }
             };
@@ -113,7 +112,7 @@ export class Accio {
             const onlineHandler = () => {
                if (!options.ignoreSubscriptions) {
                   console.log(`User is back online, refreshing ${key}`);
-                  refresh({ forceRevalidate: true, softRefresh: true });
+                  refresh({ forceRevalidate: true, softRefresh: true, silent: true });
                }
             };
             window.addEventListener('online', onlineHandler);
@@ -128,7 +127,7 @@ export class Accio {
                      if (lastFocus === null || now - lastFocus > 5000) {
                         lastFocus = now;
                         console.log(`Regained focus, refreshing ${key}`);
-                        refresh({ forceRevalidate: true, softRefresh: true });
+                        refresh({ forceRevalidate: true, softRefresh: true, silent: true });
                      }
                   }
                }
@@ -188,6 +187,7 @@ export interface AccioRefreshOptions {
    softRefresh?: boolean;
    forceRevalidate?: boolean;
    bypassInitialCheck?: boolean;
+   silent?: boolean;
 }
 
 const fetcher = <D>(url: string): Promise<D> => {
