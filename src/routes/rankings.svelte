@@ -38,8 +38,8 @@
       search: null
    });
 
-   $: regionFilters = filters.regionFilter.filter((x) => ($pageQuery.regions?.split(',') ?? []).includes(x.key));
-   $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).includes(x.key));
+   $: regionFilters = filters.regionFilter.filter((x) => ($pageQuery.regions?.split(',') ?? []).map(r => r.toUpperCase()).includes(x.key));
+   $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).map(c => c.toUpperCase()).includes(x.key));
 
    let filterChanged: boolean = false;
 
