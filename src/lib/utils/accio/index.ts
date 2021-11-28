@@ -8,7 +8,8 @@ import axios from 'axios';
 import type { ScoreSaberError } from '$lib/models/GenericResponses';
 
 export class Accio {
-   useAccio<D = any, E = AccioError>(key: string, options?: Partial<AccioOptions<D>>) {
+   useAccio<D extends object>(key: string, options?: Partial<AccioOptions<D>>) {
+      type E = AccioError;
       let unsubscribe: undefined | (() => void) = undefined;
       const data = writable<D | undefined>(undefined, () => () => unsubscribe?.());
       const error = writable<E | undefined>(undefined, () => () => unsubscribe?.());
@@ -72,12 +73,12 @@ export class Accio {
             if (axios.isAxiosError(ex)) {
                const scoreSaberError = ex.response.data as ScoreSaberError;
                if (scoreSaberError && scoreSaberError.errorMessage) {
-                  error.set(new AccioError(ex.name, scoreSaberError.errorMessage, ex.stack, ex.response.status) as any); //Typescript, what the fuck
+                  error.set(new AccioError(ex.name, scoreSaberError.errorMessage, ex.stack, ex.response.status));
                } else {
-                  error.set(new AccioError(ex.name, 'Unknown', ex.stack, ex.response.status) as any);
+                  error.set(new AccioError(ex.name, 'Unknown', ex.stack, ex.response.status));
                }
             } else {
-               error.set(new AccioError(ex.name, ex.message, ex.stack) as any);
+               error.set(new AccioError(ex.name, ex.message, ex.stack));
             }
             if (options.onError) {
                options.onError(ex);
@@ -204,6 +205,6 @@ export const createAccio = <D = any>(options?: Partial<AccioOptions<D>>) => new 
 export let accio = createAccio();
 const cache = new DefaultCache();
 
-export const useAccio = <D = any, E = AccioError>(key: string, options?: Partial<AccioOptions<D>>) => {
-   return accio.useAccio<D, E>(key, options);
+export const useAccio = <D extends object>(key: string, options?: Partial<AccioOptions<D>>) => {
+   return accio.useAccio<D>(key, options);
 };
