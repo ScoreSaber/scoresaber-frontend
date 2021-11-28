@@ -13,15 +13,16 @@ export class Accio {
       let unsubscribe: undefined | (() => void) = undefined;
       const data = writable<D | undefined>(undefined, () => () => unsubscribe?.());
       const error = writable<E | undefined>(undefined, () => () => unsubscribe?.());
+      const loading = writable<boolean>(false);
+      const initialLoadComplete = writable<boolean>(true);
       let curRequest: Promise<D> = undefined;
-      let initialLoadComplete: boolean = false;
 
       onMount(async () => {
          await loadData(key);
       });
 
       const refresh = async (refreshOptions?: Partial<AccioRefreshOptions>) => {
-         if (!initialLoadComplete && !refreshOptions?.bypassInitialCheck) return console.warn('Refresh Canceled: Called before initial load');
+         if (!get(initialLoadComplete) && !refreshOptions?.bypassInitialCheck) return console.warn('Refresh Canceled: Called before initial load');
          if (curRequest) return console.warn('Refresh Canceled: Request in progress');
          if (refreshOptions) {
             if (refreshOptions.newUrl) {
@@ -37,7 +38,8 @@ export class Accio {
       };
 
       const loadData = async (key: string, forceRevalidate = false) => {
-         console.log('Loading data from Accio.', key, curRequest, initialLoadComplete);
+         console.log('Loading data from Accio.', key, curRequest, get(initialLoadComplete));
+         loading.set(true);
          try {
             let rawData = undefined;
             if (!forceRevalidate) {
@@ -85,7 +87,8 @@ export class Accio {
             }
          }
          curRequest = undefined;
-         if (!initialLoadComplete) initialLoadComplete = true;
+         loading.set(false);
+         if (!get(initialLoadComplete)) initialLoadComplete.set(true);
       };
 
       if (browser) {
@@ -145,7 +148,7 @@ export class Accio {
          });
       }
       onDestroy(() => unsubscribe?.());
-      return { data, error, refresh };
+      return { data, error, refresh, loading, initialLoadComplete };
    }
 }
 export interface OnSuccess {
