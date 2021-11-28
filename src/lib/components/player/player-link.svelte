@@ -8,9 +8,9 @@
    export let external: boolean = false;
    export let countryImage: boolean = true;
 
-   let playerClass : string;
-   let playerTitle : string;
-   $: ([playerClass, playerTitle] = getPlayerClassAndTitle(player));
+   let playerClass: string;
+   let playerTitle: string;
+   $: [playerClass, playerTitle] = getPlayerClassAndTitle(player);
 
    export function getPlayerClassAndTitle(player: Player | LeaderboardPlayer): [string, string] {
       if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PANDA)) {
@@ -62,21 +62,21 @@
    {#if external}
       <a title={playerTitle} rel="external" target="_blank" href={destination} class="player-link">
          {#if countryImage}
-            <CountryImage country={player.country}/>
+            <CountryImage country={player.country} />
          {/if}
          <span class={playerClass}>{player.name}</span>
       </a>
    {:else}
       <a title={playerTitle} href={destination}>
          {#if countryImage}
-            <CountryImage country={player.country}/>
+            <CountryImage country={player.country} />
          {/if}
          <span class={playerClass}>{player.name}</span>
       </a>
    {/if}
 {:else}
    {#if countryImage}
-      <CountryImage country={player.country}/>
+      <CountryImage country={player.country} />
    {/if}
    <span class={playerClass}>{player.name}</span>
 {/if}
@@ -115,11 +115,12 @@
    }
    a,
    span {
+      transition: color 300ms;
       overflow: hidden;
       text-overflow: ellipsis;
    }
    a span:hover {
-      color: var(--scoreSaberYellow)!important;
+      color: var(--scoreSaberYellow) !important;
    }
    span.default {
       color: var(--alternate);
