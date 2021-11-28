@@ -118,6 +118,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
    }
+   a span:hover {
+      color: var(--scoreSaberYellow)!important;
+   }
    span.default {
       color: var(--alternate);
    }
