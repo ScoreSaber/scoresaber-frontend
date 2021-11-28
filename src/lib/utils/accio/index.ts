@@ -38,7 +38,7 @@ export class Accio {
       };
 
       const loadData = async (key: string, forceRevalidate = false) => {
-         console.log('Loading data from Accio.', key, curRequest, get(initialLoadComplete));
+         console.log('Loading data from Accio.', key, curRequest, get(initialLoadComplete), get(loading));
          loading.set(true);
          try {
             let rawData = undefined;

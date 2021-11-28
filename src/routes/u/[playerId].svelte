@@ -62,7 +62,9 @@
    const {
       data: scoreData,
       error: scoreDataError,
-      refresh: refreshScores
+      refresh: refreshScores,
+      initialLoadComplete: scoreInitialLoadComplete,
+      loading: scoreDataLoading
    } = useAccio<PlayerScore[]>(getPlayerScoresUrl($page.params.playerId, $page.query.toString()), { fetcher: axios });
 
    const pageUnsubscribe = page.subscribe((p) => {
@@ -254,7 +256,6 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
          </div>
       {/if}
    </div>
-
    {#if $playerData?.id && !$playerData.banned}
       {#key $playerData.id}
          <div class="window has-shadow noheading">
@@ -266,9 +267,12 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
       {/key}
    {/if}
 
-   {#if $scoreData && $playerData}
+   {#if $scoreInitialLoadComplete && $playerData}
       {#if !$playerData.banned}
-         <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
+         <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading bottomSection">
+            {#if $scoreDataLoading}
+               <Loader displayOver={true} />
+            {/if}
             <div class="button-container">
                <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
             </div>
@@ -281,8 +285,8 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                />
             </div>
             <div class="ranking songs">
-               <div class="ranking songs gridTable">
-                  {#each $scoreData as score, i (score.score.id)}
+               <div class="ranking songs gridTable" class:loadingBlur={$scoreDataLoading}>
+                  {#each $scoreData ?? [] as score, i (score.score.id)}
                      <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData.id} />
                   {/each}
                </div>
@@ -307,7 +311,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
       {/if}
    {/if}
 
-   {#if !$scoreData && !$scoreDataError}
+   {#if !$scoreData && !$scoreDataError && !$scoreInitialLoadComplete}
       <Loader />
    {/if}
    {#if $scoreDataError}
@@ -326,6 +330,11 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
       display: grid;
       grid-template-columns: 1fr;
       margin-top: 1rem;
+      min-height: 200px;
+   }
+
+   .bottomSection {
+      position: relative;
    }
 
    .button-container {

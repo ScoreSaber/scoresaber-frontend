@@ -6,13 +6,17 @@
    <img alt="loading" class="scoresaber-loader" src="/images/logo.svg" />
 </div>
 
-<style>
+<style lang="scss">
    .displayOver {
       position: absolute;
-      top: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      img {
+         margin-top: 100px;
+      }
    }
    .scoresaber-loader {
       animation: loading 2s ease infinite;
