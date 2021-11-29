@@ -37,6 +37,7 @@
    import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
    import fetcher from '$lib/utils/fetcher';
    import Permissions from '$lib/utils/permissions';
+   import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
 
    export let metadata: Player = undefined;
    const scoresPerPage = 8;
@@ -153,8 +154,8 @@
       await fetcher(`/api/user/${player.id}/removeRole/${role}`, { withCredentials: true });
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
-   
-   let isSteamPlayer : boolean;
+
+   let isSteamPlayer: boolean;
    $: isSteamPlayer = $playerData?.id && parseInt($playerData.id, 10) >= 70000000000000000;
 </script>
 
@@ -268,7 +269,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
          </div>
       {/key}
    {/if}
-
+   <HorizontalAd />
    {#if $scoreData && $playerData}
       {#if !$playerData.banned}
          <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading">
