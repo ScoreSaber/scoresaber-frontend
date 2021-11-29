@@ -28,6 +28,7 @@
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import { defaultBackground } from '$lib/global-store';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
+   import LeaderboardRightAd from '$lib/components/ads/leaderboard-right.svelte';
 
    let rangeStars: number[] = [];
 
@@ -252,6 +253,7 @@
             <b>{rangeStars[0]}</b> to <b>{rangeStars[1]}</b> stars
             <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />
          </div>
+         <LeaderboardRightAd />
       </div>
    </div>
 </div>
