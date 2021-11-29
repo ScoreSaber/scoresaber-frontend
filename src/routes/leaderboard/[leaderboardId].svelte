@@ -38,6 +38,7 @@
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { goto } from '$app/navigation';
    import LeaderboardRightAd from '$lib/components/ads/leaderboard-right.svelte';
+   import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
 
    export let metadata: LeaderboardInfo = undefined;
    let leaderboardId = $page.params.leaderboardId;
@@ -316,6 +317,9 @@ Stars: ${metadata.stars}★`}
                   </div>
                {/if}
                <LeaderboardRightAd />
+               <div class="mobile">
+                  <HorizontalAd />
+               </div>
             </div>
          {/if}
       </div>
