@@ -190,13 +190,14 @@
          <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
       </div>
    </div>
+   <HorizontalAd />
    {#if firstLoad && loading && !$playerCountError}
       <Loader />
    {/if}
    {#if $rankingsError || $playerCountError}
       <Error error={$rankingsError || $playerCountError} />
    {/if}
-   <HorizontalAd />
+
    {#if !firstLoad}
       <div class="window has-shadow noheading">
          {#if loading}
