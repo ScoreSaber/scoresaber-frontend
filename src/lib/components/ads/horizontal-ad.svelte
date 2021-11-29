@@ -8,15 +8,18 @@
       try {
          window.adsbygoogle = window.adsbygoogle;
          window.adsbygoogle.push({});
-         if (!window.canRunAds) {
-            showAd = false;
-         }
-         if ($userData) {
-            if (permissions.checkPermissionNumber($userData.permissions, permissions.security.SUPPORTER)) {
+      } catch (ex) {}
+
+      if (!window.canRunAds) {
+         showAd = false;
+      }
+      userData.subscribe((u) => {
+         if (u) {
+            if (permissions.checkPermissionNumber(u.permissions, permissions.security.SUPPORTER)) {
                showAd = false;
             }
          }
-      } catch (ex) {}
+      });
    });
 </script>
 
