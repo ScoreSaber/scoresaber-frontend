@@ -3,8 +3,10 @@
    import { dev } from '$app/env';
 
    onMount(() => {
-      window.adsbygoogle = window.adsbygoogle;
-      window.adsbygoogle.push({});
+      try {
+         window.adsbygoogle = window.adsbygoogle;
+         window.adsbygoogle.push({});
+      } catch (ex) {}
    });
 </script>
 
