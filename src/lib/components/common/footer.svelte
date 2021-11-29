@@ -1,3 +1,9 @@
+<script lang="ts">
+   import CookieConsent from './cookie-consent.svelte';
+</script>
+
+<div class="sticky-footer"><CookieConsent /></div>
+
 <footer class="site-footer">
    <div class="container ">
       <a class="logoSection" href="/">
@@ -35,6 +41,12 @@
 </footer>
 
 <style type="scss">
+   .sticky-footer {
+      bottom: 0;
+      position: fixed;
+      width: 100%;
+      z-index: 99999;
+   }
    .site-footer {
       font-size: 1.25em;
       padding: 3rem;
