@@ -1,5 +1,6 @@
 <script>
    import { onMount } from 'svelte';
+   import { dev } from '$app/env';
 
    onMount(() => {
       window.adsbygoogle = window.adsbygoogle;
@@ -14,5 +15,5 @@
    data-ad-layout-key="-fg-1j+1l-o1+1ae"
    data-ad-client="ca-pub-9829527932347716"
    data-ad-slot="6830139879"
-   data-adtest="on"
+   data-adtest={dev ? 'on' : 'off'}
 />
