@@ -3,11 +3,11 @@
 
    export let extraClasses: string = '';
    export let style = '';
-   let hidden = false;
+   let hidden = true;
 
    onMount(() => {
-      if (localStorage.getItem('cookie-consent') === 'closed') {
-         hidden = true;
+      if (!localStorage.getItem('cookie-consent')) {
+         hidden = false;
       }
    });
 

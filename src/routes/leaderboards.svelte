@@ -29,6 +29,7 @@
    import { defaultBackground } from '$lib/global-store';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import LeaderboardRightAd from '$lib/components/ads/leaderboard-right.svelte';
+   import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
 
    let rangeStars: number[] = [];
 
@@ -254,6 +255,9 @@
             <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />
          </div>
          <LeaderboardRightAd />
+         <div class="mobile">
+            <HorizontalAd />
+         </div>
       </div>
    </div>
 </div>

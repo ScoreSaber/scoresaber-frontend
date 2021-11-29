@@ -5,12 +5,12 @@
    export let rememberClose: boolean = false;
    export let id: string;
    export let style = '';
-   let hidden = false;
+   let hidden = true;
    let formattedId = `announcement-${id}`;
 
    onMount(() => {
-      if (localStorage.getItem(formattedId) === 'closed') {
-         hidden = true;
+      if (!localStorage.getItem(formattedId)) {
+         hidden = false;
       }
    });
 
