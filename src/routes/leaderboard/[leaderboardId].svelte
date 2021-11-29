@@ -37,6 +37,7 @@
    import Meta from '$lib/components/common/meta.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { goto } from '$app/navigation';
+   import LeaderboardRightAd from '$lib/components/ads/leaderboard-right.svelte';
 
    export let metadata: LeaderboardInfo = undefined;
    let leaderboardId = $page.params.leaderboardId;
@@ -314,6 +315,7 @@ Stars: ${metadata.stars}★`}
                      {/if}
                   </div>
                {/if}
+               <LeaderboardRightAd />
             </div>
          {/if}
       </div>
