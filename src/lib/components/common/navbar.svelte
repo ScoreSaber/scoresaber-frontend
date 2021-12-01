@@ -45,7 +45,7 @@
    userData.subscribe((u) => {
       if (u) {
          loggedIn = true;
-         if (permissions.checkPermissionNumber($userData.permissions, permissions.security.ADMIN)) {
+         if (permissions.checkPermissionNumber($userData.permissions, permissions.security.PPFARMER)) {
             showChristmasAnnouncement = true;
             showGetChristmasAnnouncement = false;
             localStorage.setItem('holiday', 'closed');
