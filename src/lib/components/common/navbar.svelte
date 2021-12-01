@@ -7,7 +7,7 @@
    import Announcement from './announcement.svelte';
    import permissions from '$lib/utils/permissions';
    $: loggedIn = false;
-   $: showGetChristmasAnnouncement = false;
+   $: showGetChristmasAnnouncement = true;
    $: showChristmasAnnouncement = false;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
@@ -45,13 +45,11 @@
    userData.subscribe((u) => {
       if (u) {
          loggedIn = true;
-         if (!permissions.checkPermissionNumber($userData.permissions, permissions.security.PPFARMER)) {
-            showGetChristmasAnnouncement = true;
-         } else {
+         if (permissions.checkPermissionNumber($userData.permissions, permissions.security.ADMIN)) {
             showChristmasAnnouncement = true;
+            showGetChristmasAnnouncement = false;
+            localStorage.setItem('holiday', 'closed');
          }
-      } else {
-         showGetChristmasAnnouncement = true;
       }
    });
 </script>
@@ -77,7 +75,10 @@
          <img alt="badge" src="{CDN_URL}/badges/Holiday-Supporter.gif" />
       </div>
       <div class="announcement-with-image">
-         <span>Happy Holidays! To celebrate, ScoreSaber is offering a limited edition profile badge.</span>
+         <span
+            >Happy Holidays! To celebrate, ScoreSaber is offering a limited edition profile badge to all existing & new tier 2 Patreon supporters till
+            December 31st.</span
+         >
 
          <span><a class="announcement-link" href="https://patreon.com/scoresaber">Click here</a> to get it!</span>
       </div>
