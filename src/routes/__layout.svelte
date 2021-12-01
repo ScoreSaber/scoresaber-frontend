@@ -3,7 +3,7 @@
    import fetcher from '$lib/utils/fetcher';
    import poster from '$lib/utils/poster';
    import type { UserData, TokenResponse } from '$lib/models/UserData';
-   import { background, userData } from '$lib/global-store';
+   import { background, userData, snowVisible } from '$lib/global-store';
    import { useAccio } from '$lib/utils/accio';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
@@ -65,6 +65,11 @@
    {/key}
    <div class="cover" />
    <Navbar />
+   <div id="snow" class="snow {$snowVisible ? 'visible' : ''}">
+      {#each Array(30) as _, i}
+         <div class="snowflake" />
+      {/each}
+   </div>
    <div class="page-container content">
       <slot />
    </div>
@@ -82,5 +87,57 @@
    }
    .content {
       flex: 1;
+   }
+
+   .snow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 9999999;
+      opacity: 0;
+   }
+   .visible {
+      opacity: 100;
+   }
+   .snowflake {
+      --size: 1vw;
+      width: var(--size);
+      height: var(--size);
+      background: linear-gradient(white, white);
+      border-radius: 50%;
+      position: absolute;
+      top: -5vh;
+      z-index: 9999999;
+   }
+   @keyframes snowfall {
+      0% {
+         transform: translate3d(var(--left-ini), 0, 0);
+      }
+      100% {
+         transform: translate3d(var(--left-end), 110vh, 0);
+      }
+   }
+
+   @for $i from 1 through 30 {
+      .snowflake:nth-child(#{$i}) {
+         --size: #{random(5) * 0.2}vw;
+         --left-ini: #{random(20) - 10}vw;
+         --left-end: #{random(20) - 10}vw;
+         left: #{random(100)}vw;
+         animation: snowfall #{5 + random(10)}s linear infinite;
+         animation-delay: -#{random(10)}s;
+      }
+   }
+
+   .snowflake:nth-child(6n) {
+      filter: blur(1px);
+   }
+
+   .snowflake:nth-child(4n) {
+      filter: blur(1px);
+      filter: drop-shadow(0 0 5px white);
    }
 </style>

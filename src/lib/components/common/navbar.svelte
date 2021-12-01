@@ -5,7 +5,10 @@
    import fetcher from '$lib/utils/fetcher';
    import { onMount } from 'svelte';
    import Announcement from './announcement.svelte';
-   $: loggedIn = $userData != undefined;
+   import permissions from '$lib/utils/permissions';
+   $: loggedIn = false;
+   $: showGetChristmasAnnouncement = false;
+   $: showChristmasAnnouncement = false;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
    let menuButton: HTMLAnchorElement;
@@ -39,6 +42,18 @@
    function handleClick() {
       isExpanded = false;
    }
+   userData.subscribe((u) => {
+      if (u) {
+         loggedIn = true;
+         if (!permissions.checkPermissionNumber($userData.permissions, permissions.security.PPFARMER)) {
+            showGetChristmasAnnouncement = true;
+         } else {
+            showChristmasAnnouncement = true;
+         }
+      } else {
+         showGetChristmasAnnouncement = true;
+      }
+   });
 </script>
 
 <SearchView bind:this={searchModal} />
@@ -56,27 +71,31 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement id="launch" rememberClose={true}>
-   <div class="icon-container">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-         <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-         />
-      </svg>
-   </div>
-   <div>
-      Welcome to the new ScoreSaber!<a href={'https://www.patreon.com/posts/58995454'} class="announcement-link">&nbsp;Click here&nbsp;</a>to read our
-      Patreon post! If you experience any bugs please report them in the<a
-         class="announcement announcement-link"
-         target="_blank"
-         rel="external"
-         href="https://discord.gg/scoresaber">&nbsp;Discord</a
-      >.
-   </div>
-</Announcement>
+{#if showGetChristmasAnnouncement}
+   <Announcement id="holiday" rememberClose={true}>
+      <div class="mr-2 image-container">
+         <img alt="badge" src="{CDN_URL}/badges/Holiday-Supporter.gif" />
+      </div>
+      <div class="announcement-with-image">
+         <span>Happy Holidays! To celebrate, ScoreSaber is offering a limited edition profile badge.</span>
+
+         <span><a class="announcement-link" href="https://patreon.com/scoresaber">Click here</a> to get it!</span>
+      </div>
+   </Announcement>
+{/if}
+
+{#if showChristmasAnnouncement}
+   <Announcement id="holiday-supporter" rememberClose={true}>
+      <div class="mr-2 image-container">
+         <img alt="badge" src="{CDN_URL}/badges/Holiday-Supporter.gif" />
+      </div>
+      <div class="announcement-with-image">
+         <span>Happy Holidays! Because you're a tier 2 supporter for ScoreSaber during the holiday season we have gifted you this nifty badge!</span>
+
+         <span><a class="announcement-link" href="/u/{$userData.playerId}">Click here</a> to see it on your profile!</span>
+      </div>
+   </Announcement>
+{/if}
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->
@@ -151,6 +170,10 @@
 
    header.scrolled {
       background: #1c1c1c;
+   }
+
+   .image-container {
+      flex-shrink: 0;
    }
 
    header .container {
@@ -508,5 +531,10 @@
    .announcement-link {
       color: #fff;
       font-weight: 600;
+      text-decoration: underline;
+      transition: color 300ms;
+   }
+   .announcement-link:hover {
+      color: var(--scoreSaberYellow);
    }
 </style>
