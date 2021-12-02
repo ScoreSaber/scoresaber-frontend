@@ -4,13 +4,15 @@
    import type { LeaderboardPlayer, Player } from '$lib/models/PlayerData';
 
    export let player: Player | LeaderboardPlayer;
-   export let destination: string;
+   export let destination: string | null;
    export let external: boolean = false;
    export let countryImage: boolean = true;
 
-   $: playerClass = getPlayerClass(player);
+   let playerClass: string;
+   let playerTitle: string;
+   $: [playerClass, playerTitle] = getPlayerClassAndTitle(player);
 
-   export function getPlayerClass(player: Player | LeaderboardPlayer): [string, string] {
+   export function getPlayerClassAndTitle(player: Player | LeaderboardPlayer): [string, string] {
       if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PANDA)) {
          return ['panda', 'Owner of ScoreSaber'];
       }
@@ -56,20 +58,27 @@
    }
 </script>
 
-{#if external}
-   <a title={playerClass[1]} rel="external" target="_blank" href={destination} class="player-link">
-      {#if countryImage}
-         <CountryImage country={player.country} />
-      {/if}
-      <span class={playerClass[0]}>{player.name}</span>
-   </a>
+{#if destination !== null}
+   {#if external}
+      <a title={playerTitle} rel="external" target="_blank" href={destination} class="player-link">
+         {#if countryImage}
+            <CountryImage country={player.country} />
+         {/if}
+         <span class={playerClass}>{player.name}</span>
+      </a>
+   {:else}
+      <a title={playerTitle} href={destination}>
+         {#if countryImage}
+            <CountryImage country={player.country} />
+         {/if}
+         <span class={playerClass}>{player.name}</span>
+      </a>
+   {/if}
 {:else}
-   <a title={playerClass[1]} href={destination}>
-      {#if countryImage}
-         <CountryImage country={player.country} />
-      {/if}
-      <span class={playerClass[0]}>{player.name}</span>
-   </a>
+   {#if countryImage}
+      <CountryImage country={player.country} />
+   {/if}
+   <span class={playerClass}>{player.name}</span>
 {/if}
 
 <style lang="scss">
@@ -106,8 +115,15 @@
    }
    a,
    span {
+      transition: color 300ms;
       overflow: hidden;
       text-overflow: ellipsis;
+   }
+   a span:hover {
+      color: var(--scoreSaberYellow) !important;
+   }
+   span.default {
+      color: var(--alternate);
    }
    span.panda {
       color: var(--panda);

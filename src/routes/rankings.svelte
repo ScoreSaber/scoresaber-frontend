@@ -18,6 +18,7 @@
    import TextInput from '$lib/components/common/text-input.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import { defaultBackground } from '$lib/global-store';
+   import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
 
    const playersPerPage = 50;
    $: loading = true;
@@ -38,8 +39,8 @@
       search: null
    });
 
-   $: regionFilters = filters.regionFilter.filter((x) => ($pageQuery.regions?.split(',') ?? []).includes(x.key));
-   $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).includes(x.key));
+   $: regionFilters = filters.regionFilter.filter((x) => ($pageQuery.regions?.split(',') ?? []).map((r) => r.toUpperCase()).includes(x.key));
+   $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).map((c) => c.toUpperCase()).includes(x.key));
 
    let filterChanged: boolean = false;
 
@@ -190,12 +191,14 @@
          <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
       </div>
    </div>
+   <HorizontalAd />
    {#if firstLoad && loading && !$playerCountError}
       <Loader />
    {/if}
    {#if $rankingsError || $playerCountError}
       <Error error={$rankingsError || $playerCountError} />
    {/if}
+
    {#if !firstLoad}
       <div class="window has-shadow noheading">
          {#if loading}

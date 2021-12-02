@@ -7,7 +7,9 @@ const permissions = {
    QATHead: 4,
    NAT: 8,
    ADMIN: 16,
-   PANDA: 32
+   PANDA: 32,
+   SUPPORTER: 64,
+   PPFARMER: 128
 };
 
 const group_permissions = {

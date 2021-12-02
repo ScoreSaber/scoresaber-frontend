@@ -8,6 +8,8 @@ function getUser(): UserData | undefined {
    return undefined;
 }
 
+export const snowVisible = writable(false);
+
 export const background = writable('var(--background-color)');
 
 export function setBackground(image: string) {

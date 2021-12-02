@@ -1,7 +1,7 @@
 <script lang="ts">
    import { useAccio } from '$lib/utils/accio';
    import queryString from 'query-string';
-   import type { RankRequestListing } from '$lib/models/Ranking';
+   import type { RankRequestListing, VoteGroup } from '$lib/models/Ranking';
    import axios from '$lib/utils/fetcher';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
@@ -94,7 +94,7 @@
                      </thead>
                      <tbody>
                         {#each $topRequests as request}
-                           <tr class="table-item">
+                           <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
                               <td class="diffs_created_at"
                                  ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
                                     date={new Date(request.created_at)}
@@ -153,7 +153,7 @@
                      </thead>
                      <tbody>
                         {#each $belowTopRequests as request}
-                           <tr class="table-item">
+                           <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
                               <td class="diffs_created_at"
                                  ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
                                     date={new Date(request.created_at)}
@@ -182,7 +182,7 @@
    </div>
 </div>
 
-<style>
+<style lang="scss">
    table {
       border-collapse: separate;
       border-spacing: 0 5px;
@@ -200,6 +200,23 @@
       border-style: solid none;
       align-items: center;
       vertical-align: middle;
+   }
+   tr.highlight {
+      td {
+         border-top: 1px solid var(--scoreSaberYellow) !important;
+         border-bottom: 1px solid var(--scoreSaberYellow) !important;
+      }
+      td:first-child {
+         border-left: 1px solid var(--scoreSaberYellow) !important;
+      }
+      td:last-child {
+         border-right: 1px solid var(--scoreSaberYellow) !important;
+      }
+   }
+
+   td.highlight {
+      font-weight: bold;
+      color: var(--scoreSaberYellow);
    }
    tr.table-item td {
       background-color: var(--gray);

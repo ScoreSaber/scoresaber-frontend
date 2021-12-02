@@ -37,6 +37,8 @@
    import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
    import fetcher from '$lib/utils/fetcher';
    import Permissions from '$lib/utils/permissions';
+   import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
+   import Denyah from '$lib/components/misc/denyah.svelte';
 
    export let metadata: Player = undefined;
    const scoresPerPage = 8;
@@ -156,6 +158,9 @@
       await fetcher(`/api/user/${player.id}/removeRole/${role}`, { withCredentials: true });
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
+
+   let isSteamPlayer: boolean;
+   $: isSteamPlayer = $playerData?.id && parseInt($playerData.id, 10) >= 70000000000000000;
 </script>
 
 <head>
@@ -174,21 +179,25 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
    {/if}
 </head>
 
-<div class="section">
+{#if $playerData}
+   <Denyah playerId={$playerData.id} />
+{/if}
+
+<div id="page" class="section">
    <div class="content">
-      {#if !$playerDataError && !$playerData}
-         <Loader />
-      {/if}
       {#if $playerDataError}
          <Error error={$playerDataError} />
+      {:else if !$playerData}
+         <Loader />
       {/if}
+
       {#if $playerData}
          <div in:fly={{ x: 20, duration: 1000 }} class="columns">
             <!-- Profile picture & badges -->
             <div class="column is-narrow">
                <div class="profile-picture">
                   <div class="image is-128x128 rounded" style="background-image: url({$playerData.profilePicture}); background-size: cover;">
-                     {#if parseInt($playerData.id) >= 7e16}
+                     {#if isSteamPlayer}
                         <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
                            <span class="icon is-small">
                               <i class="fas fa-sync-alt" />
@@ -212,7 +221,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                      player={$playerData}
                      external={true}
                      countryImage={true}
-                     destination={`https://steamcommunity.com/profiles/${$playerData.id}`}
+                     destination={isSteamPlayer ? `https://steamcommunity.com/profiles/${$playerData.id}` : null}
                   />
                   {#if !$playerData.banned}
                      <div class="divider" />
@@ -267,7 +276,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
          </div>
       {/key}
    {/if}
-
+   <HorizontalAd />
    {#if $scoreInitialLoadComplete && $playerData}
       {#if !$playerData.banned}
          <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading bottomSection">
