@@ -166,7 +166,6 @@
                   <table>
                      <thead>
                         <tr class="headers">
-                           <th class="created_at" />
                            <th class="map" />
                            <th class="plays centered">Plays</th>
                            <th class="plays-daily centered">Last 24h</th>
@@ -175,9 +174,6 @@
                      <tbody>
                         {#each $leaderboards.leaderboards as leaderboard}
                            <tr class="table-item">
-                              <td class="created_at">
-                                 <FormattedDate date={new Date(leaderboard.createdDate)} />
-                              </td>
                               <td class="map"><SmallSongInfo {leaderboard} margin={false} /></td>
                               <td class="plays centered">
                                  {leaderboard.plays.toLocaleString('en-US')}

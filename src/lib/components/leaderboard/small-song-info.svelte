@@ -3,15 +3,16 @@
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
    import type SearchView from '$lib/components/common/search.svelte';
    import { searchView } from '$lib/global-store';
+   import FormattedDate from '../common/formatted-date.svelte';
 
    export let leaderboard: LeaderboardInfo;
    export let margin: boolean | undefined = undefined;
    let searchModal: SearchView;
 
-   let songName : string;
+   let songName: string;
    $: songName = `${leaderboard.songName}${leaderboard.songSubName ? ' ' + leaderboard.songSubName : ''}`;
 
-   let truncatedSongName : string;
+   let truncatedSongName: string;
    $: truncatedSongName = songName.length < 30 ? songName : songName.slice(0, margin === false ? 18 : 29).trim() + '…';
 
    searchView.subscribe((v) => (searchModal = v));
@@ -24,7 +25,7 @@
 
 <div class="song-container">
    <div class="song-image-wrapper mobile-hide">
-      <figure style={margin === false ? 'margin: 0;' : ''}>
+      <figure style={margin === false ? 'margin: 0px 1.2rem 0 0rem !important;' : ''}>
          <img class="song-image" src={leaderboard.coverImage} alt="{songName} Cover" />
          <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
             {getDifficultyOrStarValue(leaderboard)}
@@ -57,6 +58,7 @@
                   : leaderboard.levelAuthorName.slice(0, margin === false ? 18 : 29).trim() + '…'}
             </span>
          </a>
+         <span class="text-muted"><FormattedDate date={new Date(leaderboard.createdDate)} /></span>
       </div>
    </div>
 </div>
