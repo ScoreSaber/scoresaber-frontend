@@ -108,9 +108,9 @@
 
    function changePage(page: number) {
       $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
       pageDirection = page > $pageQuery.page ? 1 : -1;
       pageQuery.updateSingle('page', page);
-      updateCancelToken();
    }
 
    function openScoreModal(score: PlayerScore, player?: LeaderboardPlayer | Player) {

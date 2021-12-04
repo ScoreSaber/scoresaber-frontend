@@ -69,6 +69,9 @@ export class Accio {
          } catch (ex) {
             if (axios.isCancel(ex)) {
                console.warn('Request cancelled:', ex.message);
+               curRequest = undefined;
+               loading.set(false);
+               if (!get(initialLoadComplete)) initialLoadComplete.set(true);
                return;
             }
             if (axios.isAxiosError(ex)) {
