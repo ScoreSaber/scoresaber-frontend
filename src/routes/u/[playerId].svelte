@@ -59,7 +59,15 @@
       data: playerData,
       error: playerDataError,
       refresh: refreshPlayerData
-   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), { fetcher: axios, onSuccess: (data) => setBackground(data.profilePicture) });
+   } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), {
+      fetcher: axios,
+      onSuccess: (data) =>
+         setBackground(
+            $page.params.playerId === '76561198064659288'
+               ? 'https://cdn.discordapp.com/attachments/774679084646924288/915636524643680326/denyah.gif'
+               : data.profilePicture
+         )
+   });
 
    const {
       data: scoreData,

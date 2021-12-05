@@ -68,6 +68,9 @@
    <div id="snow" class="snow {$snowVisible ? 'visible' : ''}">
       {#each Array(30) as _, i}
          <div class="snowflake" />
+         {#if $page.path === '/u/76561198064659288'}
+            <div class="snowflake denyah" />
+         {/if}
       {/each}
    </div>
    <div class="page-container content">
@@ -112,6 +115,10 @@
       top: -5vh;
       z-index: 9999999;
    }
+   .snowflake.denyah {
+      background-image: url('/images/denyah-cold-face.png') !important;
+      background-size: cover;
+   }
    @keyframes snowfall {
       0% {
          transform: translate3d(var(--left-ini), 0, 0);
@@ -132,11 +139,11 @@
       }
    }
 
-   .snowflake:nth-child(6n) {
+   .snowflake:nth-child(6n):not(.denyah) {
       filter: blur(1px);
    }
 
-   .snowflake:nth-child(4n) {
+   .snowflake:nth-child(4n):not(.denyah) {
       filter: blur(1px);
       filter: drop-shadow(0 0 5px white);
    }
