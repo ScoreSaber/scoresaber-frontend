@@ -21,11 +21,11 @@
    $: levelAuthorName = `${leaderboard.levelAuthorName}`;
 
    let truncatedSongName: string;
-   $: truncatedSongName = songName.length < clipAt ? songName : songName.slice(0, margin === false ? 18 : 29).trim() + '…';
+   $: truncatedSongName = songName.length < clipAt - 4 ? songName : songName.slice(0, margin === false ? 18 : 29).trim() + '…';
 
    let truncatedSongAuthorName: string;
    $: truncatedSongAuthorName =
-      songAuthorName.length < clipAt - 10 ? songAuthorName : songAuthorName.slice(0, margin === false ? 12 : 24).trim() + '…';
+      songAuthorName.length < clipAt - 11 ? songAuthorName : songAuthorName.slice(0, margin === false ? 10 : 17).trim() + '…';
 
    let truncatedLevelAuthorName: string;
    $: truncatedLevelAuthorName =
@@ -40,7 +40,7 @@
 </script>
 
 <div class="song-container">
-   <div class="song-image-wrapper mobile-hide">
+   <div class="song-image-wrapper">
       <figure style={margin === false ? 'margin: 0px 1.2rem 0 0rem !important;' : ''}>
          <img class="song-image" src={leaderboard.coverImage} alt="{songName} Cover" />
          <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
@@ -50,9 +50,9 @@
    </div>
    <div class="song-info-container mobile-enhance">
       <div class="song-info">
-         <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag mobile-show {getDifficultyStyle(leaderboard.difficulty)}">
+         <!-- <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag mobile-hide {getDifficultyStyle(leaderboard.difficulty)}">
             {getDifficultyOrStarValue(leaderboard)}
-         </div>
+         </div> -->
          <a href={`/leaderboard/${leaderboard.id}`}>
             <span class="song-name" title={truncatedSongName !== songName ? songName : null}>{truncatedSongName}</span>
          </a>
