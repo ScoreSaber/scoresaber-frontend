@@ -4,10 +4,15 @@
    import { onMount } from 'svelte';
    export let playerId: string;
    onMount(() => {
-      if (playerId == '76561198064659288') {
-         document.getElementById('page').style.transform = 'rotateZ(6deg)';
-      } else {
-         document.getElementById('page').style.transform = 'rotateZ(0deg)';
+      const page = document.getElementById('page');
+      if (page) {
+         if (playerId == '76561198064659288') {
+            page.style.transform = 'rotateZ(6deg)';
+            page.style.filter = 'blur(1px)';
+         } else {
+            page.style.transform = 'rotateZ(0deg)';
+            page.style.filter = 'blur(0px)';
+         }
       }
    });
 </script>
