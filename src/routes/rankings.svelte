@@ -71,6 +71,7 @@
    function onRankingsSuccess() {
       if (firstLoad) {
          firstLoad = false;
+         loading = false;
       }
    }
 
@@ -101,7 +102,7 @@
             });
             filterChanged = false;
          }
-         loading = false;
+         if (!firstLoad) loading = false;
       }
    });
 
