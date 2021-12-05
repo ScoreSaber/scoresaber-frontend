@@ -9,11 +9,26 @@
    export let margin: boolean | undefined = undefined;
    let searchModal: SearchView;
 
+   const clipAt = 30;
+
    let songName: string;
    $: songName = `${leaderboard.songName}${leaderboard.songSubName ? ' ' + leaderboard.songSubName : ''}`;
 
+   let songAuthorName: string;
+   $: songAuthorName = `${leaderboard.songAuthorName}`;
+
+   let levelAuthorName: string;
+   $: levelAuthorName = `${leaderboard.levelAuthorName}`;
+
    let truncatedSongName: string;
-   $: truncatedSongName = songName.length < 30 ? songName : songName.slice(0, margin === false ? 18 : 29).trim() + '…';
+   $: truncatedSongName = songName.length < clipAt ? songName : songName.slice(0, margin === false ? 18 : 29).trim() + '…';
+
+   let truncatedSongAuthorName: string;
+   $: truncatedSongAuthorName = songAuthorName.length < clipAt ? songAuthorName : songAuthorName.slice(0, margin === false ? 18 : 29).trim() + '…';
+
+   let truncatedLevelAuthorName: string;
+   $: truncatedLevelAuthorName =
+      levelAuthorName.length < clipAt ? levelAuthorName : levelAuthorName.slice(0, margin === false ? 18 : 29).trim() + '…';
 
    searchView.subscribe((v) => (searchModal = v));
 
@@ -42,21 +57,13 @@
          </a>
          by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.songAuthorName)}>
-            <span>
-               {leaderboard.songAuthorName.length < 30
-                  ? leaderboard.songAuthorName
-                  : leaderboard.songAuthorName.slice(0, margin === false ? 18 : 29).trim() + '…'}
-            </span>
+            <span title={truncatedSongAuthorName !== songAuthorName ? songAuthorName : null}>{truncatedSongAuthorName}</span>
          </a>
       </div>
       <div class="mapper-info">
          Mapped by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.levelAuthorName)}>
-            <span class="mapper-name">
-               {leaderboard.levelAuthorName.length < 30
-                  ? leaderboard.levelAuthorName
-                  : leaderboard.levelAuthorName.slice(0, margin === false ? 18 : 29).trim() + '…'}
-            </span>
+            <span class="mapper-name" title={truncatedLevelAuthorName !== levelAuthorName ? levelAuthorName : null}>{truncatedLevelAuthorName}</span>
          </a>
          <span class="text-muted"><FormattedDate date={new Date(leaderboard.createdDate)} /></span>
       </div>
@@ -119,7 +126,7 @@
          display: none;
       }
       .mobile-enhance {
-         margin-left: 10px;
+         margin-left: 5px;
       }
       .mobile-show.tag {
          display: inline;
