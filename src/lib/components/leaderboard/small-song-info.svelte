@@ -24,7 +24,8 @@
    $: truncatedSongName = songName.length < clipAt ? songName : songName.slice(0, margin === false ? 18 : 29).trim() + '…';
 
    let truncatedSongAuthorName: string;
-   $: truncatedSongAuthorName = songAuthorName.length < clipAt ? songAuthorName : songAuthorName.slice(0, margin === false ? 18 : 29).trim() + '…';
+   $: truncatedSongAuthorName =
+      songAuthorName.length < clipAt - 10 ? songAuthorName : songAuthorName.slice(0, margin === false ? 12 : 24).trim() + '…';
 
    let truncatedLevelAuthorName: string;
    $: truncatedLevelAuthorName =
