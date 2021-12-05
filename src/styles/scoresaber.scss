@@ -417,10 +417,6 @@ hr {
    color: var(--muted);
 }
 
-.song-name[title] {
-   cursor: help;
-}
-
 .loadingBlur {
    filter: blur(3px) saturate(1.2);
    transition: 0.25s filter linear;
