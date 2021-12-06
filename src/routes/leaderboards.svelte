@@ -166,23 +166,24 @@
                   <table>
                      <thead>
                         <tr class="headers">
-                           <th class="created_at" />
                            <th class="map" />
-                           <th class="plays centered">Plays</th>
-                           <th class="plays-daily centered">Last 24h</th>
+                           <th class="plays centered desktop">Plays</th>
+                           <th class="plays-daily centered desktop">Last 24h</th>
                         </tr>
                      </thead>
                      <tbody>
                         {#each $leaderboards.leaderboards as leaderboard}
                            <tr class="table-item">
-                              <td class="created_at">
-                                 <FormattedDate date={new Date(leaderboard.createdDate)} />
-                              </td>
-                              <td class="map"><SmallSongInfo {leaderboard} margin={false} /></td>
-                              <td class="plays centered">
+                              <td class="map"
+                                 ><SmallSongInfo {leaderboard} margin={false} /><span class="text-muted mobile plays">
+                                    <b>{leaderboard.plays.toLocaleString('en-US')}</b> plays ({leaderboard.dailyPlays.toLocaleString('en-US')} in the last
+                                    24h)</span
+                                 ></td
+                              >
+                              <td class="plays centered desktop">
                                  {leaderboard.plays.toLocaleString('en-US')}
                               </td>
-                              <td class="plays-daily centered">
+                              <td class="plays-daily centered desktop">
                                  {leaderboard.dailyPlays.toLocaleString('en-US')}
                               </td>
                            </tr>
@@ -315,11 +316,15 @@
       .desktop {
          display: none;
       }
+
+      .map {
+         border-radius: 5px;
+      }
    }
 
    @media only screen and (min-width: 769px) {
       .mobile {
-         display: none;
+         display: none !important;
       }
    }
 
@@ -335,5 +340,11 @@
       table {
          margin-top: 0;
       }
+   }
+
+   .mobile.plays {
+      display: block;
+      margin-left: 2px;
+      margin-top: 0.4rem;
    }
 </style>
