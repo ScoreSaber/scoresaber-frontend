@@ -9,23 +9,15 @@
    export let margin: boolean | undefined = undefined;
    let searchModal: SearchView;
 
-   const clipAt = 30;
+   let clipAt = 30;
+   let innerWidth: number;
+   $: innerWidth = window.innerWidth;
 
    let songName: string;
    $: songName = `${leaderboard.songName}${leaderboard.songSubName ? ' ' + leaderboard.songSubName : ''}`;
 
-   let songAuthorName: string;
-   $: songAuthorName = `${leaderboard.songAuthorName}`;
-
    let levelAuthorName: string;
    $: levelAuthorName = `${leaderboard.levelAuthorName}`;
-
-   let truncatedSongName: string;
-   $: truncatedSongName = songName.length < clipAt - 4 ? songName : songName.slice(0, margin === false ? 18 : 29).trim() + '…';
-
-   let truncatedSongAuthorName: string;
-   $: truncatedSongAuthorName =
-      songAuthorName.length < clipAt - 11 ? songAuthorName : songAuthorName.slice(0, margin === false ? 10 : 17).trim() + '…';
 
    let truncatedLevelAuthorName: string;
    $: truncatedLevelAuthorName =
@@ -39,6 +31,8 @@
    };
 </script>
 
+<svelte:window bind:innerWidth />
+
 <div class="song-container">
    <div class="song-image-wrapper">
       <figure style={margin === false ? 'margin: 0px 1.2rem 0 0rem !important;' : ''}>
@@ -50,15 +44,12 @@
    </div>
    <div class="song-info-container mobile-enhance">
       <div class="song-info">
-         <!-- <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag mobile-hide {getDifficultyStyle(leaderboard.difficulty)}">
-            {getDifficultyOrStarValue(leaderboard)}
-         </div> -->
          <a href={`/leaderboard/${leaderboard.id}`}>
-            <span class="song-name" title={truncatedSongName !== songName ? songName : null}>{truncatedSongName}</span>
+            <span class="song-name" title={songName}>{songName}</span>
          </a>
          by
          <a href={'#'} on:click|preventDefault={() => openSearch(leaderboard.songAuthorName)}>
-            <span title={truncatedSongAuthorName !== songAuthorName ? songAuthorName : null}>{truncatedSongAuthorName}</span>
+            <span title={leaderboard.songAuthorName}>{leaderboard.songAuthorName}</span>
          </a>
       </div>
       <div class="mapper-info">
@@ -83,7 +74,6 @@
       border-radius: 15%;
       display: block;
    }
-
    .song-info-container {
       display: flex;
       flex-direction: column;
@@ -122,7 +112,21 @@
       display: none;
    }
 
-   @media (max-width: 512px) {
+   .song-info {
+      display: inline-block;
+      width: 40vw;
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+
+   @media screen and (max-width: 769px), print {
+      .song-info {
+         width: 280px;
+      }
+   }
+
+   @media screen and (max-width: 512px), print {
       .mobile-hide {
          display: none;
       }
