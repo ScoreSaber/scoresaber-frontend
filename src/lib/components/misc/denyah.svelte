@@ -8,7 +8,7 @@
       if (page) {
          if (playerId == '76561198064659288') {
             page.style.transform = 'rotateZ(6deg)';
-            page.style.filter = 'blur(1px)';
+            page.style.filter = 'blur(3px)';
          } else {
             page.style.transform = 'rotateZ(0deg)';
             page.style.filter = 'blur(0px)';
