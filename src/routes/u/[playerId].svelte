@@ -175,7 +175,7 @@
    <title>{$playerData ? $playerData.name + "'s Profile" : 'Profile'} | ScoreSaber!</title>
    {#if metadata}
       <Meta
-         description={`Player Ranking: #${metadata.rank.toLocaleString('en-US')}
+         description={`Player Ranking: Recalculating...
 Performance Points: ${metadata.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
 Total Play Count: ${metadata.scoreStats.totalPlayCount.toLocaleString('en-US')}
 Average Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%
@@ -244,17 +244,19 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                      <small>
                         <span class="title-header">
                            <i class="fas fa-globe-americas" title="Global Ranking" />
-                           <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
+                           <!-- <a title="Global Ranking" href={`/rankings?page=${rankToPage($playerData.rank, 50)}`}
                               >#{$playerData.rank.toLocaleString('en-US')}</a
-                           >
+                           > -->
+                           <a title="Global Ranking" href={`#`}>Recalculating...</a>
                         </span>
                         <span class="title-header spacer">
                            <CountryImage country={$playerData.country} />
-                           <a
+                           <!-- <a
                               title="Country Ranking"
                               href={`/rankings?page=${rankToPage($playerData.countryRank, 50)}&countries=${$playerData.country.toLowerCase()}`}
                               >#{$playerData.countryRank.toLocaleString('en-US')}</a
-                           >
+                           > -->
+                           <a title="Country Ranking" href={`#`}>#Recalculating...</a>
                         </span>
                      </small>
                   {/if}
@@ -279,7 +281,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
          <div class="window has-shadow noheading">
             <Badges player={$playerData} />
             {#if !$playerData.inactive}
-               <RankChart player={$playerData} />
+               <!-- <RankChart player={$playerData} /> -->
             {/if}
          </div>
       {/key}

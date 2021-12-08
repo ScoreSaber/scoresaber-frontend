@@ -157,7 +157,8 @@
                   <div class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
                      <div class="player-name"><PlayerLink {player} destination="/u/{player.id}" /></div>
-                     <div class="rank">#{player.rank.toLocaleString(navigator?.language ?? 'en-AU')}</div>
+                     <!-- <div class="rank">#{player.rank.toLocaleString(navigator?.language ?? 'en-AU')}</div> -->
+                     <div class="rank">Recalculating...</div>
                   </div>
                {/each}
             {/if}
