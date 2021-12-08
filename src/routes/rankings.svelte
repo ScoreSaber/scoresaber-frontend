@@ -192,15 +192,14 @@
       </div>
    </div>
    <HorizontalAd />
-   <div class="window has-shadow noheading">Ranks are currently being recalculated</div>
-   <!-- {#if firstLoad && loading && !$playerCountError}
+   {#if firstLoad && loading && !$playerCountError}
       <Loader />
    {/if}
    {#if $rankingsError || $playerCountError}
       <Error error={$rankingsError || $playerCountError} />
-   {/if} -->
+   {/if}
 
-   <!-- {#if !firstLoad}
+   {#if !firstLoad}
       <div class="window has-shadow noheading">
          {#if loading}
             <Loader displayOver={true} />
@@ -238,7 +237,7 @@
             <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($playerCount / playersPerPage)} />
          {/if}
       </div>
-   {/if} -->
+   {/if}
 </div>
 
 <style lang="scss">
