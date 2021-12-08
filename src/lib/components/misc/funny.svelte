@@ -6,7 +6,10 @@
    onMount(() => {
       const page = document.getElementById('page');
       if (page) {
-         if (playerId == '76561198064659288') {
+         if (playerId == '76561198283584459') {
+            page.style.transform = 'rotateZ(180deg)';
+            page.style.filter = 'blur(0px)';
+         } else if (playerId == '76561198064659288') {
             page.style.transform = 'rotateZ(6deg)';
             page.style.filter = 'blur(1px)';
          } else {

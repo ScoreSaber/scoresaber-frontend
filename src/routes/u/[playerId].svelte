@@ -38,7 +38,7 @@
    import fetcher from '$lib/utils/fetcher';
    import Permissions from '$lib/utils/permissions';
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
-   import Denyah from '$lib/components/misc/denyah.svelte';
+   import Funny from '$lib/components/misc/funny.svelte';
 
    export let metadata: Player = undefined;
    const scoresPerPage = 8;
@@ -188,7 +188,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
 </head>
 
 {#if $playerData}
-   <Denyah playerId={$playerData.id} />
+   <Funny playerId={$playerData.id} />
 {/if}
 
 <div id="page" class="section">
