@@ -7,7 +7,7 @@
       const page = document.getElementById('page');
       if (page) {
          if (playerId == '76561198064659288') {
-            page.style.transform = 'rotateZ(6deg)';
+            page.style.transform = 'rotateZ(7deg)';
             page.style.filter = 'blur(1px)';
          } else {
             page.style.transform = 'rotateZ(0deg)';
