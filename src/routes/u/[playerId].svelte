@@ -293,39 +293,41 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
             <div class="button-container">
                <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
             </div>
-            <div class="mobile top-arrowpagination">
-               <ArrowPagination
-                  pageClicked={changePage}
-                  page={$pageQuery.page}
-                  pageSize={$scoreData.metadata.itemsPerPage}
-                  maxPages={$scoreData.metadata.total}
-                  withFirstLast={true}
-               />
-            </div>
-            <div class="ranking songs">
-               <div class="ranking songs gridTable" class:loadingBlur={$scoreDataLoading}>
-                  {#each $scoreData.playerScores ?? [] as score, i (score.score.id)}
-                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData.id} />
-                  {/each}
+            {#if $scoreData}
+               <div class="mobile top-arrowpagination">
+                  <ArrowPagination
+                     pageClicked={changePage}
+                     page={$pageQuery.page}
+                     pageSize={$scoreData.metadata.itemsPerPage}
+                     maxPages={$scoreData.metadata.total}
+                     withFirstLast={true}
+                  />
                </div>
-            </div>
-            <div class="pagination desktop tablet">
-               <ClassicPagination
-                  totalItems={$scoreData.metadata.total}
-                  pageSize={$scoreData.metadata.itemsPerPage}
-                  currentPage={$pageQuery.page}
-                  changePage={(e) => changePage(e)}
-               />
-            </div>
-            <div class="mobile bottom-arrowpagination">
-               <ArrowPagination
-                  pageClicked={changePage}
-                  page={$pageQuery.page}
-                  pageSize={$scoreData.metadata.itemsPerPage}
-                  maxPages={$scoreData.metadata.total}
-                  withFirstLast={true}
-               />
-            </div>
+               <div class="ranking songs">
+                  <div class="ranking songs gridTable" class:loadingBlur={$scoreDataLoading}>
+                     {#each $scoreData.playerScores ?? [] as score, i (score.score.id)}
+                        <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData.id} />
+                     {/each}
+                  </div>
+               </div>
+               <div class="pagination desktop tablet">
+                  <ClassicPagination
+                     totalItems={$scoreData.metadata.total}
+                     pageSize={$scoreData.metadata.itemsPerPage}
+                     currentPage={$pageQuery.page}
+                     changePage={(e) => changePage(e)}
+                  />
+               </div>
+               <div class="mobile bottom-arrowpagination">
+                  <ArrowPagination
+                     pageClicked={changePage}
+                     page={$pageQuery.page}
+                     pageSize={$scoreData.metadata.itemsPerPage}
+                     maxPages={$scoreData.metadata.total}
+                     withFirstLast={true}
+                  />
+               </div>
+            {/if}
          </div>
       {/if}
    {/if}
