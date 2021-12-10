@@ -1,5 +1,5 @@
 <script lang="ts">
-   import type { Player } from '$lib/models/PlayerData';
+   import type { Player, PlayerCollection } from '$lib/models/PlayerData';
    import { onDestroy } from 'svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
@@ -20,7 +20,6 @@
    import { defaultBackground } from '$lib/global-store';
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
 
-   const playersPerPage = 50;
    $: loading = true;
    $: firstLoad = true;
    let pageDirection = 1;
@@ -48,24 +47,12 @@
       data: rankings,
       error: rankingsError,
       refresh: refreshRankings
-   } = useAccio<Player[]>(
+   } = useAccio<PlayerCollection>(
       queryString.stringifyUrl({
-         url: '/api/players',
+         url: '/api/players?withMetadata=true',
          query: queryString.parse($page.query.toString())
       }),
       { fetcher: axios, onSuccess: onRankingsSuccess }
-   );
-
-   const {
-      data: playerCount,
-      error: playerCountError,
-      refresh: refreshPlayerCount
-   } = useAccio<number>(
-      queryString.stringifyUrl({
-         url: '/api/players/count',
-         query: queryString.parse($page.query.toString())
-      }),
-      { fetcher: axios }
    );
 
    function onRankingsSuccess() {
@@ -92,16 +79,6 @@
             }),
             softRefresh: true
          });
-         if (filterChanged) {
-            await refreshPlayerCount({
-               newUrl: queryString.stringifyUrl({
-                  url: '/api/players/count',
-                  query: queryString.parse(p.query.toString())
-               }),
-               softRefresh: true
-            });
-            filterChanged = false;
-         }
          if (!firstLoad) loading = false;
       }
    });
@@ -192,11 +169,11 @@
       </div>
    </div>
    <HorizontalAd />
-   {#if firstLoad && loading && !$playerCountError}
+   {#if firstLoad && loading}
       <Loader />
    {/if}
-   {#if $rankingsError || $playerCountError}
-      <Error error={$rankingsError || $playerCountError} />
+   {#if $rankingsError}
+      <Error error={$rankingsError} />
    {/if}
 
    {#if !firstLoad}
@@ -205,7 +182,12 @@
             <Loader displayOver={true} />
          {/if}
          <div class={loading ? ' blur' : ''}>
-            <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($playerCount / playersPerPage)} />
+            <ArrowPagination
+               pageClicked={changePage}
+               page={$pageQuery.page}
+               pageSize={$rankings.metadata.itemsPerPage}
+               maxPages={$rankings.metadata.total}
+            />
             <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
                <div class="gridTable mb-4">
                   <div class="header">
@@ -217,7 +199,7 @@
                      <div class="centered">Average Ranked Accuracy</div>
                      <div class="centered">Weekly Change</div>
                   </div>
-                  {#each $rankings ?? [] as player, i (player.id)}
+                  {#each $rankings.players ?? [] as player, i (player.id)}
                      <PlayerRow
                         row={i + 1}
                         {pageDirection}
@@ -230,11 +212,16 @@
             </div>
          </div>
 
-         {#if $rankingsError || $playerCountError}
-            <Error error={$rankingsError || $playerCountError} />
+         {#if $rankingsError}
+            <Error error={$rankingsError} />
          {/if}
          {#if !firstLoad}
-            <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($playerCount / playersPerPage)} />
+            <ArrowPagination
+               pageClicked={changePage}
+               page={$pageQuery.page}
+               pageSize={$rankings.metadata.itemsPerPage}
+               maxPages={$rankings.metadata.total}
+            />
          {/if}
       </div>
    {/if}

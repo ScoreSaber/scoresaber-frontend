@@ -193,10 +193,15 @@
                </div>
                <br />
                <div class="desktop">
-                  <ClassicPagination totalItems={$leaderboards.totalCount} pageSize={14} currentPage={$pageQuery.page} {changePage} />
+                  <ClassicPagination totalItems={$leaderboards.metadata.total} pageSize={14} currentPage={$pageQuery.page} {changePage} />
                </div>
                <div class="mobile">
-                  <ArrowPagination pageClicked={changePage} page={$pageQuery.page} maxPages={Math.ceil($leaderboards.totalCount / 14)} />
+                  <ArrowPagination
+                     pageClicked={changePage}
+                     page={$pageQuery.page}
+                     pageSize={$leaderboards.metadata.itemsPerPage}
+                     maxPages={$leaderboards.metadata.total}
+                  />
                </div>
             {/if}
          </div>

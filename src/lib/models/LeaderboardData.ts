@@ -1,4 +1,5 @@
 import type { LeaderboardPlayer } from '$lib/models/PlayerData';
+import type { Metadata } from './GenericResponses';
 
 export interface Leaderboard {
    leaderboardInfo: LeaderboardInfo;
@@ -32,7 +33,12 @@ export interface LeaderboardInfo {
 
 export interface LeaderboardInfoCollection {
    leaderboards: LeaderboardInfo[];
-   totalCount: number;
+   metadata: Metadata;
+}
+
+export interface ScoreCollection {
+   scores: Score[];
+   metadata: Metadata;
 }
 
 export interface Difficulty {

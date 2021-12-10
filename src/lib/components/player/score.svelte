@@ -5,7 +5,7 @@
    import { rankToPage } from '$lib/utils/helpers';
    import PlayerScoreComponent from './player-score.svelte';
    import { fly } from 'svelte/transition';
-   import type { Score } from '$lib/models/LeaderboardData';
+   import type { Score, ScoreCollection } from '$lib/models/LeaderboardData';
    import queryString from 'query-string';
    import Loader from '$lib/components/common/loader.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
@@ -24,9 +24,7 @@
    export let expanded: boolean = false;
    export let playerId: string = undefined;
 
-   const scoresPerPage = 12;
-
-   let leaderboardData: Score[];
+   let leaderboardData: ScoreCollection;
    let leaderboardDataLoading: boolean = false;
    let leaderboardPage: number = Math.ceil(score.score.rank / 12);
    let leaderboardPageDirection: number = 1;
@@ -39,7 +37,7 @@
       }
    }
 
-   let scoreData: Writable<Score[]>;
+   let scoreData: Writable<ScoreCollection>;
    let scoreDataError: Writable<globalThis.Error>;
    let refreshScores: (refreshOptions?: AccioRefreshOptions) => Promise<void>;
 
@@ -61,7 +59,7 @@
             data: tmpScoreData,
             error: tmpScoreDataError,
             refresh: tmpRefreshScores
-         } = useAccio<Score[]>(
+         } = useAccio<ScoreCollection>(
             queryString.stringifyUrl({
                url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
                query: { page: leaderboardPage }
@@ -127,21 +125,32 @@
          <Loader displayOver={true} />
       {/if}
       <div class:blur={leaderboardDataLoading}>
-         <div class="tableWrapper">
-            <LeaderboardGrid
-               leaderboardScores={$scoreData}
-               leaderboard={score.leaderboard}
-               pageDirection={leaderboardPageDirection}
-               showScoreModal={modalOpen}
-               playerHighlight={playerId}
-            />
-         </div>
          {#if $scoreData && !leaderboardDataLoading}
+            <div class="tableWrapper">
+               <LeaderboardGrid
+                  leaderboardScores={$scoreData.scores}
+                  leaderboard={score.leaderboard}
+                  pageDirection={leaderboardPageDirection}
+                  showScoreModal={modalOpen}
+                  playerHighlight={playerId}
+               />
+            </div>
             <div class="pagination desktop tablet">
-               <ClassicPagination totalItems={score.leaderboard.plays} pageSize={scoresPerPage} currentPage={leaderboardPage} {changePage} />
+               <ClassicPagination
+                  totalItems={$scoreData.metadata.total}
+                  pageSize={$scoreData.metadata.itemsPerPage}
+                  currentPage={leaderboardPage}
+                  {changePage}
+               />
             </div>
             <div class="mobile">
-               <ArrowPagination pageClicked={changePage} page={leaderboardPage} maxPages={Math.ceil(score.leaderboard.plays / scoresPerPage)} withFirstLast={true} />
+               <ArrowPagination
+                  pageClicked={changePage}
+                  page={leaderboardPage}
+                  maxPages={$scoreData.metadata.total}
+                  pageSize={$scoreData.metadata.itemsPerPage}
+                  withFirstLast={true}
+               />
             </div>
          {/if}
          {#if $scoreDataError}

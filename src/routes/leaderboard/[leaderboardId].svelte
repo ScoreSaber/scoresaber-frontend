@@ -12,7 +12,7 @@
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import { page } from '$app/stores';
-   import type { Difficulty, LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
+   import type { Difficulty, LeaderboardInfo, Score, ScoreCollection } from '$lib/models/LeaderboardData';
    import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import queryString from 'query-string';
@@ -87,7 +87,7 @@
       data: leaderboardScores,
       error: leaderboardScoresError,
       refresh: refreshLeaderboardScores
-   } = useAccio<Score[]>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.query.toString()), { fetcher: axios });
+   } = useAccio<ScoreCollection>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.query.toString()), { fetcher: axios });
 
    function onLeaderboardSuccess(data: LeaderboardInfo) {
       setBackground(data.coverImage);
@@ -226,34 +226,38 @@ Stars: ${metadata.stars}★`}
                      <Loader displayOver={true} />
                   {/if}
                   <DifficultySelection diffs={filteredDiffs} currentDiff={$leaderboard.difficulty} />
-
-                  <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
-                     {#if $leaderboardScores?.length > 0}
-                        <LeaderboardGrid
-                           playerHighlight={$userData?.playerId}
-                           leaderboardScores={$leaderboardScores}
-                           leaderboard={$leaderboard}
-                           {pageDirection}
-                           {showScoreModal}
-                        />
-                     {/if}
-                  </div>
-
-                  {#if $leaderboardScores?.length > 0}
+                  {#if $leaderboardScoresError}
+                     <Error error={$leaderboardScoresError} />
+                  {/if}
+                  {#if $leaderboardScores && !$leaderboardScoresError}
+                     <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
+                        {#if $leaderboardScores.scores?.length > 0}
+                           <LeaderboardGrid
+                              playerHighlight={$userData?.playerId}
+                              leaderboardScores={$leaderboardScores.scores}
+                              leaderboard={$leaderboard}
+                              {pageDirection}
+                              {showScoreModal}
+                           />
+                        {/if}
+                     </div>
                      <div class="desktop">
-                        <ClassicPagination totalItems={$leaderboard.plays} pageSize={12} currentPage={$pageQuery.page} {changePage} />
+                        <ClassicPagination
+                           totalItems={$leaderboardScores.metadata.total}
+                           pageSize={$leaderboardScores.metadata.itemsPerPage}
+                           currentPage={$pageQuery.page}
+                           {changePage}
+                        />
                      </div>
                      <div class="mobile">
                         <ArrowPagination
                            pageClicked={changePage}
                            page={$pageQuery.page}
-                           maxPages={Math.ceil($leaderboard.plays / 12)}
+                           pageSize={$leaderboardScores.metadata.itemsPerPage}
+                           maxPages={$leaderboardScores.metadata.total}
                            withFirstLast={true}
                         />
                      </div>
-                  {/if}
-                  {#if $leaderboardScoresError}
-                     <Error error={$leaderboardScoresError} />
                   {/if}
                </div>
             </div>

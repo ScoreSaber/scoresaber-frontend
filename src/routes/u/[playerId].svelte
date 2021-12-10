@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
+   import type { LeaderboardPlayer, Player, PlayerScore, PlayerScoreCollection } from '$lib/models/PlayerData';
    import Error from '$lib/components/common/error.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
@@ -41,7 +41,6 @@
    import Denyah from '$lib/components/misc/denyah.svelte';
 
    export let metadata: Player = undefined;
-   const scoresPerPage = 8;
    $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });
 
    function getPlayerInfoUrl(playerId: string) {
@@ -75,7 +74,7 @@
       refresh: refreshScores,
       initialLoadComplete: scoreInitialLoadComplete,
       loading: scoreDataLoading
-   } = useAccio<PlayerScore[]>(getPlayerScoresUrl($page.params.playerId, $page.query.toString()), { fetcher: axios });
+   } = useAccio<PlayerScoreCollection>(getPlayerScoresUrl($page.params.playerId, $page.query.toString()), { fetcher: axios });
 
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser && p.path.indexOf('/u/') > -1) {
@@ -298,21 +297,22 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                <ArrowPagination
                   pageClicked={changePage}
                   page={$pageQuery.page}
-                  maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
+                  pageSize={$scoreData.metadata.itemsPerPage}
+                  maxPages={$scoreData.metadata.total}
                   withFirstLast={true}
                />
             </div>
             <div class="ranking songs">
                <div class="ranking songs gridTable" class:loadingBlur={$scoreDataLoading}>
-                  {#each $scoreData ?? [] as score, i (score.score.id)}
+                  {#each $scoreData.playerScores ?? [] as score, i (score.score.id)}
                      <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData.id} />
                   {/each}
                </div>
             </div>
             <div class="pagination desktop tablet">
                <ClassicPagination
-                  totalItems={$playerData.scoreStats.totalPlayCount}
-                  pageSize={scoresPerPage}
+                  totalItems={$scoreData.metadata.total}
+                  pageSize={$scoreData.metadata.itemsPerPage}
                   currentPage={$pageQuery.page}
                   changePage={(e) => changePage(e)}
                />
@@ -321,7 +321,8 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                <ArrowPagination
                   pageClicked={changePage}
                   page={$pageQuery.page}
-                  maxPages={Math.ceil($playerData.scoreStats.totalPlayCount / scoresPerPage)}
+                  pageSize={$scoreData.metadata.itemsPerPage}
+                  maxPages={$scoreData.metadata.total}
                   withFirstLast={true}
                />
             </div>

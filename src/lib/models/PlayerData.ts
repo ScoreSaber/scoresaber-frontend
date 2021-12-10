@@ -1,4 +1,5 @@
 import type { Score, LeaderboardInfo } from '$lib/models/LeaderboardData';
+import type { Metadata } from './GenericResponses';
 
 export interface Player {
    id: string;
@@ -41,6 +42,15 @@ export interface ScoreStats {
 export interface Badge {
    description: string;
    image: string;
+}
+
+export interface PlayerScoreCollection {
+   playerScores: PlayerScore[];
+   metadata: Metadata;
+}
+export class PlayerCollection {
+   players: Player[];
+   metadata: Metadata;
 }
 
 export enum Role {
