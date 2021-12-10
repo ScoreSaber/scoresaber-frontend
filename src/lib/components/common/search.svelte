@@ -1,5 +1,5 @@
 <script lang="ts">
-   import type { Player } from '$lib/models/PlayerData';
+   import type { Player, PlayerCollection } from '$lib/models/PlayerData';
    import type { LeaderboardInfo, LeaderboardInfoCollection } from '$lib/models/LeaderboardData';
    import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import queryString from 'query-string';
@@ -90,13 +90,13 @@
       searchValue = value.trim();
       cancel.cancel('new search');
       cancel = axios.CancelToken.source();
-      fetcher<Player[]>(
+      fetcher<PlayerCollection>(
          queryString.stringifyUrl({
             url: '/api/players',
             query: { search: value }
          }),
          { cancelToken: cancel.token, withCredentials: true }
-      ).then((players) => (searchResults.players = players));
+      ).then((players) => (searchResults.players = players.players));
       fetcher<LeaderboardInfoCollection>(
          queryString.stringifyUrl({
             url: '/api/leaderboards',
