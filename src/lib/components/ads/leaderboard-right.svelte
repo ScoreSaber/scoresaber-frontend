@@ -9,7 +9,6 @@
          window.adsbygoogle = window.adsbygoogle;
          window.adsbygoogle.push({});
       } catch (ex) {}
-      console.log('1');
       if (!window.canRunAds) {
          showAd = false;
       }

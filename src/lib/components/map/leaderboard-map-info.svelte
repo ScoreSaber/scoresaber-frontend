@@ -2,11 +2,11 @@
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import Permissions from '$lib/utils/permissions';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
-
-   export let leaderboardInfo: LeaderboardInfo;
-
+   import MusicAd from '$lib/components/ads/tfp.svelte';
    import type SearchView from '$lib/components/common/search.svelte';
    import { searchView, userData } from '$lib/global-store';
+   export let leaderboardInfo: LeaderboardInfo;
+
    let searchModal: SearchView;
 
    searchView.subscribe((v) => (searchModal = v));
@@ -56,6 +56,7 @@
          <strong class="text-muted">{leaderboardInfo.songHash}</strong><br />
       </div>
    </div>
+   <MusicAd {leaderboardInfo} />
 </div>
 
 <style>
