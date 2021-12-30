@@ -203,7 +203,8 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
             <!-- Profile picture & badges -->
             <div class="column is-narrow">
                <div class="profile-picture">
-                  <div class="image is-128x128 rounded" style="background-image: url({$playerData.profilePicture}); background-size: cover;">
+                  <div class="image is-128x128 rounded">
+                     <img src={$playerData.profilePicture} alt="{$playerData.name}'s profile picture" />
                      {#if isSteamPlayer}
                         <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
                            <span class="icon is-small">
@@ -395,6 +396,11 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
    .profile-picture .admin {
       top: 30px;
       right: -15px;
+   }
+
+   .profile-picture .image img {
+      position: absolute;
+      border-radius: 100%;
    }
 
    .title-header {
