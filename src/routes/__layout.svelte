@@ -3,7 +3,7 @@
    import fetcher from '$lib/utils/fetcher';
    import poster from '$lib/utils/poster';
    import type { UserData, TokenResponse } from '$lib/models/UserData';
-   import { background, userData, snowVisible } from '$lib/global-store';
+   import { background, userData } from '$lib/global-store';
    import { useAccio } from '$lib/utils/accio';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
@@ -65,14 +65,14 @@
    {/key}
    <div class="cover" />
    <Navbar />
-   <div id="snow" class="snow {$snowVisible ? 'visible' : ''}">
+   <!-- <div id="snow" class="snow {$snowVisible ? 'visible' : ''}">
       {#each Array(30) as _, i}
          <div class="snowflake" />
          {#if $page.path === '/u/76561198064659288'}
             <div class="snowflake denyah" />
          {/if}
       {/each}
-   </div>
+   </div> -->
    <div class="page-container content">
       <slot />
    </div>

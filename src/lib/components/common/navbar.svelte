@@ -7,8 +7,6 @@
    import Announcement from './announcement.svelte';
    import permissions from '$lib/utils/permissions';
    $: loggedIn = false;
-   $: showGetChristmasAnnouncement = true;
-   $: showChristmasAnnouncement = false;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
    let menuButton: HTMLAnchorElement;
@@ -42,16 +40,6 @@
    function handleClick() {
       isExpanded = false;
    }
-   userData.subscribe((u) => {
-      if (u) {
-         loggedIn = true;
-         if (permissions.checkPermissionNumber($userData.permissions, permissions.security.PPFARMER)) {
-            showChristmasAnnouncement = true;
-            showGetChristmasAnnouncement = false;
-            localStorage.setItem('holiday', 'closed');
-         }
-      }
-   });
 </script>
 
 <SearchView bind:this={searchModal} />
@@ -68,35 +56,6 @@
    }}
    on:keydown={handleWindowKeydown}
 />
-
-{#if showGetChristmasAnnouncement}
-   <Announcement id="holiday" rememberClose={true}>
-      <div class="mr-2 image-container">
-         <img alt="badge" src="{CDN_URL}/badges/Holiday-Supporter.gif" />
-      </div>
-      <div class="announcement-with-image">
-         <span
-            >Happy Holidays! To celebrate, ScoreSaber is offering a limited edition profile badge to all existing & new tier 2 Patreon supporters till
-            December 31st.</span
-         >
-
-         <span><a class="announcement-link" href="https://patreon.com/scoresaber">Click here</a> to get it!</span>
-      </div>
-   </Announcement>
-{/if}
-
-{#if showChristmasAnnouncement}
-   <Announcement id="holiday-supporter" rememberClose={true}>
-      <div class="mr-2 image-container">
-         <img alt="badge" src="{CDN_URL}/badges/Holiday-Supporter.gif" />
-      </div>
-      <div class="announcement-with-image">
-         <span>Happy Holidays! Because you're a tier 2 supporter for ScoreSaber during the holiday season we have gifted you this nifty badge!</span>
-
-         <span><a class="announcement-link" href="/u/{$userData.playerId}">Click here</a> to see it on your profile!</span>
-      </div>
-   </Announcement>
-{/if}
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->
