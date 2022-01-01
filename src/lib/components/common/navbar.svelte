@@ -4,8 +4,6 @@
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
    import { onMount } from 'svelte';
-   import Announcement from './announcement.svelte';
-   import permissions from '$lib/utils/permissions';
    $: loggedIn = false;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
@@ -30,6 +28,7 @@
       await fetcher('/api/auth/logout', { withCredentials: true });
       location.reload();
    }
+
    function handleWindowKeydown({ key, metaKey, ctrlKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
       if (key == 'Escape') return searchModal?.setVisibility(false);
       if (key == '/' && (metaKey || ctrlKey) && !searchModal.isVisible()) {
@@ -37,9 +36,16 @@
          preventDefault();
       }
    }
+
    function handleClick() {
       isExpanded = false;
    }
+
+   userData.subscribe((u) => {
+      if (u) {
+         loggedIn = true;
+      }
+   });
 </script>
 
 <SearchView bind:this={searchModal} />
