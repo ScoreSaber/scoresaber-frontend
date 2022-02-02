@@ -15,21 +15,27 @@
 
    let timeout = null;
 
+   function forwardInput() {
+      $requestCancel.cancel('Input Changed');
+      updateCancelToken();
+      if (value === '') value = null;
+      onInput(value);
+   }
+
    function onChange() {
       if (timeout) {
          clearTimeout(timeout);
       }
-      timeout = setTimeout(() => {
-         $requestCancel.cancel('Input Changed');
-         updateCancelToken();
-         if (value === '') value = null;
-         onInput(value);
-      }, 1000);
+      timeout = setTimeout(forwardInput, 1000);
    }
 
    function onKeyDown(e: KeyboardEvent) {
+      if (timeout) {
+         clearTimeout(timeout);
+         timeout = null;
+      }
       if (e.key === 'Enter') {
-         onInput(value);
+         forwardInput();
       }
    }
 
