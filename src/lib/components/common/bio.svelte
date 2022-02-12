@@ -53,10 +53,8 @@
          {/if}
       </div>
    {/if}
-{/if}
-
-{#if permissions.checkPermissionNumber(player.permissions, permissions.security.PPFARMER)}
-   {#if userData && userData.playerId !== player.id}
+{:else if permissions.checkPermissionNumber(player.permissions, permissions.security.PPFARMER)}
+   {#if userData.playerId !== player.id}
       {#if player.bio}
          <div class="window-header">{player.name}'s bio</div>
          <div class="bio window has-shadow">
