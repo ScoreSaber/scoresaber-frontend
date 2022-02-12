@@ -7,7 +7,7 @@
       skin: 'oxide-dark',
       content_css: 'dark',
       height: '240',
-      plugins: 'image lists link media emoticons help',
+      plugins: 'image lists link media emoticons help hr',
       toolbar:
          'undo redo | styleselect | bold italic | image link media emoticons | numlist bullist | alignleft aligncenter alignright alignjustify | outdent indent',
       branding: false,
@@ -17,7 +17,7 @@
          view: { title: 'View', items: 'code | visualaid visualchars visualblocks | spellchecker | preview fullscreen' },
          insert: {
             title: 'Insert',
-            items: 'image link media template | emoticons'
+            items: 'image link media template hr | emoticons'
          },
          format: {
             title: 'Format',
