@@ -44,52 +44,63 @@
    }
 </script>
 
-{#if userData && permissions.checkPermissionNumber(userData.permissions, permissions.security.ADMIN)}
-   <div class="window-header">{player.name}'s bio</div>
-   <div class="bio window has-shadow">
-      <!-- No bio -->
-      {#if !editing && !preview && !player.bio}
-         <div in:fly={{ y: 20, duration: 1000 }} class="is-center">
-            <h4>Your bio is currently empty</h4>
-            <button on:click={toggleEditing} class="button is-info is-small ">
-               <span>Edit Bio</span>
-            </button>
+{#if userData && permissions.checkPermissionNumber(player.permissions, permissions.security.PPFARMER)}
+   {#if userData.playerId !== player.id}
+      {#if player.bio}
+         <div class="window-header">{player.name}'s bio</div>
+         <div class="bio window has-shadow">
+            {#if player.bio && !editing && !preview}
+               {@html player.bio}
+            {/if}
          </div>
       {/if}
-      <!-- Has bio  -->
-      {#if player.bio && !editing && !preview}
-         {@html player.bio}
-         {#if userData.playerId == player.id}
+   {:else}
+      <div class="window-header">{player.name}'s bio</div>
+      <div class="bio window has-shadow">
+         <!-- No bio -->
+         {#if !editing && !preview && !player.bio}
+            <div in:fly={{ y: 20, duration: 1000 }} class="is-center">
+               <h4>Your bio is currently empty</h4>
+               <button on:click={toggleEditing} class="button is-info is-small ">
+                  <span>Edit Bio</span>
+               </button>
+            </div>
+         {/if}
+         <!-- Has bio  -->
+         {#if player.bio && !editing && !preview}
+            {@html player.bio}
+            {#if userData.playerId == player.id}
+               <br />
+               <button on:click={toggleEditing} class="button is-info is-small">
+                  <span>Edit Bio</span>
+               </button>
+            {/if}
+         {/if}
+         <!-- Is editing bio -->
+         {#if editing}
+            <div class="editor" in:fly={{ y: -20, duration: 1000 }}>
+               <RichText bind:value={richTextValue} />
+               <button on:click={submitBio} class="button is-success is-small mt-2">
+                  <span>Save bio</span>
+               </button>
+               <button on:click={togglePreview} class="button is-info is-small mt-2">
+                  <span>Preview</span>
+               </button>
+               <button on:click={toggleEditing} class="button is-danger is-small mt-2">
+                  <span>Cancel Editing</span>
+               </button>
+            </div>
+         {/if}
+         <!-- Is previewing bio -->
+         {#if preview}
+            {@html richTextValue}
             <br />
-            <button on:click={toggleEditing} class="button is-info is-small">
-               <span>Edit Bio</span>
+            <button on:click={togglePreview} class="button is-info is-small mt-2">
+               <span>Go back to editing</span>
             </button>
          {/if}
-      {/if}
-      <!-- Is editing bio -->
-      {#if editing}
-         <div class="editor" in:fly={{ y: -20, duration: 1000 }}>
-            <RichText bind:value={richTextValue} />
-            <button on:click={submitBio} class="button is-success is-small mt-2">
-               <span>Save bio</span>
-            </button>
-            <button on:click={togglePreview} class="button is-info is-small mt-2">
-               <span>Preview</span>
-            </button>
-            <button on:click={toggleEditing} class="button is-danger is-small mt-2">
-               <span>Cancel Editing</span>
-            </button>
-         </div>
-      {/if}
-      <!-- Is previewing bio -->
-      {#if preview}
-         {@html richTextValue}
-         <br />
-         <button on:click={togglePreview} class="button is-info is-small mt-2">
-            <span>Go back to editing</span>
-         </button>
-      {/if}
-   </div>
+      </div>
+   {/if}
 {/if}
 
 <style>
