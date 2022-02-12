@@ -16,7 +16,7 @@
    import CountryImage from '$lib/components/image/country-image.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
-   import queryString, { parse } from 'query-string';
+   import queryString from 'query-string';
    import { pageQueryStore } from '$lib/query-store';
    import { rankToPage } from '$lib/utils/helpers';
    import { page } from '$app/stores';
@@ -74,7 +74,7 @@
    } = useAccio<PlayerScoreCollection>(getPlayerScoresUrl($page.params.playerId, $page.url.searchParams.toString()), { fetcher: axios });
 
    const pageUnsubscribe = page.subscribe((p) => {
-      if (browser && p.url.searchParams.toString().indexOf('/u/') > -1) {
+      if (browser && p.url.toString().indexOf('/u/') > -1) {
          refreshScores({
             newUrl: getPlayerScoresUrl(p.params.playerId, p.url.searchParams.toString()),
             softRefresh: true
