@@ -4,7 +4,12 @@
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
    import { onMount } from 'svelte';
+   import permissions from '$lib/utils/permissions';
+   import Announcement from '$lib/components/common/announcement.svelte';
    $: loggedIn = false;
+
+   $: showNormalPost = true;
+   $: showPPFarmerPost = false;
    let searchModal: SearchView;
    let userMenuVisible: boolean = false;
    let menuButton: HTMLAnchorElement;
@@ -44,6 +49,11 @@
    userData.subscribe((u) => {
       if (u) {
          loggedIn = true;
+         if (permissions.checkPermissionNumber($userData.permissions, permissions.security.PPFARMER)) {
+            showPPFarmerPost = true;
+            showNormalPost = false;
+            localStorage.setItem('bio', 'closed');
+         }
       }
    });
 </script>
@@ -62,6 +72,23 @@
    }}
    on:keydown={handleWindowKeydown}
 />
+
+{#if showNormalPost}
+   <Announcement id="bio" rememberClose={true}>
+      <div class="announcement-with-image">
+         <span>Profile Bio's have been added and Account Migrations are now possible</span>
+         <span><a class="announcement-link" href="https://patreon.com/scoresaber">click here</a> to read our blog post to learn more!</span>
+      </div>
+   </Announcement>
+{/if}
+{#if showPPFarmerPost}
+   <Announcement id="bio-supporter" rememberClose={true}>
+      <div class="announcement-with-image">
+         <span>Because you're a tier 2 supporter for ScoreSaber you now have the ability to add a bio to your profile</span>
+         <span><a class="announcement-link" href="/u/{$userData.playerId}">click here</a> to go to your profile and create your new bio!</span>
+      </div>
+   </Announcement>
+{/if}
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->
@@ -494,7 +521,7 @@
       flex-shrink: 0;
    } */
 
-   /* .announcement-link {
+   .announcement-link {
       color: #fff;
       font-weight: 600;
       text-decoration: underline;
@@ -502,5 +529,5 @@
    }
    .announcement-link:hover {
       color: var(--scoreSaberYellow);
-   } */
+   }
 </style>
