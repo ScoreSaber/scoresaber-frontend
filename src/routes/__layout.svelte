@@ -51,7 +51,7 @@
          window.scrollTo(0, scrollY);
          if (typeof gtag !== 'undefined') {
             gtag('config', 'UA-121352342-1', {
-               page_path: $page.path
+               page_path: $page.url.pathname
             });
          }
       });

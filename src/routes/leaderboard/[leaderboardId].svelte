@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
    import { loadMetadata } from '$lib/metadata-loader';
 
-   export async function load({ fetch, page }) {
-      return await loadMetadata(fetch, `/api/leaderboard/by-id/${page.params.leaderboardId}/info`);
+   export async function load({ fetch, params }) {
+      return await loadMetadata(fetch, `/api/leaderboard/by-id/${params.leaderboardId}/info`);
    }
 </script>
 
@@ -87,7 +87,7 @@
       data: leaderboardScores,
       error: leaderboardScoresError,
       refresh: refreshLeaderboardScores
-   } = useAccio<ScoreCollection>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.query.toString()), { fetcher: axios });
+   } = useAccio<ScoreCollection>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.url.searchParams.toString()), { fetcher: axios });
 
    function onLeaderboardSuccess(data: LeaderboardInfo) {
       setBackground(data.coverImage);
@@ -154,7 +154,7 @@
       if (browser) {
          loading = true;
          await refreshLeaderboardScores({
-            newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, p.query.toString()),
+            newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, p.url.searchParams.toString()),
             softRefresh: true
          });
          if (leaderboardId != p.params.leaderboardId) {

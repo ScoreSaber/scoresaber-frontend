@@ -9,7 +9,7 @@ export function pageQueryStore<T extends object>(props: T) {
    let queryStore = writable<Partial<T>>(props);
    let initialLoad = true;
    page.subscribe((p) => {
-      let query = queryString.parse(p.query.toString(), { parseNumbers: true });
+      let query = queryString.parse(p.url.searchParams.toString(), { parseNumbers: true });
 
       // set the default page to 1 after navigation if the query params do not contain the page parameter and the original props contained this field
       if ('page' in props && !query?.page) query.page = 1;
@@ -29,10 +29,13 @@ export function pageQueryStore<T extends object>(props: T) {
    });
    // removes null values from query string
    const queryFilter = (query: Partial<T>) => {
-      return Object.keys(query).filter((key) => query[key] !== null).map((key) => {
-         return { [key]: query[key] };
-      }).reduce((a, b) => ({ ...a, ...b }), {});
-   }
+      return Object.keys(query)
+         .filter((key) => query[key] !== null)
+         .map((key) => {
+            return { [key]: query[key] };
+         })
+         .reduce((a, b) => ({ ...a, ...b }), {});
+   };
    return {
       subscribe: queryStore.subscribe,
       updateSingle: async (prop: keyof T, v: any): Promise<void> => {

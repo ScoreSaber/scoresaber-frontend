@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
    import { loadMetadata } from '$lib/metadata-loader';
 
-   export async function load({ fetch, page }) {
-      return await loadMetadata(fetch, `/api/player/${page.params.playerId}/full`);
+   export async function load({ fetch, params }) {
+      return await loadMetadata(fetch, `/api/player/${params.playerId}/full`);
    }
 </script>
 
@@ -69,12 +69,12 @@
       refresh: refreshScores,
       initialLoadComplete: scoreInitialLoadComplete,
       loading: scoreDataLoading
-   } = useAccio<PlayerScoreCollection>(getPlayerScoresUrl($page.params.playerId, $page.query.toString()), { fetcher: axios });
+   } = useAccio<PlayerScoreCollection>(getPlayerScoresUrl($page.params.playerId, $page.url.searchParams.toString()), { fetcher: axios });
 
    const pageUnsubscribe = page.subscribe((p) => {
-      if (browser && p.path.indexOf('/u/') > -1) {
+      if (browser && p.url.searchParams.toString().indexOf('/u/') > -1) {
          refreshScores({
-            newUrl: getPlayerScoresUrl(p.params.playerId, p.query.toString()),
+            newUrl: getPlayerScoresUrl(p.params.playerId, p.url.searchParams.toString()),
             softRefresh: true
          });
          refreshPlayerData({ newUrl: getPlayerInfoUrl(p.params.playerId) });

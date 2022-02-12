@@ -66,7 +66,7 @@
    } = useAccio<LeaderboardInfoCollection>(
       queryString.stringifyUrl({
          url: '/api/leaderboards',
-         query: queryString.parse($page.query.toString())
+         query: queryString.parse($page.url.searchParams.toString())
       }),
       { fetcher: axios }
    );
@@ -136,7 +136,7 @@
          refreshLeaderboards({
             newUrl: queryString.stringifyUrl({
                url: '/api/leaderboards',
-               query: queryString.parse(p.query.toString())
+               query: queryString.parse(p.url.searchParams.toString())
             })
          });
       }

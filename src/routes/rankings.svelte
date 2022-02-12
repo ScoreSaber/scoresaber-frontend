@@ -50,7 +50,7 @@
    } = useAccio<PlayerCollection>(
       queryString.stringifyUrl({
          url: '/api/players?withMetadata=true',
-         query: queryString.parse($page.query.toString())
+         query: queryString.parse($page.url.searchParams.toString())
       }),
       { fetcher: axios, onSuccess: onRankingsSuccess }
    );
@@ -75,7 +75,7 @@
          await refreshRankings({
             newUrl: queryString.stringifyUrl({
                url: '/api/players',
-               query: queryString.parse(p.query.toString())
+               query: queryString.parse(p.url.searchParams.toString())
             }),
             softRefresh: true
          });
