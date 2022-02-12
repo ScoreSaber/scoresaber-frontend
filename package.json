@@ -27,6 +27,7 @@
    },
    "type": "module",
    "dependencies": {
+      "@tinymce/tinymce-svelte": "^0.1.2",
       "@types/country-list": "^2.1.0",
       "axios": "^0.23.0",
       "bulma": "^0.9.3",

@@ -16,7 +16,7 @@
    import CountryImage from '$lib/components/image/country-image.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
-   import queryString from 'query-string';
+   import queryString, { parse } from 'query-string';
    import { pageQueryStore } from '$lib/query-store';
    import { rankToPage } from '$lib/utils/helpers';
    import { page } from '$app/stores';
@@ -32,13 +32,14 @@
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import { modal, setBackground, userData } from '$lib/global-store';
+   import { modal, userData } from '$lib/global-store';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
    import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
    import fetcher from '$lib/utils/fetcher';
-   import Permissions from '$lib/utils/permissions';
+   import permissions from '$lib/utils/permissions';
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import Denyah from '$lib/components/misc/denyah.svelte';
+   import Bio, { SaveStatus } from '$lib/components/common/bio.svelte';
 
    export let metadata: Player = undefined;
    $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });
@@ -59,13 +60,7 @@
       error: playerDataError,
       refresh: refreshPlayerData
    } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), {
-      fetcher: axios,
-      onSuccess: (data) =>
-         setBackground(
-            $page.params.playerId === '76561198064659288'
-               ? 'https://cdn.discordapp.com/attachments/774679084646924288/915636524643680326/denyah.gif'
-               : data.profilePicture
-         )
+      fetcher: axios
    });
 
    const {
@@ -85,6 +80,7 @@
          refreshPlayerData({ newUrl: getPlayerInfoUrl(p.params.playerId) });
       }
    });
+
    onDestroy(pageUnsubscribe);
 
    const sortButtons: buttonGroupItem[] = [
@@ -166,6 +162,17 @@
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 
+   function handleBioSaveStatus(status: SaveStatus, error?: string) {
+      switch (status) {
+         case SaveStatus.Started: {
+            playerData.set(undefined);
+         }
+         case SaveStatus.Completed: {
+            refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+         }
+      }
+   }
+
    let isSteamPlayer: boolean;
    $: isSteamPlayer = $playerData?.id && parseInt($playerData.id, 10) >= 70000000000000000;
 </script>
@@ -212,7 +219,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                            </span>
                         </button>
                      {/if}
-                     {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
+                     {#if $userData && permissions.checkPermissionNumber($userData.permissions, permissions.security.ADMIN)}
                         <button on:click={() => openAdminModal()} class="button admin is-small is-dark mt-2" title="Admin Actions">
                            <span class="icon is-small">
                               <i class="fas fa-users-cog" />
@@ -282,6 +289,7 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                <RankChart player={$playerData} />
             {/if}
          </div>
+         <Bio saveStatusUpdate={handleBioSaveStatus} player={$playerData} userData={$userData} />
       {/key}
    {/if}
    <HorizontalAd />
