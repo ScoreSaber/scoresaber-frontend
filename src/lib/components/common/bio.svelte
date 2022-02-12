@@ -44,8 +44,19 @@
    }
 </script>
 
-{#if userData && permissions.checkPermissionNumber(player.permissions, permissions.security.PPFARMER)}
-   {#if userData.playerId !== player.id}
+{#if !userData}
+   {#if player.bio}
+      <div class="window-header">{player.name}'s bio</div>
+      <div class="bio window has-shadow">
+         {#if player.bio && !editing && !preview}
+            {@html player.bio}
+         {/if}
+      </div>
+   {/if}
+{/if}
+
+{#if permissions.checkPermissionNumber(player.permissions, permissions.security.PPFARMER)}
+   {#if userData && userData.playerId !== player.id}
       {#if player.bio}
          <div class="window-header">{player.name}'s bio</div>
          <div class="bio window has-shadow">
