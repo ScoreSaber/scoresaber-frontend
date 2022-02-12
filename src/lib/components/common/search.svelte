@@ -19,8 +19,10 @@
    export const isVisible = () => visible;
 
    interface SearchResults {
-      players: Player[] | 'loading';
-      leaderboards: LeaderboardInfo[] | 'loading';
+      players: Player[];
+      leaderboards: LeaderboardInfo[];
+      loading?: boolean;
+      typing?: boolean;
    }
 
    let searchResults: SearchResults = {
@@ -67,9 +69,9 @@
             scrollToActive();
             break;
          case 'Enter':
-            if (focusElement < searchResults.players.length && searchResults.players !== 'loading') {
+            if (focusElement < searchResults.players.length && !searchResults.loading) {
                goto(`/u/${searchResults.players[focusElement].id}`);
-            } else if (searchResults.leaderboards !== 'loading') {
+            } else if (!searchResults.loading) {
                const leaderboard = searchResults.leaderboards[focusElement - searchResults.players.length];
                goto(`/leaderboard/${leaderboard.id}`);
             }
@@ -86,42 +88,51 @@
       }
    };
 
-   export const search = (value: string) => {
+   export const search = async (value: string) => {
       searchValue = value.trim();
       cancel.cancel('new search');
       cancel = axios.CancelToken.source();
-      fetcher<PlayerCollection>(
-         queryString.stringifyUrl({
-            url: '/api/players',
-            query: { search: value }
-         }),
-         { cancelToken: cancel.token, withCredentials: true }
-      ).then((players) => (searchResults.players = players.players));
-      fetcher<LeaderboardInfoCollection>(
-         queryString.stringifyUrl({
-            url: '/api/leaderboards',
-            query: {
-               search: searchValue,
-               category: 2,
-               sort: 0
-            }
-         }),
-         { cancelToken: cancel.token, withCredentials: true }
-      )
-         .then((leaderboards) => (searchResults.leaderboards = leaderboards.leaderboards))
-         .catch(absorbCancel);
+      Promise.all([
+         fetcher<PlayerCollection>(
+            queryString.stringifyUrl({
+               url: '/api/players',
+               query: { search: value }
+            }),
+            { cancelToken: cancel.token, withCredentials: true }
+         ),
+         fetcher<LeaderboardInfoCollection>(
+            queryString.stringifyUrl({
+               url: '/api/leaderboards',
+               query: {
+                  search: searchValue,
+                  category: 2,
+                  sort: 0
+               }
+            }),
+            { cancelToken: cancel.token, withCredentials: true }
+         )
+      ])
+         .then(([{ players }, { leaderboards }]) => {
+            searchResults = { players, leaderboards };
+         })
+         .catch(() => {
+            searchResults = { players: [], leaderboards: [] };
+         });
    };
 
    const handleInput = () => {
       searchResults = {
          players: [],
-         leaderboards: []
+         leaderboards: [],
+         loading: true,
+         typing: true
       };
       focusElement = 0;
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
+         searchResults.typing = false;
          search(searchValue);
-      }, 1000);
+      }, 300);
    };
 </script>
 
@@ -130,9 +141,15 @@
    <div class="search-wrapper">
       <div class="search-box">
          <div class="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            {#if !searchResults.loading}
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+               </svg>
+            {:else if searchResults.typing}
+               <img src="/images/typing.svg" alt="Waiting..." />
+            {:else}
+               <img src="/images/loading.svg" alt="Loading..." />
+            {/if}
          </div>
          <input bind:value={searchValue} bind:this={inputBox} on:input={handleInput} on:keydown={handleKeydown} type="search" placeholder="Search" />
          <button on:click={() => setVisibility(false)} class="close" aria-label="close"
@@ -141,18 +158,18 @@
             </svg></button
          >
       </div>
-      <div class="search-results" bind:this={resultsElement}>
-         <div class="results">
-            {#if searchValue.length > 3}
-               <div class="section-title">
-                  <a href="/rankings?search={encodeURIComponent(searchValue)}" title="Advanced Search"
-                     >Players <i class="fa fa-external-link-alt" /></a
-                  >
-               </div>
-            {/if}
-            {#if searchResults.players == 'loading'}
-               <div>Loading...</div>
-            {:else}
+      {#if searchResults.loading}
+         <!-- loading -->
+      {:else}
+         <div class="search-results" bind:this={resultsElement}>
+            <div class="results">
+               {#if searchValue.length > 3}
+                  <div class="section-title">
+                     <a href="/rankings?search={encodeURIComponent(searchValue)}" title="Advanced Search"
+                        >Players <i class="fa fa-external-link-alt" /></a
+                     >
+                  </div>
+               {/if}
                {#each searchResults.players as player, i}
                   <div class="result {i == focusElement ? 'focus' : ''}">
                      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
@@ -160,27 +177,23 @@
                      <div class="rank">#{player.rank.toLocaleString(navigator?.language ?? 'en-AU')}</div>
                   </div>
                {/each}
-            {/if}
-         </div>
-         <div class="results">
-            {#if searchValue.length > 3}
-               <div class="section-title">
-                  <a href="/leaderboards?search={encodeURIComponent(searchValue)}" title="Advanced Search"
-                     >Leaderboards <i class="fa fa-external-link-alt" /></a
-                  >
-               </div>
-            {/if}
-            {#if searchResults.leaderboards == 'loading'}
-               <div>Loading...</div>
-            {:else}
+            </div>
+            <div class="results">
+               {#if searchValue.length > 3}
+                  <div class="section-title">
+                     <a href="/leaderboards?search={encodeURIComponent(searchValue)}" title="Advanced Search"
+                        >Leaderboards <i class="fa fa-external-link-alt" /></a
+                     >
+                  </div>
+               {/if}
                {#each searchResults.leaderboards as leaderboard, i}
                   <div class="result map {i == focusElement - searchResults.players.length ? 'focus' : ''}">
                      <div><SmallSongInfo {leaderboard} margin={false} /></div>
                   </div>
                {/each}
-            {/if}
+            </div>
          </div>
-      </div>
+      {/if}
    </div>
 </div>
 
