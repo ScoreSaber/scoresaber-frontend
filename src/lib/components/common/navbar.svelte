@@ -138,10 +138,6 @@
       background: #1c1c1c;
    }
 
-   .image-container {
-      flex-shrink: 0;
-   }
-
    header .container {
       display: flex;
       justify-content: space-around;
@@ -494,7 +490,11 @@
       display: block;
    }
 
-   .announcement-link {
+   /* .image-container {
+      flex-shrink: 0;
+   } */
+
+   /* .announcement-link {
       color: #fff;
       font-weight: 600;
       text-decoration: underline;
@@ -502,5 +502,5 @@
    }
    .announcement-link:hover {
       color: var(--scoreSaberYellow);
-   }
+   } */
 </style>
