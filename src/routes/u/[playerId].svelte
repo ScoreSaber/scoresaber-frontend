@@ -40,6 +40,7 @@
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import Denyah from '$lib/components/misc/denyah.svelte';
    import Bio, { SaveStatus } from '$lib/components/common/bio.svelte';
+   import { setBackground } from '$lib/global-store';
 
    export let metadata: Player = undefined;
    $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });
@@ -60,7 +61,8 @@
       error: playerDataError,
       refresh: refreshPlayerData
    } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), {
-      fetcher: axios
+      fetcher: axios,
+      onSuccess: (data) => setBackground(data.profilePicture)
    });
 
    const {
