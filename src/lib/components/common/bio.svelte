@@ -114,7 +114,6 @@
 
 <style>
    .bio {
-      max-height: 320px;
       overflow-y: auto;
    }
 </style>
