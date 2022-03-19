@@ -115,10 +115,10 @@
 
    function searchUpdated(search: string) {
       filterChanged = true;
-      $requestCancel.cancel('Filter Changed');
-      updateCancelToken();
-      search = search.trim();
+      // $requestCancel.cancel('Filter Changed');
+      // updateCancelToken();
       if (search) {
+         search = search.trim();
          if (search.length >= 3) {
             pageQuery.update({
                page: 1,
