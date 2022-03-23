@@ -9,7 +9,7 @@
       <slot />
    </div>
    <div class="line" />
-   <div class="checkbox" />
+   <div class="marker" />
 </div>
 
 <style lang="scss">
@@ -38,18 +38,17 @@
 
          margin-left: -1px;
          flex-direction: row-reverse;
-         .checkbox {
+         .marker {
             transform: translateX(-16px);
             position: relative;
             z-index: 100;
-            /* display: none; */
          }
          .line {
             box-shadow: -30px 0 var(--grey);
          }
       }
 
-      .checkbox {
+      .marker {
          border-radius: 50%;
          width: 30px;
          height: 30px;
@@ -61,7 +60,7 @@
       }
 
       &.completed {
-         .checkbox {
+         .marker {
             background: var(--accent);
          }
       }
