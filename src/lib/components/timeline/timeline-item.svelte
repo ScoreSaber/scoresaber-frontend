@@ -17,6 +17,7 @@
       --accent: attr(data-accent);
       --grey: #333;
       --border-colour: var(--grey);
+      --line-colour: var(--grey);
       &.completed {
          --border-colour: var(--accent);
       }
@@ -44,7 +45,7 @@
             z-index: 100;
          }
          .line {
-            box-shadow: -30px 0 var(--grey);
+            box-shadow: -30px 0 var(--line-colour);
          }
       }
 
@@ -79,10 +80,10 @@
       }
 
       .line {
-         height: 1px;
-         background: var(--grey);
+         height: 2px;
+         background: var(--line-colour);
          flex: 1;
-         box-shadow: 30px 0 var(--grey);
+         box-shadow: 30px 0 var(--line-colour);
       }
    }
 </style>
