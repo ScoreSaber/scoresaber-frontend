@@ -1,3 +1,13 @@
+<script lang="ts" context="module">
+   export type TimelineStep = {
+      title: string;
+      accentColour: string;
+      content: string;
+      isCompleted: boolean;
+      time?: Date;
+   };
+</script>
+
 <script lang="ts">
    export let accentColour = 'var(--scoreSaberYellow)';
    export let isCompleted = false;

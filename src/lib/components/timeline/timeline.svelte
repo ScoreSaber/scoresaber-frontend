@@ -1,14 +1,9 @@
 <script lang="ts" context="module">
-   export type TimelineSteps = {
-      title: string;
-      accentColour: string;
-      content: string;
-      isCompleted: boolean;
-   }[];
+   export type TimelineSteps = TimelineStep[];
 </script>
 
 <script lang="ts">
-   import TimelineItem from './timeline-item.svelte';
+   import TimelineItem, { TimelineStep } from './timeline-item.svelte';
 
    export let steps: TimelineSteps = [];
 </script>
