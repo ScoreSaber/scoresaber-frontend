@@ -9,14 +9,32 @@
 </script>
 
 <script lang="ts">
-   export let accentColour = 'var(--scoreSaberYellow)';
-   export let isCompleted = false;
+   import type { TimelineSteps } from './timeline.svelte';
+
+   export let step: TimelineStep;
+   const { content, accentColour, isCompleted, time } = step;
+   const dateFormat = Intl.DateTimeFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-AU', {
+      // hour: 'numeric',
+      // hour12: true,
+      // month: 'long',
+      // day: 'numeric',
+      // minute: '2-digit',
+      timeStyle: 'short',
+      dateStyle: 'full',
+      timeZone: typeof navigator !== 'undefined' ? undefined : 'UTC'
+   });
 </script>
 
 <div class="timeline-item {isCompleted ? 'completed' : ''}" style="--accent: {accentColour}">
    <div class="spacer" />
    <div class="body">
       <slot />
+      {#if time}
+         <div class="time">
+            {dateFormat.format(time)}<br />
+            ({dateFormat.resolvedOptions().timeZone})
+         </div>
+      {/if}
    </div>
    <div class="line" />
    <div class="marker" />
@@ -40,6 +58,12 @@
       border-right: solid 2px var(--border-colour);
       grid-row: auto / span 2;
       margin-right: -1px;
+
+      .time {
+         opacity: 0.5;
+         margin-top: 0.5em;
+         min-width: max-content;
+      }
 
       &:nth-child(2n + 1) {
          grid-column: 2;

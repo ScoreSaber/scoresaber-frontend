@@ -6,26 +6,30 @@
       {
          title: '',
          accentColour: 'var(--scoreSaberYellow)',
-         content: 'First reweight - Thursday, March 24th UTC',
-         isCompleted: true
+         content: 'First reweight',
+         isCompleted: true,
+         time: new Date(Date.UTC(2022, 3, 24, 19))
       },
       {
          title: '',
          accentColour: 'var(--scoreSaberYellow)',
-         content: 'Begin curve change discussions - 7:00pm, Saturday, March 26th UTC',
-         isCompleted: false
+         content: 'Begin curve change discussion',
+         isCompleted: false,
+         time: new Date(Date.UTC(2022, 3, 26, 19))
       },
       {
          title: '',
          accentColour: 'var(--scoreSaberYellow)',
-         content: 'Second reweight with curve change - 7:00pm, Sunday, March 30th UTC',
-         isCompleted: false
+         content: 'Second reweight with curve change',
+         isCompleted: false,
+         time: new Date(Date.UTC(2022, 3, 30, 19))
       },
       {
          title: '',
          accentColour: 'var(--scoreSaberYellow)',
-         content: 'Third reweight - 7:00pm, Sunday, April 7th UTC',
-         isCompleted: false
+         content: 'Third reweight',
+         isCompleted: false,
+         time: new Date(Date.UTC(2022, 4, 7, 19))
       }
    ];
 </script>

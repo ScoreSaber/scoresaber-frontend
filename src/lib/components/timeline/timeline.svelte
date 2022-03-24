@@ -11,7 +11,7 @@
 <div class="timeline">
    <div class="blank-space" />
    {#each steps as step}
-      <TimelineItem accentColour={step.accentColour} isCompleted={step.isCompleted}>
+      <TimelineItem {step}>
          {step.content}
       </TimelineItem>
    {/each}
