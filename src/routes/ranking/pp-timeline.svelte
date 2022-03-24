@@ -18,13 +18,13 @@
       {
          title: '',
          accentColour: 'var(--scoreSaberYellow)',
-         content: 'Second reweight with curve change - 7:00pm, Sunday, March 27th UTC',
+         content: 'Second reweight with curve change - 7:00pm, Sunday, March 30th UTC',
          isCompleted: false
       },
       {
          title: '',
          accentColour: 'var(--scoreSaberYellow)',
-         content: 'Third reweight - 7:00pm, Sunday, April 3rd UTC',
+         content: 'Third reweight - 7:00pm, Sunday, April 7th UTC',
          isCompleted: false
       }
    ];
