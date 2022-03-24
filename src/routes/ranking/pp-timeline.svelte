@@ -5,31 +5,38 @@
    const steps: TimelineSteps = [
       {
          title: '',
-         accentColour: 'var(--scoreSaberYellow)',
+         accentColour: 'var(--success)',
          content: 'First reweight',
          isCompleted: true,
-         time: new Date(Date.UTC(2022, 3, 24, 19))
+         time: new Date(Date.UTC(2022, 2, 23, 19))
       },
       {
          title: '',
-         accentColour: 'var(--scoreSaberYellow)',
+         accentColour: 'var(--success)',
          content: 'Begin curve change discussion',
          isCompleted: false,
-         time: new Date(Date.UTC(2022, 3, 26, 19))
+         time: new Date(Date.UTC(2022, 2, 26, 19))
       },
       {
          title: '',
-         accentColour: 'var(--scoreSaberYellow)',
+         accentColour: 'var(--success)',
          content: 'Second reweight with curve change',
          isCompleted: false,
-         time: new Date(Date.UTC(2022, 3, 30, 19))
+         time: new Date(Date.UTC(2022, 2, 30, 19))
       },
       {
          title: '',
-         accentColour: 'var(--scoreSaberYellow)',
+         accentColour: 'var(--success)',
          content: 'Third reweight',
          isCompleted: false,
-         time: new Date(Date.UTC(2022, 4, 7, 19))
+         time: new Date(Date.UTC(2022, 3, 13, 19))
+      },
+      {
+         title: '',
+         accentColour: 'var(--success)',
+         content: '(potential) Fourth reweight',
+         isCompleted: false,
+         time: new Date(Date.UTC(2022, 4, 13, 19))
       }
    ];
 </script>
