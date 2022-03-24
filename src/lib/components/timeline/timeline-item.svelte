@@ -14,11 +14,6 @@
    export let step: TimelineStep;
    const { content, accentColour, isCompleted, time } = step;
    const dateFormat = Intl.DateTimeFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-AU', {
-      // hour: 'numeric',
-      // hour12: true,
-      // month: 'long',
-      // day: 'numeric',
-      // minute: '2-digit',
       timeStyle: 'short',
       dateStyle: 'full',
       timeZone: typeof navigator !== 'undefined' ? undefined : 'UTC'
@@ -49,37 +44,42 @@
       &.completed {
          --border-colour: var(--accent);
       }
-      grid-column: 1;
+      grid-column: 2;
       display: flex;
+      flex-direction: row-reverse;
       position: relative;
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
-      border-right: solid 2px var(--border-colour);
+      border-left: solid 3px var(--border-colour);
       grid-row: auto / span 2;
-      margin-right: -1px;
+      margin-left: -1px;
 
       .time {
          opacity: 0.5;
          margin-top: 0.5em;
-         min-width: max-content;
+         word-wrap: break-word;
       }
-
-      &:nth-child(2n + 1) {
-         grid-column: 2;
-         border-right: unset;
-         border-left: solid 2px var(--border-colour);
-         margin-right: 0;
-
-         margin-left: -1px;
-         flex-direction: row-reverse;
-         .marker {
-            transform: translateX(-16px);
-            position: relative;
-            z-index: 100;
+      @media (min-width: 720px) {
+         .time {
+            min-width: 0px;
          }
-         .line {
-            box-shadow: -30px 0 var(--line-colour);
+         &:nth-child(2n) {
+            grid-column: 1;
+            border-left: unset;
+            border-right: solid 2px var(--border-colour);
+            margin-left: 0;
+
+            margin-right: -1px;
+            flex-direction: row;
+            .marker {
+               transform: translateX(16px);
+               position: relative;
+               z-index: 100;
+            }
+            .line {
+               box-shadow: 30px 0 var(--line-colour);
+            }
          }
       }
 
@@ -91,7 +91,7 @@
          position: relative;
          z-index: 1;
          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-         transform: translateX(16px);
+         transform: translateX(-16px);
       }
 
       &.completed {
@@ -103,10 +103,12 @@
       .body {
          border: solid 1px #fff1;
          box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-         max-width: 75%;
+         max-width: calc(100% - 35px);
          padding: 25px;
          background: var(--foreground);
-         flex: 1;
+         display: flex;
+         flex-direction: column;
+         margin: 25px 0;
       }
 
       .spacer {
@@ -117,7 +119,7 @@
          height: 2px;
          background: var(--line-colour);
          flex: 1;
-         box-shadow: 30px 0 var(--line-colour);
+         box-shadow: -30px 0 var(--line-colour);
       }
    }
 </style>

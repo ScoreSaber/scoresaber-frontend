@@ -19,10 +19,14 @@
 
 <style lang="scss">
    .timeline {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
+      @media (min-width: 720px) {
+         grid-template-columns: 1fr 1fr;
+         display: grid;
+         gap: 30px 0;
+      }
       padding: 15px;
-      gap: 30px 0;
    }
 
    .blank-space {
