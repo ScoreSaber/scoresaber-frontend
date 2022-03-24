@@ -73,7 +73,7 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement id="bio" rememberClose={false}>
+<Announcement id="PPv2.9" rememberClose={false}>
    <div class="announcement">
       <span>PPv2.9 has begun it's first stage!</span>
       <span><a class="announcement-link" href="/ranking/pp-timeline">click here</a> to follow it's development!</span>
