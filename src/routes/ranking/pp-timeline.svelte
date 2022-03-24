@@ -42,7 +42,9 @@
             on player performance. An AI has been trained on this data and will be used in all future weightings for new ranked maps with possible
             correction by the reweighting tool after awhile.<br /><br />
             This is a multistage process and all maps will go through 3 rounds of reweighting to help improve our AI, this page is to track PPv2.9's progress.
-            PPv2.9 shouldn't be considered done until each step on this page is marked as completed
+            PPv2.9 shouldn't be considered done until each step on this page is marked as completed<br /> <br />
+            Once the dust has settled, a form will be created for users to submit maps that may be considered overweighted so they can be tuned by our
+            internal tools.
          </div>
       </div>
       <div class="window has-shadow">
