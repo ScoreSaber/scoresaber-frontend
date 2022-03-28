@@ -51,9 +51,11 @@
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
-      border-left: solid 3px var(--border-colour);
+      border: solid var(--border-colour);
+      border-image: linear-gradient(to bottom, transparent 25%, var(--border-colour) 25%, var(--border-colour) 50%, var(--line-colour) 50%) 30;
+      border-width: 0 0 0 3px;
       grid-row: auto / span 2;
-      margin-left: -1px;
+      margin-left: -1.5px;
 
       .time {
          opacity: 0.5;
@@ -66,14 +68,13 @@
          }
          &:nth-child(2n) {
             grid-column: 1;
-            border-left: unset;
-            border-right: solid 2px var(--border-colour);
+            border-width: 0 3px 0 0;
             margin-left: 0;
 
-            margin-right: -1px;
+            margin-right: -1.5px;
             flex-direction: row;
             .marker {
-               transform: translateX(16px);
+               transform: translateX(16.5px);
                position: relative;
                z-index: 100;
             }
@@ -91,7 +92,7 @@
          position: relative;
          z-index: 1;
          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-         transform: translateX(-16px);
+         transform: translateX(-16.5px);
       }
 
       &.completed {
@@ -116,7 +117,7 @@
       }
 
       .line {
-         height: 2px;
+         height: 3px;
          background: var(--line-colour);
          flex: 1;
          box-shadow: -30px 0 var(--line-colour);

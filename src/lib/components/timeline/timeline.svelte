@@ -24,15 +24,12 @@
       @media (min-width: 720px) {
          grid-template-columns: 1fr 1fr;
          display: grid;
-         gap: 30px 0;
       }
       padding: 15px;
    }
 
    .blank-space {
-      /* border: solid 1px red; */
-      padding: 25px;
-      /* height: 25px; */
+      min-height: 79px;
       grid-row: 1;
       grid-column: 2;
    }
