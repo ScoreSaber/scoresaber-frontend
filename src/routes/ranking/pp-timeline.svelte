@@ -12,28 +12,28 @@
       },
       {
          title: '',
-         accentColour: 'var(--success)',
+         accentColour: 'var(--scoreSaberYellow)',
          content: 'Begin curve change discussion',
-         isCompleted: false,
+         isCompleted: true,
          time: new Date(Date.UTC(2022, 2, 26, 19))
       },
       {
          title: '',
-         accentColour: 'var(--success)',
+         accentColour: 'var(--scoreSaberYellow)',
          content: 'Second reweight with curve change',
          isCompleted: false,
          time: new Date(Date.UTC(2022, 2, 30, 19))
       },
       {
          title: '',
-         accentColour: 'var(--success)',
+         accentColour: 'var(--scoreSaberYellow)',
          content: 'Third reweight',
          isCompleted: false,
          time: new Date(Date.UTC(2022, 3, 13, 19))
       },
       {
          title: '',
-         accentColour: 'var(--success)',
+         accentColour: 'var(--scoreSaberYellow)',
          content: '(potential) Fourth reweight',
          isCompleted: false,
          time: new Date(Date.UTC(2022, 4, 13, 19))
