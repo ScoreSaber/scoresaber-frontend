@@ -12,6 +12,7 @@
    import type { TimelineSteps } from './timeline.svelte';
 
    export let step: TimelineStep;
+   export let secondHalfAccent: string = '';
    const { content, accentColour, isCompleted, time } = step;
    const dateFormat = Intl.DateTimeFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-AU', {
       timeStyle: 'short',
@@ -20,7 +21,10 @@
    });
 </script>
 
-<div class="timeline-item {isCompleted ? 'completed' : ''}" style="--accent: {accentColour}">
+<div
+   class="timeline-item {isCompleted ? 'completed' : ''}"
+   style="--accent: {accentColour}; {secondHalfAccent ? `--accent-2: ${secondHalfAccent}` : ''}"
+>
    <div class="spacer" />
    <div class="body">
       <slot />
@@ -41,6 +45,7 @@
       --grey: #333;
       --border-colour: var(--grey);
       --line-colour: var(--grey);
+      --accent-2: var(--line-colour);
       &.completed {
          --border-colour: var(--accent);
       }
@@ -51,9 +56,11 @@
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
-      border-left: solid 3px var(--border-colour);
+      border: solid var(--border-colour);
+      border-image: linear-gradient(to bottom, var(--border-colour) 50%, var(--accent-2) 50%) 30;
+      border-width: 0 0 0 3px;
       grid-row: auto / span 2;
-      margin-left: -1px;
+      margin-left: 30px;
 
       .time {
          opacity: 0.5;
@@ -61,19 +68,20 @@
          word-wrap: break-word;
       }
       @media (min-width: 720px) {
+         margin-left: -1.5px;
+         border-image: linear-gradient(to bottom, transparent 25%, var(--border-colour) 25%, var(--border-colour) 50%, var(--accent-2) 50%) 30;
          .time {
             min-width: 0px;
          }
          &:nth-child(2n) {
             grid-column: 1;
-            border-left: unset;
-            border-right: solid 2px var(--border-colour);
+            border-width: 0 3px 0 0;
             margin-left: 0;
 
-            margin-right: -1px;
+            margin-right: -1.5px;
             flex-direction: row;
             .marker {
-               transform: translateX(16px);
+               transform: translateX(16.5px);
                position: relative;
                z-index: 100;
             }
@@ -91,7 +99,7 @@
          position: relative;
          z-index: 1;
          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-         transform: translateX(-16px);
+         transform: translateX(-16.5px);
       }
 
       &.completed {
@@ -116,7 +124,7 @@
       }
 
       .line {
-         height: 2px;
+         height: 3px;
          background: var(--line-colour);
          flex: 1;
          box-shadow: -30px 0 var(--line-colour);
