@@ -95,8 +95,8 @@
       Promise.all([
          fetcher<PlayerCollection>(
             queryString.stringifyUrl({
-               url: '/api/players/limited',
-               query: { search: value }
+               url: '/api/players',
+               query: { search: value, includeScoreStats: false }
             }),
             { cancelToken: cancel.token, withCredentials: true }
          ),
