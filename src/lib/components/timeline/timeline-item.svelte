@@ -12,6 +12,7 @@
    import type { TimelineSteps } from './timeline.svelte';
 
    export let step: TimelineStep;
+   export let secondHalfAccent: string = '';
    const { content, accentColour, isCompleted, time } = step;
    const dateFormat = Intl.DateTimeFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-AU', {
       timeStyle: 'short',
@@ -20,7 +21,10 @@
    });
 </script>
 
-<div class="timeline-item {isCompleted ? 'completed' : ''}" style="--accent: {accentColour}">
+<div
+   class="timeline-item {isCompleted ? 'completed' : ''}"
+   style="--accent: {accentColour}; {secondHalfAccent ? `--accent-2: ${secondHalfAccent}` : ''}"
+>
    <div class="spacer" />
    <div class="body">
       <slot />
@@ -41,6 +45,7 @@
       --grey: #333;
       --border-colour: var(--grey);
       --line-colour: var(--grey);
+      --accent-2: var(--line-colour);
       &.completed {
          --border-colour: var(--accent);
       }
@@ -52,10 +57,10 @@
       justify-content: center;
       box-sizing: border-box;
       border: solid var(--border-colour);
-      border-image: linear-gradient(to bottom, transparent 25%, var(--border-colour) 25%, var(--border-colour) 50%, var(--line-colour) 50%) 30;
+      border-image: linear-gradient(to bottom, var(--border-colour) 50%, var(--accent-2) 50%) 30;
       border-width: 0 0 0 3px;
       grid-row: auto / span 2;
-      margin-left: -1.5px;
+      margin-left: 30px;
 
       .time {
          opacity: 0.5;
@@ -63,6 +68,8 @@
          word-wrap: break-word;
       }
       @media (min-width: 720px) {
+         margin-left: -1.5px;
+         border-image: linear-gradient(to bottom, transparent 25%, var(--border-colour) 25%, var(--border-colour) 50%, var(--accent-2) 50%) 30;
          .time {
             min-width: 0px;
          }

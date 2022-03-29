@@ -10,8 +10,8 @@
 
 <div class="timeline">
    <div class="blank-space" />
-   {#each steps as step}
-      <TimelineItem {step}>
+   {#each steps as step, i}
+      <TimelineItem {step} secondHalfAccent={steps[i + 1]?.isCompleted ? steps[i + 1]?.accentColour : undefined}>
          {step.content}
       </TimelineItem>
    {/each}
