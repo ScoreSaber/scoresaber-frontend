@@ -74,7 +74,7 @@
          loading = true;
          await refreshRankings({
             newUrl: queryString.stringifyUrl({
-               url: '/api/players?includeScoreStats=false',
+               url: '/api/players',
                query: queryString.parse(p.url.searchParams.toString())
             }),
             softRefresh: true
