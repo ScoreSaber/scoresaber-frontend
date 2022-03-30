@@ -74,7 +74,7 @@
          loading = true;
          await refreshRankings({
             newUrl: queryString.stringifyUrl({
-               url: '/api/players',
+               url: '/api/players?includeScoreStats=false',
                query: queryString.parse(p.url.searchParams.toString())
             }),
             softRefresh: true
@@ -194,9 +194,13 @@
                      <div />
                      <div />
                      <div class="centered">Performance Points</div>
-                     <div class="centered">Total Play Count</div>
-                     <div class="centered">Ranked Play Count</div>
-                     <div class="centered">Average Ranked Accuracy</div>
+                     {#if $rankings.players}
+                        {#if $rankings.players[0].scoreStats}
+                           <div class="centered">Total Play Count</div>
+                           <div class="centered">Ranked Play Count</div>
+                           <div class="centered">Average Ranked Accuracy</div>
+                        {/if}
+                     {/if}
                      <div class="centered">Weekly Change</div>
                   </div>
                   {#each $rankings.players ?? [] as player, i (player.id)}

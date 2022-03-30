@@ -43,16 +43,18 @@
    <div class="pp centered">
       <span class="pp">{player.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span><span class="pp ppLabel">pp</span>
    </div>
+   {#if player.scoreStats}
+      <div class="total-play-count centered">
+         <span>{player.scoreStats.totalPlayCount.toLocaleString('en-US')}</span>
+      </div>
+      <div class="ranked-play-count centered">
+         <span>{player.scoreStats.rankedPlayCount.toLocaleString('en-US')}</span>
+      </div>
+      <div class="ranked-acc centered">
+         <span>{player.scoreStats.averageRankedAccuracy.toFixed(2)}%</span>
+      </div>
+   {/if}
 
-   <div class="total-play-count centered">
-      <span>{player.scoreStats.totalPlayCount.toLocaleString('en-US')}</span>
-   </div>
-   <div class="ranked-play-count centered">
-      <span>{player.scoreStats.rankedPlayCount.toLocaleString('en-US')}</span>
-   </div>
-   <div class="ranked-acc centered">
-      <span>{player.scoreStats.averageRankedAccuracy.toFixed(2)}%</span>
-   </div>
    <div class="difference centered">
       <WeeklyChange {player} />
    </div>
@@ -78,7 +80,9 @@
                </div>
             </div>
             <div>
-               <Stats {player} small={true} />
+               {#if player.scoreStats}
+                  <Stats {player} small={true} />
+               {/if}
             </div>
             <a href="/u/{player.id}" class="full-profile-link">Full profile &rsaquo;</a>
          </div>
@@ -236,8 +240,8 @@
       .table-item {
          grid-template-columns: minmax(2.5rem, min-content) auto auto;
          grid-template-rows: auto auto;
-         grid-row-gap: .25rem;
-         grid-column-gap: .25rem;
+         grid-row-gap: 0.25rem;
+         grid-column-gap: 0.25rem;
       }
 
       .table-item > .rank,
@@ -246,7 +250,7 @@
       }
 
       .table-item > .player {
-         grid-column: 2/span 2;
+         grid-column: 2 / span 2;
       }
 
       .table-item > .pp {
@@ -255,7 +259,7 @@
          justify-content: flex-start;
       }
 
-      .table-item > .ranked-acc{
+      .table-item > .ranked-acc {
          grid-column-start: 3;
          display: inline-flex;
          justify-content: flex-start;
@@ -265,7 +269,7 @@
          grid-column-start: 1;
          grid-row-start: 2;
          justify-content: flex-start;
-         padding-left: .6rem;
+         padding-left: 0.6rem;
       }
    }
 
