@@ -12,16 +12,16 @@
       },
       {
          title: '',
-         accentColour: 'var(--scoreSaberYellow)',
+         accentColour: 'var(--success)',
          content: 'Begin curve change discussion',
          isCompleted: true,
          time: new Date(Date.UTC(2022, 2, 26, 19))
       },
       {
          title: '',
-         accentColour: 'var(--scoreSaberYellow)',
+         accentColour: 'var(--success)',
          content: 'Second reweight with curve change',
-         isCompleted: false,
+         isCompleted: true,
          time: new Date(Date.UTC(2022, 2, 30, 19))
       },
       {
