@@ -3,7 +3,6 @@
 
    export let error: AccioError;
    export let fullpage = false;
-
    console.error(error);
 </script>
 
@@ -13,6 +12,8 @@
       {#if error.message}
          <p>{error.message}</p>
       {/if}
+   {:else if error.status == 503}
+      <h1>{error.message}</h1>
    {:else}
       <h1>Error {error.status ?? ''}</h1>
       <p>Looks like something's gone wrong.</p>
