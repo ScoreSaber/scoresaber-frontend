@@ -122,7 +122,7 @@
 
    @media screen and (max-width: 769px), print {
       .song-info {
-         width: 280px;
+         width: auto;
       }
    }
 
