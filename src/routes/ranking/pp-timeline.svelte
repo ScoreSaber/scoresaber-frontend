@@ -26,15 +26,15 @@
       },
       {
          title: '',
-         accentColour: 'var(--scoreSaberYellow)',
+         accentColour: 'var(--success)',
          content: 'Third reweight',
-         isCompleted: false,
-         time: new Date(Date.UTC(2022, 3, 13, 19))
+         isCompleted: true,
+         time: new Date(Date.UTC(2022, 3, 15, 4))
       },
       {
          title: '',
          accentColour: 'var(--scoreSaberYellow)',
-         content: '(potential) Fourth reweight',
+         content: 'Fourth reweight',
          isCompleted: false,
          time: new Date(Date.UTC(2022, 4, 13, 19))
       }
