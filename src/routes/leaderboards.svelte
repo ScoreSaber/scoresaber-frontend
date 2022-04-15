@@ -89,14 +89,19 @@
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
       pageQuery.updateSingle('ranked', event.target.checked ? 1 : 0);
-      pageQuery.updateSingle('qualified', event.target.checked ? 0 : 1);
+
+      if ($pageQuery.qualified == 1) {
+         pageQuery.updateSingle('qualified', 0);
+      }
    }
 
    function toggleQualified(event) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
       pageQuery.updateSingle('qualified', event.target.checked ? 1 : 0);
-      pageQuery.updateSingle('ranked', event.target.checked ? 0 : 1);
+      if ($pageQuery.ranked == 1) {
+         pageQuery.updateSingle('ranked', 0);
+      }
    }
 
    function changeCategory(event) {
