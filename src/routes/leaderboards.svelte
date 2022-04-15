@@ -37,6 +37,7 @@
       page: number;
       verified: number;
       ranked: 0 | 1;
+      qualified: 0 | 1;
       minStar: number;
       maxStar: number;
       category: 1 | 2 | 3 | 4;
@@ -48,6 +49,7 @@
       page: 1,
       verified: 1,
       ranked: 0,
+      qualified: 0,
       minStar: 0,
       maxStar: 20,
       category: 1,
@@ -87,6 +89,14 @@
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
       pageQuery.updateSingle('ranked', event.target.checked ? 1 : 0);
+      pageQuery.updateSingle('qualified', event.target.checked ? 0 : 1);
+   }
+
+   function toggleQualified(event) {
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      pageQuery.updateSingle('qualified', event.target.checked ? 1 : 0);
+      pageQuery.updateSingle('ranked', event.target.checked ? 0 : 1);
    }
 
    function changeCategory(event) {
@@ -220,6 +230,10 @@
                <input type="checkbox" checked={$pageQuery.ranked == 1} on:click|preventDefault={toggleRanked} />
                Only show ranked leaderboards
             </label>
+            <label class="checkbox">
+               <input type="checkbox" checked={$pageQuery.qualified == 1} on:click|preventDefault={toggleQualified} />
+               Only show qualified leaderboards
+            </label>
          </div>
          <div class="window has-shadow noheading">
             <div class="mb-2">Sort By</div>
@@ -227,6 +241,7 @@
                <select value={getCategoryFromNumber($pageQuery.category)} on:change={changeCategory}>
                   <option value={Category.Trending}>Trending</option>
                   <option value={Category.DateRanked}>Date Ranked</option>
+                  <option value={Category.DateQualified}>Date Qualified</option>
                   <option value={Category.ScoresSet}>Scores Set</option>
                   <option value={Category.StarDifficulty}>Star Difficulty</option>
                   <option value={Category.Author}>Mapper</option>

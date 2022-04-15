@@ -80,7 +80,8 @@ export enum Category {
    DateRanked = 'rank_date',
    ScoresSet = 'scores',
    StarDifficulty = 'max_pp',
-   Author = 'levelAuthorName'
+   Author = 'levelAuthorName',
+   DateQualified = 'qualified_date'
 }
 
 export enum SortDirection {
@@ -105,6 +106,9 @@ export function getCategoryFromNumber(category: number): Category {
       case 4: {
          return Category.Author;
       }
+      case 5: {
+         return Category.DateQualified;
+      }
    }
    return Category.Trending;
 }
@@ -125,6 +129,9 @@ export function getNumberFromCategory(category: Category): number {
       }
       case Category.Author: {
          return 4;
+      }
+      case Category.DateQualified: {
+         return 5;
       }
    }
    return 0;
