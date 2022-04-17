@@ -176,6 +176,20 @@
       refreshLeaderboard({ forceRevalidate: true, softRefresh: true });
    }
 
+   async function handleRankLeaderboard() {
+      const leaderboardId = $leaderboard.id;
+      leaderboard.set(undefined);
+      await poster('/api/ranking/admin/leaderboard/rank', { leaderboardId }, { withCredentials: true });
+      refreshLeaderboard({ forceRevalidate: true, softRefresh: true });
+   }
+
+   async function handleUnrankLeaderboard() {
+      const leaderboardId = $leaderboard.id;
+      leaderboard.set(undefined);
+      await poster('/api/ranking/admin/leaderboard/unrank', { leaderboardId }, { withCredentials: true });
+      refreshLeaderboard({ forceRevalidate: true, softRefresh: true });
+   }
+
    let manualPP: number;
    async function handleManualPP(event) {
       event.preventDefault();
@@ -314,6 +328,12 @@ Stars: ${metadata.stars}★`}
                                        <i class="fab fa-pied-piper-pp" />
                                     </span>
                                  </button>
+                              </p>
+                              <p class="control ml-1">
+                                 <button on:click={() => handleUnrankLeaderboard()} class="button is-small is-danger"> Unrank </button>
+                              </p>
+                              <p class="control m-0">
+                                 <button on:click={() => handleRankLeaderboard()} class="button is-small is-success"> Rank </button>
                               </p>
                            </div>
                         </div>
