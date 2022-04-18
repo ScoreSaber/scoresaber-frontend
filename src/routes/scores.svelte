@@ -14,7 +14,7 @@
    // Websocket handler (maybe convert to store?)
    let socket: WebSocket;
    onMount(() => {
-      socket = new WebSocket('ws://scoresaber.com/ws');
+      socket = new WebSocket('wss://scoresaber.com/ws');
 
       socket.addEventListener('open', () => {
          connected = true;
