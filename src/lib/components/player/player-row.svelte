@@ -244,8 +244,7 @@
          grid-column-gap: 0.25rem;
       }
 
-      .table-item > .rank,
-      .table-item > .country-rank {
+      .table-item > .rank {
          padding-right: 0;
       }
 

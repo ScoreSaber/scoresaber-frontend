@@ -214,10 +214,6 @@
       }
    }
 
-   td.highlight {
-      font-weight: bold;
-      color: var(--scoreSaberYellow);
-   }
    tr.table-item td {
       background-color: var(--gray);
    }
