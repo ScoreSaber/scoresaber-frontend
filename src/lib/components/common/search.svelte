@@ -92,7 +92,7 @@
       searchValue = value.trim();
       cancel.cancel('new search');
       cancel = axios.CancelToken.source();
-      Promise.all([
+      Promise.allSettled([
          fetcher<PlayerCollection>(
             queryString.stringifyUrl({
                url: '/api/players',
@@ -112,7 +112,15 @@
             { cancelToken: cancel.token, withCredentials: true }
          )
       ])
-         .then(([{ players }, { leaderboards }]) => {
+         .then((result) => {
+            let players = [];
+            let leaderboards = [];
+            if (result[0].status === 'fulfilled' && result[0].value?.players) {
+               players = result[0].value.players;
+            }
+            if (result[1].status === 'fulfilled' && result[1].value?.leaderboards) {
+               leaderboards = result[1].value.leaderboards;
+            }
             searchResults = { players, leaderboards };
          })
          .catch(() => {
