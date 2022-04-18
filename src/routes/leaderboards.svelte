@@ -16,7 +16,7 @@
       getNumberFromCategory,
       getNumberFromSortDirection,
       getSortDirectionFromNumber,
-      LeaderboardInfoCollection,
+      type LeaderboardInfoCollection,
       SortDirection
    } from '$lib/models/LeaderboardData';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';

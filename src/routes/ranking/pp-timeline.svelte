@@ -1,5 +1,5 @@
 <script lang="ts">
-   import Timeline, { TimelineSteps } from '$lib/components/timeline/timeline.svelte';
+   import Timeline, { type TimelineSteps } from '$lib/components/timeline/timeline.svelte';
    import { setBackground } from '$lib/global-store';
    setBackground('/images/banner.jpg');
    const steps: TimelineSteps = [

@@ -17,7 +17,7 @@ const config = {
          // default options are shown
          out: 'build',
          precompress: false,
-         env: {
+         envPrefix: {
             host: 'HOST',
             port: 'PORT'
          }

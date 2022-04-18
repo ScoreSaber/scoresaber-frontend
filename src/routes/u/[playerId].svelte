@@ -27,7 +27,7 @@
    import Score from '$lib/components/player/score.svelte';
    import { onDestroy } from 'svelte';
    import { browser } from '$app/env';
-   import ButtonGroup, { buttonGroupItem } from '$lib/components/common/button-group.svelte';
+   import ButtonGroup, { type buttonGroupItem } from '$lib/components/common/button-group.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';

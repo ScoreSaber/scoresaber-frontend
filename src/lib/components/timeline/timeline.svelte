@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-   import TimelineItem, { TimelineStep } from './timeline-item.svelte';
+   import TimelineItem, { type TimelineStep } from './timeline-item.svelte';
 
    export let steps: TimelineSteps = [];
 </script>
