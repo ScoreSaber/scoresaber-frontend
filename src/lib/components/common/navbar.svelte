@@ -98,6 +98,7 @@
          <a on:click={handleClick} href="/ranking/requests" aria-label="Rank Requests"
             ><i class="fa fa-list" /><span class="navbar-label">Rank Requests</span></a
          >
+         <a on:click={handleClick} href="/scores" aria-label="Rank Requests"><i class="fa fa-rss" /><span class="navbar-label">Score Feed</span></a>
       </nav>
       <button class="searchbox-container" on:click={showSearchModal}>
          <div class="fake-searchbox">

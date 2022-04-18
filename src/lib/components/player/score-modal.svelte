@@ -6,6 +6,10 @@
    export let score: PlayerScore;
    export let player: Player | LeaderboardPlayer;
 
+   if (player == undefined) {
+      player = score.score.leaderboardPlayerInfo;
+   }
+
    function getAccuracy() {
       let scoreCalc = score.score.baseScore;
       let maxScore = score.leaderboard.maxScore;

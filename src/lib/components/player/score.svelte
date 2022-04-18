@@ -106,7 +106,7 @@
                >#{score.score.rank.toLocaleString('en-US')}</a
             >
          </span>
-         <FormattedDate date={score.score.timeSet} />
+         <FormattedDate short={true} date={score.score.timeSet} />
       </div>
    </div>
    <div>
