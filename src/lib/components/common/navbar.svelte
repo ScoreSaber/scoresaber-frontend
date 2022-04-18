@@ -76,7 +76,7 @@
 <Announcement id="PPv2.9" rememberClose={false}>
    <div class="announcement">
       <span>PPv2.9 is currently in its third phase!</span>
-      <span><a class="announcement-link" href="/ranking/pp-timeline">click here</a> to follow its development!</span>
+      <span><a class="announcement-link" href="/ranking/pp-timeline">Click here</a> to follow its development!</span>
    </div>
 </Announcement>
 

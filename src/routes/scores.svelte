@@ -5,6 +5,7 @@
    import Score from '$lib/components/player/score.svelte';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
    import { onDestroy, onMount } from 'svelte';
+   import { HMDs } from '$lib/utils/helpers';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
    import { modal } from '$lib/global-store';
    import PlayerLink from '$lib/components/player/player-link.svelte';
@@ -86,10 +87,23 @@
             <div class="ranking songs">
                <div class="ranking songs gridTable">
                   {#each playerScores ?? [] as score, i (score.score.id)}
-                     <div class="ml-1">
-                        <PlayerLink player={score.score.leaderboardPlayerInfo} destination={`/u/${score.score.leaderboardPlayerInfo.id}`} />
+                     <div class="live-score">
+                        <div class="ml-1 live-score-player">
+                           <img
+                              src={score.score.leaderboardPlayerInfo.profilePicture}
+                              alt={score.score.leaderboardPlayerInfo.name}
+                              title={score.score.leaderboardPlayerInfo.name}
+                              class="image rounded is-24x24"
+                           />
+                           <span>
+                              <b>
+                                 <PlayerLink player={score.score.leaderboardPlayerInfo} destination={`/u/${score.score.leaderboardPlayerInfo.id}`} />
+                              </b>
+                              on {HMDs[score.score.hmd]}
+                           </span>
+                        </div>
+                        <Score openModal={openScoreModal} {score} row={i + 1} playerId={score.score.leaderboardPlayerInfo.id} />
                      </div>
-                     <Score openModal={openScoreModal} {score} row={i + 1} playerId={score.score.leaderboardPlayerInfo.id} />
                   {/each}
                   {#if playerScores.length == 0}
                      Waiting for new scores...

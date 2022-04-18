@@ -441,3 +441,23 @@ ins.adsbygoogle[data-ad-status='unfilled'] {
 ins {
    text-decoration: none !important;
 }
+
+.live-score {
+   padding: 10px;
+   margin-bottom: 10px;
+   background-color: #33333370;
+   border-radius: 5px;
+}
+
+.live-score-player {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   margin-bottom: 0.7rem;
+
+   span {
+      display: flex;
+      color: var(--muted);
+      gap: 5px;
+   }
+}
