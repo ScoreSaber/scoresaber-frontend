@@ -54,7 +54,7 @@
 
    function handleScoreCommand(parsedMessage: IWebSocketMessage) {
       const playerScore: PlayerScore = parsedMessage.commandData as PlayerScore;
-      if (playerScores.length >= 6) {
+      if (playerScores.length >= 12) {
          playerScores.pop();
       }
       playerScores.unshift(playerScore);
@@ -67,7 +67,7 @@
 </script>
 
 <head>
-   <title>Live Scores</title>
+   <title>Live Score Feed | ScoreSaber!</title>
 </head>
 
 <div class="section">
