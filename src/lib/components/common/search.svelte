@@ -89,14 +89,15 @@
    };
 
    export const search = async (value: string) => {
-      searchValue = value.trim();
+      searchValue = value; // external search calls should update the value
+
       cancel.cancel('new search');
       cancel = axios.CancelToken.source();
       Promise.allSettled([
          fetcher<PlayerCollection>(
             queryString.stringifyUrl({
                url: '/api/players',
-               query: { search: value, includeScoreStats: false }
+               query: { search: value.trim(), includeScoreStats: false }
             }),
             { cancelToken: cancel.token, withCredentials: true }
          ),
@@ -104,7 +105,7 @@
             queryString.stringifyUrl({
                url: '/api/leaderboards',
                query: {
-                  search: searchValue,
+                  search: value.trim(),
                   category: 2,
                   sort: 0
                }
