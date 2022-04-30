@@ -185,10 +185,10 @@
       <Meta
          description={`Player Ranking: #${metadata.rank.toLocaleString('en-US')}
 Performance Points: ${metadata.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
-Total Play Count: ${metadata.scoreStats.totalPlayCount.toLocaleString('en-US')}
-Average Ranked Accuracy: ${metadata.scoreStats.averageRankedAccuracy.toFixed(2)}%
-Total Score: ${metadata.scoreStats.totalScore.toLocaleString('en-US')}
-Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('en-US')}`}
+Total Play Count: ${metadata.scoreStats ? metadata.scoreStats.totalPlayCount.toLocaleString('en-US') : '0'}
+Average Ranked Accuracy: ${metadata.scoreStats ? metadata.scoreStats.averageRankedAccuracy.toFixed(2) : '0'}%
+Total Score: ${metadata.scoreStats ? metadata.scoreStats.totalScore.toLocaleString('en-US') : '0'}
+Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWatched.toLocaleString('en-US') : '0'}`}
          image={metadata.profilePicture}
          title="{metadata.name}'s profile"
       />
@@ -273,6 +273,9 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
                   {#if $playerData.banned}
                      <div class="text-inactive text-muted mb-3">Banned account</div>
                   {/if}
+                  {#if !$playerData.scoreStats}
+                     <div class="text-inactive text-muted mb-3">New account</div>
+                  {/if}
                </h5>
                {#if !$playerData.banned}
                   <div class="stats has-text-centered-mobile">
@@ -283,18 +286,23 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
          </div>
       {/if}
    </div>
+
    {#if $playerData?.id && !$playerData.banned}
       {#key $playerData.id}
-         <div class="window has-shadow noheading">
-            <Badges player={$playerData} />
-            {#if !$playerData.inactive}
-               <RankChart player={$playerData} />
-            {/if}
-         </div>
-         <Bio saveStatusUpdate={handleBioSaveStatus} player={$playerData} userData={$userData} />
+         {#if $playerData.scoreStats}
+            <div class="window has-shadow noheading">
+               <Badges player={$playerData} />
+               {#if !$playerData.inactive}
+                  <RankChart player={$playerData} />
+               {/if}
+            </div>
+            <Bio saveStatusUpdate={handleBioSaveStatus} player={$playerData} userData={$userData} />
+         {/if}
       {/key}
    {/if}
+
    <HorizontalAd />
+
    {#if $scoreInitialLoadComplete && $playerData}
       {#if !$playerData.banned}
          <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading bottomSection">
@@ -347,7 +355,9 @@ Replays Watched by Others: ${metadata.scoreStats.replaysWatched.toLocaleString('
       <Loader />
    {/if}
    {#if $scoreDataError}
-      <Error error={$scoreDataError} />
+      {#if $scoreDataError.status != 404}
+         <Error error={$scoreDataError} />
+      {/if}
    {/if}
 </div>
 

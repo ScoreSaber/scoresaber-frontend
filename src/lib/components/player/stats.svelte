@@ -8,7 +8,7 @@
    <div class="stat-item ranked">
       <span class="stat-title">Ranked Play Count</span>
       <span class="stat-spacer" />
-      <span class="stat-content">{player.scoreStats.rankedPlayCount.toLocaleString('en-US')}</span>
+      <span class="stat-content">{player.scoreStats ? player.scoreStats.rankedPlayCount.toLocaleString('en-US') : '0'}</span>
    </div>
 
    <div class="stat-item ranked">
@@ -18,7 +18,7 @@
          <span class="stat-title">Total Ranked Score</span>
       {/if}
       <span class="stat-spacer" />
-      <span class="stat-content">{player.scoreStats.totalRankedScore.toLocaleString('en-US')}</span>
+      <span class="stat-content">{player.scoreStats ? player.scoreStats.totalRankedScore.toLocaleString('en-US') : '0'}</span>
    </div>
 
    <div class="stat-item ranked">
@@ -28,19 +28,19 @@
          <span class="stat-title">Average Ranked Accuracy</span>
       {/if}
       <span class="stat-spacer" />
-      <span class="stat-content">{player.scoreStats.averageRankedAccuracy.toFixed(2)}%</span>
+      <span class="stat-content">{player.scoreStats ? player.scoreStats.averageRankedAccuracy.toFixed(2) : '0'}%</span>
    </div>
 
    <div class="stat-item">
       <span class="stat-title">Total Play Count</span>
       <span class="stat-spacer" />
-      <span class="stat-content">{player.scoreStats.totalPlayCount.toLocaleString('en-US')}</span>
+      <span class="stat-content">{player.scoreStats ? player.scoreStats.totalPlayCount.toLocaleString('en-US') : '0'}</span>
    </div>
 
    <div class="stat-item">
       <span class="stat-title">Total Score</span>
       <span class="stat-spacer" />
-      <span class="stat-content">{player.scoreStats.totalScore.toLocaleString('en-US')}</span>
+      <span class="stat-content">{player.scoreStats ? player.scoreStats.totalScore.toLocaleString('en-US') : '0'}</span>
    </div>
 
    <div class="stat-item">
@@ -50,7 +50,7 @@
          <span class="stat-title">Replays Watched by Others</span>
       {/if}
       <span class="stat-spacer" />
-      <span class="stat-content">{player.scoreStats.replaysWatched.toLocaleString('en-US')}</span>
+      <span class="stat-content">{player.scoreStats ? player.scoreStats.replaysWatched.toLocaleString('en-US') : '0'}</span>
    </div>
 
    {#if player.role}
