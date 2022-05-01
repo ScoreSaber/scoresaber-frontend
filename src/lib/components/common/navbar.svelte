@@ -73,10 +73,13 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement id="PPv2.9" rememberClose={false}>
+<Announcement id="quest-release" rememberClose={true}>
    <div class="announcement">
-      <span>PPv2.9 is currently in its third phase!</span>
-      <span><a class="announcement-link" href="/ranking/pp-timeline">Click here</a> to follow its development!</span>
+      <span>ScoreSaber for Quest is out!</span>
+      <span
+         ><a class="announcement-link" href="https://www.patreon.com/posts/65844663">Click here</a> to read about it and what this means for ScoreSaber
+         as a whole!</span
+      >
    </div>
 </Announcement>
 
