@@ -27,6 +27,8 @@
          ScoreSaber is Beat Saber's largest leaderboard system for custom songs, hosting 60 million scores across 170,000+ leaderboards, with more
          than 1 million users worldwide
       </p>
+      <hr />
+      Looking for ScoreSaber on Quest?{' '}<a href="/quest">click here</a>
    </div>
 </div>
 
