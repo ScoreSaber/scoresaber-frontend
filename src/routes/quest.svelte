@@ -54,15 +54,15 @@
    }
 </script>
 
-<head> Quest Installer | ScoreSaber! </head>
+<head> <title>Quest Installer | ScoreSaber!</title></head>
 
 <div class="section">
    <div class="window-header">{getStepTitle($pageQuery.step)}</div>
    <div class="window has-shadow">
       {#if $pageQuery.step == 1}
-         <p>Following these steps will install ScoreSaber on Quest for Beat Saber 1.17.1</p>
+         <p>Following these steps will install ScoreSaber on Quest for Beat Saber 1.17.1 (1.21.0 is in development)</p>
          <p>
-            <b>It is recommended that you uninstall any other conflicting leaderboard mods before continuuing as they are not currently supported</b>
+            <b>It is recommended that you uninstall any other conflicting leaderboard mods before continuing as they are not currently supported</b>
          </p>
          <p>Click Next to continue</p>
       {/if}
