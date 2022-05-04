@@ -11,6 +11,15 @@
    });
 
    history.push(player.rank);
+   
+   // If this player stopped playing for a while, but has picked up again, then remove the 
+   // #999999 ranks at the beginning to make the chart more useful
+   if (history.some(h => h !== 999999)) {
+      while (history[0] === 999999) {
+         history.shift();
+      }
+   }
+
    onMount(() => {
       window.addEventListener('resize', () => {
          options = getOptions();
