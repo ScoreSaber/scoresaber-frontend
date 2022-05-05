@@ -11,6 +11,15 @@
    });
 
    history.push(player.rank);
+   
+   // If this player stopped playing for a while, but has picked up again, then remove the 
+   // #999999 ranks at the beginning to make the chart more useful
+   const inactiveRankPlaceholder = 999999;
+   const firstActiveRankIndex = history.findIndex(h => h !== inactiveRankPlaceholder);
+   if (firstActiveRankIndex >= 0) {
+      history.splice(0, firstActiveRankIndex);
+   }
+
    onMount(() => {
       window.addEventListener('resize', () => {
          options = getOptions();
