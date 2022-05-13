@@ -36,7 +36,7 @@
          accentColour: 'var(--scoreSaberYellow)',
          content: 'Fourth reweight',
          isCompleted: false,
-         time: new Date(Date.UTC(2022, 4, 13, 19))
+         time: new Date(Date.UTC(2022, 4, 21, 19))
       }
    ];
 </script>
