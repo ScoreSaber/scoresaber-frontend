@@ -35,7 +35,7 @@
          title: '',
          accentColour: 'var(--scoreSaberYellow)',
          content: 'Fourth reweight',
-         isCompleted: false,
+         isCompleted: true,
          time: new Date(Date.UTC(2022, 4, 21, 19))
       }
    ];
