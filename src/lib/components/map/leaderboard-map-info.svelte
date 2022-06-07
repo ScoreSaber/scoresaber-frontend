@@ -53,7 +53,11 @@
          Status: <b>{leaderboardInfo.ranked ? 'Ranked' : leaderboardInfo.qualified ? 'Qualified' : 'Unranked'}</b><br />
          Game Mode: <b>{leaderboardInfo.difficulty.gameMode}</b>
          <br />
-         <strong class="text-muted">{leaderboardInfo.songHash}</strong><br />
+         <strong class="text-muted"
+            ><a href="web+bsmap://{leaderboardInfo.songHash}" title="Download Map" class="btn"
+               ><i class="fa fa-sm fa-download" />
+            </a>{leaderboardInfo.songHash}</strong
+         ><br />
       </div>
    </div>
    <MusicAd {leaderboardInfo} />
