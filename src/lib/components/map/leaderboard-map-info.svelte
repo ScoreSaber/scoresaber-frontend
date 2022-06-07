@@ -7,6 +7,9 @@
    import { searchView, userData } from '$lib/global-store';
    export let leaderboardInfo: LeaderboardInfo;
 
+   let downloadModal: HTMLDialogElement;
+   let downloadModalVisible = false;
+
    let searchModal: SearchView;
 
    searchView.subscribe((v) => (searchModal = v));
@@ -53,11 +56,34 @@
          Status: <b>{leaderboardInfo.ranked ? 'Ranked' : leaderboardInfo.qualified ? 'Qualified' : 'Unranked'}</b><br />
          Game Mode: <b>{leaderboardInfo.difficulty.gameMode}</b>
          <br />
-         <strong class="text-muted">{leaderboardInfo.songHash}</strong><br />
+         <strong class="text-muted"
+            ><a
+               href="web+bsmap://EDDCA14F0E90F5DA5A2337B8DD2B1EB381771400"
+               title="Download Map"
+               class="btn"
+               on:click={() => downloadModal.showModal()}
+               ><i class="fa fa-sm fa-download" />
+            </a>{leaderboardInfo.songHash}</strong
+         ><br />
       </div>
    </div>
    <MusicAd {leaderboardInfo} />
 </div>
+
+<dialog class={`card download-overlay ${downloadModalVisible ? '' : 'hidden'}`} aria-hidden={!downloadModalVisible} bind:this={downloadModal}>
+   <h1>Nothing happened?</h1>
+   <p>ScoreSaber's download button relies on an external service implementing the <code>web+bsmap:</code> URL protocol to work.</p>
+   <p>Make sure you have something installed that can do this and try again.</p>
+   <button class="close button" on:click={() => downloadModal.close()} title="Close"
+      ><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+         <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+         />
+      </svg></button
+   >
+</dialog>
 
 <style>
    .bg-image {
@@ -69,6 +95,35 @@
       background-size: cover !important;
       z-index: -1;
       border-radius: 5px;
+   }
+
+   .download-overlay {
+      background: var(--gray);
+      color: var(--textColor);
+      width: 100%;
+      max-width: 32rem;
+      padding: 3rem 2rem;
+      border: 0;
+   }
+
+   .download-overlay .close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 2em;
+      height: 2em;
+      display: flex;
+      padding: 0.5em;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .download-overlay .close svg {
+      flex: 1;
+   }
+
+   .download-overlay .close:hover {
+      background: #fff1;
    }
 
    .map-card {
