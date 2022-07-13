@@ -1,7 +1,7 @@
 <script lang="ts">
-   import { setBackground, userData } from '$lib/global-store';
+   import { setBackground, userData } from '$lib/stores/global-store';
    import { CDN_URL, API_URL } from '$lib/utils/env';
-   import { pageQueryStore } from '$lib/query-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
    import { saveAs } from 'file-saver';
    import fetcher from '$lib/utils/fetcher';
    import JSZip from 'jszip';

@@ -1,7 +1,10 @@
 <script lang="ts">
+   import { setBackground } from '$lib/stores/global-store';
+
    import Timeline, { type TimelineSteps } from '$lib/components/timeline/timeline.svelte';
-   import { setBackground } from '$lib/global-store';
+
    setBackground('/images/banner.jpg');
+
    const steps: TimelineSteps = [
       {
          title: '',

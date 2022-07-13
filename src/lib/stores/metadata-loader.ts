@@ -1,5 +1,6 @@
-import { API_URL } from '$lib/utils/env';
 import { browser } from '$app/env';
+
+import { API_URL } from '$lib/utils/env';
 
 export async function loadMetadata(fetch: Function, url: string) {
    if (!browser) {

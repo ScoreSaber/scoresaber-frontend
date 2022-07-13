@@ -1,24 +1,27 @@
 <script lang="ts">
-   import { useAccio } from '$lib/utils/accio';
-   import type { RankRequestInformation } from '$lib/models/Ranking';
-   import axios from '$lib/utils/fetcher';
+   import { decode } from 'html-entities';
+   import { fly } from 'svelte/transition';
+   import { onDestroy } from 'svelte';
+
+   import { page } from '$app/stores';
+   import { browser } from '$app/env';
+
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
-   import { page } from '$app/stores';
    import AvatarImage from '$lib/components/image/avatar-image.svelte';
-   import { decode } from 'html-entities';
-   import { fly } from 'svelte/transition';
    import RequestMapInfo from '$lib/components/map/request-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
-   import { onDestroy } from 'svelte';
 
-   import { setBackground, userData } from '$lib/global-store';
+   import { setBackground, userData } from '$lib/stores/global-store';
+
    import Permissions from '$lib/utils/permissions';
-   import { browser } from '$app/env';
+   import axios from '$lib/utils/fetcher';
+   import { useAccio } from '$lib/utils/accio';
    import poster from '$lib/utils/poster';
-
    import { getCDNUrl } from '$lib/utils/helpers';
+
+   import type { RankRequestInformation } from '$lib/models/Ranking';
 
    function getBloq(rank: string) {
       return getCDNUrl(`/badges/name/${rank}.png`);
@@ -74,7 +77,7 @@
       const ranked = $request.leaderboardInfo.ranked;
       const leaderboardId = $request.leaderboardInfo.id;
       request.set(undefined);
-      await poster(`/api/ranking/request/action/admin/pp-manual`, { leaderboardId: leaderboardId, pp: manualPP }, { withCredentials: true });
+      await poster('/api/ranking/request/action/admin/pp-manual', { leaderboardId: leaderboardId, pp: manualPP }, { withCredentials: true });
       if (ranked) {
          await new Promise((f) => setTimeout(f, 2000));
       }

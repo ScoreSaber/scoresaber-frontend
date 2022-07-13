@@ -4,7 +4,7 @@
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
    import MusicAd from '$lib/components/ads/tfp.svelte';
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView, userData } from '$lib/global-store';
+   import { searchView, userData } from '$lib/stores/global-store';
    export let leaderboardInfo: LeaderboardInfo;
 
    let searchModal: SearchView;

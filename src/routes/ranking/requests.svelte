@@ -1,23 +1,24 @@
 <script lang="ts">
-   import { useAccio } from '$lib/utils/accio';
+   import { fly } from 'svelte/transition';
    import queryString from 'query-string';
-   import type { RankRequestListing, VoteGroup } from '$lib/models/Ranking';
-   import axios from '$lib/utils/fetcher';
+
+   import { goto } from '$app/navigation';
+
+   import { defaultBackground, userData } from '$lib/stores/global-store';
+
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Button from '$lib/components/common/button.svelte';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info.svelte';
-   import { fly } from 'svelte/transition';
-   import { defaultBackground, userData } from '$lib/global-store';
-   import { goto } from '$app/navigation';
-   import Permissions from '$lib/utils/permissions';
 
-   const {
-      data: topRequests,
-      error: topRequestsError,
-      refresh: refreshTopRequests
-   } = useAccio<RankRequestListing[]>(
+   import axios from '$lib/utils/fetcher';
+   import { useAccio } from '$lib/utils/accio';
+   import permissions from '$lib/utils/permissions';
+
+   import type { RankRequestListing } from '$lib/models/Ranking';
+
+   const { data: topRequests, error: topRequestsError } = useAccio<RankRequestListing[]>(
       queryString.stringifyUrl({
          url: '/api/ranking/requests/top'
       }),
@@ -124,7 +125,7 @@
          title={showBelowTop ? 'Hide all requests' : 'Show all requests'}
          icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
       />
-      {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT)}
+      {#if $userData && permissions.checkPermissionNumber($userData.permissions, permissions.groups.RT)}
          <Button
             isDisabled={false}
             onClicked={() => {

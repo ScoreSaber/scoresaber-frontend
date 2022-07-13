@@ -1,0 +1,74 @@
+{
+   "env": {
+      "browser": true,
+      "es2021": true
+   },
+   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+   "parser": "@typescript-eslint/parser",
+   "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+   },
+   "plugins": ["@typescript-eslint", "svelte3", "import"],
+   "rules": {
+      "indent": ["error", 3],
+      "linebreak-style": ["error", "windows"],
+      "quotes": ["error", "single"],
+      "semi": ["error", "always"],
+      "import/order": [
+         "error",
+         {
+            "groups": ["builtin", "external", "internal", "type"],
+            "pathGroups": [
+               {
+                  "pattern": "svelte",
+                  "group": "external",
+                  "position": "before"
+               },
+               {
+                  "pattern": "svelte/**",
+                  "group": "external",
+                  "position": "before"
+               },
+               {
+                  "pattern": "$lib/stores/**",
+                  "group": "internal",
+                  "position": "after"
+               },
+               {
+                  "pattern": "$lib/components/**",
+                  "group": "internal",
+                  "position": "after"
+               },
+               {
+                  "pattern": "$lib/utils/**",
+                  "group": "internal",
+                  "position": "after"
+               },
+               {
+                  "pattern": "$lib/models/**",
+                  "group": "type",
+                  "position": "after"
+               },
+               {
+                  "pattern": "$app/**",
+                  "group": "external",
+                  "position": "after"
+               }
+            ],
+
+            "newlines-between": "always"
+         }
+      ]
+   },
+   "settings": {
+      "svelte3/typescript": true // load TypeScript as peer dependency
+   },
+   "overrides": [
+      // this stays the same
+      {
+         "files": ["*.svelte"],
+         "processor": "svelte3/svelte3"
+      }
+   ]
+}

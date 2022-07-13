@@ -1,21 +1,26 @@
 <script lang="ts">
-   import SearchInput from '$lib/components/common/search-input.svelte';
-   import { pageQueryStore } from '$lib/query-store';
-   import fetcher from '$lib/utils/fetcher';
-   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
-   import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
-   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import { onMount } from 'svelte';
-   import Button from '$lib/components/common/button.svelte';
-   import { defaultBackground, setBackground, userData } from '$lib/global-store';
-   import type { RankRequestInformation } from '$lib/models/Ranking';
-   import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info-offlisting.svelte';
-   import FormattedDate from '$lib/components/common/formatted-date.svelte';
-   import Permissions from '$lib/utils/permissions';
+   import { fly } from 'svelte/transition';
+
    import { goto } from '$app/navigation';
    import { browser } from '$app/env';
+
+   import SearchInput from '$lib/components/common/search-input.svelte';
+   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
+   import Button from '$lib/components/common/button.svelte';
+   import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info-offlisting.svelte';
+   import FormattedDate from '$lib/components/common/formatted-date.svelte';
+
+   import { defaultBackground, setBackground, userData } from '$lib/stores/global-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
+
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import fetcher from '$lib/utils/fetcher';
+   import Permissions from '$lib/utils/permissions';
    import poster from '$lib/utils/poster';
-   import { fly } from 'svelte/transition';
+
+   import type { RankRequestInformation } from '$lib/models/Ranking';
+   import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
 
    $: pageQuery = pageQueryStore({
       requestId: '',
@@ -83,7 +88,7 @@
 
    async function handleSubmit() {
       let createdRequest = await poster(
-         `/api/ranking/request/action/nat/replace`,
+         '/api/ranking/request/action/nat/replace',
          { requestId: searchData.requestId, leaderboardId: newLeaderboard.id, description },
          { withCredentials: true }
       );

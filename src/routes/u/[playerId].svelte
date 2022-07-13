@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-   import { loadMetadata } from '$lib/metadata-loader';
+   import { loadMetadata } from '$lib/stores/metadata-loader';
 
    export async function load({ fetch, params }) {
       return await loadMetadata(fetch, `/api/player/${params.playerId}/full`);
@@ -17,7 +17,7 @@
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
    import queryString from 'query-string';
-   import { pageQueryStore } from '$lib/query-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
    import { rankToPage } from '$lib/utils/helpers';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
@@ -32,7 +32,7 @@
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import { modal, userData } from '$lib/global-store';
+   import { modal, userData } from '$lib/stores/global-store';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
    import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
    import fetcher from '$lib/utils/fetcher';
@@ -40,7 +40,7 @@
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import Denyah from '$lib/components/misc/denyah.svelte';
    import Bio, { SaveStatus } from '$lib/components/common/bio.svelte';
-   import { setBackground } from '$lib/global-store';
+   import { setBackground } from '$lib/stores/global-store';
 
    export let metadata: Player = undefined;
    $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });

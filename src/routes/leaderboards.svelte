@@ -5,7 +5,7 @@
    import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
    import { useAccio } from '$lib/utils/accio';
-   import { pageQueryStore } from '$lib/query-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
    import { page } from '$app/stores';
    import { fly } from 'svelte/transition';
    import { browser } from '$app/env';
@@ -22,11 +22,10 @@
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
 
    import Slider from '@bulatdashiev/svelte-slider';
-   import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
-   import { defaultBackground } from '$lib/global-store';
+   import { defaultBackground } from '$lib/stores/global-store';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import LeaderboardRightAd from '$lib/components/ads/leaderboard-right.svelte';
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';

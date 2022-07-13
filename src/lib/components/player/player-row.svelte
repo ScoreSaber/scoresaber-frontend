@@ -6,7 +6,7 @@
    import Stats from '$lib/components/player/stats.svelte';
    import { rankToPage } from '$lib/utils/helpers';
    import { fly } from 'svelte/transition';
-   import { userData } from '$lib/global-store';
+   import { userData } from '$lib/stores/global-store';
    let isExpanded: boolean = false;
    export let player: Player;
    export let row: number = 1;

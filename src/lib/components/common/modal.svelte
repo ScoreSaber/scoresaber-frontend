@@ -16,7 +16,7 @@
    import * as svelte from 'svelte';
    import { fade, fly } from 'svelte/transition';
    import { createEventDispatcher } from 'svelte';
-   import { modal } from '$lib/global-store';
+   import { modal } from '$lib/stores/global-store';
 
    const dispatch = createEventDispatcher();
 

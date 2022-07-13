@@ -2,7 +2,7 @@
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView } from '$lib/global-store';
+   import { searchView } from '$lib/stores/global-store';
    import FormattedDate from '../common/formatted-date.svelte';
 
    export let leaderboard: LeaderboardInfo;

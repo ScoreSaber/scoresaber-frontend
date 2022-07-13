@@ -1,6 +1,6 @@
 <script lang="ts">
    import SearchView from '$lib/components/common/search.svelte';
-   import { userData, searchView } from '$lib/global-store';
+   import { userData, searchView } from '$lib/stores/global-store';
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
    import { onMount } from 'svelte';

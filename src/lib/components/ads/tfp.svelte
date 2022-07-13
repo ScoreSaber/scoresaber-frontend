@@ -1,6 +1,6 @@
 <script lang="ts">
    import { onMount } from 'svelte';
-   import { userData } from '$lib/global-store';
+   import { userData } from '$lib/stores/global-store';
    import permissions from '$lib/utils/permissions';
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
    export let leaderboardInfo: LeaderboardInfo;

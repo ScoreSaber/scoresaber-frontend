@@ -1,18 +1,20 @@
 <script lang="ts">
    // @ts-nocheck
+   import { fly } from 'svelte/transition';
+
    import fetcher from '$lib/utils/fetcher';
    import poster from '$lib/utils/poster';
    import type { UserData, TokenResponse } from '$lib/models/UserData';
-   import { background, userData } from '$lib/global-store';
+   import { background, userData } from '$lib/stores/global-store';
    import { useAccio } from '$lib/utils/accio';
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
    import '../styles/scoresaber.scss';
-   import { fly } from 'svelte/transition';
+
    import { browser } from '$app/env';
    import { page } from '$app/stores';
 
-   let tokenCheckAttempts: number = 0;
+   let tokenCheckAttempts = 0;
 
    async function onUserCheckSuccess() {
       userData.set($user);

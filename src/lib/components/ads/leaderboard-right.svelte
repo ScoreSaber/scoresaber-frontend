@@ -2,7 +2,7 @@
    import { onMount } from 'svelte';
    import { dev } from '$app/env';
    import permissions from '$lib/utils/permissions';
-   import { userData } from '$lib/global-store';
+   import { userData } from '$lib/stores/global-store';
    $: showAd = true;
    onMount(() => {
       try {

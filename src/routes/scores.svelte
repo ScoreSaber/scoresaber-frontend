@@ -1,15 +1,17 @@
 <script lang="ts">
-   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
-   import type { IWebSocketMessage } from '$lib/models/Live';
+   import { onDestroy, onMount } from 'svelte';
+
    import Loader from '$lib/components/common/loader.svelte';
+   import Modal, { bind } from '$lib/components/common/modal.svelte';
+   import PlayerLink from '$lib/components/player/player-link.svelte';
    import Score from '$lib/components/player/score.svelte';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
-   import { onDestroy, onMount } from 'svelte';
+   import { modal } from '$lib/stores/global-store';
+   import { setBackground } from '$lib/stores/global-store';
+   import type { IWebSocketMessage } from '$lib/models/Live';
+   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
    import { HMDs } from '$lib/utils/helpers';
-   import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import { modal } from '$lib/global-store';
-   import PlayerLink from '$lib/components/player/player-link.svelte';
-   import { setBackground } from '$lib/global-store';
+
    setBackground('/images/banner.jpg');
 
    // Websocket handler (maybe convert to store?)

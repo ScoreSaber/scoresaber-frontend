@@ -4,7 +4,7 @@
    import TeamItem from '$lib/components/team/team-item.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import { useAccio } from '$lib/utils/accio';
-   import { setBackground } from '$lib/global-store';
+   import { setBackground } from '$lib/stores/global-store';
 
    const { data: team, error } = useAccio<ScoreSaberTeam>('https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json', {
       fetcher: axios,

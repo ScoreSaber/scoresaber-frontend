@@ -4,7 +4,7 @@
    import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus, getDifficultyOrStarValue } from '$lib/utils/helpers';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView, userData } from '$lib/global-store';
+   import { searchView, userData } from '$lib/stores/global-store';
 
    export let request: RankRequestInformation;
    let searchModal: SearchView;

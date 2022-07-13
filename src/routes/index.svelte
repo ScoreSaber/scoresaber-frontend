@@ -1,6 +1,6 @@
 <script lang="ts">
    import Meta from '$lib/components/common/meta.svelte';
-   import { defaultBackground } from '$lib/global-store';
+   import { defaultBackground } from '$lib/stores/global-store';
    defaultBackground();
 </script>
 
