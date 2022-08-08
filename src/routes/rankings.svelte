@@ -5,6 +5,10 @@
 
    import { browser } from '$app/env';
    import { page } from '$app/stores';
+
+   import { defaultBackground } from '$lib/stores/global-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
+
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import Error from '$lib/components/common/error.svelte';
@@ -12,14 +16,14 @@
    import Loader from '$lib/components/common/loader.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
    import PlayerRow from '$lib/components/player/player-row.svelte';
-   import { defaultBackground } from '$lib/stores/global-store';
-   import type { FilterItem } from '$lib/models/Filter';
-   import type { PlayerCollection } from '$lib/models/PlayerData';
-   import { pageQueryStore } from '$lib/stores/query-store';
+
    import { useAccio } from '$lib/utils/accio';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import axios from '$lib/utils/fetcher';
    import filters from '$lib/utils/filters';
+
+   import type { PlayerCollection } from '$lib/models/PlayerData';
+   import type { FilterItem } from '$lib/models/Filter';
 
    $: loading = true;
    $: firstLoad = true;

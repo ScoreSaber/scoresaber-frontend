@@ -2,17 +2,21 @@
    // @ts-nocheck
    import { fly } from 'svelte/transition';
 
-   import fetcher from '$lib/utils/fetcher';
-   import poster from '$lib/utils/poster';
-   import type { UserData, TokenResponse } from '$lib/models/UserData';
+   import { page } from '$app/stores';
+   import { browser } from '$app/env';
+
    import { background, userData } from '$lib/stores/global-store';
-   import { useAccio } from '$lib/utils/accio';
+
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
-   import '../styles/scoresaber.scss';
 
-   import { browser } from '$app/env';
-   import { page } from '$app/stores';
+   import fetcher from '$lib/utils/fetcher';
+   import poster from '$lib/utils/poster';
+   import { useAccio } from '$lib/utils/accio';
+
+   import type { UserData, TokenResponse } from '$lib/models/UserData';
+
+   import '../styles/scoresaber.scss';
 
    let tokenCheckAttempts = 0;
 

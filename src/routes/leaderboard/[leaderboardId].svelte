@@ -13,6 +13,7 @@
 
    import { page } from '$app/stores';
    import { browser } from '$app/env';
+   import { goto } from '$app/navigation';
 
    import { modal, setBackground, userData } from '$lib/stores/global-store';
    import { pageQueryStore } from '$lib/stores/query-store';
@@ -21,9 +22,6 @@
    import TextInput from '$lib/components/common/text-input.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
-
-   import { goto } from '$app/navigation';
-
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
    import Filter from '$lib/components/common/filter.svelte';

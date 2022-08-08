@@ -1,10 +1,13 @@
 <script lang="ts">
-   import type { ScoreSaberTeam } from '$lib/models/ScoreSaberTeam';
-   import axios from '$lib/utils/fetcher';
+   import { setBackground } from '$lib/stores/global-store';
+
    import TeamItem from '$lib/components/team/team-item.svelte';
    import Loader from '$lib/components/common/loader.svelte';
+
+   import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
-   import { setBackground } from '$lib/stores/global-store';
+
+   import type { ScoreSaberTeam } from '$lib/models/ScoreSaberTeam';
 
    const { data: team, error } = useAccio<ScoreSaberTeam>('https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/team.json', {
       fetcher: axios,

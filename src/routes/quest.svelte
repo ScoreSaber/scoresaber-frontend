@@ -1,11 +1,13 @@
 <script lang="ts">
-   import { setBackground, userData } from '$lib/stores/global-store';
-   import { CDN_URL, API_URL } from '$lib/utils/env';
-   import { pageQueryStore } from '$lib/stores/query-store';
-   import { saveAs } from 'file-saver';
-   import fetcher from '$lib/utils/fetcher';
    import JSZip from 'jszip';
    import axios from 'axios';
+   import { saveAs } from 'file-saver';
+
+   import { setBackground, userData } from '$lib/stores/global-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
+
+   import { CDN_URL, API_URL } from '$lib/utils/env';
+   import fetcher from '$lib/utils/fetcher';
 
    setBackground('/images/banner.jpg');
 

@@ -6,14 +6,14 @@
    import { page } from '$app/stores';
    import { browser } from '$app/env';
 
+   import { setBackground, userData } from '$lib/stores/global-store';
+
    import Loader from '$lib/components/common/loader.svelte';
    import Error from '$lib/components/common/error.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import AvatarImage from '$lib/components/image/avatar-image.svelte';
    import RequestMapInfo from '$lib/components/map/request-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
-
-   import { setBackground, userData } from '$lib/stores/global-store';
 
    import Permissions from '$lib/utils/permissions';
    import axios from '$lib/utils/fetcher';

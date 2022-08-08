@@ -5,14 +5,14 @@
    import { goto } from '$app/navigation';
    import { browser } from '$app/env';
 
+   import { defaultBackground, setBackground, userData } from '$lib/stores/global-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
+
    import SearchInput from '$lib/components/common/search-input.svelte';
    import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import Button from '$lib/components/common/button.svelte';
    import SmallRequestInfo from '$lib/components/ranking-requests/small-request-info-offlisting.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
-
-   import { defaultBackground, setBackground, userData } from '$lib/stores/global-store';
-   import { pageQueryStore } from '$lib/stores/query-store';
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import fetcher from '$lib/utils/fetcher';
