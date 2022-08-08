@@ -21,15 +21,7 @@ const config = {
             host: 'HOST',
             port: 'PORT'
          }
-      }),
-      vite: {
-         ssr: {
-            noExternal: ['chart.js']
-         },
-         optimizeDeps: {
-            exclude: ['sswr']
-         }
-      }
+      })
    }
 };
 
