@@ -36,13 +36,14 @@
       onSuccess: (data) => setBackground(data.leaderboardInfo.coverImage)
    });
 
-   const pageUnsubscribe = page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe(() => {
       if (browser) {
          refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
       }
    });
 
    const requestActionEndpoint = '/api/ranking/request/action';
+   $: comment = '';
 
    async function handleVote(group: string, direction: number) {
       request.set(undefined);
@@ -55,8 +56,6 @@
       await poster(`${requestActionEndpoint}/${group}/${action}`, { requestId: $page.params.requestId }, { withCredentials: true });
       refreshRequest({ forceRevalidate: true, softRefresh: true });
    }
-
-   $: comment = '';
 
    async function handleComment(group: string) {
       request.set(undefined);
@@ -72,6 +71,7 @@
    }
 
    let manualPP: number;
+
    async function handleManualPP(event) {
       event.preventDefault();
       const ranked = $request.leaderboardInfo.ranked;

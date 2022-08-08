@@ -101,6 +101,7 @@
       currentTransitionWindow = state.transitionWindow;
    };
 
+   // eslint-disable-next-line @typescript-eslint/no-empty-function
    const toVoid = () => {};
    let onOpen = toVoid;
    let onClose = toVoid;

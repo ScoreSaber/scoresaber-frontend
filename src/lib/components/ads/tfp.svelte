@@ -65,7 +65,6 @@
    }
 </script>
 
-/** eslint-disable indent */
 {#if showAd}
    <div id={opts.div_id} />
 {/if}

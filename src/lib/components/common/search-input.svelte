@@ -3,7 +3,7 @@
 
    export let value: string = null;
    export let placeholder = 'Search...';
-   export let onSearch: (value: string) => void = () => {};
+   export let onSearch: (value: string) => void;
    export let icon: string = null;
 
    export let expandable = false;

@@ -7,7 +7,17 @@
 </script>
 
 <script lang="ts">
-   import type { LeaderboardPlayer, Player, PlayerScore, PlayerScoreCollection } from '$lib/models/PlayerData';
+   import queryString from 'query-string';
+   import { fly } from 'svelte/transition';
+   import { onDestroy } from 'svelte';
+
+   import { browser } from '$app/env';
+   import { page } from '$app/stores';
+
+   import { pageQueryStore } from '$lib/stores/query-store';
+   import { modal, userData } from '$lib/stores/global-store';
+   import { setBackground } from '$lib/stores/global-store';
+
    import Error from '$lib/components/common/error.svelte';
    import Stats from '$lib/components/player/stats.svelte';
    import Loader from '$lib/components/common/loader.svelte';
@@ -16,31 +26,25 @@
    import CountryImage from '$lib/components/image/country-image.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import RankChart from '$lib/components/player/rank-chart.svelte';
-   import queryString from 'query-string';
-   import { pageQueryStore } from '$lib/stores/query-store';
-   import { rankToPage } from '$lib/utils/helpers';
-   import { page } from '$app/stores';
-   import { fly } from 'svelte/transition';
-
-   import axios from '$lib/utils/fetcher';
-   import { useAccio } from '$lib/utils/accio';
    import Score from '$lib/components/player/score.svelte';
-   import { onDestroy } from 'svelte';
-   import { browser } from '$app/env';
    import ButtonGroup, { type buttonGroupItem } from '$lib/components/common/button-group.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
-   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import { modal, userData } from '$lib/stores/global-store';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
    import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
-   import fetcher from '$lib/utils/fetcher';
-   import permissions from '$lib/utils/permissions';
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import Denyah from '$lib/components/misc/denyah.svelte';
    import Bio, { SaveStatus } from '$lib/components/common/bio.svelte';
-   import { setBackground } from '$lib/stores/global-store';
+
+   import permissions from '$lib/utils/permissions';
+   import fetcher from '$lib/utils/fetcher';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import { useAccio } from '$lib/utils/accio';
+   import axios from '$lib/utils/fetcher';
+   import { rankToPage } from '$lib/utils/helpers';
+
+   import type { LeaderboardPlayer, Player, PlayerScore, PlayerScoreCollection } from '$lib/models/PlayerData';
 
    export let metadata: Player = undefined;
    $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });
@@ -164,13 +168,15 @@
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 
-   function handleBioSaveStatus(status: SaveStatus, error?: string) {
+   function handleBioSaveStatus(status: SaveStatus) {
       switch (status) {
          case SaveStatus.Started: {
             playerData.set(undefined);
+            break;
          }
          case SaveStatus.Completed: {
             refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+            break;
          }
       }
    }

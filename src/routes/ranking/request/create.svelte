@@ -51,7 +51,7 @@
       setBackground(data.coverImage);
       fetcher<RankRequestInformation>(getRequestInfoUrl(leaderboardId), { cancelToken: $requestCancel.token, withCredentials: true })
          .then((data) => (requestData = data))
-         .catch((err) => {
+         .catch(() => {
             requestData = null;
          });
    }

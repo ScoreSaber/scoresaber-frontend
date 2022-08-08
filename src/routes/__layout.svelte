@@ -1,4 +1,5 @@
 <script lang="ts">
+   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
    // @ts-nocheck
    import { fly } from 'svelte/transition';
 
@@ -42,20 +43,22 @@
       }
    }
 
-   const {
-      data: user,
-      error: loginError,
-      refresh: refreshLogin
-   } = useAccio<UserData>('/api/user/@me', { fetcher, onSuccess: onUserCheckSuccess, onError: onUserCheckFailed, ignoreSubscriptions: true });
+   const { data: user, refresh: refreshLogin } = useAccio<UserData>('/api/user/@me', {
+      fetcher,
+      onSuccess: onUserCheckSuccess,
+      onError: onUserCheckFailed,
+      ignoreSubscriptions: true
+   });
 
    if (browser) {
-      page.subscribe((p) => {
+      page.subscribe(() => {
          document.body.style.position = '';
          document.body.style.top = '';
          document.body.style.overflow = '';
          document.body.style.width = '';
          window.scrollTo(0, scrollY);
          if (typeof gtag !== 'undefined') {
+            // eslint-disable-next-line no-undef
             gtag('config', 'UA-121352342-1', {
                page_path: $page.url.pathname
             });

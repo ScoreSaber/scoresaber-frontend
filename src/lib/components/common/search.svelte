@@ -45,7 +45,7 @@
       if (value) inputBox.focus();
    };
 
-   const pageUnsubscribe = page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe(() => {
       if (browser) {
          setVisibility(false);
       }

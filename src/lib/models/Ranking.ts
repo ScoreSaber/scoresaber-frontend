@@ -44,7 +44,7 @@ export class VoteGroup {
    public upvotes: number;
    public downvotes: number;
    public myVote: boolean;
-   public neutral?: number;
+   public neutral: number;
    constructor(upvotes: number, downvotes: number, myVote: boolean, neutral?: number) {
       this.upvotes = upvotes;
       this.downvotes = downvotes;
@@ -56,7 +56,7 @@ export class VoteGroup {
          voteGroup1.upvotes + voteGroup2.upvotes,
          voteGroup1.downvotes + voteGroup2.downvotes,
          voteGroup2.myVote,
-         voteGroup1.neutral! + voteGroup2.neutral!
+         voteGroup1.neutral + voteGroup2.neutral
       );
    }
 }

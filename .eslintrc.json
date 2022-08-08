@@ -13,8 +13,9 @@
    "rules": {
       "indent": ["error", 3, { "SwitchCase": 1 }],
       "linebreak-style": ["error", "windows"],
-      "quotes": ["error", "single"],
       "semi": ["error", "always"],
+      "no-empty-function": "off",
+      "@typescript-eslint/no-empty-function": "off",
       "import/order": [
          "error",
          {

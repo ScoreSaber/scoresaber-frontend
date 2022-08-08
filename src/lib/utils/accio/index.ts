@@ -1,16 +1,20 @@
 import { onMount, onDestroy } from 'svelte';
-import { CACHE_EXPIRY_IN_MINUTES } from '$lib/utils/env';
 import { get, writable } from 'svelte/store';
-import { DefaultCache, CacheItem } from './cache';
-import { browser } from '$app/env';
-import { requestCancel } from './canceler';
 import axios from 'axios';
+
+import { browser } from '$app/env';
+
+import { CACHE_EXPIRY_IN_MINUTES } from '$lib/utils/env';
+
 import type { ScoreSaberError } from '$lib/models/GenericResponses';
+
+import { DefaultCache, CacheItem } from './cache';
+import { requestCancel } from './canceler';
 
 export class Accio {
    useAccio<D>(key: string, options?: Partial<AccioOptions<D>>) {
       type E = AccioError;
-      let unsubscribe: undefined | (() => void) = undefined;
+      const unsubscribe: undefined | (() => void) = undefined;
       const data = writable<D | undefined>(undefined, () => () => unsubscribe?.());
       const error = writable<E | undefined>(undefined, () => () => unsubscribe?.());
       const loading = writable<boolean>(false);
@@ -94,51 +98,6 @@ export class Accio {
       };
 
       if (browser) {
-         let lastFocus: number | null = null;
-
-         function subscribeFocus() {
-            const focusHandler = () => {
-               if (!options.ignoreSubscriptions) {
-                  const now = Date.now();
-                  if (lastFocus === null || now - lastFocus > 5000) {
-                     lastFocus = now;
-                     console.log(`Regained focus, refreshing ${key}`);
-                     refresh({ forceRevalidate: true, softRefresh: true, silent: true });
-                  }
-               }
-            };
-            window.addEventListener('focus', focusHandler);
-            return () => window.removeEventListener('focus', focusHandler);
-         }
-
-         function subscribeOnline() {
-            const onlineHandler = () => {
-               if (!options.ignoreSubscriptions) {
-                  console.log(`User is back online, refreshing ${key}`);
-                  refresh({ forceRevalidate: true, softRefresh: true, silent: true });
-               }
-            };
-            window.addEventListener('online', onlineHandler);
-            return () => window.removeEventListener('online', onlineHandler);
-         }
-
-         function subscribeVisibilityChange() {
-            const visibilityChangeHandler = () => {
-               if (document.visibilityState === 'visible') {
-                  if (!options.ignoreSubscriptions) {
-                     const now = Date.now();
-                     if (lastFocus === null || now - lastFocus > 5000) {
-                        lastFocus = now;
-                        console.log(`Regained focus, refreshing ${key}`);
-                        refresh({ forceRevalidate: true, softRefresh: true, silent: true });
-                     }
-                  }
-               }
-            };
-            window.addEventListener('visibilitychange', visibilityChangeHandler);
-            return () => window.removeEventListener('visibilitychange', visibilityChangeHandler);
-         }
-
          const unsubFocus = subscribeFocus();
          const unsubOnline = subscribeOnline();
          const unsubVisibility = subscribeVisibilityChange();
@@ -149,6 +108,52 @@ export class Accio {
             unsubVisibility();
          });
       }
+
+      let lastFocus: number | null = null;
+
+      function subscribeFocus() {
+         const focusHandler = () => {
+            if (!options.ignoreSubscriptions) {
+               const now = Date.now();
+               if (lastFocus === null || now - lastFocus > 5000) {
+                  lastFocus = now;
+                  console.log(`Regained focus, refreshing ${key}`);
+                  refresh({ forceRevalidate: true, softRefresh: true, silent: true });
+               }
+            }
+         };
+         window.addEventListener('focus', focusHandler);
+         return () => window.removeEventListener('focus', focusHandler);
+      }
+
+      function subscribeOnline() {
+         const onlineHandler = () => {
+            if (!options.ignoreSubscriptions) {
+               console.log(`User is back online, refreshing ${key}`);
+               refresh({ forceRevalidate: true, softRefresh: true, silent: true });
+            }
+         };
+         window.addEventListener('online', onlineHandler);
+         return () => window.removeEventListener('online', onlineHandler);
+      }
+
+      function subscribeVisibilityChange() {
+         const visibilityChangeHandler = () => {
+            if (document.visibilityState === 'visible') {
+               if (!options.ignoreSubscriptions) {
+                  const now = Date.now();
+                  if (lastFocus === null || now - lastFocus > 5000) {
+                     lastFocus = now;
+                     console.log(`Regained focus, refreshing ${key}`);
+                     refresh({ forceRevalidate: true, softRefresh: true, silent: true });
+                  }
+               }
+            }
+         };
+         window.addEventListener('visibilitychange', visibilityChangeHandler);
+         return () => window.removeEventListener('visibilitychange', visibilityChangeHandler);
+      }
+
       onDestroy(() => unsubscribe?.());
       return { data, error, refresh, loading, initialLoadComplete };
    }
@@ -210,7 +215,7 @@ export const defaultOptions: AccioOptions = {
 };
 
 export const createAccio = <D = any>(options?: Partial<AccioOptions<D>>) => new Accio();
-export let accio = createAccio();
+export const accio = createAccio();
 const cache = new DefaultCache();
 
 export const useAccio = <D>(key: string, options?: Partial<AccioOptions<D>>) => {
