@@ -1,15 +1,20 @@
 <script type="ts">
+   import { getContext } from 'svelte';
+
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
-   const { close } = getContext('simple-modal');
-   import type { Player, Role } from '$lib/models/PlayerData';
-   import { getContext } from 'svelte';
+
    import { getPermissionList } from '$lib/utils/helpers';
+
+   import type { Player, Role } from '$lib/models/PlayerData';
+
    export let onBanClick: (player: Player, reason: string) => void;
    export let onUnbanClick: (player: Player) => void;
    export let onGiveRoleClick: (player: Player, role: string) => void;
    export let onRemoveRoleClick: (player: Player, role: string) => void;
    export let player: Player;
+
+   const { close } = getContext('simple-modal');
 
    let currentRoles: Role[] = getPermissionList(player.permissions);
 

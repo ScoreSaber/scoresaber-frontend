@@ -1,6 +1,8 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
+
    export let player: Player;
+
    const historyArray = player.histories.split(',');
 
    let difference: number;

@@ -1,12 +1,12 @@
 <script lang="ts">
-   import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
-
    import LeaderboardRow from '$lib/components/leaderboard/leaderboard-row.svelte';
+
+   import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
 
    export let leaderboardScores: Score[];
    export let leaderboard: LeaderboardInfo;
    export let showScoreModal: (score: Score, leaderboard: LeaderboardInfo) => void;
-   export let pageDirection: number = 1;
+   export let pageDirection = 1;
    export let playerHighlight: string = undefined;
    let transitioning: boolean[] = [];
 

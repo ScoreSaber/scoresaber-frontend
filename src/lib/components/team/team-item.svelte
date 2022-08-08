@@ -1,9 +1,11 @@
 <script lang="ts">
-   import type { TeamMember } from '$lib/models/ScoreSaberTeam';
    import TeamMemberItem from '$lib/components/team/team-member-item.svelte';
+
+   import type { TeamMember } from '$lib/models/ScoreSaberTeam';
+
    export let title: string;
    export let teamMembers: TeamMember[];
-   export let removeUmbra: boolean = false;
+   export let removeUmbra = false;
 </script>
 
 <div class="team-panel">

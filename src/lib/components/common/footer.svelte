@@ -1,5 +1,4 @@
 <script lang="ts">
-   import { onMount } from 'svelte';
    import CookieConsent from './cookie-consent.svelte';
 </script>
 

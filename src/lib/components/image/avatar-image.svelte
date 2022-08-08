@@ -1,5 +1,6 @@
 <script lang="ts">
    import { getCDNUrl } from '$lib/utils/helpers';
+
    export let userId: string;
    $: imagePath = `/avatars/${userId}.jpg`;
 </script>

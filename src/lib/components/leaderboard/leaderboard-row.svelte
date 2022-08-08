@@ -1,14 +1,18 @@
 <script type="ts">
-   import PlayerLink from '$lib/components/player/player-link.svelte';
-   import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
    import { fly } from 'svelte/transition';
+
+   import PlayerLink from '$lib/components/player/player-link.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
+
+   import type { LeaderboardInfo, Score } from '$lib/models/LeaderboardData';
+
    export let score: Score;
    export let leaderboard: LeaderboardInfo;
    export let otherScores: Score[];
-   export let highlighted: boolean = false;
+   export let highlighted = false;
 
    export let showScoreModal: any;
+
    function openScoreDetails(score: Score, leaderboard: LeaderboardInfo): any {
       showScoreModal(score, leaderboard);
    }
@@ -16,7 +20,7 @@
    export let row = 1;
    export let pageDirection = 1;
 
-   export let transitioning: boolean = false;
+   export let transitioning = false;
 </script>
 
 <div

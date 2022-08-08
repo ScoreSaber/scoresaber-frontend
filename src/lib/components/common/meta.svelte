@@ -1,9 +1,10 @@
 <script lang="ts">
-   export let image: string = 'https://novus.scoresaber.com/512x512.png';
-   export let title: string = 'ScoreSaber';
-   export let description: string = 'ScoreSaber';
-   export let url: string = 'https://scoresaber.com';
-   let descriptionTag = `<meta property="og:description" content="${description}" />`;
+   export let image = 'https://novus.scoresaber.com/512x512.png';
+   export let title = 'ScoreSaber';
+   export let description = 'ScoreSaber';
+   export let url = 'https://scoresaber.com';
+
+   const descriptionTag = `<meta property="og:description" content="${description}" />`;
 </script>
 
 <meta property="og:image" content={image} />

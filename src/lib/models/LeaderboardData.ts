@@ -1,5 +1,6 @@
-import type { LeaderboardPlayer } from '$lib/models/PlayerData';
 import type { Metadata } from './GenericResponses';
+
+import type { LeaderboardPlayer } from '$lib/models/PlayerData';
 
 export interface Leaderboard {
    leaderboardInfo: LeaderboardInfo;

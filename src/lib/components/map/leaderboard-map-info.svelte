@@ -1,10 +1,14 @@
 <script lang="ts">
-   import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
-   import Permissions from '$lib/utils/permissions';
-   import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
+   import { searchView, userData } from '$lib/stores/global-store';
+
    import MusicAd from '$lib/components/ads/tfp.svelte';
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView, userData } from '$lib/stores/global-store';
+
+   import Permissions from '$lib/utils/permissions';
+   import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
+
+   import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
+
    export let leaderboardInfo: LeaderboardInfo;
 
    let searchModal: SearchView;

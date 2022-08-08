@@ -1,11 +1,15 @@
+import Permissions from '$lib/utils/permissions';
+
 import type { Difficulty, LeaderboardInfo } from '$lib/models/LeaderboardData';
 import { Role } from '$lib/models/PlayerData';
 import type { RankingDifficulty } from '$lib/models/Ranking';
-import Permissions from '$lib/utils/permissions';
+
 import { CDN_URL } from './env';
+
 export function rankToPage(rank: number, perPage: number) {
    return Math.floor((rank + perPage - 1) / perPage);
 }
+
 export function getCDNUrl(input: string) {
    return CDN_URL + input;
 }

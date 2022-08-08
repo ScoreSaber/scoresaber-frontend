@@ -2,13 +2,14 @@
    import { format, register } from 'timeago.js';
    import dateFormat from 'dateformat';
    import { onMount } from 'svelte';
+
    export let date: Date;
-   export let short: boolean = false;
+   export let short = false;
 
    $: formattedDate = short ? format(date, 'short-locale') : format(date);
    $: hoverDate = dateFormat(date, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
 
-   const shortLocale = (number: number, index: number, totalSec: number): [string, string] => {
+   const shortLocale = (number: number, index: number): [string, string] => {
       return [
          ['just now', 'right now'],
          ['%ss ago', 'in %s seconds'],
@@ -24,7 +25,7 @@
          ['%smo ago', 'in %s months'],
          ['1y ago', 'in 1 year'],
          ['%sy ago', 'in %s years']
-      ][index];
+      ][index] as [string, string];
    };
    // register your locale with timeago
    register('short-locale', shortLocale);

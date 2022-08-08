@@ -1,9 +1,10 @@
 <script lang="ts">
-   import type { FilterItem } from '$lib/models/Filter';
    import CountryImage from '$lib/components/image/country-image.svelte';
+
+   import type { FilterItem } from '$lib/models/Filter';
    export let item: FilterItem;
-   export let remove = (chip: FilterItem) => {};
-   export let withCountryImages: boolean = false;
+   export let remove: (value: FilterItem) => void;
+   export let withCountryImages = false;
 </script>
 
 <div class="chip">

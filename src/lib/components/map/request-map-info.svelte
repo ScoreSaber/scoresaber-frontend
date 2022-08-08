@@ -1,10 +1,13 @@
 <script lang="ts">
-   import type { RankRequestInformation } from '$lib/models/Ranking';
-   import Permissions from '$lib/utils/permissions';
-   import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus, getDifficultyOrStarValue } from '$lib/utils/helpers';
+   import { searchView, userData } from '$lib/stores/global-store';
+
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView, userData } from '$lib/stores/global-store';
+
+   import Permissions from '$lib/utils/permissions';
+   import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus, getDifficultyOrStarValue } from '$lib/utils/helpers';
+
+   import type { RankRequestInformation } from '$lib/models/Ranking';
 
    export let request: RankRequestInformation;
    let searchModal: SearchView;

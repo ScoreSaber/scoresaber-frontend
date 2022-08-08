@@ -1,12 +1,14 @@
 <script lang="ts">
    import CountryImage from '$lib/components/image/country-image.svelte';
+
    import Permissions from '$lib/utils/permissions';
+
    import type { LeaderboardPlayer, Player } from '$lib/models/PlayerData';
 
    export let player: Player | LeaderboardPlayer;
    export let destination: string | null;
-   export let external: boolean = false;
-   export let countryImage: boolean = true;
+   export let external = false;
+   export let countryImage = true;
 
    let playerClass: string;
    let playerTitle: string;

@@ -1,5 +1,6 @@
 <script lang="ts">
    import { getCDNUrl } from '$lib/utils/helpers';
+
    export let badge: string;
    const nameBadgePath = `/badges/name/${badge.toLowerCase()}.png`;
 </script>

@@ -1,33 +1,39 @@
 <script type="ts">
-   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
-   import FormattedDate from '$lib/components/common/formatted-date.svelte';
-   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
-   import { rankToPage } from '$lib/utils/helpers';
-   import PlayerScoreComponent from './player-score.svelte';
+   import type { Writable } from 'svelte/store';
+
    import { fly } from 'svelte/transition';
-   import type { Score, ScoreCollection } from '$lib/models/LeaderboardData';
    import queryString from 'query-string';
+
+   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
+   import FormattedDate from '$lib/components/common/formatted-date.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
-   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
-   import { useAccio } from '$lib/utils/accio';
-   import type { AccioRefreshOptions } from '$lib/utils/accio';
-   import axios from '$lib/utils/fetcher';
-   import type { Writable } from 'svelte/store';
    import Error from '$lib/components/common/error.svelte';
    import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';
+
+   import type { AccioRefreshOptions } from '$lib/utils/accio';
+   import axios from '$lib/utils/fetcher';
+   import { rankToPage } from '$lib/utils/helpers';
+   import { useAccio } from '$lib/utils/accio';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+
+   import type { Score, ScoreCollection } from '$lib/models/LeaderboardData';
+   import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
+
+   import PlayerScoreComponent from './player-score.svelte';
+
    export let score: PlayerScore;
-   export let row: number = 0;
-   export let pageDirection: number = 1;
+   export let row = 0;
+   export let pageDirection = 1;
    export let openModal: (score: PlayerScore, player?: LeaderboardPlayer | Player) => void;
-   export let expanded: boolean = false;
+   export let expanded = false;
    export let playerId: string = undefined;
 
    let leaderboardData: ScoreCollection;
-   let leaderboardDataLoading: boolean = false;
+   let leaderboardDataLoading = false;
    let leaderboardPage: number = Math.ceil(score.score.rank / 12);
-   let leaderboardPageDirection: number = 1;
+   let leaderboardPageDirection = 1;
 
    $: expanded && loadLeaderboardData();
 

@@ -1,16 +1,16 @@
 <script lang="ts" context="module">
-   export interface onClicked {
+   export interface onClickedCallback {
       (): void;
    }
 </script>
 
 <script lang="ts">
    // SkyKiwi wuz here
-   export let poggleable: boolean = false;
-   export let isDisabled: boolean = false;
-   export let size: string = 'is-small';
+   export let poggleable = false;
+   export let isDisabled = false;
+   export let size = 'is-small';
 
-   export let onClicked: onClicked = null;
+   export let onClicked: onClickedCallback;
    export let title: string;
    export let icon: string;
 

@@ -1,6 +1,8 @@
 <script lang="ts">
-   import { getCDNUrl } from '$lib/utils/helpers';
    import { getName } from 'country-list';
+
+   import { getCDNUrl } from '$lib/utils/helpers';
+
    export let country: string;
 
    $: countryImage = getCDNUrl('/flags/unknown.png');

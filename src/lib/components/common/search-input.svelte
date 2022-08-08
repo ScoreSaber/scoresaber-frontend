@@ -2,12 +2,12 @@
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
 
    export let value: string = null;
-   export let placeholder: string = 'Search...';
+   export let placeholder = 'Search...';
    export let onSearch: (value: string) => void = () => {};
    export let icon: string = null;
 
-   export let expandable: boolean = false;
-   export let expanded: boolean = false;
+   export let expandable = false;
+   export let expanded = false;
 
    let inputElement: HTMLInputElement = null;
    let searchContainer: HTMLDivElement = null;

@@ -11,7 +11,7 @@
    export let maxPages: number;
    export let pageSize: number;
    export let pageClicked: PageCallback;
-   export let withFirstLast: boolean = false;
+   export let withFirstLast = false;
 
    $: fixedMaxPages = Math.ceil(maxPages / pageSize);
 </script>

@@ -1,6 +1,8 @@
 <script type="ts">
    import type { Player } from '$lib/models/PlayerData';
+
    export let player: Player;
+
    let badgeClass = 'image is-badge';
    if (player.badges.length > 1) {
       badgeClass += ' grouped';

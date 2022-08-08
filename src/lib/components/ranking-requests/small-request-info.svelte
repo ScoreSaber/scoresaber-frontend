@@ -1,8 +1,12 @@
 <script lang="ts">
-   import type { RankRequestListing } from '$lib/models/Ranking';
-   export let request: RankRequestListing;
-   import type SearchView from '$lib/components/common/search.svelte';
    import { searchView } from '$lib/stores/global-store';
+
+   import type SearchView from '$lib/components/common/search.svelte';
+
+   import type { RankRequestListing } from '$lib/models/Ranking';
+
+   export let request: RankRequestListing;
+
    let searchModal: SearchView;
 
    let songName: string;

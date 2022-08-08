@@ -9,12 +9,15 @@
 </script>
 
 <script lang="ts">
-   import type { UserData } from '$lib/models/UserData';
-   import type { Player } from '$lib/models/PlayerData';
+   import { fly } from 'svelte/transition';
+
    import RichText from '$lib/components/common/rich-text.svelte';
+
    import permissions from '$lib/utils/permissions';
    import poster from '$lib/utils/poster';
-   import { fly } from 'svelte/transition';
+
+   import type { UserData } from '$lib/models/UserData';
+   import type { Player } from '$lib/models/PlayerData';
 
    export let userData: UserData;
    export let player: Player;
@@ -27,7 +30,7 @@
    async function submitBio() {
       saveStatusUpdate(SaveStatus.Started);
       editing = false;
-      await poster(`/api/user/update-bio`, { bio: richTextValue }, { withCredentials: true });
+      await poster('/api/user/update-bio', { bio: richTextValue }, { withCredentials: true });
       saveStatusUpdate(SaveStatus.Completed);
    }
 

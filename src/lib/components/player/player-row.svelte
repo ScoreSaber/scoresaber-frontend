@@ -1,19 +1,24 @@
 <script type="ts">
-   import type { Player } from '$lib/models/PlayerData';
+   import { fly } from 'svelte/transition';
+
+   import { userData } from '$lib/stores/global-store';
+
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import CountryImage from '$lib/components/image/country-image.svelte';
    import WeeklyChange from '$lib/components/player/weekly-change.svelte';
    import Stats from '$lib/components/player/stats.svelte';
-   import { rankToPage } from '$lib/utils/helpers';
-   import { fly } from 'svelte/transition';
-   import { userData } from '$lib/stores/global-store';
-   let isExpanded: boolean = false;
-   export let player: Player;
-   export let row: number = 1;
-   export let pageDirection: number = 1;
-   export let countryFiltered: boolean = false;
-   export let pageNumber: number = 1;
 
+   import { rankToPage } from '$lib/utils/helpers';
+
+   import type { Player } from '$lib/models/PlayerData';
+
+   export let player: Player;
+   export let row = 1;
+   export let pageDirection = 1;
+   export let countryFiltered = false;
+   export let pageNumber = 1;
+
+   let isExpanded = false;
    const toggleExpanded = () => (isExpanded = !isExpanded);
 </script>
 

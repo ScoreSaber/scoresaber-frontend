@@ -1,8 +1,8 @@
 <script type="ts">
    import { onMount } from 'svelte';
 
-   export let extraClasses: string = '';
-   export let rememberClose: boolean = false;
+   export let extraClasses = '';
+   export let rememberClose = false;
    export let id: string;
    export let style = '';
    let hidden = true;

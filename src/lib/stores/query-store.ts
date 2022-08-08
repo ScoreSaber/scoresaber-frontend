@@ -1,21 +1,22 @@
-import { goto } from '$app/navigation';
-import { page } from '$app/stores';
 import { get, writable } from 'svelte/store';
 import queryString from 'query-string';
+
+import { goto } from '$app/navigation';
+import { page } from '$app/stores';
 
 export const queryChangeTimeout = writable(null);
 
 export function pageQueryStore<T extends object>(props: T) {
-   let queryStore = writable<Partial<T>>(props);
+   const queryStore = writable<Partial<T>>(props);
    let initialLoad = true;
    page.subscribe((p) => {
-      let query = queryString.parse(p.url.searchParams.toString(), { parseNumbers: true });
+      const query = queryString.parse(p.url.searchParams.toString(), { parseNumbers: true });
 
       // set the default page to 1 after navigation if the query params do not contain the page parameter and the original props contained this field
       if ('page' in props && !query?.page) query.page = 1;
 
-      let newParams: T = props;
-      for (let key in query) {
+      const newParams: T = props;
+      for (const key in query) {
          if (key in props) newParams[key] = query[key];
       }
       // for the first load keep initial prop values i.e. page = 1
@@ -39,14 +40,14 @@ export function pageQueryStore<T extends object>(props: T) {
    return {
       subscribe: queryStore.subscribe,
       updateSingle: async (prop: keyof T, v: any): Promise<void> => {
-         let query = get(queryStore);
+         const query = get(queryStore);
          query[prop] = v;
          const urlSearchParams = new URLSearchParams(queryFilter(query));
          const g = `?${urlSearchParams.toString()}`;
          goto(g, { keepfocus: true, noscroll: true });
       },
       update: async (props: Partial<T>): Promise<void> => {
-         let query = get(queryStore);
+         const query = get(queryStore);
          Object.keys(props).forEach((p) => {
             query[p] = props[p];
          });

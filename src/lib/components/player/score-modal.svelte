@@ -1,8 +1,11 @@
 <script type="ts">
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
+
    import { HMDs } from '$lib/utils/helpers';
+
    import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
+
    export let score: PlayerScore;
    export let player: Player | LeaderboardPlayer;
 

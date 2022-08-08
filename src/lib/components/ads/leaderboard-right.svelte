@@ -1,14 +1,18 @@
 <script>
    import { onMount } from 'svelte';
+
    import { dev } from '$app/env';
-   import permissions from '$lib/utils/permissions';
+
    import { userData } from '$lib/stores/global-store';
+
+   import permissions from '$lib/utils/permissions';
    $: showAd = true;
    onMount(() => {
       try {
-         window.adsbygoogle = window.adsbygoogle;
          window.adsbygoogle.push({});
-      } catch (ex) {}
+      } catch (ex) {
+         console.error(ex);
+      }
       if (!window.canRunAds) {
          showAd = false;
       }

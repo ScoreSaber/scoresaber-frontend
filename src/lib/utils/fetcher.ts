@@ -1,5 +1,7 @@
 import axios, { type AxiosRequestConfig } from 'axios';
+
 import { dev } from '$app/env';
+
 import { API_URL, API_KEY } from './env';
 
 export default async function <T>(url: string, config?: AxiosRequestConfig): Promise<T> {

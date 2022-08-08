@@ -1,8 +1,10 @@
 <script lang="ts">
-   import type { Player } from '$lib/models/PlayerData';
    import { onMount } from 'svelte';
    import Line from 'svelte-chartjs/src/Line.svelte';
+
    import { browser } from '$app/env';
+
+   import type { Player } from '$lib/models/PlayerData';
 
    export let player: Player;
 
@@ -11,11 +13,11 @@
    });
 
    history.push(player.rank);
-   
-   // If this player stopped playing for a while, but has picked up again, then remove the 
+
+   // If this player stopped playing for a while, but has picked up again, then remove the
    // #999999 ranks at the beginning to make the chart more useful
    const inactiveRankPlaceholder = 999999;
-   const firstActiveRankIndex = history.findIndex(h => h !== inactiveRankPlaceholder);
+   const firstActiveRankIndex = history.findIndex((h) => h !== inactiveRankPlaceholder);
    if (firstActiveRankIndex >= 0) {
       history.splice(0, firstActiveRankIndex);
    }
@@ -47,7 +49,6 @@
          let trueAverage = totalSum / nums.length;
          const denyahs: string[] = [];
          const backgroundPositions: string[] = [];
-         const backgroundAlignments: string[] = [];
          const backgroundWidth: number = 100 / nums.length;
          for (let i = 0; i < nums.length; i++) {
             if (i == 0) {
