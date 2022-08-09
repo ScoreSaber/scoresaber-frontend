@@ -8,6 +8,10 @@ const config = {
    },
    optimizeDeps: {
       exclude: ['sswr']
+   },
+   server: {
+      host: true,
+      port: 3000
    }
 };
 

@@ -33,6 +33,7 @@
       "@types/country-list": "^2.1.0",
       "axios": "^0.23.0",
       "bulma": "^0.9.3",
+      "chart.js": "^3.9.1",
       "country-list": "^2.2.0",
       "dateformat": "^5.0.2",
       "express": "^4.17.1",
@@ -44,7 +45,7 @@
       "jszip": "^3.9.1",
       "mustache": "^4.2.0",
       "query-string": "^7.0.1",
-      "svelte-chartjs": "^1.1.0",
+      "svelte-chartjs": "^2.0.1",
       "timeago.js": "^4.0.2"
    }
 }

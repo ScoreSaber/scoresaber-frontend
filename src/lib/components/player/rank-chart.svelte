@@ -1,7 +1,9 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
    import { onMount } from 'svelte';
-   import Line from 'svelte-chartjs/src/Line.svelte';
+   import type { ChartOptions } from 'chart.js';
+   import { Line } from 'svelte-chartjs';
+   import 'chart.js/auto';
    import { browser } from '$app/env';
 
    export let player: Player;
@@ -11,19 +13,16 @@
    });
 
    history.push(player.rank);
-   
-   // If this player stopped playing for a while, but has picked up again, then remove the 
+
+   // If this player stopped playing for a while, but has picked up again, then remove the
    // #999999 ranks at the beginning to make the chart more useful
    const inactiveRankPlaceholder = 999999;
-   const firstActiveRankIndex = history.findIndex(h => h !== inactiveRankPlaceholder);
+   const firstActiveRankIndex = history.findIndex((h) => h !== inactiveRankPlaceholder);
    if (firstActiveRankIndex >= 0) {
       history.splice(0, firstActiveRankIndex);
    }
 
    onMount(() => {
-      window.addEventListener('resize', () => {
-         options = getOptions();
-      });
       if (player.id == '76561198064659288') {
          const chartCanvas = document.getElementById('rank-chart').firstElementChild as HTMLElement;
 
@@ -47,7 +46,6 @@
          let trueAverage = totalSum / nums.length;
          const denyahs: string[] = [];
          const backgroundPositions: string[] = [];
-         const backgroundAlignments: string[] = [];
          const backgroundWidth: number = 100 / nums.length;
          for (let i = 0; i < nums.length; i++) {
             if (i == 0) {
@@ -72,23 +70,6 @@
          chartCanvas.style.borderRadius = '5px';
       }
    });
-
-   const getXTickLimit = (): number => {
-      if (browser) {
-         var limit = 25;
-         if (window.innerWidth <= 1000) {
-            limit = 20;
-         }
-         if (window.innerWidth <= 632) {
-            limit = 13;
-         }
-         if (window.innerWidth <= 500) {
-            limit = 8;
-         }
-         return limit;
-      }
-      return 8;
-   };
 
    let labels = [];
    for (let i = history.length; i > 0; i--) {
@@ -115,11 +96,13 @@
          }
       ]
    };
+</script>
 
-   let options = getOptions();
-
-   function getOptions() {
-      let options = {
+<div id="rank-chart" class="rank-chart">
+   <Line
+      {data}
+      options={{
+         responsive: true,
          maintainAspectRatio: false,
          scales: {
             y: {
@@ -131,8 +114,7 @@
             },
             x: {
                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: getXTickLimit()
+                  autoSkip: true
                }
             }
          },
@@ -144,26 +126,17 @@
                display: false
             },
             tooltip: {
-               mode: 'index',
-               intersect: false
+               intersect: false,
+               mode: 'index'
             }
-         },
-         hover: {
-            mode: 'nearest',
-            intersect: true
          },
          elements: {
             point: {
                radius: 0
             }
          }
-      };
-      return options;
-   }
-</script>
-
-<div id="rank-chart" class="rank-chart">
-   <Line bind:options {data} />
+      }}
+   />
 </div>
 
 <style>
