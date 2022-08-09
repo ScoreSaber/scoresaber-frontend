@@ -11,7 +11,7 @@
    },
    "plugins": ["@typescript-eslint", "svelte3", "import"],
    "rules": {
-      "indent": ["error", 3, { "SwitchCase": 1 }],
+      "indent": "off",
       "linebreak-style": ["error", "windows"],
       "semi": ["error", "always"],
       "no-empty-function": "off",

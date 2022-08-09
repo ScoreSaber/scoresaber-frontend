@@ -40,8 +40,12 @@
       </div>
    {/if}
    <div>
-      <span title="Score" class="stat" class:hide-details={score.leaderboard.maxScore || score.leaderboard.ranked} class:oldScore={new Date(score.score.timeSet).getTime() /
-      1000 <= 1558474032}>
+      <span
+         title="Score"
+         class="stat"
+         class:hide-details={score.leaderboard.maxScore || score.leaderboard.ranked}
+         class:oldScore={new Date(score.score.timeSet).getTime() / 1000 <= 1558474032}
+      >
          {score.score.modifiedScore.toLocaleString('en-US')}
       </span>
       {#if score.score.modifiers}
