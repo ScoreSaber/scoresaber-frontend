@@ -1,15 +1,15 @@
 <script lang="ts">
    import type { FilterItem } from '$lib/models/Filter';
 
-   export let placeholder: string = '';
+   export let placeholder = '';
    export let value: string;
-   export let classes: string = '';
+   export let classes = '';
    export let elementRef: HTMLElement = null;
    export let options: FilterItem[] = [];
-   export let valueSelected: (value: FilterItem) => void = () => {};
-   export let showAll: boolean = false;
+   export let valueSelected: (value: FilterItem) => void;
+   export let showAll = false;
 
-   let highlighted: number = 0;
+   let highlighted = 0;
    let optionsElement: HTMLDivElement;
 
    $: filteredOptions =
@@ -23,7 +23,9 @@
 
    function selectOption(option: FilterItem) {
       value = option.friendlyName;
-      valueSelected(option);
+      if (valueSelected) {
+         valueSelected(option);
+      }
       value = '';
    }
 

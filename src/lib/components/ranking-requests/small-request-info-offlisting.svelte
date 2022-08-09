@@ -1,14 +1,18 @@
 <script lang="ts">
-   import type { RankRequestInformation } from '$lib/models/Ranking';
-   export let request: RankRequestInformation;
+   import { searchView } from '$lib/stores/global-store';
+
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView } from '$lib/global-store';
+
+   import type { RankRequestInformation } from '$lib/models/Ranking';
+
+   export let request: RankRequestInformation;
+
    let searchModal: SearchView;
 
-   let songName : string;
+   let songName: string;
    $: songName = `${request.leaderboardInfo.songName}${request.leaderboardInfo.songSubName ? ' ' + request.leaderboardInfo.songSubName : ''}`;
 
-   let truncatedSongName : string;
+   let truncatedSongName: string;
    $: truncatedSongName = songName.length < 30 ? songName : songName.slice(0, 29).trim() + '…';
 
    searchView.subscribe((v) => (searchModal = v));

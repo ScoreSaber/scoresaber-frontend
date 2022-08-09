@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-   import { loadMetadata } from '$lib/metadata-loader';
+   import { loadMetadata } from '$lib/stores/metadata-loader';
 
    export async function load({ fetch, params }) {
       return await loadMetadata(fetch, `/api/leaderboard/by-id/${params.leaderboardId}/info`);
@@ -7,38 +7,41 @@
 </script>
 
 <script lang="ts">
-   import { useAccio } from '$lib/utils/accio';
-   import axios from '$lib/utils/fetcher';
-   import Loader from '$lib/components/common/loader.svelte';
-   import Error from '$lib/components/common/error.svelte';
-   import { page } from '$app/stores';
-   import type { Difficulty, LeaderboardInfo, Score, ScoreCollection } from '$lib/models/LeaderboardData';
-   import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
-   import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import queryString from 'query-string';
-   import { pageQueryStore } from '$lib/query-store';
    import { fly } from 'svelte/transition';
-   import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import { onDestroy } from 'svelte';
+
+   import { page } from '$app/stores';
    import { browser } from '$app/env';
-   import Filter from '$lib/components/common/filter.svelte';
-   import filters from '$lib/utils/filters';
-   import type { FilterItem } from '$lib/models/Filter';
+   import { goto } from '$app/navigation';
 
-   import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
+   import { modal, setBackground, userData } from '$lib/stores/global-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
 
-   import { modal, setBackground, userData } from '$lib/global-store';
-   import Permissions from '$lib/utils/permissions';
-   import poster from '$lib/utils/poster';
-   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
    import Meta from '$lib/components/common/meta.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
-   import { goto } from '$app/navigation';
+   import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
+   import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
+   import Filter from '$lib/components/common/filter.svelte';
+   import Error from '$lib/components/common/error.svelte';
+   import Loader from '$lib/components/common/loader.svelte';
    import LeaderboardRightAd from '$lib/components/ads/leaderboard-right.svelte';
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
+   import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
+   import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
+   import Modal, { bind } from '$lib/components/common/modal.svelte';
+
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import poster from '$lib/utils/poster';
+   import Permissions from '$lib/utils/permissions';
+   import filters from '$lib/utils/filters';
+   import axios from '$lib/utils/fetcher';
+   import { useAccio } from '$lib/utils/accio';
+
+   import type { FilterItem } from '$lib/models/Filter';
+   import type { Difficulty, LeaderboardInfo, Score, ScoreCollection } from '$lib/models/LeaderboardData';
 
    export let metadata: LeaderboardInfo = undefined;
    let leaderboardId = $page.params.leaderboardId;
@@ -197,7 +200,7 @@
       leaderboard.set(undefined);
       leaderboardScores.set(undefined);
       await poster(
-         `/api/ranking/request/action/admin/pp-manual`,
+         '/api/ranking/request/action/admin/pp-manual',
          { leaderboardId: $page.params.leaderboardId, pp: manualPP },
          { withCredentials: true }
       );

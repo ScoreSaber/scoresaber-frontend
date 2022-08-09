@@ -1,32 +1,36 @@
 <script lang="ts">
    import { slide } from 'svelte/transition';
+   import { onDestroy, onMount } from 'svelte';
+
    import { browser } from '$app/env';
+
    import Autocomplete from '$lib/components/common/autocomplete.svelte';
    import Chip from '$lib/components/common/chip.svelte';
-   import { onDestroy, onMount } from 'svelte';
+
    import type { FilterItem } from '$lib/models/Filter';
    export let filterName: string;
    export let items: FilterItem[];
    export let initialItems: string = undefined;
-   export let withCountryImages: boolean = false;
-   export let filterUpdated = (items: FilterItem[]) => {};
+   export let withCountryImages = false;
+   export let filterUpdated: (items: FilterItem[]) => void;
 
    export let selectedItems: FilterItem[] = [];
+
    $: expanded = false;
 
    let input: HTMLInputElement;
-   let newOption: string = '';
+   let newOption = '';
    let chip: HTMLDivElement;
    $: input && focusInput();
 
-   function addItemByKey(item: string, notify: boolean = true) {
+   function addItemByKey(item: string, notify = true) {
       const filterItem = items.find((x) => x.key.toLowerCase() === item.toLowerCase());
       if (filterItem) {
          addItem(filterItem, notify);
       }
    }
 
-   function addItemByFriendlyName(item: string, notify: boolean = true) {
+   function addItemByFriendlyName(item: string, notify = true) {
       const filterItem = items.find((x) => x.friendlyName.toLowerCase() === item.toLowerCase());
       if (filterItem) {
          addItem(filterItem, notify);
@@ -42,7 +46,7 @@
       }
    }
 
-   function removeItem(item: FilterItem, notify: boolean = true) {
+   function removeItem(item: FilterItem, notify = true) {
       selectedItems = selectedItems.filter((x) => x !== item);
       items = [item, ...items];
       if (notify) {

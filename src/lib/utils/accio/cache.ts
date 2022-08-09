@@ -89,7 +89,7 @@ export interface CacheRemoveOptions {
 /**
  * Determines the cache clear options.
  */
-export interface CacheClearOptions extends CacheRemoveOptions {}
+export type CacheClearOptions = CacheRemoveOptions;
 
 /**
  * Represents the methods a cache should implement

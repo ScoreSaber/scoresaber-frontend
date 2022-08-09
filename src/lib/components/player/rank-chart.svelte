@@ -1,10 +1,9 @@
 <script lang="ts">
-   import type { Player } from '$lib/models/PlayerData';
    import { onMount } from 'svelte';
-   import type { ChartOptions } from 'chart.js';
    import { Line } from 'svelte-chartjs';
+
+   import type { Player } from '$lib/models/PlayerData';
    import 'chart.js/auto';
-   import { browser } from '$app/env';
 
    export let player: Player;
 

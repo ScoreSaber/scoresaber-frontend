@@ -1,5 +1,5 @@
 <script lang="ts">
-   export let displayOver: boolean = false;
+   export let displayOver = false;
 </script>
 
 <div class="columns is-centered" class:displayOver>

@@ -9,11 +9,12 @@
 
 <script type="ts">
    import Error from '$lib/components/common/error.svelte';
+
    import { AccioError } from '$lib/utils/accio';
 
    export let name: string;
    export let message: string;
-   export let stack: string = '';
+   export let stack = '';
    export let status: number;
 </script>
 

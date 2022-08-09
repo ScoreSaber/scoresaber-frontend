@@ -1,7 +1,8 @@
 <script lang="ts">
    import type { Player } from '$lib/models/PlayerData';
+
    export let player: Player;
-   export let small: boolean = false;
+   export let small = false;
 </script>
 
 <div class="stats-container">

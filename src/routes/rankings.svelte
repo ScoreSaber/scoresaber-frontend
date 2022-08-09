@@ -1,24 +1,29 @@
 <script lang="ts">
-   import type { Player, PlayerCollection } from '$lib/models/PlayerData';
-   import { onDestroy } from 'svelte';
-   import Loader from '$lib/components/common/loader.svelte';
-   import Error from '$lib/components/common/error.svelte';
-   import PlayerRow from '$lib/components/player/player-row.svelte';
-   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
-   import axios from '$lib/utils/fetcher';
    import queryString from 'query-string';
-   import { useAccio } from '$lib/utils/accio';
-   import { pageQueryStore } from '$lib/query-store';
-   import { page } from '$app/stores';
+   import { onDestroy } from 'svelte';
    import { fly } from 'svelte/transition';
-   import Filter from '$lib/components/common/filter.svelte';
-   import filters from '$lib/utils/filters';
-   import type { FilterItem } from '$lib/models/Filter';
+
    import { browser } from '$app/env';
-   import TextInput from '$lib/components/common/text-input.svelte';
-   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
-   import { defaultBackground } from '$lib/global-store';
+   import { page } from '$app/stores';
+
+   import { defaultBackground } from '$lib/stores/global-store';
+   import { pageQueryStore } from '$lib/stores/query-store';
+
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
+   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
+   import Error from '$lib/components/common/error.svelte';
+   import Filter from '$lib/components/common/filter.svelte';
+   import Loader from '$lib/components/common/loader.svelte';
+   import TextInput from '$lib/components/common/text-input.svelte';
+   import PlayerRow from '$lib/components/player/player-row.svelte';
+
+   import { useAccio } from '$lib/utils/accio';
+   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import axios from '$lib/utils/fetcher';
+   import filters from '$lib/utils/filters';
+
+   import type { PlayerCollection } from '$lib/models/PlayerData';
+   import type { FilterItem } from '$lib/models/Filter';
 
    $: loading = true;
    $: firstLoad = true;
@@ -41,7 +46,7 @@
    $: regionFilters = filters.regionFilter.filter((x) => ($pageQuery.regions?.split(',') ?? []).map((r) => r.toUpperCase()).includes(x.key));
    $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).map((c) => c.toUpperCase()).includes(x.key));
 
-   let filterChanged: boolean = false;
+   let filterChanged = false;
 
    const {
       data: rankings,

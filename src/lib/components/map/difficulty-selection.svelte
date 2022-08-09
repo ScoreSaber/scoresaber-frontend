@@ -1,7 +1,8 @@
 <script lang="ts">
+   import { getDifficultyStyle, getDifficultyLabel } from '$lib/utils/helpers';
+
    import type { Difficulty } from '$lib/models/LeaderboardData';
    import type { RankingDifficulty } from '$lib/models/Ranking';
-   import { getDifficultyStyle, getDifficultyLabel } from '$lib/utils/helpers';
 
    export let diffs: Difficulty[] = null;
    export let rankingDiffs: RankingDifficulty[] = null;

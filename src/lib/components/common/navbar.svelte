@@ -1,17 +1,20 @@
 <script lang="ts">
+   import { onMount } from 'svelte';
+
+   import { userData, searchView } from '$lib/stores/global-store';
+
    import SearchView from '$lib/components/common/search.svelte';
-   import { userData, searchView } from '$lib/global-store';
+   import Announcement from '$lib/components/common/announcement.svelte';
+
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
-   import { onMount } from 'svelte';
    import permissions from '$lib/utils/permissions';
-   import Announcement from '$lib/components/common/announcement.svelte';
-   $: loggedIn = false;
 
+   $: loggedIn = false;
    $: showNormalPost = true;
    $: showPPFarmerPost = false;
    let searchModal: SearchView;
-   let userMenuVisible: boolean = false;
+   let userMenuVisible = false;
    let menuButton: HTMLAnchorElement;
    let isExpanded = false;
    let scrollProbe: HTMLDivElement;
@@ -34,7 +37,7 @@
       location.reload();
    }
 
-   function handleWindowKeydown({ key, metaKey, ctrlKey, preventDefault, stopPropagation, stopImmediatePropagation }: KeyboardEvent) {
+   function handleWindowKeydown({ key, metaKey, ctrlKey, preventDefault }: KeyboardEvent) {
       if (key == 'Escape') return searchModal?.setVisibility(false);
       if (key == '/' && (metaKey || ctrlKey) && !searchModal.isVisible()) {
          searchModal?.setVisibility(true);
@@ -127,7 +130,7 @@
                href={'javascript: void(0);'}
                bind:this={menuButton}
                class="user"
-               on:click={({ preventDefault }) => {
+               on:click={() => {
                   userMenuVisible = !userMenuVisible;
                }}
             >

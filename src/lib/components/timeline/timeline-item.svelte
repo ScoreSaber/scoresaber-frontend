@@ -9,11 +9,10 @@
 </script>
 
 <script lang="ts">
-   import type { TimelineSteps } from './timeline.svelte';
-
    export let step: TimelineStep;
-   export let secondHalfAccent: string = '';
-   const { content, accentColour, isCompleted, time } = step;
+   export let secondHalfAccent = '';
+
+   const { accentColour, isCompleted, time } = step;
    const dateFormat = Intl.DateTimeFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-AU', {
       timeStyle: 'short',
       dateStyle: 'full',

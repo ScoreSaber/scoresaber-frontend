@@ -4,7 +4,8 @@
     */
 
    import { createEventDispatcher } from 'svelte';
-   import generateNavigationOptions, {PaginationOptions} from './generateNavigationOptions';
+
+   import generateNavigationOptions, { PaginationOptions } from './generateNavigationOptions';
 
    const PREVIOUS_PAGE = 'PREVIOUS_PAGE';
    const NEXT_PAGE = 'NEXT_PAGE';
@@ -12,11 +13,11 @@
 
    const dispatch = createEventDispatcher();
 
-   export let totalItems: number = 0;
-   export let pageSize: number = 1;
-   export let currentPage: number = 1;
+   export let totalItems = 0;
+   export let pageSize = 1;
+   export let currentPage = 1;
    export let limit: number = null;
-   export let showStepOptions: boolean = false;
+   export let showStepOptions = false;
 
    $: options = generateNavigationOptions({
       totalItems,
@@ -28,9 +29,11 @@
 
    $: totalPages = Math.ceil(totalItems / pageSize);
 
-   function isOptionDisabled(option: PaginationOptions) : boolean {
-      return (option.type === 'symbol' && option.symbol === NEXT_PAGE && currentPage >= totalPages) ||
-        (option.type === 'symbol' && option.symbol === PREVIOUS_PAGE && currentPage <= 1);
+   function isOptionDisabled(option: PaginationOptions): boolean {
+      return (
+         (option.type === 'symbol' && option.symbol === NEXT_PAGE && currentPage >= totalPages) ||
+         (option.type === 'symbol' && option.symbol === PREVIOUS_PAGE && currentPage <= 1)
+      );
    }
 
    function handleOptionClick(option) {

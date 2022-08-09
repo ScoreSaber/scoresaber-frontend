@@ -24,12 +24,12 @@ export default function (info: PaginationInfo) {
    const totalPages = Math.ceil(info.totalItems / info.pageSize);
    const limitThreshold = getLimitThreshold(info.limit);
    const limited = info.limit && totalPages > limitThreshold;
-   let options: PaginationOptions[] = limited ? generateLimitedOptions(totalPages, info) : generateUnlimitedOptions(totalPages);
+   const options: PaginationOptions[] = limited ? generateLimitedOptions(totalPages, info) : generateUnlimitedOptions(totalPages);
    return info.showStepOptions ? addStepOptions(options, info.currentPage, totalPages) : options;
 }
 
 function generateUnlimitedOptions(totalPages: number): PaginationOptions[] {
-   let options: PaginationOptions[] = [];
+   const options: PaginationOptions[] = [];
    for (let i = 1; i <= totalPages; i++) {
       options.push({ type: 'number', value: i });
    }
@@ -42,7 +42,7 @@ function generateLimitedOptions(totalPages: number, { limit, currentPage }: Pagi
    const lastBoundary = totalPages - boundarySize;
    const totalShownPages = firstBoundary + 2;
 
-   let options: PaginationOptions[] = [];
+   const options: PaginationOptions[] = [];
 
    if (currentPage <= firstBoundary - limit) {
       for (let i = 0; i < totalShownPages; i++) {

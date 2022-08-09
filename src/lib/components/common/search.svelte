@@ -1,19 +1,23 @@
 <script lang="ts">
-   import type { Player, PlayerCollection } from '$lib/models/PlayerData';
-   import type { LeaderboardInfo, LeaderboardInfoCollection } from '$lib/models/LeaderboardData';
-   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import queryString from 'query-string';
-   import fetcher from '$lib/utils/fetcher';
    import axios from 'axios';
-   import PlayerLink from '$lib/components/player/player-link.svelte';
+   import { onDestroy } from 'svelte';
+
    import { browser } from '$app/env';
    import { page } from '$app/stores';
-   import { onDestroy } from 'svelte';
    import { goto } from '$app/navigation';
+
+   import PlayerLink from '$lib/components/player/player-link.svelte';
+   import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
+
+   import fetcher from '$lib/utils/fetcher';
+
+   import type { LeaderboardInfo, LeaderboardInfoCollection } from '$lib/models/LeaderboardData';
+   import type { Player, PlayerCollection } from '$lib/models/PlayerData';
    let searchValue = '';
    let inputBox: HTMLInputElement;
    let visible = false;
-   let focusElement: number = 0;
+   let focusElement = 0;
    let resultsElement: HTMLDivElement;
 
    export const isVisible = () => visible;
@@ -41,7 +45,7 @@
       if (value) inputBox.focus();
    };
 
-   const pageUnsubscribe = page.subscribe((p) => {
+   const pageUnsubscribe = page.subscribe(() => {
       if (browser) {
          setVisibility(false);
       }
@@ -52,7 +56,7 @@
 
    const scrollToActive = () => {
       if (focusElement < 2) return resultsElement.scrollTo({ top: 0, behavior: 'smooth' });
-      const target = resultsElement.querySelectorAll(`.result`)[Math.max(0, focusElement - 2)];
+      const target = resultsElement.querySelectorAll('.result')[Math.max(0, focusElement - 2)];
       target.scrollIntoView({ behavior: 'smooth' });
    };
 
@@ -79,14 +83,6 @@
    };
 
    let cancel = axios.CancelToken.source();
-
-   const absorbCancel = (thrown) => {
-      if (axios.isCancel(thrown)) {
-         console.log('request canceled');
-      } else {
-         console.error(thrown);
-      }
-   };
 
    export const search = async (value: string) => {
       searchValue = value; // external search calls should update the value

@@ -1,5 +1,6 @@
-import type { Score, LeaderboardInfo } from '$lib/models/LeaderboardData';
 import type { Metadata } from './GenericResponses';
+
+import type { Score, LeaderboardInfo } from '$lib/models/LeaderboardData';
 
 export interface Player {
    id: string;

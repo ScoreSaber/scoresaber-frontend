@@ -1,7 +1,7 @@
 <script type="ts">
    import { onMount } from 'svelte';
 
-   export let extraClasses: string = '';
+   export let extraClasses = '';
    export let style = '';
    let hidden = true;
 

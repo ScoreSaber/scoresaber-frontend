@@ -1,6 +1,8 @@
 import { writable } from 'svelte/store';
-import type { UserData } from '$lib/models/UserData';
+
 import type SearchView from '$lib/components/common/search.svelte';
+
+import type { UserData } from '$lib/models/UserData';
 
 export const userData = writable(getUser());
 

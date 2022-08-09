@@ -1,6 +1,7 @@
 <script lang="ts">
    import type { TeamMember } from '$lib/models/ScoreSaberTeam';
    export let teamMember: TeamMember;
+
    const position = '';
 </script>
 

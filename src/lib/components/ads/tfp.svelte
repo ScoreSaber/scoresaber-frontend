@@ -1,9 +1,14 @@
 <script lang="ts">
    import { onMount } from 'svelte';
-   import { userData } from '$lib/global-store';
+
+   import { userData } from '$lib/stores/global-store';
+
    import permissions from '$lib/utils/permissions';
+
    import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
+
    export let leaderboardInfo: LeaderboardInfo;
+
    $: showAd = true;
    const opts = {
       artist: leaderboardInfo.songAuthorName,
@@ -11,6 +16,7 @@
       adunit_id: 100004454,
       div_id: 'cf_async_' + Math.floor(Math.random() * 999999999)
    };
+
    onMount(() => {
       userData.subscribe((u) => {
          if (u) {

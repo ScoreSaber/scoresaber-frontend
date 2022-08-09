@@ -16,7 +16,8 @@
    import * as svelte from 'svelte';
    import { fade, fly } from 'svelte/transition';
    import { createEventDispatcher } from 'svelte';
-   import { modal } from '$lib/global-store';
+
+   import { modal } from '$lib/stores/global-store';
 
    const dispatch = createEventDispatcher();
 
@@ -100,6 +101,7 @@
       currentTransitionWindow = state.transitionWindow;
    };
 
+   // eslint-disable-next-line @typescript-eslint/no-empty-function
    const toVoid = () => {};
    let onOpen = toVoid;
    let onClose = toVoid;

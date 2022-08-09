@@ -1,6 +1,8 @@
-import { API_URL } from '$lib/utils/env';
 import { browser } from '$app/env';
 
+import { API_URL } from '$lib/utils/env';
+
+// eslint-disable-next-line @typescript-eslint/ban-types
 export async function loadMetadata(fetch: Function, url: string) {
    if (!browser) {
       if (url.startsWith('/api')) {

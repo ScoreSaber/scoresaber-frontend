@@ -1,12 +1,17 @@
 <script lang="ts">
-   import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
-   import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
+   import { searchView } from '$lib/stores/global-store';
+
    import type SearchView from '$lib/components/common/search.svelte';
-   import { searchView } from '$lib/global-store';
+
+   import { getDifficultyStyle, getDifficultyLabel, getDifficultyOrStarValue } from '$lib/utils/helpers';
+
+   import type { LeaderboardInfo } from '$lib/models/LeaderboardData';
+
    import FormattedDate from '../common/formatted-date.svelte';
 
    export let leaderboard: LeaderboardInfo;
    export let margin: boolean | undefined = undefined;
+
    let searchModal: SearchView;
 
    let clipAt = 30;

@@ -1,8 +1,8 @@
 <script lang="ts">
-   import type { Player } from '$lib/models/PlayerData';
-
    import { onMount } from 'svelte';
+
    export let playerId: string;
+
    onMount(() => {
       const page = document.getElementById('page');
       if (page) {
