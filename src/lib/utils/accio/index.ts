@@ -214,8 +214,7 @@ export const defaultOptions: AccioOptions = {
    withCredentials: true
 };
 
-export const createAccio = <D = any>(options?: Partial<AccioOptions<D>>) => new Accio();
-export const accio = createAccio();
+export const accio = new Accio();
 const cache = new DefaultCache();
 
 export const useAccio = <D>(key: string, options?: Partial<AccioOptions<D>>) => {

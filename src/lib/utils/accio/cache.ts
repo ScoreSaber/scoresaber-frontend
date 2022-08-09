@@ -152,14 +152,14 @@ export class DefaultCache implements AccioCache {
    /**
     * Removes an key-value pair from the cache.
     */
-   remove(key: string, options?: Partial<CacheRemoveOptions>): void {
+   remove(key: string): void {
       this.elements.delete(key);
    }
 
    /**
     * Removes all the key-value pairs from the cache.
     */
-   clear(options?: Partial<CacheClearOptions>): void {
+   clear(): void {
       this.elements.clear();
    }
 
