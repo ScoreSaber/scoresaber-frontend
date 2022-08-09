@@ -16,6 +16,7 @@
       "semi": ["error", "always"],
       "no-empty-function": "off",
       "@typescript-eslint/no-empty-function": "off",
+      "import/no-duplicates": "error",
       "import/order": [
          "error",
          {

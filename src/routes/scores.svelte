@@ -1,8 +1,7 @@
 <script lang="ts">
    import { onDestroy, onMount } from 'svelte';
 
-   import { modal } from '$lib/stores/global-store';
-   import { setBackground } from '$lib/stores/global-store';
+   import { modal, setBackground } from '$lib/stores/global-store';
 
    import Loader from '$lib/components/common/loader.svelte';
    import Modal, { bind } from '$lib/components/common/modal.svelte';

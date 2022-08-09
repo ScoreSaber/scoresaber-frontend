@@ -15,8 +15,7 @@
    import { page } from '$app/stores';
 
    import { pageQueryStore } from '$lib/stores/query-store';
-   import { modal, userData } from '$lib/stores/global-store';
-   import { setBackground } from '$lib/stores/global-store';
+   import { modal, userData, setBackground } from '$lib/stores/global-store';
 
    import Error from '$lib/components/common/error.svelte';
    import Stats from '$lib/components/player/stats.svelte';
@@ -41,7 +40,6 @@
    import fetcher from '$lib/utils/fetcher';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import { useAccio } from '$lib/utils/accio';
-   import axios from '$lib/utils/fetcher';
    import { rankToPage } from '$lib/utils/helpers';
 
    import type { LeaderboardPlayer, Player, PlayerScore, PlayerScoreCollection } from '$lib/models/PlayerData';
@@ -65,7 +63,7 @@
       error: playerDataError,
       refresh: refreshPlayerData
    } = useAccio<Player>(getPlayerInfoUrl($page.params.playerId), {
-      fetcher: axios,
+      fetcher,
       onSuccess: (data) => setBackground(data.profilePicture)
    });
 
@@ -75,7 +73,7 @@
       refresh: refreshScores,
       initialLoadComplete: scoreInitialLoadComplete,
       loading: scoreDataLoading
-   } = useAccio<PlayerScoreCollection>(getPlayerScoresUrl($page.params.playerId, $page.url.searchParams.toString()), { fetcher: axios });
+   } = useAccio<PlayerScoreCollection>(getPlayerScoresUrl($page.params.playerId, $page.url.searchParams.toString()), { fetcher });
 
    const pageUnsubscribe = page.subscribe((p) => {
       if (browser && p.url.toString().indexOf('/u/') > -1) {
