@@ -24,18 +24,35 @@
       width: 48px;
       margin: 30px 0;
    }
+
+   @supports (-webkit-touch-callout: none) {
+      // loading animation for ios
+      @keyframes loading {
+         0% {
+            transform: rotate(0deg);
+         }
+         100% {
+            transform: rotate(360deg);
+         }
+      }
+   }
+
+   @supports not (-webkit-touch-callout: none) {
+      // loading animation for literally everythings else
+      @keyframes loading {
+         0% {
+            transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+         }
+         50% {
+            transform: perspective(120px) rotateX(0deg) rotateY(-180deg);
+         }
+         100% {
+            transform: perspective(120px) rotateX(0deg) rotateY(-359deg);
+         }
+      }
+   }
+
    .columns {
       display: flex;
-   }
-   @keyframes loading {
-      0% {
-         transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-      }
-      50% {
-         transform: perspective(120px) rotateX(0deg) rotateY(-180deg);
-      }
-      100% {
-         transform: perspective(120px) rotateX(0deg) rotateY(-359deg);
-      }
    }
 </style>
