@@ -7,10 +7,8 @@ import { API_URL, API_KEY } from './env';
 export default async function <T>(url: string, config?: AxiosRequestConfig): Promise<T> {
    const isAPI = url.startsWith('/api');
 
-   if (dev) {
-      if (isAPI) {
-         url = `${API_URL}${url}`;
-      }
+   if (isAPI) {
+      url = `${API_URL}${url}`;
    }
 
    if (isAPI) {
