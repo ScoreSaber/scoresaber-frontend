@@ -8,7 +8,7 @@ export default async function <T>(url: string, config?: AxiosRequestConfig): Pro
    const isAPI = url.startsWith('/api');
 
    if (isAPI) {
-      url = `${API_URL}${url}`;
+      url = `${API_URL ?? ''}${url}`;
    }
 
    if (isAPI) {
