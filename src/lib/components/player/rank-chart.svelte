@@ -71,12 +71,12 @@
    });
 
    let labels = [];
-   for (let i = history.length; i > 0; i--) {
+   for (let i = history.length - 1; i >= 0; i--) {
       let label = `${i} days ago`;
-      if (i === 1) {
+      if (i === 0) {
          label = 'now';
       }
-      if (i === 2) {
+      if (i === 1) {
          label = 'yesterday';
       }
       labels.push(label);
