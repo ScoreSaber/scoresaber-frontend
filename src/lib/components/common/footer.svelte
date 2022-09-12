@@ -27,6 +27,7 @@
          <a href="https://github.com/Umbranoxio/ScoreSaber-Frontend" target="_blank" rel="external" title="Contribute on GitHub" class="square"
             ><i class="fab fa-github fa-2x" /></a
          >
+         <a href="https://wiki.scoresaber.com" target="_blank" rel="external" title="Wiki" class="square"><i class="fas fa-book-open fa-2x" /></a>
          <a href="https://docs.scoresaber.com" target="_blank" rel="external" title="API Documentation" class="square"
             ><i class="fas fa-book fa-2x" /></a
          >
