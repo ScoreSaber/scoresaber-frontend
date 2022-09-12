@@ -14,7 +14,6 @@
    },
    "devDependencies": {
       "@bulatdashiev/svelte-slider": "^1.0.3",
-      "@sveltejs/adapter-auto": "^1.0.0-next.64",
       "@sveltejs/adapter-node": "^1.0.0-next.55",
       "@sveltejs/adapter-static": "^1.0.0-next.21",
       "@sveltejs/kit": "next",
