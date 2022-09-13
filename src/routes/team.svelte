@@ -34,10 +34,10 @@
          <div>
             <TeamItem title="Creator & Project Lead" teamMembers={$team.TeamMembers.Backend} />
             <TeamItem title="Admin" teamMembers={$team.TeamMembers.Admin} removeUmbra={true} />
-            <TeamItem title="Nomination Assesment Team" teamMembers={$team.TeamMembers.NAT} />
+            <TeamItem title="Nomination Assessment Team" teamMembers={$team.TeamMembers.NAT} />
             <TeamItem title="Ranking Team" teamMembers={$team.TeamMembers.RT} />
             <TeamItem title="Quality Assurance Team" teamMembers={$team.TeamMembers.QAT} />
-            <TeamItem title="Criteria Assesment Team" teamMembers={$team.TeamMembers.CAT} />
+            <TeamItem title="Criteria Assurance Team" teamMembers={$team.TeamMembers.CAT} />
             <TeamItem title="Frontend Developers" teamMembers={$team.TeamMembers.Frontend} />
             <TeamItem title="PC Mod" teamMembers={$team.TeamMembers.Mod} />
             <TeamItem title="PPv3" teamMembers={$team.TeamMembers.PPv3} removeUmbra={true} />
