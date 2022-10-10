@@ -46,7 +46,9 @@
       <!-- <span class="playerName">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span> -->
    </div>
    <div class="pp centered">
-      <span class="pp">{player.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span><span class="pp ppLabel">pp</span>
+      <span class="pp">{player.pp.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span><span class="pp ppLabel"
+         >pp</span
+      >
    </div>
    {#if player.scoreStats}
       <div class="total-play-count centered">

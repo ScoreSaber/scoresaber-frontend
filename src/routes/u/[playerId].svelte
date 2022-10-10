@@ -188,7 +188,7 @@
    {#if metadata}
       <Meta
          description={`Player Ranking: #${metadata.rank.toLocaleString('en-US')}
-Performance Points: ${metadata.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
+Performance Points: ${metadata.pp.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}pp
 Total Play Count: ${metadata.scoreStats ? metadata.scoreStats.totalPlayCount.toLocaleString('en-US') : '0'}
 Average Ranked Accuracy: ${metadata.scoreStats ? metadata.scoreStats.averageRankedAccuracy.toFixed(2) : '0'}%
 Total Score: ${metadata.scoreStats ? metadata.scoreStats.totalScore.toLocaleString('en-US') : '0'}
@@ -247,7 +247,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                   {#if !$playerData.banned}
                      <div class="divider" />
                      <span title="Performance Points" class="title-header pp">
-                        {$playerData.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp
+                        {$playerData.pp.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}pp
                      </span>
                   {/if}
                </h5>
