@@ -7,8 +7,11 @@
    function getAccuracy() {
       let scoreCalc = score.score.baseScore;
       let maxScore = score.leaderboard.maxScore;
-
-      return ((scoreCalc / maxScore) * 100) / score.score.multiplier;
+      let acc = (scoreCalc / maxScore) * 100;
+      if (score.leaderboard.positiveModifiers) {
+         acc = acc / score.score.multiplier;
+      }
+      return acc;
    }
 
    function getWeightedPP() {

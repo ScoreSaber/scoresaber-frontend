@@ -27,6 +27,7 @@ export interface LeaderboardInfo {
    stars: number;
    plays: number;
    dailyPlays: number;
+   positiveModifiers: boolean;
    coverImage: string;
    playerScore: Score | null;
    difficulties: Difficulty[];
