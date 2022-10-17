@@ -89,7 +89,7 @@
                            <th class="rt_upvotes">RT 👍</th>
                            <th class="rt_downvotes">RT 👎</th>
                            <th class="qat_upvotes">QAT 👍</th>
-                           <th class="qat_neutral">QAT 😐</th>
+                           <th class="qat_neutral">QAT ✅</th>
                            <th class="qat_downvotes">QAT 👎</th>
                         </tr>
                      </thead>
@@ -148,7 +148,7 @@
                            <th class="rt_upvotes">RT 👍</th>
                            <th class="rt_downvotes">RT 👎</th>
                            <th class="qat_upvotes">QAT 👍</th>
-                           <th class="qat_neutral">QAT 😐</th>
+                           <th class="qat_neutral">QAT ✅</th>
                            <th class="qat_downvotes">QAT 👎</th>
                         </tr>
                      </thead>

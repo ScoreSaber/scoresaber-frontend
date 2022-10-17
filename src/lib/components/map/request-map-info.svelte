@@ -65,7 +65,7 @@
          </div>
          <div class="votes">
             <div class="vote">QAT 👍<br /><b>{request.qatVotes.upvotes}</b></div>
-            <div class="vote">QAT 😐<br /><b>{request.qatVotes.neutral}</b></div>
+            <div class="vote">QAT ✅<br /><b>{request.qatVotes.neutral}</b></div>
             <div class="vote">QAT 👎<br /><b>{request.qatVotes.downvotes}</b></div>
          </div>
       </div>
