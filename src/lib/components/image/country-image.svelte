@@ -11,11 +11,11 @@
    $: {
       if (country != '') {
          const toTwemojiFlag = (input: string) =>
-            `https://twemoji.maxcdn.com/v/13.1.0/svg/${input
+            `https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/${input
                .toLowerCase()
                .match(/[a-z]/g)
                .map((i) => (i.codePointAt(0) + 127365).toString(16))
-               .join('-')}.svg`;
+               .join('-')}.png`;
          const toEmojiFlag = (countryCode: string): string =>
             countryCode.toLowerCase().replace(/[a-z]/g, (i) => String.fromCodePoint((i.codePointAt(0) ?? 0) - 97 + 0x1f1e6));
 
