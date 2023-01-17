@@ -19,7 +19,7 @@
 
    async function generateQmod() {
       const questKey = await fetcher('/api/user/quest-key', { withCredentials: true });
-      const data = await axios.get(CDN_URL + '/downloads/quest/ScoreSaber_1.17.1_1.0.0.qmod', { responseType: 'blob' });
+      const data = await axios.get(CDN_URL + '/downloads/quest/ScoreSaber_1.27.0_3631150051_2.0.0.qmod', { responseType: 'blob' });
       const zip = new JSZip();
       await zip.loadAsync(data.data as Blob);
       zip.file('scoresaber_DO_NOT_SHARE.scary', `${questKey}:${$userData.playerId}`);
@@ -62,7 +62,7 @@
    <div class="window-header">{getStepTitle($pageQuery.step)}</div>
    <div class="window has-shadow">
       {#if $pageQuery.step == 1}
-         <p>Following these steps will install ScoreSaber on Quest for Beat Saber 1.17.1 (1.21.0 is in development)</p>
+         <p>Following these steps will install ScoreSaber on Quest for Beat Saber 1.27.0_3631150051</p>
          <p>
             <b>It is recommended that you uninstall any other conflicting leaderboard mods before continuing as they are not currently supported</b>
          </p>
@@ -169,16 +169,30 @@
 
    <div class="window has-shadow">
       <p>
-         <a href="https://patreon.com/scoresaber">
+         <a target="_blank" rel="external" href="https://patreon.com/scoresaber">
             Please consider supporting ScoreSaber on Patreon{' '}
             <span aria-label="heart" role="img"> ❤️ </span>{' '}
             (you can get custom profile bios, a fancy leaderboard colour, badge and role){' '}
+         </a>
+      </p>
+      <p>
+         <a target="_blank" rel="external" href="https://github.com/ScoreSaber/ScoreSaber-Quest">
+            <div class="icon-link">
+               <i class="fab fa-github fa-2x" />
+               <span class="mt-1 ml-2">Source Code</span>
+            </div>
          </a>
       </p>
    </div>
 </div>
 
 <style>
+   .icon-link {
+      display: flex;
+      align-items: left;
+      justify-content: left;
+      text-align: left;
+   }
    .warning {
       color: red;
    }
