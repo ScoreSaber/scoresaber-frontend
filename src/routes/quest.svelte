@@ -13,13 +13,15 @@
 
    const maxPages = 4;
 
+   const availableVersions = [['2.2.0', '1.28.0_4124311467'], ['2.1.0', '1.27.0_3631150051']];
+
    $: pageQuery = pageQueryStore({
       step: 1
    });
 
-   async function generateQmod() {
+   async function generateQmod(modVersion, gameVersion) {
       const questKey = await fetcher('/api/user/quest-key', { withCredentials: true });
-      const data = await axios.get(CDN_URL + '/downloads/quest/ScoreSaber_1.27.0_3631150051_2.0.0.qmod', { responseType: 'blob' });
+      const data = await axios.get(CDN_URL + `/downloads/quest/ScoreSaber_${gameVersion}_${modVersion}.qmod`, { responseType: 'blob' });
       const zip = new JSZip();
       await zip.loadAsync(data.data as Blob);
       zip.file('scoresaber_DO_NOT_SHARE.scary', `${questKey}:${$userData.playerId}`);
@@ -62,7 +64,7 @@
    <div class="window-header">{getStepTitle($pageQuery.step)}</div>
    <div class="window has-shadow">
       {#if $pageQuery.step == 1}
-         <p>Following these steps will install ScoreSaber on Quest for Beat Saber 1.27.0_3631150051</p>
+         <p>Following these steps will install ScoreSaber on Quest for Beat Saber</p>
          <p>
             <b>It is recommended that you uninstall any other conflicting leaderboard mods before continuing as they are not currently supported</b>
          </p>
@@ -88,7 +90,7 @@
       {#if $pageQuery.step == 3}
          <div class="notification is-warning download">
             <h4 class="warning">!! Warning !!</h4>
-            <b>Do not share this file with anyone as it contains your login details!</b>
+            <b>Do not share these files with anyone as they contain your login details!</b>
          </div>
          <p>
             By downloading ScoreSaber you agree that you have read & agreed to the <a
@@ -97,12 +99,30 @@
                href="https://scoresaber.com/legal/privacy">Privacy Policy</a
             >
          </p>
-         <button on:click={() => generateQmod()} class="button is-link is-small">
-            <span class="icon">
-               <i class="fas fa-file-download" />
-            </span>
-            <span>Generate & Download</span>
-         </button>
+         <table>
+            <thead>
+               <tr class="headers">
+                  <th>ScoreSaber Version</th>
+                  <th>BeatSaber Version</th>
+               </tr>
+            </thead>
+            <tbody>
+               {#each availableVersions as version}
+                  <tr class="table-item">
+                     <td>SoreSaber {version[0]}</td>
+                     <td>BeatSaber {version[1]}</td>
+                     <td>
+                        <button on:click={() => generateQmod(version[0], version[1])} class="button is-link is-small">
+                           <span class="icon">
+                              <i class="fas fa-file-download" />
+                           </span>
+                           <span>Generate & Download</span>
+                        </button>
+                     </td>
+                  </tr>
+               {/each}
+            </tbody>
+         </table>
       {/if}
 
       {#if $pageQuery.step == 4}
