@@ -109,7 +109,7 @@
             <tbody>
                {#each availableVersions as version}
                   <tr class="table-item">
-                     <td>SoreSaber {version[0]}</td>
+                     <td>ScoreSaber {version[0]}</td>
                      <td>BeatSaber {version[1]}</td>
                      <td>
                         <button on:click={() => generateQmod(version[0], version[1])} class="button is-link is-small">
