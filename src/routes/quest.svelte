@@ -25,7 +25,7 @@
       const zip = new JSZip();
       await zip.loadAsync(data.data as Blob);
       zip.file('scoresaber_DO_NOT_SHARE.scary', `${questKey}:${$userData.playerId}`);
-      zip.generateAsync({ type: 'blob' }).then(function (content) {
+      zip.generateAsync({ type: 'blob', mimeType: "application/qmod"}).then(function (content) {
          saveAs(content, 'ScoreSaber_DO_NOT_SHARE.qmod');
       });
    }
