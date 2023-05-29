@@ -17,7 +17,7 @@
       let scoreCalc = score.score.baseScore;
       let maxScore = score.leaderboard.maxScore;
 
-      return ((scoreCalc / maxScore) * 100) / score.score.multiplier;
+      return ((scoreCalc / maxScore) * 100);
    }
 </script>
 
