@@ -1,7 +1,6 @@
 services:
-   scoresaber-frontend:
+   frontend:
       image: '${IMAGE_NAME}'
-      container_name: scoresaber-frontend
       command: node build/index.js
       networks:
          - scoresaber-network
