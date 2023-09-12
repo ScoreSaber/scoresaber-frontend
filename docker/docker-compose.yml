@@ -1,7 +1,7 @@
 services:
    frontend:
       image: '${IMAGE_NAME}'
-      command: node build/index.js
+      command: node -r dotenv/config build
       networks:
          - scoresaber-network
       ports:
