@@ -33,7 +33,7 @@ zero_downtime_deploy() {
   docker compose up -d --scale $service_name=2 --no-recreate --no-build --pull always $service_name
 }
 
-zero_downtime_deploy frontend 1000
+zero_downtime_deploy frontend 3000
 
 for image in ${images[@]}; do
   docker image rm $image &> /dev/null || true
