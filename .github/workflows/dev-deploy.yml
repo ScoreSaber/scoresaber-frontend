@@ -1,0 +1,76 @@
+name: Build & Deploy dev build
+
+on:
+   workflow_dispatch:
+
+env:
+   REGISTRY: ghcr.io
+   TAG_NAME: dev-deploy
+   DEPLOY_DIR: ${{ secrets.DEV_DEPLOY_DIR }}
+   SSH_HOST: ${{ secrets.DEV_SSH_HOST }}
+   SSH_USER: ${{ secrets.DEV_SSH_USER }}
+   SSH_KEY: ${{ secrets.DEV_SSH_KEY }}
+
+jobs:
+   build_and_push:
+      name: Build & Push Docker Image to GitHub Packages
+      runs-on: ubuntu-latest
+      steps:
+         - name: Lowercase registry name
+           run: |
+              echo IMAGE_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+
+         - name: Checkout
+           uses: actions/checkout@v3
+           with:
+              token: ${{ secrets.CI_PAT }}
+              submodules: recursive
+
+         - name: Log in to the Container registry
+           uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+           with:
+              registry: ${{ env.REGISTRY }}
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
+
+         - name: Build & push Docker Image
+           uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+           with:
+              build-args: COMMIT_ID=${{ github.sha }}
+              context: .
+              file: docker/Dockerfile
+              push: true
+              tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG_NAME }}
+   deploy:
+      needs: build_and_push
+      name: Deploy to server
+      runs-on: ubuntu-latest
+      steps:
+         - name: Checkout
+           uses: actions/checkout@v3
+           with:
+              token: ${{ secrets.CI_PAT }}
+              submodules: recursive
+
+         - name: Setup SSH connection
+           uses: webfactory/ssh-agent@v0.5.1
+           with:
+              ssh-private-key: ${{ env.SSH_KEY }}
+
+         - name: Adding Known Hosts
+           run: ssh-keyscan -H ${{ env.SSH_HOST }} >> ~/.ssh/known_hosts
+
+         - name: Login to the GitHub Packages Docker Registry
+           run: ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} "docker login ${{ env.REGISTRY }} -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}"
+
+         - name: Copy docker compose
+           run: scp docker/docker-compose.yml ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.DEPLOY_DIR }}/docker-compose.yml
+
+         - name: Copy deploy script
+           run: scp deploy.sh ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.DEPLOY_DIR }}/deploy.sh
+
+         - name: Run deploy script
+           run: ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} "cd ${{ env.DEPLOY_DIR }} && chmod +x deploy.sh && ./deploy.sh"
+
+         - name: Logout of package registry
+           run: ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} "docker logout ${{ env.REGISTRY }}"
