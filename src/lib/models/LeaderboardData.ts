@@ -64,7 +64,10 @@ export interface Score {
    missedNotes: number;
    maxCombo: number;
    fullCombo: boolean;
-   hmd: number;
+   hmd: number | null;
+   deviceHmd: string | null;
+   deviceControllerLeft: string | null;
+   deviceControllerRight: string | null;
    timeSet: Date;
 }
 

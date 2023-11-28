@@ -31,7 +31,14 @@
             class="image rounded is-24x24"
          />
          <b><PlayerLink player={score.leaderboardPlayerInfo} destination={`/u/${score.leaderboardPlayerInfo.id}`} /></b>
-         <span class="text-muted"><FormattedDate date={new Date(score.timeSet)} /> on <b>{HMDs[score.hmd]}</b></span>
+         <span class="text-muted"
+            ><FormattedDate date={new Date(score.timeSet)} />
+            {#if score.deviceHmd}
+               on <b>{score.deviceHmd}</b>
+            {:else}
+               on <b>{HMDs[score.hmd]}</b>
+            {/if}
+         </span>
       </div>
       <div class="scores">
          <div class="score">Score<br /><b>{score.modifiedScore.toLocaleString('en-US')}</b></div>
@@ -67,6 +74,27 @@
             </div>
             <div class="score">
                Missed Notes<br /><b>{score.missedNotes}</b>
+            </div>
+         {/if}
+      </div>
+      <div class="scores">
+         {#if score.deviceHmd}
+            <div class="score">
+               Headset<br /><b>{score.deviceHmd}</b>
+            </div>
+         {:else}
+            <div class="score">
+               Headset<br /><b>{HMDs[score.hmd]}</b>
+            </div>
+         {/if}
+         {#if score.deviceControllerLeft}
+            <div class="score">
+               Left Controller<br /><b>{score.deviceControllerLeft}</b>
+            </div>
+         {/if}
+         {#if score.deviceControllerRight}
+            <div class="score">
+               Right Controller<br /><b>{score.deviceControllerRight}</b>
             </div>
          {/if}
       </div>

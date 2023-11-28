@@ -107,12 +107,12 @@ export function getPermissionList(currentPermissions: number): Role[] {
 
 export const HMDs = {
    0: 'Unknown',
-   1: 'Oculus Rift CV1',
+   1: 'Rift CV1',
    2: 'Vive',
    4: 'Vive Pro',
    8: 'Windows Mixed Reality',
    16: 'Rift S',
-   32: 'Oculus Quest',
+   32: 'Quest',
    64: 'Valve Index',
    128: 'Vive Cosmos'
 };

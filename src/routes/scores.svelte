@@ -103,7 +103,11 @@
                               <b>
                                  <PlayerLink player={score.score.leaderboardPlayerInfo} destination={`/u/${score.score.leaderboardPlayerInfo.id}`} />
                               </b>
-                              on {HMDs[score.score.hmd]}
+                              {#if score.score.deviceHmd}
+                                 on {score.score.deviceHmd}
+                              {:else}
+                                 on {HMDs[score.score.hmd]}
+                              {/if}
                            </span>
                         </div>
                         <Score openModal={openScoreModal} {score} row={i + 1} playerId={score.score.leaderboardPlayerInfo.id} />

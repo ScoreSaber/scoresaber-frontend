@@ -17,7 +17,7 @@
       let scoreCalc = score.score.baseScore;
       let maxScore = score.leaderboard.maxScore;
 
-      return ((scoreCalc / maxScore) * 100);
+      return (scoreCalc / maxScore) * 100;
    }
 </script>
 
@@ -33,7 +33,12 @@
             <PlayerLink {player} destination={`/u/${player.id}`} />
          </b>
          <span class="text-muted">
-            <FormattedDate date={new Date(score.score.timeSet)} /> on <b>{HMDs[score.score.hmd]}</b>
+            <FormattedDate date={new Date(score.score.timeSet)} />
+            {#if score.score.deviceHmd}
+               on <b>{score.score.deviceHmd}</b>
+            {:else}
+               on <b>{HMDs[score.score.hmd]}</b>
+            {/if}
          </span>
       </div>
       <div class="scores">
@@ -73,6 +78,27 @@
             </div>
             <div class="score">
                Missed Notes<br /><b>{score.score.missedNotes}</b>
+            </div>
+         {/if}
+      </div>
+      <div class="scores">
+         {#if score.score.deviceHmd}
+            <div class="score">
+               Headset<br /><b>{score.score.deviceHmd}</b>
+            </div>
+         {:else}
+            <div class="score">
+               Headset<br /><b>{HMDs[score.score.hmd]}</b>
+            </div>
+         {/if}
+         {#if score.score.deviceControllerLeft}
+            <div class="score">
+               Left Controller<br /><b>{score.score.deviceControllerLeft}</b>
+            </div>
+         {/if}
+         {#if score.score.deviceControllerRight}
+            <div class="score">
+               Right Controller<br /><b>{score.score.deviceControllerRight}</b>
             </div>
          {/if}
       </div>
