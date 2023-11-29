@@ -35,6 +35,7 @@
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import Denyah from '$lib/components/misc/denyah.svelte';
    import Bio, { SaveStatus } from '$lib/components/common/bio.svelte';
+   import TextInput from '$lib/components/common/text-input.svelte';
 
    import permissions from '$lib/utils/permissions';
    import fetcher from '$lib/utils/fetcher';
@@ -45,7 +46,18 @@
    import type { LeaderboardPlayer, Player, PlayerScore, PlayerScoreCollection } from '$lib/models/PlayerData';
 
    export let metadata: Player = undefined;
-   $: pageQuery = pageQueryStore({ page: 1, sort: 'top' });
+
+   type scoresQuery = {
+      page: number;
+      sort: 'top' | 'recent';
+      search: string;
+   };
+
+   $: pageQuery = pageQueryStore<scoresQuery>({
+      page: 1,
+      sort: 'top',
+      search: null
+   });
 
    function getPlayerInfoUrl(playerId: string) {
       return `/api/player/${playerId}/full`;
@@ -106,7 +118,7 @@
       pageDirection = option.value === 'recent' ? 1 : -1;
       pageQuery.update({
          page: 1,
-         sort: option.value
+         sort: option.value as 'top' | 'recent'
       });
       updateCancelToken();
    }
@@ -176,6 +188,23 @@
             refreshPlayerData({ forceRevalidate: true, softRefresh: true });
             break;
          }
+      }
+   }
+
+   function searchUpdated(search: string) {
+      $requestCancel.cancel('Filter Changed');
+      updateCancelToken();
+      if (search) {
+         if (search.length > 3) {
+            pageQuery.update({
+               page: 1,
+               search
+            });
+         } else {
+            pageQuery.updateSingle('search', null);
+         }
+      } else {
+         pageQuery.updateSingle('search', null);
       }
    }
 
@@ -316,6 +345,11 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
             <div class="button-container">
                <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
             </div>
+            <div class="search-container">
+               <div class="search">
+                  <TextInput isSmall={true} onInput={searchUpdated} value={$pageQuery.search} />
+               </div>
+            </div>
             {#if $scoreData}
                <div class="mobile top-arrowpagination">
                   <ArrowPagination
@@ -372,10 +406,11 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
    .bottom-arrowpagination {
       margin-top: 15px;
    }
+
    .gridTable {
       display: grid;
       grid-template-columns: 1fr;
-      margin-top: 1rem;
+      margin-top: 6px;
       min-height: 200px;
    }
 
@@ -386,6 +421,17 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
    .button-container {
       display: flex;
       justify-content: center;
+   }
+
+   .search-container {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .search {
+      width: 320px;
    }
 
    h5.player {
