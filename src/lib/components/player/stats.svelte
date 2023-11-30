@@ -1,4 +1,6 @@
 <script lang="ts">
+   import dateFormat from 'dateformat';
+
    import type { Player } from '$lib/models/PlayerData';
 
    export let player: Player;
@@ -54,6 +56,14 @@
       <span class="stat-content">{player.scoreStats ? player.scoreStats.replaysWatched.toLocaleString('en-US') : '0'}</span>
    </div>
 
+   <div class="stat-item">
+      <span class="stat-title">Joined</span>
+      <span class="stat-spacer" />
+      <span class="stat-content has-hover" title={dateFormat(player.firstSeen, 'dddd, mmmm dS, yyyy, h:MM:ss TT')}>
+         {new Date(player.firstSeen).toLocaleString('en-us', { month: 'long', year: 'numeric' })}
+      </span>
+   </div>
+
    {#if player.role}
       <div class="stat-item">
          <span class="stat-title">Role</span>
@@ -96,5 +106,8 @@
          justify-content: center;
          max-width: 100%;
       }
+   }
+   .has-hover {
+      cursor: help;
    }
 </style>

@@ -18,6 +18,7 @@ export interface Player {
    permissions: number;
    banned: boolean;
    inactive: boolean;
+   firstSeen: Date;
 }
 
 export interface PlayerScore {
