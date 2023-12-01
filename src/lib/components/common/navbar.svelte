@@ -76,7 +76,7 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement id="quest-release" rememberClose={true}>
+<!-- <Announcement id="quest-release" rememberClose={true}>
    <div class="announcement">
       <span>ScoreSaber for Quest is out!</span>
       <span
@@ -84,7 +84,7 @@
          as a whole!</span
       >
    </div>
-</Announcement>
+</Announcement> -->
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->

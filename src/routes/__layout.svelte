@@ -7,7 +7,7 @@
    import { page } from '$app/stores';
    import { browser } from '$app/env';
 
-   import { background, userData } from '$lib/stores/global-store';
+   import { background, snowVisible, userData } from '$lib/stores/global-store';
 
    import Navbar from '$lib/components/common/navbar.svelte';
    import Footer from '$lib/components/common/footer.svelte';
@@ -95,14 +95,14 @@
    {/key}
    <div class="cover" />
    <Navbar />
-   <!-- <div id="snow" class="snow {$snowVisible ? 'visible' : ''}">
+   <div id="snow" class="snow {$snowVisible ? 'visible' : ''}">
       {#each Array(30) as _, i}
          <div class="snowflake" />
-         {#if $page.path === '/u/76561198064659288'}
+         {#if $page.url.pathname === '/u/76561198064659288'}
             <div class="snowflake denyah" />
          {/if}
       {/each}
-   </div> -->
+   </div>
    <div class="page-container content">
       <slot />
    </div>
