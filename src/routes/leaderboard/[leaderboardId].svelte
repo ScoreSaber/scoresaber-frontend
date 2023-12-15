@@ -179,6 +179,13 @@
       refreshLeaderboard({ forceRevalidate: true, softRefresh: true });
    }
 
+   async function handleSyncLeaderboard() {
+      const leaderboardId = $leaderboard.id;
+      leaderboard.set(undefined);
+      await poster('/api/ranking/request/action/admin/refresh', { leaderboardId }, { withCredentials: true });
+      refreshLeaderboard({ forceRevalidate: true, softRefresh: true });
+   }
+
    async function handleRankLeaderboard() {
       const leaderboardId = $leaderboard.id;
       leaderboard.set(undefined);
@@ -329,6 +336,13 @@ Stars: ${metadata.stars}★`}
                                  <button on:click={() => handleGivePP()} class="button is-small is-danger">
                                     <span class="icon is-small">
                                        <i class="fab fa-pied-piper-pp" />
+                                    </span>
+                                 </button>
+                              </p>
+                              <p class="control ml-0">
+                                 <button on:click={() => handleSyncLeaderboard()} class="button is-small is-success">
+                                    <span class="icon is-small">
+                                       <i class="fas fa-sync-alt" />
                                     </span>
                                  </button>
                               </p>
