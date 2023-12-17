@@ -13,7 +13,7 @@
 
    const maxPages = 4;
 
-   const availableVersions = [['2.2.0', '1.28.0_4124311467'], ['2.1.0', '1.27.0_3631150051']];
+   const availableVersions = [['2.3.0', '1.28.0_4124311467'], ['2.2.0', '1.28.0_4124311467'], ['2.1.0', '1.27.0_3631150051']];
 
    $: pageQuery = pageQueryStore({
       step: 1
