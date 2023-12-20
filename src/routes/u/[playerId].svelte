@@ -31,6 +31,7 @@
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
    import ScoreModal from '$lib/components/player/score-modal.svelte';
+   import CountryResetModal from '$lib/components/player/country-reset-modal.svelte';
    import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import Denyah from '$lib/components/misc/denyah.svelte';
@@ -44,6 +45,7 @@
    import { rankToPage } from '$lib/utils/helpers';
 
    import type { LeaderboardPlayer, Player, PlayerScore, PlayerScoreCollection } from '$lib/models/PlayerData';
+   import type { CanResetCountryData } from '$lib/models/CanResetCountryData';
 
    export let metadata: Player = undefined;
 
@@ -143,7 +145,20 @@
             onBanClick: handleBan,
             onGiveRoleClick: handleGiveRole,
             onUnbanClick: handleUnban,
-            onRemoveRoleClick: handleRemoveRole
+            onRemoveRoleClick: handleRemoveRole,
+            onResetCountryClick: handleResetCountryAdmin,
+         })
+      );
+   }
+   
+   async function openCountryResetModal() {
+      const data = await fetcher<CanResetCountryData>(`/api/user/can-reset-my-country`, { withCredentials: true });
+
+      modal.set(
+         bind(CountryResetModal, {
+            player: $playerData,
+            canResetCountry: data,
+            onResetCountryClick: handleResetCountryUser
          })
       );
    }
@@ -175,6 +190,18 @@
    async function handleRemoveRole(player: Player, role: string) {
       playerData.set(undefined);
       await fetcher(`/api/user/${player.id}/removeRole/${role}`, { withCredentials: true });
+      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+   }
+   
+   async function handleResetCountryAdmin(player: Player) {
+      playerData.set(undefined);
+      await fetcher(`/api/user/${player.id}/reset-country`, { withCredentials: true });
+      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+   }
+   
+   async function handleResetCountryUser() {
+      playerData.set(undefined);
+      await fetcher(`/api/user/reset-my-country`, { withCredentials: true });
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 
@@ -251,6 +278,13 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                         <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
                            <span class="icon is-small">
                               <i class="fas fa-sync-alt" />
+                           </span>
+                        </button>
+                     {/if}
+                     {#if $playerData.id == $userData.playerId}
+                        <button on:click={() => openCountryResetModal()} class="button refresh-country is-small is-dark mt-2" title="Refresh country">
+                           <span class="icon is-small">
+                              <i class="fas fa-flag" />
                            </span>
                         </button>
                      {/if}
@@ -463,9 +497,13 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       right: 3px;
    }
 
-   .profile-picture .admin {
+   .profile-picture .refresh-country {
       top: 30px;
       right: -15px;
+   }
+
+   .profile-picture .admin {
+      right: 95px;
    }
 
    .profile-picture .image img {
