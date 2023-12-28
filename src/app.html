@@ -1,34 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8" />
-      <link rel="icon" href="/favicon-32x32.png" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <link
-         rel="stylesheet"
-         href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-         integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-         crossorigin="anonymous"
-      />
-      %sveltekit.head%
-      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-121352342-1"></script>
-      <script
-         async
-         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9829527932347716"
-         crossorigin="anonymous"
-      ></script>
-      <script>
-         window.dataLayer = window.dataLayer || [];
-         function gtag() {
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon-32x32.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+          crossorigin="anonymous"/>
+    %sveltekit.head%
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-121352342-1"></script>
+    <script async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9829527932347716"
+            crossorigin="anonymous"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
             dataLayer.push(arguments);
-         }
-         gtag('js', new Date());
-
-         gtag('config', 'UA-121352342-1');
-      </script>
-      <script src="/wp-banners.js"></script>
-   </head>
-   <body>
-      <div id="svelte">%sveltekit.body%</div>
-   </body>
+        }
+        gtag('js', new Date());
+        gtag('config', 'UA-121352342-1');
+    </script>
+    <script src="/wp-banners.js"></script>
+</head>
+<body>
+<div id="svelte">%sveltekit.body%</div>
+</body>
 </html>
