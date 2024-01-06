@@ -4,7 +4,7 @@
    import { userData, searchView } from '$lib/stores/global-store';
 
    import SearchView from '$lib/components/common/search.svelte';
-   import Announcement from '$lib/components/common/announcement.svelte';
+   // import Announcement from '$lib/components/common/announcement.svelte';
 
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
