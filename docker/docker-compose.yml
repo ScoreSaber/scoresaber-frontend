@@ -8,7 +8,7 @@ services:
          - 1000-1001:3000
       volumes:
          - type: bind
-           source: '${HOST_ENV_FILE_PATH}'
+           source: '${CONFIG_FILE_FRONTEND}'
            target: /usr/src/app/.env
       restart: on-failure
       build:

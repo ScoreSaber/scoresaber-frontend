@@ -1,15 +1,15 @@
-name: Build & Deploy dev build
+name: Build & Deploy build on Iteiga
 
 on:
    workflow_dispatch:
 
 env:
    REGISTRY: ghcr.io
-   TAG_NAME: dev-deploy
-   DEPLOY_DIR: ${{ secrets.DEV_DEPLOY_DIR }}
-   SSH_HOST: ${{ secrets.DEV_SSH_HOST }}
-   SSH_USER: ${{ secrets.DEV_SSH_USER }}
-   SSH_KEY: ${{ secrets.DEV_SSH_KEY }}
+   TAG_NAME: iteiga-deploy
+   DEPLOY_DIR: ${{ secrets.ITEIGA_DEPLOY_DIR }}
+   SSH_HOST: ${{ secrets.ITEIGA_SSH_HOST }}
+   SSH_USER: ${{ secrets.ITEIGA_SSH_USER }}
+   SSH_KEY: ${{ secrets.ITEIGA_SSH_KEY }}
 
 jobs:
    build_and_push:

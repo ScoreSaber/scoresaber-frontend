@@ -1,15 +1,15 @@
-name: Build & Deploy production build
+name: Build & Deploy build on Pluvio
 
 on:
    workflow_dispatch:
 
 env:
    REGISTRY: ghcr.io
-   TAG_NAME: prod-deploy
-   DEPLOY_DIR: ${{ secrets.PROD_DEPLOY_DIR }}
-   SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
-   SSH_USER: ${{ secrets.PROD_SSH_USER }}
-   SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
+   TAG_NAME: pluvio-deploy
+   DEPLOY_DIR: ${{ secrets.PLUVIO_DEPLOY_DIR }}
+   SSH_HOST: ${{ secrets.PLUVIO_SSH_HOST }}
+   SSH_USER: ${{ secrets.PLUVIO_SSH_USER }}
+   SSH_KEY: ${{ secrets.PLUVIO_SSH_KEY }}
 
 jobs:
    build_and_push:
