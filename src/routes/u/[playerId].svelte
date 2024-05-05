@@ -156,7 +156,6 @@
 
       modal.set(
          bind(CountryResetModal, {
-            player: $playerData,
             canResetCountry: data,
             onResetCountryClick: handleResetCountryUser
          })

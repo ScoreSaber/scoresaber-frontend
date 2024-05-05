@@ -1,21 +1,14 @@
 <script type="ts">
-   import { getContext } from 'svelte';
-
-   import PlayerLink from '$lib/components/player/player-link.svelte';
-   import TextInput from '$lib/components/common/text-input.svelte';
+   import { getContext } from 'svelte'
 
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
 
-   import type { Player } from '$lib/models/PlayerData';
    import type { CanResetCountryData } from '$lib/models/CanResetCountryData';
 
    export let onResetCountryClick: () => void;
-   export let player: Player;
    export let canResetCountry: CanResetCountryData;
 
    const { close } = getContext('simple-modal');
-
-   $: banReason = '';
 </script>
 
 <div class="media">
@@ -26,7 +19,11 @@
       <div class="tools">
          {#if canResetCountry.canResetCountry}
             <div class="window tool mt-3">
-               <p>You can request to change your country <span class="has-text-weight-semibold">once every two years</span>. After you have requested a country reset, your country will be changed <span class="has-text-weight-semibold">on your next score submission</span>.</p>
+               <p>You can request to change your country <span class="has-text-weight-semibold">once every two years</span>. After you have requested a country reset, your country will be changed <span class="has-text-weight-semibold">on your next ingame login</span>.</p>
+               <div class="notification is-warning">
+                  <h4 class="warning">Rules Around Country Changes</h4>
+                  <b>You are only allowed to change your country to a country you either live in or are a citizen of. Using this feature to reset to any other country is a violation of the <a target="_blank" href="https://wiki.scoresaber.com/rules.html">rules</a>. Should your country have been accidentally set to a wrong country, contact an admin as soon as possible.</b>
+               </div>
                <button
                   on:click={() => {
                      onResetCountryClick();
@@ -67,6 +64,9 @@
    }
    .text-muted {
       color: var(--muted);
+   }
+   .warning {
+      color: red;
    }
 
    @media only screen and (max-width: 769px) {
