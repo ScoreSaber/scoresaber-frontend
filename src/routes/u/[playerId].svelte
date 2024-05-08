@@ -280,7 +280,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                            </span>
                         </button>
                      {/if}
-                     {#if $playerData.id == $userData.playerId}
+                     {#if $userData && $playerData.id == $userData.playerId}
                         <button on:click={() => openCountryResetModal()} class="button refresh-country is-small is-dark mt-2" title="Refresh country">
                            <span class="icon is-small">
                               <i class="fas fa-flag" />
