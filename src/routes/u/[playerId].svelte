@@ -152,7 +152,7 @@
    }
    
    async function openCountryResetModal() {
-      const data = await fetcher<CanResetCountryData>(`/api/user/can-reset-my-country`, { withCredentials: true });
+      const data = await fetcher<CanResetCountryData>(`/api/user/can-reset-country`, { withCredentials: true });
 
       modal.set(
          bind(CountryResetModal, {
@@ -200,7 +200,7 @@
    
    async function handleResetCountryUser() {
       playerData.set(undefined);
-      await fetcher(`/api/user/reset-my-country`, { withCredentials: true });
+      await fetcher(`/api/user/reset-country`, { withCredentials: true });
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 
