@@ -19,10 +19,10 @@
       <div class="tools">
          {#if canResetCountry.canResetCountry}
             <div class="window tool mt-3">
-               <p>You can request to change your country <span class="has-text-weight-semibold">once every two years</span>. After you have requested a country reset, your country will be changed <span class="has-text-weight-semibold">on your next ingame login</span>.</p>
+               <p>You can request to change your country <span class="has-text-weight-semibold">once per year</span>. After you have requested a country reset, your country will be changed <span class="has-text-weight-semibold">on your next ingame login</span>.</p>
                <div class="notification is-warning">
                   <h4 class="warning">Rules Around Country Changes</h4>
-                  <b>You are only allowed to change your country to a country you either live in or are a citizen of. Using this feature to reset to any other country is a violation of the <a target="_blank" href="https://wiki.scoresaber.com/rules.html">rules</a>. Should your country have been accidentally set to a wrong country, contact an admin as soon as possible.</b>
+                  <b>You may only change your country to one in which you either reside or hold citizenship. Using this feature to reset to any other country is a violation of the <a target="_blank" href="https://wiki.scoresaber.com/rules.html">rules</a>. Should your country have been accidentally set to a wrong country, contact an admin as soon as possible.</b>
                </div>
                <button
                   on:click={() => {
@@ -36,7 +36,7 @@
             </div>
          {:else}
             <div class="window tool mt-3">
-               You have reset your country <FormattedDate date={canResetCountry.recentCountryReset} />. You can only reset your country once every two years!
+               You have reset your country <FormattedDate date={canResetCountry.recentCountryReset} />. You can only reset your country once per year!
             </div>
          {/if}
       </div>
