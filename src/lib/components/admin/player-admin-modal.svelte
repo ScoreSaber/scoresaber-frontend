@@ -12,6 +12,7 @@
    export let onUnbanClick: (player: Player) => void;
    export let onGiveRoleClick: (player: Player, role: string) => void;
    export let onRemoveRoleClick: (player: Player, role: string) => void;
+   export let onResetCountryClick: (player: Player) => void;
    export let player: Player;
 
    const { close } = getContext('simple-modal');
@@ -107,9 +108,17 @@
                </button>
             </div>
          </div>
-         <div class="window mt-3 fill">
-            <div class="title is-6 mb-3">More Soon...</div>
-            <span>Sorry Pug</span>
+         <div class="window tool mt-3">
+            <div class="title is-6 mb-3">Reset Players Country</div>
+            <button
+               on:click={() => {
+                  onResetCountryClick(player);
+                  close();
+               }}
+               class="button is-danger is-small "
+            >
+               <span>Reset Country</span>
+            </button>
          </div>
       </div>
    </div>
