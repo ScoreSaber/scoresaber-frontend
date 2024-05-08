@@ -24,7 +24,7 @@ zero_downtime_deploy() {
 
     echo "New container is online"
 
-    sudo nginx -s reload
+    docker exec nginx /usr/sbin/nginx -s reload 
 
     docker stop $old_container_id2 1> /dev/null
     docker rm $old_container_id2 1> /dev/null
