@@ -8,18 +8,14 @@
    export let player: Player;
 
    const history: number[] = player.histories.split(',').map(function (item) {
-      return parseInt(item);
+      const rank = parseInt(item);
+      if (rank === 999999) {
+         return null;
+      }
+      return rank;
    });
 
    history.push(player.rank);
-
-   // If this player stopped playing for a while, but has picked up again, then remove the
-   // #999999 ranks at the beginning to make the chart more useful
-   const inactiveRankPlaceholder = 999999;
-   const firstActiveRankIndex = history.findIndex((h) => h !== inactiveRankPlaceholder);
-   if (firstActiveRankIndex >= 0) {
-      history.splice(0, firstActiveRankIndex);
-   }
 
    onMount(() => {
       if (player.id == '76561198064659288') {
@@ -81,7 +77,8 @@
       }
       labels.push(label);
    }
-
+   const skipped = (ctx, value) => (ctx.p0.skip || ctx.p1.skip ? value : undefined);
+   const down = (ctx, value) => (ctx.p0.parsed.y < ctx.p1.parsed.y ? value : undefined);
    const data = {
       labels: labels,
       datasets: [
@@ -91,7 +88,11 @@
             label: 'Rank',
             borderColor: '#3e95cd',
             fill: false,
-            color: '#fff'
+            color: '#fff',
+            segment: {
+               borderColor: (ctx) => skipped(ctx, 'rgb(186,186,186,0.2)') || down(ctx, 'rgb(192,75,75)'),
+               borderDash: (ctx) => skipped(ctx, [6, 6])
+            }
          }
       ]
    };
@@ -101,8 +102,10 @@
    <Line
       {data}
       options={{
+         spanGaps: true,
          responsive: true,
          maintainAspectRatio: false,
+
          scales: {
             y: {
                ticks: {
