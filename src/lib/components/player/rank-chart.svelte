@@ -78,7 +78,6 @@
       labels.push(label);
    }
    const skipped = (ctx, value) => (ctx.p0.skip || ctx.p1.skip ? value : undefined);
-   const down = (ctx, value) => (ctx.p0.parsed.y < ctx.p1.parsed.y ? value : undefined);
    const data = {
       labels: labels,
       datasets: [
@@ -90,7 +89,7 @@
             fill: false,
             color: '#fff',
             segment: {
-               borderColor: (ctx) => skipped(ctx, 'rgb(186,186,186,0.2)') || down(ctx, 'rgb(192,75,75)'),
+               borderColor: (ctx) => skipped(ctx, 'rgb(186,186,186,0.2)'),
                borderDash: (ctx) => skipped(ctx, [6, 6])
             }
          }
