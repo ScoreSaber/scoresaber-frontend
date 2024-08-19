@@ -113,7 +113,7 @@
       </button>
 
       <nav class="social">
-         <a href="https://discord.gg/scoresaber" target="_blank" rel="external" title="Join our Discord!" class="square social"
+         <a href="https://discord.scoresaber.com/" target="_blank" rel="external" title="Join our Discord!" class="square social"
             ><i class="fab fa-discord fa-2x" /></a
          >
          <a href="https://www.patreon.com/scoresaber" target="_blank" rel="external" title="Support us on Patreon ❤️" class="square social"
