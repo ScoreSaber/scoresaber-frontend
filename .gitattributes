@@ -1,0 +1,4 @@
+*.ts    text eol=crlf
+*.js    text eol=crlf
+*.html  text eol=crlf
+*.svelte text eol=crlf
