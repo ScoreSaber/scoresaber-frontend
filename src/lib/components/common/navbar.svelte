@@ -119,8 +119,8 @@
          <a href="https://www.patreon.com/scoresaber" target="_blank" rel="external" title="Support us on Patreon ❤️" class="square social"
             ><i class="fab fa-patreon fa-2x" /></a
          >
-         <a href="https://twitter.com/scoresaber" target="_blank" rel="external" title="Follow us on Twitter" class="square social"
-            ><i class="fab fa-twitter fa-2x" /></a
+         <a href="https://x.com/scoresaber" target="_blank" rel="external" title="Follow us on X" class="square social"
+            ><i class="fab fa-x-twitter fa-2x" /></a
          >
          <div style="flex:1" />
          {#if !loggedIn}
@@ -528,3 +528,4 @@
       color: var(--scoreSaberYellow);
    }
 </style>
+

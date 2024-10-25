@@ -37,18 +37,21 @@
          ScoreSaber
       </a>
       <p>
-         <strong>ScoreSaber</strong> by <a href="https://twitter.com/Umbranoxus">Umbranox</a> &amp;
+         <strong>ScoreSaber</strong> by <a href="https://x.com/Umbranoxus">Umbranox</a> &amp;
          <a href="/team">Team</a>
       </p>
       <nav class="social-buttons">
          <a href="https://discord.gg/scoresaber" target="_blank" rel="external" title="Join our Discord!" class="square"
             ><i class="fab fa-discord fa-2x" /></a
          >
-         <a href="https://www.patreon.com/scoresaber" target="_blank" rel="external" title="Support us on Patreon ❤️" class="square"
+         <a href="https://patreon.com/scoresaber" target="_blank" rel="external" title="Support us on Patreon ❤️" class="square"
             ><i class="fab fa-patreon fa-2x" /></a
          >
-         <a href="https://twitter.com/scoresaber" target="_blank" rel="external" title="Follow us on Twitter" class="square"
-            ><i class="fab fa-twitter fa-2x" /></a
+         <a href="https://bsky.app/profile/scoresaber.com" target="_blank" rel="external" title="Follow us on Bluesky" class="square"
+            ><i class="fab fa-bluesky fa-2x" /></a
+         >
+         <a href="https://x.com/scoresaber" target="_blank" rel="external" title="Follow us on X" class="square"
+            ><i class="fab fa-x-twitter fa-2x" /></a
          >
          <a href="https://github.com/Umbranoxio/ScoreSaber-Frontend" target="_blank" rel="external" title="Contribute on GitHub" class="square"
             ><i class="fab fa-github fa-2x" /></a
@@ -118,3 +121,4 @@
       height: inherit;
    }
 </style>
+
