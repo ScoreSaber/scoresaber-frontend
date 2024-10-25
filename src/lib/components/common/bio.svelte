@@ -10,12 +10,12 @@
 
 <script lang="ts">
    import { fade, fly } from 'svelte/transition';
-   
+
    import RichText from '$lib/components/common/rich-text.svelte';
-   
+
    import permissions from '$lib/utils/permissions';
    import poster from '$lib/utils/poster';
-   
+
    import type { UserData } from '$lib/models/UserData';
    import type { Player } from '$lib/models/PlayerData';
 
@@ -63,11 +63,11 @@
    <div class="bio window has-shadow">
       {#if isOwnProfile && !isPPFarmer && showNotification}
          <div class="notification is-warning" transition:fade>
-            <button class="delete" on:click={dismissNotification}></button>
+            <button class="delete" on:click={dismissNotification} />
             Heads up! This bio is only visible to you. To make it public, consider becoming a PPFarmer Patreon supporter.
          </div>
       {/if}
-      
+
       {#if !player.bio && !editing}
          <div in:fly={{ y: 20, duration: 1000 }} class="is-center">
             <h4>{isOwnProfile ? 'Your bio is currently empty' : 'This user has not set a bio yet'}</h4>
@@ -136,7 +136,7 @@
    .delete::before,
    .delete::after {
       background-color: #fff;
-      content: "";
+      content: '';
       display: block;
       left: 50%;
       position: absolute;

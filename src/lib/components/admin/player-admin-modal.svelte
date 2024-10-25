@@ -42,7 +42,7 @@
                      onUnbanClick(player);
                      close();
                   }}
-                  class="button is-success is-small "
+                  class="button is-success is-small"
                >
                   <span>Unban</span>
                </button>
@@ -115,7 +115,7 @@
                   onResetCountryClick(player);
                   close();
                }}
-               class="button is-danger is-small "
+               class="button is-danger is-small"
             >
                <span>Reset Country</span>
             </button>

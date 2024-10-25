@@ -13,7 +13,11 @@
 
    const maxPages = 4;
 
-   const availableVersions = [['2.3.0', '1.28.0_4124311467'], ['2.2.0', '1.28.0_4124311467'], ['2.1.0', '1.27.0_3631150051']];
+   const availableVersions = [
+      ['2.3.0', '1.28.0_4124311467'],
+      ['2.2.0', '1.28.0_4124311467'],
+      ['2.1.0', '1.27.0_3631150051']
+   ];
 
    $: pageQuery = pageQueryStore({
       step: 1
@@ -25,7 +29,7 @@
       const zip = new JSZip();
       await zip.loadAsync(data.data as Blob);
       zip.file('scoresaber_DO_NOT_SHARE.scary', `${questKey}:${$userData.playerId}`);
-      zip.generateAsync({ type: 'blob', mimeType: "application/qmod"}).then(function (content) {
+      zip.generateAsync({ type: 'blob', mimeType: 'application/qmod' }).then(function (content) {
          saveAs(content, 'ScoreSaber_DO_NOT_SHARE.qmod');
       });
    }

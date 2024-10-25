@@ -31,7 +31,7 @@
 <div class="sticky-footer"><CookieConsent /></div>
 
 <footer class="site-footer">
-   <div class="container ">
+   <div class="container">
       <a class="logoSection" href="/">
          <img src="/images/logo.svg" alt="" class="logo" />
          ScoreSaber
@@ -121,4 +121,3 @@
       height: inherit;
    }
 </style>
-
