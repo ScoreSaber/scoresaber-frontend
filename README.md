@@ -1,22 +1,45 @@
-## Developing
+## Developing 🛠️
 
-Once you've cloned the project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), create a new `.env` file using the template from `.env.example` CORS is currently enabled for both the CDN and the API so your `.env` should look a little like this until we find a better solution in the future
+### Prerequisites 📋
 
-```
-PUBLIC_CDN_URL=https://cdn.scoresaber.com
-PUBLIC_API_URL=https://scoresaber.com
-```
+1. Clone the project repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-To start a development server:
+### Environment Configuration ⚙️
+
+1. Create a new `.env` file using the template from `.env.example` 📄
+2. Configure the following environment variables:
+   ```
+   PUBLIC_CDN_URL=https://cdn.scoresaber.com
+   PUBLIC_API_URL=https://scoresaber.com
+   ```
+   📝 Note: CORS is currently enabled for both the CDN and the API. This configuration will be improved in future updates.
+
+### Starting the Development Server 🖥️
+
+Run the following command to start the development server with HTTPS:
 
 ```bash
 npm run dev -- --https
 ```
 
-## Building
+## Building for Production 🏗️
+
+To build the app for production:
 
 ```bash
 npm run build
 ```
 
-> You can preview the built app with `npm run preview`. This should _not_ be used to serve ScoreSaber in production.
+### Preview the Built App 👀
+
+You can preview the built app using:
+
+```bash
+npm run preview
+```
+
+> ⚠️ **Important:** The preview command should not be used to serve ScoreSaber in production environments.
