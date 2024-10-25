@@ -9,23 +9,28 @@
 </script>
 
 <script lang="ts">
-   import { fly } from 'svelte/transition';
-
+   import { fade, fly } from 'svelte/transition';
+   
    import RichText from '$lib/components/common/rich-text.svelte';
-
+   
    import permissions from '$lib/utils/permissions';
    import poster from '$lib/utils/poster';
-
+   
    import type { UserData } from '$lib/models/UserData';
    import type { Player } from '$lib/models/PlayerData';
 
-   export let userData: UserData;
+   export let userData: UserData | null;
    export let player: Player;
    export let saveStatusUpdate: SaveStatusUpdate;
 
-   $: editing = false;
-   $: preview = false;
-   let richTextValue = player.bio;
+   let editing = false;
+   let preview = false;
+   let richTextValue = player.bio || '';
+
+   $: isOwnProfile = userData && userData.playerId === player.id;
+   $: isPPFarmer = permissions.checkPermissionNumber(player.permissions, permissions.security.PPFARMER);
+   $: canEdit = isOwnProfile && isPPFarmer;
+   $: canView = isPPFarmer || isOwnProfile;
 
    async function submitBio() {
       saveStatusUpdate(SaveStatus.Started);
@@ -41,83 +46,113 @@
 
    function toggleEditing() {
       if (editing) {
-         richTextValue = player.bio;
+         richTextValue = player.bio || '';
       }
       editing = !editing;
    }
+
+   let showNotification = true;
+
+   function dismissNotification() {
+      showNotification = false;
+   }
 </script>
 
-{#if !userData}
-   {#if player.bio}
-      <div class="window-header">{player.name}'s bio</div>
-      <div class="bio window has-shadow">
-         {#if player.bio && !editing && !preview}
-            {@html player.bio}
-         {/if}
-      </div>
-   {/if}
-{:else if permissions.checkPermissionNumber(player.permissions, permissions.security.PPFARMER)}
-   {#if userData.playerId !== player.id}
-      {#if player.bio}
-         <div class="window-header">{player.name}'s bio</div>
-         <div class="bio window has-shadow">
-            {#if player.bio && !editing && !preview}
-               {@html player.bio}
-            {/if}
+{#if canView}
+   <div class="window-header">{player.name}'s bio</div>
+   <div class="bio window has-shadow">
+      {#if isOwnProfile && !isPPFarmer && showNotification}
+         <div class="notification is-warning" transition:fade>
+            <button class="delete" on:click={dismissNotification}></button>
+            Heads up! This bio is only visible to you. To make it public, consider becoming a PPFarmer Patreon supporter.
          </div>
       {/if}
-   {:else}
-      <div class="window-header">{player.name}'s bio</div>
-      <div class="bio window has-shadow">
-         <!-- No bio -->
-         {#if !editing && !preview && !player.bio}
-            <div in:fly={{ y: 20, duration: 1000 }} class="is-center">
-               <h4>Your bio is currently empty</h4>
-               <button on:click={toggleEditing} class="button is-info is-small ">
-                  <span>Edit Bio</span>
-               </button>
-            </div>
-         {/if}
-         <!-- Has bio  -->
-         {#if player.bio && !editing && !preview}
-            {@html player.bio}
-            {#if userData.playerId == player.id}
-               <br />
+      
+      {#if !player.bio && !editing}
+         <div in:fly={{ y: 20, duration: 1000 }} class="is-center">
+            <h4>{isOwnProfile ? 'Your bio is currently empty' : 'This user has not set a bio yet'}</h4>
+            {#if canEdit}
                <button on:click={toggleEditing} class="button is-info is-small">
                   <span>Edit Bio</span>
                </button>
             {/if}
-         {/if}
-         <!-- Is editing bio -->
-         {#if editing}
-            <div class="editor" in:fly={{ y: -20, duration: 1000 }}>
-               <RichText bind:value={richTextValue} />
-               <button on:click={submitBio} class="button is-success is-small mt-2">
-                  <span>Save bio</span>
-               </button>
-               <button on:click={togglePreview} class="button is-info is-small mt-2">
-                  <span>Preview</span>
-               </button>
-               <button on:click={toggleEditing} class="button is-danger is-small mt-2">
-                  <span>Cancel Editing</span>
-               </button>
-            </div>
-         {/if}
-         <!-- Is previewing bio -->
-         {#if preview}
-            {@html richTextValue}
+         </div>
+      {:else if !editing && !preview}
+         {@html player.bio}
+         {#if canEdit}
             <br />
-            <button on:click={togglePreview} class="button is-info is-small mt-2">
-               <span>Go back to editing</span>
+            <button on:click={toggleEditing} class="button is-info is-small">
+               <span>Edit Bio</span>
             </button>
          {/if}
-      </div>
-   {/if}
+      {:else if editing}
+         <div class="editor" in:fly={{ y: -20, duration: 1000 }}>
+            <RichText bind:value={richTextValue} />
+            <button on:click={submitBio} class="button is-success is-small mt-2">
+               <span>Save bio</span>
+            </button>
+            <button on:click={togglePreview} class="button is-info is-small mt-2">
+               <span>Preview</span>
+            </button>
+            <button on:click={toggleEditing} class="button is-danger is-small mt-2">
+               <span>Cancel Editing</span>
+            </button>
+         </div>
+      {:else if preview}
+         {@html richTextValue}
+         <br />
+         <button on:click={togglePreview} class="button is-info is-small mt-2">
+            <span>Go back to editing</span>
+         </button>
+      {/if}
+   </div>
 {/if}
 
 <style>
    .bio {
       max-height: 320px;
       overflow-y: auto;
+   }
+   .notification {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+   }
+   .is-warning {
+      background-color: #fffbeb;
+      color: #713b17;
+   }
+   .delete {
+      cursor: pointer;
+      background-color: rgba(10, 10, 10, 0.2);
+      border: none;
+      border-radius: 50%;
+      display: inline-block;
+      height: 20px;
+      width: 20px;
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+   }
+   .delete::before,
+   .delete::after {
+      background-color: #fff;
+      content: "";
+      display: block;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translateX(-50%) translateY(-50%) rotate(45deg);
+      transform-origin: center center;
+   }
+   .delete::before {
+      height: 2px;
+      width: 50%;
+   }
+   .delete::after {
+      height: 50%;
+      width: 2px;
+   }
+   .notification {
+      position: relative;
    }
 </style>
