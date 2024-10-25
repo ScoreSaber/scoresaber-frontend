@@ -91,9 +91,16 @@
 <div bind:this={scrollProbe} />
 <header class="{isExpanded ? 'expanded' : ''} {headerIncreaseContrast ? 'scrolled' : ''}" bind:this={header}>
    <div class="container">
-      <div class="hamburger hamburger--spin js-hamburger" on:click={() => (isExpanded = !isExpanded)} class:is-active={isExpanded}>
-         <div class=" hamburger-box ">
-            <div class="hamburger-inner " />
+      <div
+         class="hamburger hamburger--spin js-hamburger"
+         on:click={() => (isExpanded = !isExpanded)}
+         on:keydown={(e) => e.key === 'Enter' && (isExpanded = !isExpanded)}
+         class:is-active={isExpanded}
+         role="button"
+         tabindex="0"
+      >
+         <div class="hamburger-box">
+            <div class="hamburger-inner" />
          </div>
       </div>
       <nav>
@@ -518,7 +525,7 @@
       flex-shrink: 0;
    } */
 
-   .announcement-link {
+   /* .announcement-link {
       color: #fff;
       font-weight: 600;
       text-decoration: underline;
@@ -526,6 +533,5 @@
    }
    .announcement-link:hover {
       color: var(--scoreSaberYellow);
-   }
+   } */
 </style>
-

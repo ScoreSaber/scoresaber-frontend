@@ -55,6 +55,9 @@
          class:ellipsis={option.type === 'symbol' && option.symbol === ELLIPSIS}
          class:active={option.type === 'number' && option.value == currentPage}
          on:click={() => handleOptionClick(option)}
+         on:keydown={(e) => e.key === 'Enter' && handleOptionClick(option)}
+         tabindex="0"
+         role="button"
       >
          {#if option.type === 'number'}
             <slot name="number" value={option.value}>

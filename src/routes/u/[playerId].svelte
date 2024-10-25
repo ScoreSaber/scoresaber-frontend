@@ -146,11 +146,11 @@
             onGiveRoleClick: handleGiveRole,
             onUnbanClick: handleUnban,
             onRemoveRoleClick: handleRemoveRole,
-            onResetCountryClick: handleResetCountryAdmin,
+            onResetCountryClick: handleResetCountryAdmin
          })
       );
    }
-   
+
    async function openCountryResetModal() {
       const data = await fetcher<CanResetCountryData>(`/api/user/can-reset-country`, { withCredentials: true });
 
@@ -191,13 +191,13 @@
       await fetcher(`/api/user/${player.id}/removeRole/${role}`, { withCredentials: true });
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
-   
+
    async function handleResetCountryAdmin(player: Player) {
       playerData.set(undefined);
       await fetcher(`/api/user/${player.id}/reset-country`, { withCredentials: true });
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
-   
+
    async function handleResetCountryUser() {
       playerData.set(undefined);
       await fetcher(`/api/user/reset-country`, { withCredentials: true });

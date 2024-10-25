@@ -68,14 +68,14 @@
 
 <div bind:this={container} class={'ss-input ' + (isSmall === true ? 'is-small' : '')} class:expandable class:expanded class:active={value !== null}>
    {#if icon}
-      <i on:click={handleClick} class="fas {icon}" />
+      <i on:click={handleClick} on:keydown={(e) => e.key === 'Enter' && handleClick()} class="fas {icon}" tabindex="0" role="button" />
    {/if}
    <div>
       <input bind:this={inputElement} type="text" bind:value {placeholder} on:input={onChange} on:keydown={onKeyDown} />
       <div class="active" />
    </div>
    {#if value}
-      <div class="clear" on:click={clearSearch}>X</div>
+      <div class="clear" on:click={clearSearch} on:keydown={(e) => e.key === 'Enter' && clearSearch()} tabindex="0" role="button">X</div>
    {/if}
 </div>
 

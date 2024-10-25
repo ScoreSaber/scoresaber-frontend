@@ -4,5 +4,8 @@
    "trailingComma": "none",
    "printWidth": 150,
    "tabWidth": 3,
-   "endOfLine": "crlf"
+   "endOfLine": "crlf",
+   "plugins": ["prettier-plugin-svelte"],
+   "pluginSearchDirs": ["."],
+   "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
 }

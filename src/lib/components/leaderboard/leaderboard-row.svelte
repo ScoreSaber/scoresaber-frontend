@@ -33,7 +33,7 @@
    on:outroend={() => (transitioning = false)}
    style="grid-row: {row} / span 1;"
 >
-   <div class="rank" width="5px">
+   <div class="rank">
       #{score.rank.toLocaleString('en-US')}
    </div>
    <div class="player">
@@ -49,7 +49,15 @@
       <span><FormattedDate short={true} date={new Date(score.timeSet)} /></span>
    </div>
    <div class="score centered">
-      <span class="score" on:click={openScoreDetails(score, leaderboard)}>{score.modifiedScore.toLocaleString('en-US')}</span>
+      <span
+         class="score"
+         on:click={() => openScoreDetails(score, leaderboard)}
+         on:keydown={(e) => e.key === 'Enter' && openScoreDetails(score, leaderboard)}
+         tabindex="0"
+         role="button"
+      >
+         {score.modifiedScore.toLocaleString('en-US')}
+      </span>
    </div>
    {#if otherScores.filter((score) => score.modifiers.length > 0).length > 0}
       <div class="mods centered">

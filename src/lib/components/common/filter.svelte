@@ -115,7 +115,14 @@
                />
             </div>
          {:else}
-            <div transition:slide|local={{ duration: 300 }} class="addLabel" on:click={() => (expanded = !expanded)}>
+            <div
+               transition:slide|local={{ duration: 300 }}
+               class="addLabel"
+               on:click={() => (expanded = !expanded)}
+               on:keydown={(e) => e.key === 'Enter' && (expanded = !expanded)}
+               tabindex="0"
+               role="button"
+            >
                {#if selectedItems.length > 0}
                   + Add
                {:else}

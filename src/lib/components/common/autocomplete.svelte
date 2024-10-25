@@ -52,7 +52,15 @@
    {#if options.length > 0}
       <div class="options" bind:this={optionsElement}>
          {#each filteredOptions as option, i}
-            <div class="option" class:highlight={highlighted === i} on:click={() => selectOption(option)}>
+            <div
+               class="option"
+               class:highlight={highlighted === i}
+               on:click={() => selectOption(option)}
+               on:keydown={(e) => e.key === 'Enter' && selectOption(option)}
+               tabindex="0"
+               role="option"
+               aria-selected={highlighted === i}
+            >
                {option.friendlyName}
             </div>
          {/each}

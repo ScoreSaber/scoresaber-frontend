@@ -116,7 +116,13 @@
       </div>
    </div>
    <div>
-      <div on:click={() => (expanded = !expanded)} class="arrowWrapper">
+      <div
+         on:click={() => (expanded = !expanded)}
+         on:keydown={(e) => e.key === 'Enter' && (expanded = !expanded)}
+         class="arrowWrapper"
+         role="button"
+         tabindex="0"
+      >
          <span class="arrow" class:active={expanded} />
       </div>
    </div>

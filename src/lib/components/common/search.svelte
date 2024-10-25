@@ -141,7 +141,14 @@
    };
 </script>
 
-<div class="modal-background {visible ? 'is-visible' : ''}" on:click={() => setVisibility(false)} />
+<div
+   class="modal-background {visible ? 'is-visible' : ''}"
+   on:click={() => setVisibility(false)}
+   on:keydown={(e) => e.key === 'Enter' && setVisibility(false)}
+   tabindex="0"
+   role="button"
+   aria-label="Close search"
+/>
 <div class="modal-container {visible ? 'is-visible' : ''}">
    <div class="search-wrapper">
       <div class="search-box">

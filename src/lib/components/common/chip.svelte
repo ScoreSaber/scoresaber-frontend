@@ -12,7 +12,7 @@
       <CountryImage country={item.key} />
    {/if}
    {item.friendlyName}
-   <span class="remove" on:click={() => remove(item)}> x </span>
+   <button class="remove" on:click={() => remove(item)} on:keydown={(e) => e.key === 'Enter' && remove(item)}> x </button>
 </div>
 
 <style>

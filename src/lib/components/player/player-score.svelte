@@ -73,7 +73,13 @@
             </span>
          {/if}
       </span>
-      <span class="stat clickable" on:click={() => openModal(score)}>
+      <span
+         class="stat clickable"
+         on:click={() => openModal(score)}
+         on:keydown={(e) => e.key === 'Enter' && openModal(score)}
+         tabindex="0"
+         role="button"
+      >
          <i class="fas fa-info-circle" />
       </span>
    </div>

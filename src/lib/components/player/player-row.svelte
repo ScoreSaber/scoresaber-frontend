@@ -27,16 +27,19 @@
    out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 10 * (row - 1) }}
    class="table-item {isExpanded ? 'expanded' : ''}"
    on:click={toggleExpanded}
+   on:keydown={(e) => e.key === 'Enter' && toggleExpanded()}
+   tabindex="0"
+   role="button"
    style="grid-row: {row * 2};"
    class:highlighted={$userData?.playerId === player.id}
 >
    {#if countryFiltered}
-      <div class="rank" width="5px">
+      <div class="rank">
          <span class="rank">#{(row + pageNumber * 50).toLocaleString('en-US')}</span>
          <span class="global-rank">(#{player.rank.toLocaleString('en-US')})</span>
       </div>
    {:else}
-      <div class="rank" width="5px">
+      <div class="rank">
          <span class="rank">#{player.rank.toLocaleString('en-US')}</span>
       </div>
    {/if}
@@ -67,7 +70,7 @@
    </div>
 </div>
 <div class="infobox-row" style="grid-row: {row * 2 + 1};">
-   <div colspan="2" class="infobox-container">
+   <div class="infobox-container">
       <div class="infobox{isExpanded ? ' is-expanded' : ''}">
          <div class="infobox-content">
             <div class="infobox-upper">
