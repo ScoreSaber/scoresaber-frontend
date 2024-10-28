@@ -41,6 +41,9 @@
       } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QAT)) {
          cssClass = 'qat';
          title = 'Quality Assurance Team';
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.CAT)) {
+         cssClass = 'cat';
+         title = 'Criteria Assurance Team';
       } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PPV3)) {
          cssClass = 'ppv3';
          title = 'PPv3 Developer';
@@ -158,6 +161,9 @@
    }
    span.qat {
       color: var(--qat);
+   }
+   span.cat {
+      color: var(--cat);
    }
    span.dev {
       color: var(--dev);

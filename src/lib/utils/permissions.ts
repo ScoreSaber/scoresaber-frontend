@@ -13,6 +13,7 @@ const permissions = {
    DEV: 256,
    PPV3: 512,
    CCT: 1024,
+   CAT: 2048
 };
 
 const group_permissions = {
