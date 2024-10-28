@@ -21,20 +21,16 @@
       if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PANDA)) {
          cssClass = 'panda';
          title = 'Owner of ScoreSaber';
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.ADMIN)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.ADMIN)) {
          cssClass = 'admin';
          title = 'ScoreSaber Admin';
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QATHead)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QATHead)) {
          cssClass = 'qat-head';
          title = 'Head of Quality Assurance';
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.NAT)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.NAT)) {
          cssClass = 'nat';
          title = 'Nomination Assessment Team';
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.RT)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.RT)) {
          if (player.role.includes('Recruit')) {
             cssClass = 'rtr';
             title = 'Ranking Team Recruit';
@@ -42,24 +38,19 @@
             cssClass = 'rt';
             title = 'Ranking Team';
          }
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QAT)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QAT)) {
          cssClass = 'qat';
          title = 'Quality Assurance Team';
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PPV3)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PPV3)) {
          cssClass = 'ppv3';
          title = 'PPv3 Developer';
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.DEV)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.DEV)) {
          cssClass = 'dev';
          title = 'A Developer for ScoreSaber';
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.CCT)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.CCT)) {
          cssClass = 'cct';
          title = 'Content Creation Team';
-      }
-      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.SUPPORTER)) {
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.SUPPORTER)) {
          cssClass = 'supporter';
          title = 'ScoreSaber Supporter';
       }
