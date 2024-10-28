@@ -9,7 +9,10 @@ const permissions = {
    ADMIN: 16,
    PANDA: 32,
    SUPPORTER: 64,
-   PPFARMER: 128
+   PPFARMER: 128,
+   DEV: 256,
+   PPV3: 512,
+   CCT: 1024,
 };
 
 const group_permissions = {

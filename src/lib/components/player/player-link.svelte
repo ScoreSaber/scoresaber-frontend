@@ -15,48 +15,68 @@
    $: [playerClass, playerTitle] = getPlayerClassAndTitle(player);
 
    export function getPlayerClassAndTitle(player: Player | LeaderboardPlayer): [string, string] {
+      let cssClass = 'default';
+      let title = player.name;
+
       if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PANDA)) {
-         return ['panda', 'Owner of ScoreSaber'];
+         cssClass = 'panda';
+         title = 'Owner of ScoreSaber';
       }
-
-      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.ADMIN)) {
-         return ['admin', 'ScoreSaber Admin'];
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.ADMIN)) {
+         cssClass = 'admin';
+         title = 'ScoreSaber Admin';
       }
-
-      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QATHead)) {
-         return ['qat-head', 'Head of Quality Assurance'];
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QATHead)) {
+         cssClass = 'qat-head';
+         title = 'Head of Quality Assurance';
       }
-
-      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.NAT)) {
-         return ['nat', 'Nomination Assessment Team'];
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.NAT)) {
+         cssClass = 'nat';
+         title = 'Nomination Assessment Team';
       }
-
-      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.RT)) {
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.RT)) {
          if (player.role.includes('Recruit')) {
-            return ['rtr', 'Ranking Team Recruit'];
+            cssClass = 'rtr';
+            title = 'Ranking Team Recruit';
          } else {
-            return ['rt', 'Ranking Team'];
+            cssClass = 'rt';
+            title = 'Ranking Team';
          }
       }
-
-      if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QAT)) {
-         return ['qat', 'Quality Assurance Team'];
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QAT)) {
+         cssClass = 'qat';
+         title = 'Quality Assurance Team';
+      }
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PPV3)) {
+         cssClass = 'ppv3';
+         title = 'PPv3 Developer';
+      }
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.DEV)) {
+         cssClass = 'dev';
+         title = 'A Developer for ScoreSaber';
+      }
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.CCT)) {
+         cssClass = 'cct';
+         title = 'Content Creation Team';
+      }
+      else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.SUPPORTER)) {
+         cssClass = 'supporter';
+         title = 'ScoreSaber Supporter';
       }
 
-      //williums
+      // individual player overrides
+
+      // qwasyx
+      if (player.id == '76561198041178440') {
+         cssClass = 'gay';
+      }
+      // williums
       if (player.id == '76561198182060577') {
-         return ['williums', 'Gay'];
+         cssClass = 'gay';
+         title = 'Gay';
       }
-      if (player.role == 'Supporter') {
-         return ['supporter', 'ScoreSaber Supporter'];
-      }
-      if (player.role == 'Developer') {
-         return ['dev', 'A Developer for ScoreSaber'];
-      }
-      if (player.role == 'PPv3 Developer') {
-         return ['ppv3', player.role];
-      }
-      return ['default', player.name];
+
+      return [cssClass, title];
    }
 </script>
 
@@ -84,7 +104,7 @@
 {/if}
 
 <style lang="scss">
-   .williums {
+   .gay {
       width: max-content;
       background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet, indigo, blue, green, yellow, orange, red);
       color: transparent;
@@ -153,6 +173,9 @@
    }
    span.ppv3 {
       color: var(--ppv3);
+   }
+   span.cct {
+      color: var(--cct);
    }
    span.supporter {
       color: var(--supporter);
