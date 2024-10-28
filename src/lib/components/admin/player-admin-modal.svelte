@@ -74,6 +74,9 @@
                      <option value="cat">CAT</option>
                      <option value="nat">NAT</option>
                      <option value="qathead">QAT Head</option>
+                     <option value="dev">Developer</option>
+                     <option value="ppv3">PPv3 Developer</option>
+                     <option value="cct">Content Creation Team</option>
                   </select>
                </div>
                <button
