@@ -12,6 +12,7 @@ export interface TeamMembers {
    RT: TeamMember[];
    QAT: TeamMember[];
    CAT: TeamMember[];
+   CCT: TeamMember[];
 }
 
 export interface TeamMember {

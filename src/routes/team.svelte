@@ -38,6 +38,7 @@
             <TeamItem title="Ranking Team" teamMembers={$team.TeamMembers.RT} />
             <TeamItem title="Quality Assurance Team" teamMembers={$team.TeamMembers.QAT} />
             <TeamItem title="Criteria Assurance Team" teamMembers={$team.TeamMembers.CAT} />
+            <TeamItem title="Content Creation Team" teamMembers={$team.TeamMembers.CCT} removeUmbra={true} />
             <TeamItem title="Frontend Developers" teamMembers={$team.TeamMembers.Frontend} />
             <TeamItem title="PC Mod" teamMembers={$team.TeamMembers.Mod} />
             <TeamItem title="PPv3" teamMembers={$team.TeamMembers.PPv3} removeUmbra={true} />
