@@ -146,6 +146,7 @@
             onGiveRoleClick: handleGiveRole,
             onUnbanClick: handleUnban,
             onRemoveRoleClick: handleRemoveRole,
+            onOverrideRoleTextClick: handleOverrideRoleText,
             onResetCountryClick: handleResetCountryAdmin
          })
       );
@@ -189,6 +190,12 @@
    async function handleRemoveRole(player: Player, role: string) {
       playerData.set(undefined);
       await fetcher(`/api/user/${player.id}/removeRole/${role}`, { withCredentials: true });
+      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+   }
+
+   async function handleOverrideRoleText(player: Player, role: string) {
+      playerData.set(undefined);
+      await fetcher(`/api/user/${player.id}/overrideRoleText/${role}`, { withCredentials: true });
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
    }
 
