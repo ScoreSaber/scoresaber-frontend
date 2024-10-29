@@ -62,5 +62,9 @@ export enum Role {
    RT = 'rt',
    QAT = 'qat',
    NAT = 'nat',
-   QATHead = 'qathead'
+   QATHead = 'qathead',
+   DEV = 'dev',
+   PPV3 = 'ppv3',
+   CCT = 'cct',
+   CCTHead = 'ccthead'
 }

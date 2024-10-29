@@ -90,17 +90,32 @@ export function groupBy(xs: any[], key: string) {
 
 export function getPermissionList(currentPermissions: number): Role[] {
    const permissionList: Role[] = [];
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.CAT)) {
+      permissionList.push(Role.CAT);
+   }
    if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.RT)) {
       permissionList.push(Role.RT);
    }
    if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.QAT)) {
       permissionList.push(Role.QAT);
    }
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.NAT)) {
+      permissionList.push(Role.NAT);
+   }
    if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.QATHead)) {
       permissionList.push(Role.QATHead);
    }
-   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.NAT)) {
-      permissionList.push(Role.NAT);
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.DEV)) {
+      permissionList.push(Role.DEV);
+   }
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.PPV3)) {
+      permissionList.push(Role.PPV3);
+   }
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.CCT)) {
+      permissionList.push(Role.CCT);
+   }
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.CCTHead)) {
+      permissionList.push(Role.CCTHead);
    }
    return permissionList;
 }
