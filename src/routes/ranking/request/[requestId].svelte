@@ -200,7 +200,7 @@
                      <div class="title is-6 mb-3">Voting Tool</div>
 
                      <div class="tooling mb-2">
-                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ALL_RT)}
+                        {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT)}
                            <div class="voting-tool">
                               <span class="tag mb-2 rank rt">RT</span>
                               <div class="field has-addons">
