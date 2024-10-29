@@ -13,7 +13,8 @@ const permissions = {
    DEV: 256,
    PPV3: 512,
    CCT: 1024,
-   CAT: 2048
+   CCTHead: 2048,
+   CAT: 4096
 };
 
 const group_permissions = {
@@ -22,7 +23,9 @@ const group_permissions = {
    NAT: permissions.RT | permissions.NAT,
    QATHead: permissions.QAT | permissions.QATHead,
    QAT: permissions.QAT,
-   RT: permissions.RT
+   RT: permissions.RT,
+   CCTHead: permissions.CCT | permissions.CCTHead,
+   CCT: permissions.CCT
 };
 
 // function to check for permission

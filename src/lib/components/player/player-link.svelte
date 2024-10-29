@@ -50,6 +50,9 @@
       } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.DEV)) {
          cssClass = 'dev';
          title = 'A Developer for ScoreSaber';
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.CCTHead)) {
+         cssClass = 'cct';
+         title = 'Content Creation Lead';
       } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.CCT)) {
          cssClass = 'cct';
          title = 'Content Creation Team';
