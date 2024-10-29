@@ -20,7 +20,7 @@
 
    let currentRoles: Role[] = getPermissionList(player.permissions);
 
-   $: roleText = player.role;
+   let roleText = player.role;
    $: banReason = '';
    $: givenRole = 'rtr';
    $: roleToRemove = '';
@@ -99,6 +99,7 @@
                         <option value="dev">Developer</option>
                         <option value="ppv3">PPv3 Developer</option>
                         <option value="cct">Content Creation Team</option>
+                        <option value="ccthead">Content Creation Lead</option>
                      </select>
                   </div>
                   <button
