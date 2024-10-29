@@ -111,10 +111,10 @@
                   <code>{decode($request.requestDescription)}</code>
                </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
-               {#if $userData && (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT) || Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT))}
+               {#if $userData && (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT) || Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT))}
                   <div class="window has-shadow">
                      <textarea class="textarea mb-2" bind:value={comment} placeholder="Comment..." />
-                     {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.RT)}
+                     {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT)}
                         <button on:click={() => handleComment('rt')} class="button is-small is-dark">Submit comment as RT</button>
                      {/if}
                      {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT)}
