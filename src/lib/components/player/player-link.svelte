@@ -31,13 +31,11 @@
          cssClass = 'nat';
          title = 'Nomination Assessment Team';
       } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.RT)) {
-         if (player.role.includes('Recruit')) {
-            cssClass = 'rtr';
-            title = 'Ranking Team Recruit';
-         } else {
-            cssClass = 'rt';
-            title = 'Ranking Team';
-         }
+         cssClass = 'rt';
+         title = 'Ranking Team';
+      } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.RTR)) {
+         cssClass = 'rtr';
+         title = 'Ranking Team Recruit';
       } else if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.QAT)) {
          cssClass = 'qat';
          title = 'Quality Assurance Team';

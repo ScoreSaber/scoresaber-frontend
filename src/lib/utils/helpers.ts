@@ -90,6 +90,9 @@ export function groupBy(xs: any[], key: string) {
 
 export function getPermissionList(currentPermissions: number): Role[] {
    const permissionList: Role[] = [];
+   if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.RTR)) {
+      permissionList.push(Role.RTR);
+   }
    if (Permissions.checkPermissionNumber(currentPermissions, Permissions.security.CAT)) {
       permissionList.push(Role.CAT);
    }

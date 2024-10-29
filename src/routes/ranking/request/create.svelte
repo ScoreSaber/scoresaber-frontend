@@ -27,7 +27,7 @@
    });
 
    onMount(() => {
-      if (browser) if (!($userData && permissions.checkPermissionNumber($userData.permissions, permissions.groups.RT))) return goto('/');
+      if (browser) if (!($userData && permissions.checkPermissionNumber($userData.permissions, permissions.groups.ALL_RT))) return goto('/');
       if ($pageQuery.leaderboardId.length > 0) {
          searchUpdated($pageQuery.leaderboardId);
       }

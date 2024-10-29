@@ -125,7 +125,7 @@
          title={showBelowTop ? 'Hide all requests' : 'Show all requests'}
          icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
       />
-      {#if $userData && permissions.checkPermissionNumber($userData.permissions, permissions.groups.RT)}
+      {#if $userData && permissions.checkPermissionNumber($userData.permissions, permissions.groups.ALL_RT)}
          <Button
             isDisabled={false}
             onClicked={() => {

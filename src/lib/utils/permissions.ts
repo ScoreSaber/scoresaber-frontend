@@ -14,11 +14,13 @@ const permissions = {
    PPV3: 512,
    CCT: 1024,
    CCTHead: 2048,
-   CAT: 4096
+   CAT: 4096,
+   RTR: 8192
 };
 
 const group_permissions = {
    ALL_STAFF: permissions.RT | permissions.QAT | permissions.QATHead | permissions.NAT | permissions.ADMIN | permissions.PANDA,
+   ALL_RT: permissions.RT | permissions.RTR,
    ADMIN: permissions.RT | permissions.QAT | permissions.QATHead | permissions.NAT | permissions.ADMIN,
    NAT: permissions.RT | permissions.NAT,
    QATHead: permissions.QAT | permissions.QATHead,
