@@ -18,7 +18,10 @@
       }
       userData.subscribe((u) => {
          if (u) {
-            if (permissions.checkPermissionNumber(u.permissions, permissions.security.SUPPORTER)) {
+            if (
+               permissions.checkPermissionNumber(u.permissions, permissions.security.SUPPORTER) ||
+               permissions.checkPermissionNumber(u.permissions, permissions.groups.ALL_STAFF)
+            ) {
                showAd = false;
             }
          }
