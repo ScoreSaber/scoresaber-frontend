@@ -51,10 +51,11 @@
       editing = !editing;
    }
 
-   let showNotification = true;
+   let showNotification = localStorage.getItem('hideBioNotification') !== 'true';
 
    function dismissNotification() {
       showNotification = false;
+      localStorage.setItem('hideBioNotification', 'true');
    }
 </script>
 
