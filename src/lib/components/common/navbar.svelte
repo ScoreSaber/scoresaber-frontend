@@ -52,7 +52,10 @@
    userData.subscribe((u) => {
       if (u) {
          loggedIn = true;
-         if (permissions.checkPermissionNumber($userData.permissions, permissions.security.PPFARMER)) {
+         if (
+            permissions.checkPermissionNumber($userData.permissions, permissions.security.PPFARMER) ||
+            permissions.checkPermissionNumber($userData.permissions, permissions.groups.ALL_STAFF)
+         ) {
             showPPFarmerPost = true;
             showNormalPost = false;
             localStorage.setItem('bio', 'closed');

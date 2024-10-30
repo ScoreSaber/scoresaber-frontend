@@ -19,7 +19,20 @@ const permissions = {
 };
 
 const group_permissions = {
-   ALL_STAFF: permissions.RT | permissions.RTR | permissions.QAT | permissions.QATHead | permissions.NAT | permissions.ADMIN | permissions.PANDA,
+   ALL_STAFF:
+      permissions.RT |
+      permissions.QAT |
+      permissions.QATHead |
+      permissions.NAT |
+      permissions.ADMIN |
+      permissions.PANDA |
+      permissions.DEV |
+      permissions.PPV3 |
+      permissions.CCT |
+      permissions.CCTHead |
+      permissions.CAT |
+      permissions.RTR,
+   VOTING_STAFF: permissions.RT | permissions.RTR | permissions.QAT | permissions.NAT | permissions.ADMIN,
    ALL_RT: permissions.RT | permissions.RTR,
    ADMIN: permissions.RT | permissions.QAT | permissions.QATHead | permissions.NAT | permissions.ADMIN,
    NAT: permissions.RT | permissions.NAT,
