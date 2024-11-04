@@ -142,6 +142,7 @@
                bind:this={menuButton}
                class="user"
                on:click={(e) => {
+                  if (e.ctrlKey || e.shiftKey) return;
                   e.preventDefault();
                   userMenuVisible = !userMenuVisible;
                }}
@@ -175,6 +176,35 @@
 
    header.scrolled {
       background: #1c1c1c;
+   }
+
+   @keyframes blurIn {
+      from {
+         background: transparent;
+      }
+
+      to {
+         background: #1c1c1caa;
+         backdrop-filter: saturate(1.5) blur(1rem);
+      }
+   }
+   header.scrolled {
+      background: #1c1c1c;
+   }
+
+   @supports (backdrop-filter: blur(1px)) {
+      header.scrolled {
+         background: #1c1c1caa;
+         backdrop-filter: saturate(1.5) blur(1rem);
+      }
+   }
+
+   @supports (backdrop-filter: blur(1px)) and (animation-timeline: scroll(y)) {
+      header.scrolled {
+         animation: blurIn 0.15s linear forwards;
+         animation-timeline: scroll(y);
+         animation-range: 0% 61px;
+      }
    }
 
    header .container {
