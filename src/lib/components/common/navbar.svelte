@@ -9,6 +9,7 @@
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
    import permissions from '$lib/utils/permissions';
+   import { goto } from '$app/navigation';
 
    $: loggedIn = false;
    $: showNormalPost = true;
@@ -137,11 +138,15 @@
             <a href="{API_URL}/api/auth/steam" aria-label="Log In" class="square" rel="external"><i class="fa fa-user" /></a>
          {:else}
             <a
-               href={'javascript: void(0);'}
+               href={`/u/${$userData.playerId}`}
                bind:this={menuButton}
                class="user"
-               on:click={() => {
+               on:click={(e) => {
+                  e.preventDefault();
                   userMenuVisible = !userMenuVisible;
+               }}
+               on:dblclick={(e) => {
+                  goto(`/u/${$userData.playerId}`);
                }}
             >
                <img src="{CDN_URL}/avatars/{$userData.playerId}.jpg" alt="" class="user-avatar" />
