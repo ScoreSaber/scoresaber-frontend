@@ -32,7 +32,7 @@
       permissions.checkPermissionNumber(player.permissions, permissions.security.PPFARMER) ||
       permissions.checkPermissionNumber(player.permissions, permissions.groups.ALL_STAFF);
    $: canEdit = isOwnProfile && isPPFarmer;
-   $: canView = isPPFarmer || isOwnProfile;
+   $: canView = (isPPFarmer || isOwnProfile) && player.bio !== null;
 
    async function submitBio() {
       saveStatusUpdate(SaveStatus.Started);
