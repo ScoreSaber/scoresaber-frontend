@@ -143,7 +143,7 @@
                class="user"
                on:click={(e) => {
                   if (e.ctrlKey || e.shiftKey) return;
-                  e.preventDefault();
+                  if (e.target instanceof Image) e.preventDefault();
                   userMenuVisible = !userMenuVisible;
                }}
                on:dblclick={(e) => {
