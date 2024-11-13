@@ -53,7 +53,7 @@
          <a href="https://x.com/scoresaber" target="_blank" rel="external" title="Follow us on X" class="square"
             ><i class="fab fa-x-twitter fa-2x" /></a
          >
-         <a href="https://youtube.com/@scoresaberofficial" target="_blank" rel="external" title="Subscribe on YouTube" class="square"
+         <a href="https://youtube.com/@ScoreSaberOfficial" target="_blank" rel="external" title="Subscribe on YouTube" class="square"
             ><i class="fab fa-youtube fa-2x" /></a
          >
          <a href="https://github.com/Umbranoxio/ScoreSaber-Frontend" target="_blank" rel="external" title="Contribute on GitHub" class="square"
