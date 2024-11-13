@@ -18,6 +18,7 @@
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import LeaderboardRightAd from '$lib/components/ads/leaderboard-right.svelte';
    import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
+   import RankedVideoBlock from '$lib/components/common/ranked-video-block.svelte';
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import { useAccio } from '$lib/utils/accio';
@@ -282,6 +283,11 @@
             <b>{rangeStars[0]}</b> to <b>{rangeStars[1]}</b> stars
             <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />
          </div>
+         <RankedVideoBlock
+            videoId="dOe9CeQLPYo"
+            title="November Ranked Batch Overview"
+            dismissMessage="If you dismiss this video, it won't be shown again on this page until the next ranked batch. Are you sure?"
+         />
          <LeaderboardRightAd />
          <div class="mobile">
             <HorizontalAd />
