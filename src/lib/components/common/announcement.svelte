@@ -37,11 +37,49 @@
    .announcement {
       background-color: #2563eb;
       color: #fff;
+      position: relative;
+      transition: all 0.5s ease-out;
+      max-height: 200px;
+      opacity: 1;
+      overflow: visible;
    }
+
+   .announcement::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0px;
+      background: transparent;
+      box-shadow: 0 0 10px 2px #ff0000;
+      animation: pulse 5s ease-in-out infinite;
+      opacity: 0.7;
+      pointer-events: none;
+   }
+
+   @keyframes pulse {
+      0% {
+         opacity: 0;
+         box-shadow: 0 0 3px 3px #ff0000;
+      }
+      50% {
+         opacity: 0.4;
+         box-shadow: 0 0 13px 10px #cc0000;
+      }
+      100% {
+         opacity: 0;
+         box-shadow: 0 0 3px 3px #ff0000;
+      }
+   }
+
    .announcement-content {
       flex: 1;
       display: flex;
       align-items: center;
+      justify-content: center;
+      font-size: 1.05em;
+      font-weight: 600;
    }
 
    button {
@@ -64,8 +102,14 @@
    }
 
    .announcement.hidden {
-      display: none;
+      max-height: 0;
+      opacity: 0;
+      padding: 0;
+      margin: 0;
+      visibility: hidden;
+      transition: all 0.5s ease-out, visibility 0s 0.5s;
    }
+
    .container {
       display: flex;
       align-items: center;

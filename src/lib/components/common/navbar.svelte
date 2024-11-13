@@ -1,15 +1,16 @@
 <script lang="ts">
    import { onMount } from 'svelte';
 
+   import { goto } from '$app/navigation';
+
    import { userData, searchView } from '$lib/stores/global-store';
 
    import SearchView from '$lib/components/common/search.svelte';
-   // import Announcement from '$lib/components/common/announcement.svelte';
+   import Announcement from '$lib/components/common/announcement.svelte';
 
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
    import permissions from '$lib/utils/permissions';
-   import { goto } from '$app/navigation';
 
    $: loggedIn = false;
    $: showNormalPost = true;
@@ -80,15 +81,15 @@
    on:keydown={handleWindowKeydown}
 />
 
-<!-- <Announcement id="quest-release" rememberClose={true}>
+<Announcement id="november-ranked-batch" rememberClose={false}>
    <div class="announcement">
-      <span>ScoreSaber for Quest is out!</span>
-      <span
-         ><a class="announcement-link" href="https://www.patreon.com/posts/65844663">Click here</a> to read about it and what this means for ScoreSaber
-         as a whole!</span
-      >
+      <span>
+         <i class="fab fa-youtube" />
+         The November ScoreSaber Ranked Batch Overview video is out!
+      </span>
+      <span><a class="announcement-link" href="https://youtube.com/watch?v=dOe9CeQLPYo" target="_blank" rel="noopener">Click here</a> to watch</span>
    </div>
-</Announcement> -->
+</Announcement>
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->
@@ -124,10 +125,10 @@
       </button>
 
       <nav class="social">
-         <a href="https://discord.scoresaber.com/" target="_blank" rel="external" title="Join our Discord!" class="square social"
+         <a href="https://discord.scoresaber.com" target="_blank" rel="external" title="Join our Discord!" class="square social"
             ><i class="fab fa-discord fa-2x" /></a
          >
-         <a href="https://www.patreon.com/scoresaber" target="_blank" rel="external" title="Support us on Patreon ❤️" class="square social"
+         <a href="https://patreon.com/scoresaber" target="_blank" rel="external" title="Support us on Patreon ❤️" class="square social"
             ><i class="fab fa-patreon fa-2x" /></a
          >
          <a href="https://x.com/scoresaber" target="_blank" rel="external" title="Follow us on X" class="square social"
@@ -563,7 +564,7 @@
       flex-shrink: 0;
    } */
 
-   /* .announcement-link {
+   .announcement-link {
       color: #fff;
       font-weight: 600;
       text-decoration: underline;
@@ -571,5 +572,5 @@
    }
    .announcement-link:hover {
       color: var(--scoreSaberYellow);
-   } */
+   }
 </style>
