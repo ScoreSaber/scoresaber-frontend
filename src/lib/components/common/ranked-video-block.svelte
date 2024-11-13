@@ -13,9 +13,13 @@
    export let dismissMessage: string;
    export let showIcon = true;
 
-   const isMobile = browser ? window.innerWidth <= 769 : false;
+   const isMobile = browser ? window.innerWidth <= 768 : false;
    let showVideoBlock = browser ? localStorage.getItem(`hideVideo_${videoId}`) !== 'true' : true;
-   let isExpanded = browser ? (isMobile ? false : localStorage.getItem(`collapseVideo_${videoId}`) === 'true') : false;
+   let isExpanded = browser
+      ? isMobile
+         ? false // Mobile starts collapsed
+         : localStorage.getItem(`collapseVideo_${videoId}`) !== 'false' // Desktop starts expanded unless explicitly collapsed
+      : false;
 
    // Clear mobile preferences
    if (browser && isMobile) {
