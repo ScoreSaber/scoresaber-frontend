@@ -81,13 +81,10 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement id="november-ranked-batch" rememberClose={false}>
+<Announcement id="beat-cancer" rememberClose={false}>
    <div class="announcement">
-      <span>
-         <i class="fab fa-youtube" />
-         The November ScoreSaber Ranked Batch Overview video is out!
-      </span>
-      <span><a class="announcement-link" href="https://youtube.com/watch?v=dOe9CeQLPYo" target="_blank" rel="noopener">Click here</a> to watch</span>
+      <span> Announcing Beat Cancer, December 7-8: Largest Beat Saber charity event, exclusive badges, and more! </span>
+      <span><a class="announcement-link" href="https://discord.gg/E6gCKqMaG9" target="_blank" rel="noopener">Click here</a> to join the Discord</span>
    </div>
 </Announcement>
 
@@ -565,12 +562,12 @@
    } */
 
    .announcement-link {
-      color: #fff;
+      color: #4a266e;
       font-weight: 600;
       text-decoration: underline;
       transition: color 300ms;
    }
    .announcement-link:hover {
-      color: var(--scoreSaberYellow);
+      color: #937fbb;
    }
 </style>
