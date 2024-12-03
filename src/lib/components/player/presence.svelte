@@ -7,6 +7,7 @@
 
    import { CDN_URL } from '$lib/utils/env';
    import { getDifficultyLabelSmall, getDifficultyStyle } from '$lib/utils/helpers';
+   import { GameMode } from '$lib/utils/presence-socket';
 
    export let playerId: string | bigint;
 
@@ -20,7 +21,7 @@
 
 {#if $status}
    {#key $status.scene}
-      <div class="window-header" class:offline={$status.scene == Scene.Offline} transition:slide>
+      <div class="window-header" transition:slide>
          {#if $status.scene == Scene.Offline}
             <div class="dot grey" />
             <div>Offline</div>
@@ -32,7 +33,11 @@
 
          {#if $status.scene == Scene.Playing}
             <div class="dot green" />
-            <div>Playing Beat Saber</div>
+            {#if $status.currentMap.mode !== GameMode.Practice}
+               <div>Playing Beat Saber</div>
+            {:else}
+               <div>In Practice Mode</div>
+            {/if}
          {/if}
       </div>
    {/key}
@@ -41,7 +46,7 @@
       <img src="/images/loading.svg" alt="Loading..." class="loading" />Connecting...
    </div>
 {/if}
-{#if $status && $status.scene == Scene.Playing && $status.currentMap}
+{#if $status && $status.scene == Scene.Playing && $status.currentMap && $status.currentMap.mode !== GameMode.Practice}
    {#key $status.currentMap}
       <div class="window" transition:slide>
          <div class="ingame-info">
