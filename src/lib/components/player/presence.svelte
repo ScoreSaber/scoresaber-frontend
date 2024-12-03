@@ -20,7 +20,7 @@
 
 {#if $status}
    {#key $status.scene}
-      <div class="window-header" transition:slide>
+      <div class="window-header" class:offline={$status.scene == Scene.Offline} transition:slide>
          {#if $status.scene == Scene.Offline}
             <div class="dot grey" />
             <div>Offline</div>
@@ -42,32 +42,31 @@
    </div>
 {/if}
 {#if $status && $status.scene == Scene.Playing && $status.currentMap}
-   <div class="window" transition:slide>
-      <div class="ingame-info">
-         <div class="song-cover">
-            <div class="image" style:--image={`url(${new URL(`covers/${encodeURI($status.currentMap.hash)}.png`, CDN_URL).toString()})`} />
-            <div class={['tag', getDifficultyStyle({ difficulty: $status.currentMap.difficulty })].join(' ')}>
-               {getDifficultyLabelSmall({ difficulty: $status.currentMap.difficulty })}
+   {#key $status.currentMap}
+      <div class="window" transition:slide>
+         <div class="ingame-info">
+            <div class="song-cover">
+               <div class="image" style:--image={`url(${new URL(`covers/${encodeURI($status.currentMap.hash)}.png`, CDN_URL).toString()})`} />
+               <div class={['tag', getDifficultyStyle({ difficulty: $status.currentMap.difficulty })].join(' ')}>
+                  {getDifficultyLabelSmall({ difficulty: $status.currentMap.difficulty })}
+               </div>
             </div>
-         </div>
-         <div class="metadata">
-            <strong class="song-title"
-               >{$status.currentMap.name} by
-               <a href={'#'} on:click|preventDefault={() => openSearch($status.currentMap.artist)}>
-                  <span class="mapper-name">{$status.currentMap.artist}</span>
-               </a></strong
-            >
-            <div>
-               Mapped by
-               <strong
-                  ><a href={'#'} on:click|preventDefault={() => openSearch($status.currentMap.authorName)}>
+            <div class="metadata">
+               <div class="song-title">
+                  <strong>{$status.currentMap.name}</strong> by
+                  <a href={'#'} on:click|preventDefault={() => openSearch($status.currentMap.artist)}>
+                     <span class="mapper-name">{$status.currentMap.artist}</span>
+                  </a>
+               </div>
+               <div>
+                  Mapped by <a href={'#'} on:click|preventDefault={() => openSearch($status.currentMap.authorName)}>
                      <span class="mapper-name">{$status.currentMap.authorName}</span>
-                  </a></strong
-               >
+                  </a>
+               </div>
             </div>
          </div>
       </div>
-   </div>
+   {/key}
 {/if}
 
 <style>
@@ -99,8 +98,12 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
       line-height: 140%;
+   }
+
+   .song-title {
+      font-size: 1.1rem;
    }
    .dot {
       display: inline-block;
