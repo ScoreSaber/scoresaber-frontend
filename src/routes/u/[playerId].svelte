@@ -46,17 +46,12 @@
 
    import type { LeaderboardPlayer, Player, PlayerScore, PlayerScoreCollection } from '$lib/models/PlayerData';
    import type { CanResetCountryData } from '$lib/models/CanResetCountryData';
+   import Presence from '$lib/components/player/presence.svelte';
 
    async function loadPresenceComponent() {
       const i = await import('$lib/components/player/presence.svelte');
       return i.default;
    }
-   let presenceComponent: ReturnType<typeof loadPresenceComponent>;
-
-   onMount(() => {
-      if (presenceComponent) return;
-      presenceComponent = loadPresenceComponent();
-   });
 
    export let metadata: Player = undefined;
 
@@ -372,9 +367,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
    </div>
 
    {#if $playerData?.id && !$playerData.banned}
-      {#await presenceComponent then Presence}
-         <Presence playerId={$playerData?.id} />
-      {/await}
+      <Presence playerId={$playerData?.id} />
       {#key $playerData.id}
          {#if $playerData.scoreStats}
             <div class="window has-shadow noheading">

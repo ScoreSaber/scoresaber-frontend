@@ -9,6 +9,7 @@ export enum Scene {
 }
 
 export type UserState =
+   | null
    | { scene: Scene.Offline }
    | { scene: Scene.Menu }
    | { scene: Scene.Playing; currentMap: LiveSongInfo; lastPause?: PauseUnpauseEvent };
@@ -19,9 +20,11 @@ export const userPresence = (userId: bigint | string) =>
          const channel = socket.channel(`user_profile:${userId}`);
          channel.join();
 
-         cb({ scene: Scene.Offline });
+         cb(null);
 
-         channel.on('state_changed', (v) => cb(v));
+         channel.on('state_changed', (v) => {
+            cb(v);
+         });
 
          return () => {
             channel.leave();
