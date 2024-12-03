@@ -9,7 +9,7 @@
 <script lang="ts">
    import queryString from 'query-string';
    import { fly } from 'svelte/transition';
-   import { onDestroy } from 'svelte';
+   import { onDestroy, onMount } from 'svelte';
 
    import { browser } from '$app/env';
    import { page } from '$app/stores';
@@ -46,6 +46,17 @@
 
    import type { LeaderboardPlayer, Player, PlayerScore, PlayerScoreCollection } from '$lib/models/PlayerData';
    import type { CanResetCountryData } from '$lib/models/CanResetCountryData';
+
+   async function loadPresenceComponent() {
+      const i = await import('$lib/components/player/presence.svelte');
+      return i.default;
+   }
+   let presenceComponent: ReturnType<typeof loadPresenceComponent>;
+
+   onMount(() => {
+      if (presenceComponent) return;
+      presenceComponent = loadPresenceComponent();
+   });
 
    export let metadata: Player = undefined;
 
@@ -361,6 +372,9 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
    </div>
 
    {#if $playerData?.id && !$playerData.banned}
+      {#await presenceComponent then Presence}
+         <Presence playerId={$playerData?.id} />
+      {/await}
       {#key $playerData.id}
          {#if $playerData.scoreStats}
             <div class="window has-shadow noheading">
