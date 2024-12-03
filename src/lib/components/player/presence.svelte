@@ -18,25 +18,30 @@
    };
 </script>
 
-{#key $status.scene}
+{#if $status}
+   {#key $status.scene}
+      <div class="window-header" transition:slide>
+         {#if $status.scene == Scene.Offline}
+            <div class="dot grey" />
+            <div>Offline</div>
+         {/if}
+         {#if $status.scene == Scene.Menu}
+            <div class="dot green" />
+            <div>Browsing Menus</div>
+         {/if}
+
+         {#if $status.scene == Scene.Playing}
+            <div class="dot green" />
+            <div>Playing Beat Saber</div>
+         {/if}
+      </div>
+   {/key}
+{:else}
    <div class="window-header" transition:slide>
-      {#if $status.scene == Scene.Offline}
-         <div class="dot grey" />
-         <div>Offline</div>
-      {/if}
-      {#if $status.scene == Scene.Menu}
-         <div class="dot green" />
-         <div>Browsing Menus</div>
-      {/if}
-
-      {#if $status.scene == Scene.Playing}
-         <div class="dot green" />
-         <div>Playing Beat Saber</div>
-      {/if}
+      <img src="/images/loading.svg" alt="Loading..." class="loading" />Connecting...
    </div>
-{/key}
-
-{#if $status.scene == Scene.Playing && $status.currentMap}
+{/if}
+{#if $status && $status.scene == Scene.Playing && $status.currentMap}
    <div class="window" transition:slide>
       <div class="ingame-info">
          <div class="song-cover">
@@ -66,6 +71,10 @@
 {/if}
 
 <style>
+   .loading {
+      width: 1.25em;
+      height: 1.25em;
+   }
    .ingame-info {
       display: flex;
       flex-direction: row;
