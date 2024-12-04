@@ -2,7 +2,6 @@
    import { slide } from 'svelte/transition';
 
    import { Scene, userPresence } from '$lib/stores/presence-store';
-
    import { searchView } from '$lib/stores/global-store';
 
    import { CDN_URL } from '$lib/utils/env';
@@ -22,16 +21,20 @@
 {#if $status}
    {#key $status.scene}
       <div class="window-header" transition:slide>
-         {#if $status.scene == Scene.Offline}
+         {#if $status.scene === Scene.Offline}
             <div class="dot grey" />
             <div>Offline</div>
          {/if}
-         {#if $status.scene == Scene.Menu}
+         {#if $status.scene === Scene.Menu}
             <div class="dot green" />
             <div>Browsing Menus</div>
          {/if}
+         {#if $status.scene === Scene.Online}
+            <div class="dot green" />
+            <div>Online</div>
+         {/if}
 
-         {#if $status.scene == Scene.Playing}
+         {#if $status.scene === Scene.Playing}
             <div class="dot green" />
             {#if $status.currentMap.mode !== GameMode.Practice}
                <div>Playing Beat Saber</div>
@@ -46,13 +49,13 @@
       <img src="/images/loading.svg" alt="Loading..." class="loading" />Connecting...
    </div>
 {/if}
-{#if $status && $status.scene == Scene.Playing && $status.currentMap && $status.currentMap.mode !== GameMode.Practice}
+{#if $status && $status.scene === Scene.Playing && $status.currentMap && $status.currentMap.mode !== GameMode.Practice}
    {#key $status.currentMap}
       <div class="window" transition:slide>
          <div class="ingame-info">
             <div class="song-cover">
                <div class="image" style:--image={`url(${new URL(`covers/${encodeURI($status.currentMap.hash)}.png`, CDN_URL).toString()})`} />
-               <div class={['tag', getDifficultyStyle({ difficulty: $status.currentMap.difficulty })].join(' ')}>
+               <div class={getDifficultyStyle({ difficulty: $status.currentMap.difficulty })}} class:tag={true}>
                   {getDifficultyLabelSmall({ difficulty: $status.currentMap.difficulty })}
                </div>
             </div>
@@ -117,7 +120,7 @@
       border-radius: 0.5em;
       align-self: center;
       background: currentColor;
-      box-shadow: 0 0px 5px currentColor;
+      box-shadow: 0 0 5px currentColor;
    }
    .window-header {
       display: flex;
@@ -130,8 +133,5 @@
    }
    .dot.green {
       color: #90ee90;
-   }
-   .dot.red {
-      color: #f44;
    }
 </style>
