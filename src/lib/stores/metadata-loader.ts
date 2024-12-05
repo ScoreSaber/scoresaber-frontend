@@ -8,7 +8,7 @@ export async function loadMetadata(fetch: Function, url: string) {
       if (url.startsWith('/api')) {
          url = `${API_URL}${url}`;
       }
-      const res = await fetch(url, { headers: { 'accept-encoding': 'gzip' } });
+      const res = await fetch(url);
       if (res.url.includes('cloudflareaccess')) {
          return {};
       }
