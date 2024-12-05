@@ -1,5 +1,5 @@
 <script lang="ts">
-   import { slide } from 'svelte/transition';
+   import { fade, slide } from 'svelte/transition';
 
    import { Scene, userPresence } from '$lib/stores/presence-store';
    import { searchView } from '$lib/stores/global-store';
@@ -19,33 +19,33 @@
 </script>
 
 {#if $status}
-   {#key $status.scene}
-      <div class="window-header" transition:slide>
-         {#if $status.scene === Scene.Offline}
-            <div class="dot grey" />
-            <div>Offline</div>
-         {/if}
-         {#if $status.scene === Scene.Menu}
-            <div class="dot green" />
-            <div>Browsing Menus</div>
-         {/if}
-         {#if $status.scene === Scene.Online}
-            <div class="dot green" />
-            <div>Online</div>
-         {/if}
-
-         {#if $status.scene === Scene.Playing}
-            <div class="dot green" />
-            {#if $status.currentMap.mode !== GameMode.Practice}
-               <div>Playing Beat Saber</div>
-            {:else}
-               <div>In Practice Mode</div>
+   {@const isPlaying = $status.scene === Scene.Playing && $status.currentMap.mode !== GameMode.Practice}
+   <div class="window-header statusbar" class:transparent={!isPlaying}>
+      <div class="dot" class:green={$status.scene !== Scene.Offline} />
+      {#key $status.scene === Scene.Playing ? $status.currentMap.mode : $status.scene}
+         <div class="status-text" transition:slide>
+            {#if $status.scene === Scene.Offline}
+               Offline
             {/if}
-         {/if}
-      </div>
-   {/key}
+            {#if $status.scene === Scene.Menu}
+               Browsing Menus
+            {/if}
+            {#if $status.scene === Scene.Online}
+               Online
+            {/if}
+
+            {#if $status.scene === Scene.Playing}
+               {#if $status.currentMap.mode !== GameMode.Practice}
+                  Playing Beat Saber
+               {:else}
+                  In Practice Mode
+               {/if}
+            {/if}
+         </div>
+      {/key}
+   </div>
 {:else}
-   <div class="window-header" transition:slide>
+   <div class="window-header transparent" transition:slide>
       <img src="/images/loading.svg" alt="Loading..." class="loading" />Connecting...
    </div>
 {/if}
@@ -115,23 +115,41 @@
    }
    .dot {
       display: inline-block;
-      width: 0.5em;
-      height: 0.5em;
+      width: 10px;
+      height: 10px;
+      color: #777;
       border-radius: 0.5em;
       align-self: center;
       background: currentColor;
-      box-shadow: 0 0 5px currentColor;
+      transition: all 0.25s ease;
    }
    .window-header {
       display: flex;
       gap: 0.5em;
       align-items: center;
    }
-   .dot.grey {
-      color: #777;
-      box-shadow: none;
+   .window-header.transparent {
+      background: transparent;
    }
+
+   .statusbar {
+      display: grid;
+      grid-template-columns: 1em auto;
+      grid-template-rows: 1.5em;
+      transition: background-color 0.5s ease;
+   }
+
+   .statusbar .dot {
+      grid-row: 1 / 1;
+      grid-column: 1 / 1;
+   }
+   .statusbar .status-text {
+      grid-row: 1 / 1;
+      grid-column: 2 / 2;
+   }
+
    .dot.green {
       color: #90ee90;
+      box-shadow: 0 0 5px currentColor;
    }
 </style>
