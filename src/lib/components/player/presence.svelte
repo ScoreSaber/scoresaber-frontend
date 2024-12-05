@@ -55,7 +55,7 @@
          <div class="ingame-info">
             <div class="song-cover">
                <div class="image" style:--image={`url(${new URL(`covers/${encodeURI($status.currentMap.hash)}.png`, CDN_URL).toString()})`} />
-               <div class={getDifficultyStyle({ difficulty: $status.currentMap.difficulty })}} class:tag={true}>
+               <div class={getDifficultyStyle({ difficulty: $status.currentMap.difficulty })} class:tag={true}>
                   {getDifficultyLabelSmall({ difficulty: $status.currentMap.difficulty })}
                </div>
             </div>
