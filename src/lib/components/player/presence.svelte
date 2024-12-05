@@ -10,7 +10,8 @@
 
    export let playerId: string | bigint;
 
-   const status = userPresence(playerId);
+   let status: ReturnType<typeof userPresence>;
+   $: status = userPresence(playerId);
 
    const openSearch = (val: string) => {
       $searchView?.setVisibility(true);
@@ -18,66 +19,73 @@
    };
 </script>
 
-{#if $status}
-   {@const isPlaying = $status.scene === Scene.Playing && $status.currentMap.mode !== GameMode.Practice}
-   <div class="window-header statusbar" class:transparent={!isPlaying}>
-      <div class="dot" class:green={$status.scene !== Scene.Offline} />
-      {#key $status.scene === Scene.Playing ? $status.currentMap.mode : $status.scene}
-         <div class="status-text" transition:slide>
-            {#if $status.scene === Scene.Offline}
-               Offline
-            {/if}
-            {#if $status.scene === Scene.Menu}
-               Browsing Menus
-            {/if}
-            {#if $status.scene === Scene.Online}
-               Online
-            {/if}
+<div class="status-container">
+   {#key playerId}
+      {#if $status}
+         {@const isPlaying = $status.scene === Scene.Playing && $status.currentMap.mode !== GameMode.Practice}
+         <div class="window-header statusbar" class:transparent={!isPlaying} transition:slide>
+            <div class="dot" class:green={$status.scene !== Scene.Offline} />
+            {#key $status.scene === Scene.Playing ? $status.currentMap.mode : $status.scene}
+               <div class="status-text" transition:slide>
+                  {#if $status.scene === Scene.Offline}
+                     Offline
+                  {/if}
+                  {#if $status.scene === Scene.Menu}
+                     Browsing Menus
+                  {/if}
+                  {#if $status.scene === Scene.Online}
+                     Online
+                  {/if}
 
-            {#if $status.scene === Scene.Playing}
-               {#if $status.currentMap.mode !== GameMode.Practice}
-                  Playing Beat Saber
-               {:else}
-                  In Practice Mode
-               {/if}
-            {/if}
+                  {#if $status.scene === Scene.Playing}
+                     {#if $status.currentMap.mode !== GameMode.Practice}
+                        Playing Beat Saber
+                     {:else}
+                        In Practice Mode
+                     {/if}
+                  {/if}
+               </div>
+            {/key}
          </div>
-      {/key}
-   </div>
-{:else}
-   <div class="window-header transparent" transition:slide>
-      <img src="/images/loading.svg" alt="Loading..." class="loading" />Connecting...
-   </div>
-{/if}
-{#if $status && $status.scene === Scene.Playing && $status.currentMap && $status.currentMap.mode !== GameMode.Practice}
-   {#key $status.currentMap}
-      <div class="window" transition:slide>
-         <div class="ingame-info">
-            <div class="song-cover">
-               <div class="image" style:--image={`url(${new URL(`covers/${encodeURI($status.currentMap.hash)}.png`, CDN_URL).toString()})`} />
-               <div class={getDifficultyStyle({ difficulty: $status.currentMap.difficulty })} class:tag={true}>
-                  {getDifficultyLabelSmall({ difficulty: $status.currentMap.difficulty })}
+      {:else}
+         <div class="window-header statusbar transparent" transition:slide>
+            <img src="/images/loading.svg" alt="Loading..." class="loading" />Connecting...
+         </div>
+      {/if}
+      {#if $status && $status.scene === Scene.Playing && $status.currentMap && $status.currentMap.mode !== GameMode.Practice}
+         {#key $status.currentMap}
+            <div class="window" transition:slide>
+               <div class="ingame-info">
+                  <div class="song-cover">
+                     <div class="image" style:--image={`url(${new URL(`covers/${encodeURI($status.currentMap.hash)}.png`, CDN_URL).toString()})`} />
+                     <div class={getDifficultyStyle({ difficulty: $status.currentMap.difficulty })} class:tag={true}>
+                        {getDifficultyLabelSmall({ difficulty: $status.currentMap.difficulty })}
+                     </div>
+                  </div>
+                  <div class="metadata">
+                     <div class="song-title">
+                        <strong>{$status.currentMap.name}</strong> by
+                        <a href={'#'} on:click|preventDefault={() => openSearch($status.currentMap.artist)}>
+                           <span class="mapper-name">{$status.currentMap.artist}</span>
+                        </a>
+                     </div>
+                     <div>
+                        Mapped by <a href={'#'} on:click|preventDefault={() => openSearch($status.currentMap.authorName)}>
+                           <span class="mapper-name">{$status.currentMap.authorName}</span>
+                        </a>
+                     </div>
+                  </div>
                </div>
             </div>
-            <div class="metadata">
-               <div class="song-title">
-                  <strong>{$status.currentMap.name}</strong> by
-                  <a href={'#'} on:click|preventDefault={() => openSearch($status.currentMap.artist)}>
-                     <span class="mapper-name">{$status.currentMap.artist}</span>
-                  </a>
-               </div>
-               <div>
-                  Mapped by <a href={'#'} on:click|preventDefault={() => openSearch($status.currentMap.authorName)}>
-                     <span class="mapper-name">{$status.currentMap.authorName}</span>
-                  </a>
-               </div>
-            </div>
-         </div>
-      </div>
+         {/key}
+      {/if}
    {/key}
-{/if}
+</div>
 
 <style>
+   .status-container {
+      min-height: 52px;
+   }
    .loading {
       width: 1.25em;
       height: 1.25em;
@@ -127,6 +135,8 @@
       display: flex;
       gap: 0.5em;
       align-items: center;
+      height: 52px;
+      font-size: 18px;
    }
    .window-header.transparent {
       background: transparent;
