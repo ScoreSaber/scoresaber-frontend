@@ -83,10 +83,10 @@
 
 <Announcement id="beat-cancer" rememberClose={false}>
    <div class="announcement">
-      <span> Beat Cancer is Live now! </span>
+      <span>Beat Cancer Day 1 raised ~$22.5k! Join us tomorrow (Dec 8) for Day 2 of the largest Beat Saber charity event with exclusive badges!</span>
       <span
-         ><a class="announcement-link" href="https://twitch.tv/cubecommunity" target="_blank" rel="noopener">Click here</a> to to watch and
-         <a class="announcement-link" href="https://tiltify.com/@giopanda/beatcancer" target="_blank" rel="noopener">Click here</a> to donate!</span
+         ><a class="announcement-link" href="https://tiltify.com/@giopanda/beatcancer" target="_blank" rel="noopener">Click here</a> to donate and
+         <a class="announcement-link" href="https://discord.gg/beatcancer" target="_blank" rel="noopener">join our Discord</a> for updates!</span
       >
    </div>
 </Announcement>
