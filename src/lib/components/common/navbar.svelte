@@ -83,8 +83,11 @@
 
 <Announcement id="beat-cancer" rememberClose={false}>
    <div class="announcement">
-      <span> Announcing Beat Cancer, December 7-8: Largest Beat Saber charity event, exclusive badges, and more! </span>
-      <span><a class="announcement-link" href="https://discord.gg/E6gCKqMaG9" target="_blank" rel="noopener">Click here</a> to join the Discord</span>
+      <span> Beat Cancer is Live now! </span>
+      <span
+         ><a class="announcement-link" href="https://twitch.tv/cubecommunity" target="_blank" rel="noopener">Click here</a> to to watch and
+         <a class="announcement-link" href="https://tiltify.com/@giopanda/beatcancer" target="_blank" rel="noopener">Click here</a> to donate!</span
+      >
    </div>
 </Announcement>
 
