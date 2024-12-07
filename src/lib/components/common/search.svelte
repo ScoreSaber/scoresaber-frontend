@@ -175,7 +175,7 @@
       {:else}
          <div class="search-results" bind:this={resultsElement}>
             <div class="results">
-               {#if searchValue.length > 3}
+               {#if searchValue.length >= 2}
                   <div class="section-title">
                      <a href="/rankings?search={encodeURIComponent(searchValue)}" title="Advanced Search"
                         >Players <i class="fa fa-external-link-alt" /></a
