@@ -81,7 +81,7 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement id="beat-cancer" rememberClose={false}>
+<!-- <Announcement id="beat-cancer" rememberClose={false}>
    <div class="announcement">
       <span>Beat Cancer Day 1 raised ~$22.5k! Join us tomorrow (Dec 8) for Day 2 of the largest Beat Saber charity event with exclusive badges!</span>
       <span
@@ -89,7 +89,7 @@
          <a class="announcement-link" href="https://discord.gg/beatcancer" target="_blank" rel="noopener">join the Discord</a> for updates!</span
       >
    </div>
-</Announcement>
+</Announcement> -->
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->
