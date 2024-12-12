@@ -4,7 +4,7 @@ import { Presence } from 'phoenix';
 
 import socket, { type LiveSongInfo, type PauseUnpauseEvent } from '$lib/utils/presence-socket';
 
-export enum Scene {
+export enum State {
    Offline = 'offline',
    Menu = 'menu',
    Online = 'online',
@@ -13,10 +13,10 @@ export enum Scene {
 
 export type UserState =
    | null
-   | { scene: Scene.Offline }
-   | { scene: Scene.Online }
-   | { scene: Scene.Menu }
-   | { scene: Scene.Playing; currentMap: LiveSongInfo; lastPause?: PauseUnpauseEvent };
+   | { state: State.Offline }
+   | { state: State.Online }
+   | { state: State.Menu }
+   | { state: State.Playing; currentMap: LiveSongInfo; lastPause?: PauseUnpauseEvent };
 
 export const userPresence = (userId: bigint | string) =>
    ({

@@ -1,7 +1,7 @@
 <script lang="ts">
    import { fade, slide } from 'svelte/transition';
 
-   import { Scene, userPresence } from '$lib/stores/presence-store';
+   import { State, userPresence } from '$lib/stores/presence-store';
    import { searchView } from '$lib/stores/global-store';
 
    import { CDN_URL } from '$lib/utils/env';
@@ -22,22 +22,22 @@
 <div class="status-container">
    {#key playerId}
       {#if $status}
-         {@const isPlaying = $status.scene === Scene.Playing && $status.currentMap.mode !== GameMode.Practice}
+         {@const isPlaying = $status.state === State.Playing && $status.currentMap.mode !== GameMode.Practice}
          <div class="window-header statusbar" class:transparent={!isPlaying} transition:slide>
-            <div class="dot" class:green={$status.scene !== Scene.Offline} />
-            {#key $status.scene === Scene.Playing ? $status.currentMap.mode : $status.scene}
+            <div class="dot" class:green={$status.state !== State.Offline} />
+            {#key $status.state === State.Playing ? $status.currentMap.mode : $status.state}
                <div class="status-text" transition:slide>
-                  {#if $status.scene === Scene.Offline}
+                  {#if $status.state === State.Offline}
                      Offline
                   {/if}
-                  {#if $status.scene === Scene.Menu}
+                  {#if $status.state === State.Menu}
                      Browsing Menus
                   {/if}
-                  {#if $status.scene === Scene.Online}
+                  {#if $status.state === State.Online}
                      Online
                   {/if}
 
-                  {#if $status.scene === Scene.Playing}
+                  {#if $status.state === State.Playing}
                      {#if $status.currentMap.mode !== GameMode.Practice}
                         Playing Beat Saber
                      {:else}
@@ -52,7 +52,7 @@
             <img src="/images/loading.svg" alt="Loading..." class="loading" />Connecting...
          </div>
       {/if}
-      {#if $status && $status.scene === Scene.Playing && $status.currentMap && $status.currentMap.mode !== GameMode.Practice}
+      {#if $status && $status.state === State.Playing && $status.currentMap && $status.currentMap.mode !== GameMode.Practice}
          {#key $status.currentMap}
             <div class="window" transition:slide>
                <div class="ingame-info">

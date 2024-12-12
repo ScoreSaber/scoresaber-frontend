@@ -14,7 +14,7 @@ if (socket) socket.connect();
 
 export default socket;
 
-enum Scene {
+enum State {
    Menu = 'menu',
    InGame = 'playing'
 }
@@ -22,9 +22,9 @@ enum Scene {
 /// Unix timestamp serialised to a string
 type Timestamp = string;
 
-export interface SceneChangeEvent {
+export interface StateChangeEvent {
    timestamp: Timestamp;
-   scene: Scene;
+   state: State;
 }
 
 export enum GameMode {
