@@ -1,31 +1,31 @@
 <script lang="ts">
-   import { onMount } from 'svelte';
+   // import { onMount } from 'svelte';
 
-   import { snowVisible } from '$lib/stores/global-store';
+   // import { snowVisible } from '$lib/stores/global-store';
 
    import CookieConsent from './cookie-consent.svelte';
 
-   onMount(() => {
-      const snowDisabled = localStorage.getItem('snow-disabled-2024');
-      if (snowDisabled == undefined) {
-         localStorage.setItem('snow-disabled-2024', 'false');
-         toggleSnow(true);
-      } else {
-         if (snowDisabled == 'false') {
-            toggleSnow(true);
-         }
-      }
-   });
-   function toggleSnow(fromMount = false) {
-      snowVisible.set(!$snowVisible);
-      if (!fromMount) {
-         if ($snowVisible) {
-            localStorage.setItem('snow-disabled-2024', 'false');
-         } else {
-            localStorage.setItem('snow-disabled-2024', 'true');
-         }
-      }
-   }
+   // onMount(() => {
+   //    const snowDisabled = localStorage.getItem('snow-disabled-2024');
+   //    if (snowDisabled == undefined) {
+   //       localStorage.setItem('snow-disabled-2024', 'false');
+   //       toggleSnow(true);
+   //    } else {
+   //       if (snowDisabled == 'false') {
+   //          toggleSnow(true);
+   //       }
+   //    }
+   // });
+   // function toggleSnow(fromMount = false) {
+   //    snowVisible.set(!$snowVisible);
+   //    if (!fromMount) {
+   //       if ($snowVisible) {
+   //          localStorage.setItem('snow-disabled-2024', 'false');
+   //       } else {
+   //          localStorage.setItem('snow-disabled-2024', 'true');
+   //       }
+   //    }
+   // }
 </script>
 
 <div class="sticky-footer"><CookieConsent /></div>
@@ -66,11 +66,11 @@
          <a href="https://scoresaber.store" target="_blank" rel="external" title="Get ScoreSaber merch!" class="square"
             ><i class="fas fa-tshirt fa-2x" /></a
          >
-         <button on:click={() => toggleSnow()} class="button toggle is-small is-dark mb-2" title="Toggle Snow">
+         <!-- <button on:click={() => toggleSnow()} class="button toggle is-small is-dark mb-2" title="Toggle Snow">
             <span class="icon is-small">
                <i class="fas fa-dot-circle" />
             </span>
-         </button>
+         </button> -->
       </nav>
 
       <p>
