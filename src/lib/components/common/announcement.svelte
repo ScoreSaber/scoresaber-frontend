@@ -24,7 +24,6 @@
 
 <div class="announcement {extraClasses} {hidden ? 'hidden' : ''}" {style}>
    <div class="container">
-      <img src="/images/beat-cancer.svg" alt="Logo" class="announcement-logo" />
       <div class="announcement-content">
          <slot />
       </div>
@@ -36,11 +35,11 @@
 
 <style>
    .announcement {
-      background-color: #fcc73e;
-      color: #4a266e;
+      background-color: #2563eb;
+      color: #fff;
       position: relative;
       transition: all 0.5s ease-out;
-      max-height: 250px;
+      max-height: 200px;
       opacity: 1;
       overflow: visible;
    }
@@ -53,24 +52,29 @@
       right: 0;
       height: 0px;
       background: transparent;
-      box-shadow: 0 0 10px 2px #4a266e;
+      box-shadow: 0 0 10px 2px #ff0000;
       animation: pulse 5s ease-in-out infinite;
       opacity: 0.7;
       pointer-events: none;
    }
 
+   .announcement-link {
+      color: #fff;
+      text-decoration: underline;
+   }
+
    @keyframes pulse {
       0% {
          opacity: 0;
-         box-shadow: 0 0 3px 3px #4a266e;
+         box-shadow: 0 0 3px 3px #ff0000;
       }
       50% {
          opacity: 0.4;
-         box-shadow: 0 0 13px 10px #937fbb;
+         box-shadow: 0 0 13px 10px #cc0000;
       }
       100% {
          opacity: 0;
-         box-shadow: 0 0 3px 3px #4a266e;
+         box-shadow: 0 0 3px 3px #ff0000;
       }
    }
 
@@ -90,7 +94,7 @@
       align-items: center;
       justify-content: center;
       background: transparent;
-      color: #4a266e;
+      color: inherit;
       font: inherit;
       border-radius: 12px;
       transition: all 0.25s ease;
@@ -99,7 +103,7 @@
    }
 
    button:hover {
-      background: #4a266e22;
+      background: #fff2;
    }
 
    .announcement.hidden {
@@ -114,71 +118,16 @@
    .container {
       display: flex;
       align-items: center;
-      padding: 12px 15px;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-      position: relative;
+      padding: 10px;
    }
 
-   .announcement-logo {
-      height: 40px;
-      width: 40px;
-      flex-shrink: 0;
-   }
-
-   .announcement-content {
-      flex: 1;
+   .announcement :global(.icon-container) {
+      background: #fff2;
+      padding: 8px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.05em;
-      font-weight: 600;
-      text-align: center;
-      min-width: 200px;
-   }
-
-   button {
-      flex-shrink: 0;
-      display: flex;
-      width: 24px;
-      height: 24px;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      color: #4a266e;
-      font: inherit;
-      border-radius: 12px;
-      transition: all 0.25s ease;
-      cursor: pointer;
-      border: 0;
-   }
-
-   button:hover {
-      background: #4a266e22;
-   }
-
-   @media (max-width: 480px) {
-      .container {
-         padding: 8px 35px 8px 10px;
-      }
-
-      .announcement-content {
-         font-size: 0.95em;
-         width: 100%;
-         order: 2;
-         padding-right: 5px;
-      }
-
-      .announcement-logo {
-         order: 1;
-      }
-
-      button {
-         position: absolute;
-         top: 8px;
-         right: 8px;
-         order: 3;
-      }
+      height: 35px;
+      width: 35px;
+      border-radius: 5px;
+      margin-right: 10px;
    }
 </style>

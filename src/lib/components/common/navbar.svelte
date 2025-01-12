@@ -6,7 +6,7 @@
    import { userData, searchView } from '$lib/stores/global-store';
 
    import SearchView from '$lib/components/common/search.svelte';
-   // import Announcement from '$lib/components/common/announcement.svelte';
+   import Announcement from '$lib/components/common/announcement.svelte';
 
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
@@ -81,15 +81,15 @@
    on:keydown={handleWindowKeydown}
 />
 
-<!-- <Announcement id="beat-cancer" rememberClose={false}>
+<Announcement id="january-2025-ranked-batch" rememberClose={false}>
    <div class="announcement">
-      <span>Beat Cancer Day 1 raised ~$22.5k! Join us tomorrow (Dec 8) for Day 2 of the largest Beat Saber charity event with exclusive badges!</span>
-      <span
-         ><a class="announcement-link" href="https://tiltify.com/@giopanda/beatcancer" target="_blank" rel="noopener">Click here</a> to donate and
-         <a class="announcement-link" href="https://discord.gg/beatcancer" target="_blank" rel="noopener">join the Discord</a> for updates!</span
-      >
+      <span>
+         <i class="fab fa-youtube" />
+         The January ScoreSaber Ranked Batch Overview video is out!
+      </span>
+      <span><a class="announcement-link" href="https://youtu.be/KLLUi3na5HM" target="_blank" rel="noopener">Click here</a> to watch</span>
    </div>
-</Announcement> -->
+</Announcement>
 
 <!-- This 0px tall div decides whether the header should be transparent or not,
    make sure not to put anyhting between it and the header element -->
@@ -564,15 +564,13 @@
       flex-shrink: 0;
    } */
 
-   /*
    .announcement-link {
-      color: #4a266e;
+      color: #fff;
       font-weight: 600;
       text-decoration: underline;
       transition: color 300ms;
    }
    .announcement-link:hover {
-      color: #937fbb;
+      color: var(--scoreSaberYellow);
    }
-   */
 </style>
