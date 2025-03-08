@@ -14,7 +14,7 @@ export function getCDNUrl(input: string) {
    return CDN_URL + input;
 }
 
-export function getDifficultyStyle(input: Difficulty | RankingDifficulty): string {
+export function getDifficultyStyle(input: { difficulty: number }): string {
    switch (input.difficulty) {
       case 1:
          return 'easy';
@@ -29,7 +29,7 @@ export function getDifficultyStyle(input: Difficulty | RankingDifficulty): strin
    }
 }
 
-export function getDifficultyLabel(input: Difficulty | RankingDifficulty): string {
+export function getDifficultyLabel(input: { difficulty: number }): string {
    switch (input.difficulty) {
       case 1:
          return 'Easy';
@@ -44,7 +44,7 @@ export function getDifficultyLabel(input: Difficulty | RankingDifficulty): strin
    }
 }
 
-export function getDifficultyLabelSmall(input: Difficulty | RankingDifficulty): string {
+export function getDifficultyLabelSmall(input: { difficulty: number }): string {
    switch (input.difficulty) {
       case 1:
          return 'E';
