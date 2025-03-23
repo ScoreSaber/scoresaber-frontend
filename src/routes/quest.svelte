@@ -14,6 +14,7 @@
    const maxPages = 4;
 
    const availableVersions = [
+      ['2.4.0', '1.37.0_9064817954'],
       ['2.3.0', '1.28.0_4124311467'],
       ['2.2.0', '1.28.0_4124311467'],
       ['2.1.0', '1.27.0_3631150051']
@@ -69,9 +70,6 @@
    <div class="window has-shadow">
       {#if $pageQuery.step == 1}
          <p>Following these steps will install ScoreSaber on Quest for Beat Saber</p>
-         <p>
-            <b>It is recommended that you uninstall any other conflicting leaderboard mods before continuing as they are not currently supported</b>
-         </p>
          <p>Click Next to continue</p>
       {/if}
 
@@ -127,21 +125,20 @@
                {/each}
             </tbody>
          </table>
+         <p>The next page will show you how to install ScoreSaber.</p>
       {/if}
 
       {#if $pageQuery.step == 4}
-         <div class="notification is-info download">
-            <h4>Note:</h4>
-            <b>Make sure your Quest and PC are on the same network!</b>
-         </div>
+         <p>This guide assumes you are using <a href="https://mbf.bsquest.xyz/">MBF</a> to mod your game.</p>
+         <p>Connect your Quest to your PC or phone and open MBF.</p>
+         <img alt="" src="/images/quest-install/mbf_start.png" />
          <p>
-            Open BMBF on your Quest and go to the <b>Tools</b> tab, there you should see a web address and a version number similar to what's show below.
+            Click <b>Connect to Quest</b> and select your Quest in the popup that follows. You should see the following screen (you might have to
+            press on <b>Add Mods</b> first):
          </p>
-         <img alt="" src="/images/quest-install/quest-ip.png" />
-         <p>On your PC, open your browser and type the address into the search bar and navigate to the upload tab.</p>
-         <p>You should be greeted with this screen below.</p>
-         <img alt="" src="/images/quest-install/bmbf.png" width="900" />
-         <p>Now just download and drag your ScoreSaber qmod into the upload box and sync.</p>
+         <img alt="" src="/images/quest-install/mbf.png" />
+         <p>Now use the <b>Upload Files</b> button to upload your ScoreSaber qmod.</p>
+         <p>After it is done installing you should be good to go!</p>
       {/if}
 
       <hr />
