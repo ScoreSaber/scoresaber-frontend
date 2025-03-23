@@ -17,6 +17,7 @@
    import permissions from '$lib/utils/permissions';
 
    import type { RankRequestListing } from '$lib/models/Ranking';
+   import type { LeaderboardInfoCollection } from '$lib/models/LeaderboardData';
 
    const { data: topRequests, error: topRequestsError } = useAccio<RankRequestListing[]>(
       queryString.stringifyUrl({
@@ -36,13 +37,25 @@
       { fetcher: axios }
    );
 
-   const { data: qualifiedMaps } = useAccio<{ metadata: { total: number } }>(
+   const { data: qualifiedMapsPage1 } = useAccio<LeaderboardInfoCollection>(
       queryString.stringifyUrl({
          url: '/api/leaderboards',
-         query: { qualified: 1, unique: 1 }
+         query: { qualified: 1, unique: 1, page: 1 }
       }),
       { fetcher: axios }
    );
+
+   const { data: qualifiedMapsPage2 } = useAccio<LeaderboardInfoCollection>(
+      queryString.stringifyUrl({
+         url: '/api/leaderboards',
+         query: { qualified: 1, unique: 1, page: 2 }
+      }),
+      { fetcher: axios }
+   );
+
+   $: qualifiedMapsCount = ($qualifiedMapsPage1?.leaderboards?.length || 0) + ($qualifiedMapsPage2?.leaderboards?.length || 0);
+
+   $: qualifiedMapsQueryParams = queryString.stringify({ qualified: 1, unique: 1 });
 
    $: showBelowTop = false;
 
@@ -71,9 +84,15 @@
                </div>
             </div>
             <div class="level-item has-text-centered">
-               <div>
+               <div
+                  on:click={() => goto(`/leaderboards?${qualifiedMapsQueryParams}`)}
+                  on:keydown={(e) => e.key === 'Enter' && goto(`/leaderboards?${qualifiedMapsQueryParams}`)}
+                  tabindex="0"
+                  role="button"
+                  class="qualified-link"
+               >
                   <p class="heading">Qualified Maps</p>
-                  <p class="title level-color">{$qualifiedMaps?.metadata?.total || 0}</p>
+                  <p class="title level-color">{qualifiedMapsCount}</p>
                </div>
             </div>
          </nav>
@@ -256,5 +275,14 @@
       table thead {
          display: none;
       }
+   }
+
+   .qualified-link {
+      cursor: pointer;
+   }
+
+   .qualified-link:hover .heading,
+   .qualified-link:hover .title {
+      color: var(--scoreSaberYellow);
    }
 </style>
