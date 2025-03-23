@@ -36,6 +36,14 @@
       { fetcher: axios }
    );
 
+   const { data: qualifiedMaps } = useAccio<{ metadata: { total: number } }>(
+      queryString.stringifyUrl({
+         url: '/api/leaderboards',
+         query: { qualified: 1, unique: 1 }
+      }),
+      { fetcher: axios }
+   );
+
    $: showBelowTop = false;
 
    function toggleBelowTop() {
@@ -64,8 +72,8 @@
             </div>
             <div class="level-item has-text-centered">
                <div>
-                  <p class="heading">Something else...</p>
-                  <p class="title level-color">0</p>
+                  <p class="heading">Qualified Maps</p>
+                  <p class="title level-color">{$qualifiedMaps?.metadata?.total || 0}</p>
                </div>
             </div>
          </nav>
