@@ -284,7 +284,7 @@
             <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />
          </div>
          <RankedVideoBlock
-            videoId="OJWjsauJlzc"
+            videoId="9e_Rwo8TiZw"
             title="March Ranked Batch Overview"
             dismissMessage="If you dismiss this video, it won't be shown again on this page until the next ranked batch. Are you sure?"
          />
