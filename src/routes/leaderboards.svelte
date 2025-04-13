@@ -286,6 +286,7 @@
          <RankedVideoBlock
             videoId="9e_Rwo8TiZw"
             title="March Ranked Batch Overview"
+            title="April Ranked Batch Overview"
             dismissMessage="If you dismiss this video, it won't be shown again on this page until the next ranked batch. Are you sure?"
          />
          <LeaderboardRightAd />
