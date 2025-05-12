@@ -81,13 +81,13 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement id="april-2025-ranked-batch" rememberClose={true}>
+<Announcement id="may-2025-ranked-batch" rememberClose={true}>
    <div class="announcement">
       <span>
          <i class="fab fa-youtube" />
-         The April ScoreSaber Ranked Batch Overview video is out!
+         The May ScoreSaber Ranked Batch Overview video is out!
       </span>
-      <span><a class="announcement-link" href="https://youtu.be/9e_Rwo8TiZw" target="_blank" rel="noopener">Click here</a> to watch</span>
+      <span><a class="announcement-link" href="https://youtu.be/-IkaK7Yb-l8" target="_blank" rel="noopener">Click here</a> to watch</span>
    </div>
 </Announcement>
 
