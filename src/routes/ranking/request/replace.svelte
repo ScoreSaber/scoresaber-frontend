@@ -30,10 +30,10 @@
    onMount(() => {
       if (browser) if (!($userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.NAT))) return goto('/');
 
-      if ($pageQuery.requestId.length > 0) {
+      if ($pageQuery.requestId) {
          searchUpdated($pageQuery.requestId);
       }
-      if ($pageQuery.leaderboardId.length > 0) {
+      if ($pageQuery.leaderboardId) {
          newLeaderboardUpdated($pageQuery.leaderboardId);
       }
    });
