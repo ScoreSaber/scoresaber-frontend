@@ -81,13 +81,13 @@
    on:keydown={handleWindowKeydown}
 />
 
-<Announcement id="july-2025-ranked-batch" rememberClose={true}>
+<Announcement id="august-2025-ranked-batch" rememberClose={true}>
    <div class="announcement">
       <span>
          <i class="fab fa-youtube" />
-         The July ScoreSaber Ranked Batch Overview video is out!
+         The August ScoreSaber Ranked Batch Overview video is out!
       </span>
-      <span><a class="announcement-link" href="https://youtu.be/pAufYX8I7Fs" target="_blank" rel="noopener">Click here</a> to watch</span>
+      <span><a class="announcement-link" href="https://youtu.be/o-ym9_6oXvI" target="_blank" rel="noopener">Click here</a> to watch</span>
    </div>
 </Announcement>
 
@@ -442,11 +442,15 @@
    }
 
    .hamburger--spin .hamburger-inner::before {
-      transition: top 0.1s 0.25s ease-in, opacity 0.1s ease-in;
+      transition:
+         top 0.1s 0.25s ease-in,
+         opacity 0.1s ease-in;
    }
 
    .hamburger--spin .hamburger-inner::after {
-      transition: bottom 0.1s 0.25s ease-in, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+      transition:
+         bottom 0.1s 0.25s ease-in,
+         transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19);
    }
 
    .hamburger--spin.is-active .hamburger-inner {
@@ -458,13 +462,17 @@
    .hamburger--spin.is-active .hamburger-inner::before {
       top: 0;
       opacity: 0;
-      transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out;
+      transition:
+         top 0.1s ease-out,
+         opacity 0.1s 0.12s ease-out;
    }
 
    .hamburger--spin.is-active .hamburger-inner::after {
       bottom: 0;
       transform: rotate(-90deg);
-      transition: bottom 0.1s ease-out, transform 0.22s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
+      transition:
+         bottom 0.1s ease-out,
+         transform 0.22s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
    }
 
    @media all and (max-width: 720px) {
