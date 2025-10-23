@@ -141,23 +141,21 @@
                      </thead>
                      <tbody>
                         {#each topRequestsToShow as request}
-                           {#if showDownvotedRequests || (request.totalRankVotes.downvotes == 0 && request.totalQATVotes.downvotes == 0)}
-                              <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
-                                 <td class="diffs_created_at"
-                                    ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
-                                       date={new Date(request.created_at)}
-                                    /></td
-                                 >
-                                 <td class="map">
-                                    <SmallRequestInfo {request} />
-                                 </td>
-                                 <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
-                                 <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
-                                 <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
-                                 <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
-                                 <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
-                              </tr>
-                           {/if}
+                           <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
+                              <td class="diffs_created_at"
+                                 ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
+                                    date={new Date(request.created_at)}
+                                 /></td
+                              >
+                              <td class="map">
+                                 <SmallRequestInfo {request} />
+                              </td>
+                              <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
+                              <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
+                              <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
+                              <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
+                              <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
+                           </tr>
                         {/each}
                      </tbody>
                   </table>
@@ -210,22 +208,20 @@
                      </thead>
                      <tbody>
                         {#each belowTopRequestsToShow as request}
-                           {#if showDownvotedRequests || (request.totalRankVotes.downvotes == 0 && request.totalQATVotes.downvotes == 0)}
-                              <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
-                                 <td class="diffs_created_at"
-                                    ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
-                                       date={new Date(request.created_at)}
-                                    /></td
-                                 ><td class="map">
-                                    <SmallRequestInfo {request} />
-                                 </td>
-                                 <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
-                                 <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
-                                 <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
-                                 <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
-                                 <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
-                              </tr>
-                           {/if}
+                           <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
+                              <td class="diffs_created_at"
+                                 ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
+                                    date={new Date(request.created_at)}
+                                 /></td
+                              ><td class="map">
+                                 <SmallRequestInfo {request} />
+                              </td>
+                              <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
+                              <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
+                              <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
+                              <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
+                              <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
+                           </tr>
                         {/each}
                      </tbody>
                   </table>
