@@ -59,9 +59,26 @@
 
    $: showBelowTop = false;
 
+   $: showDownvotedRequests = true;
+
+   $: allRequests = [...($topRequests || []), ...($belowTopRequests || [])];
+
+   $: nonDownvotedRequests = allRequests.filter((r) => r.totalRankVotes.downvotes === 0 && r.totalQATVotes.downvotes === 0);
+
+   $: topRequestsToShow = showDownvotedRequests ? $topRequests : nonDownvotedRequests.slice(0, 6);
+
+   $: belowTopRequestsToShow = showDownvotedRequests ? $belowTopRequests : nonDownvotedRequests.slice(6);
+
    function toggleBelowTop() {
       showBelowTop = !showBelowTop;
       if (showBelowTop) {
+         refreshBelowTopRequests();
+      }
+   }
+
+   function toggleDownvotedRequests() {
+      showDownvotedRequests = !showDownvotedRequests;
+      if (showDownvotedRequests) {
          refreshBelowTopRequests();
       }
    }
@@ -80,7 +97,9 @@
             <div class="level-item has-text-centered">
                <div>
                   <p class="heading">Rank Requests</p>
-                  <p class="title level-color">{$topRequests.length + $belowTopRequests.length}</p>
+                  <p class="title level-color">
+                     {showDownvotedRequests ? allRequests.length : nonDownvotedRequests.length}
+                  </p>
                </div>
             </div>
             <div class="level-item has-text-centered">
@@ -121,7 +140,7 @@
                         </tr>
                      </thead>
                      <tbody>
-                        {#each $topRequests as request}
+                        {#each topRequestsToShow as request}
                            <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
                               <td class="diffs_created_at"
                                  ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
@@ -152,6 +171,14 @@
          title={showBelowTop ? 'Hide all requests' : 'Show all requests'}
          icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
       />
+      <Button
+         isDisabled={false}
+         onClicked={() => {
+            toggleDownvotedRequests();
+         }}
+         title={showDownvotedRequests ? 'Hide downvoted maps' : 'Show downvoted maps'}
+         icon={showDownvotedRequests ? 'eye-slash' : 'eye'}
+      />
       {#if $userData && permissions.checkPermissionNumber($userData.permissions, permissions.groups.ALL_RT)}
          <Button
             isDisabled={false}
@@ -180,7 +207,7 @@
                         </tr>
                      </thead>
                      <tbody>
-                        {#each $belowTopRequests as request}
+                        {#each belowTopRequestsToShow as request}
                            <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
                               <td class="diffs_created_at"
                                  ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
