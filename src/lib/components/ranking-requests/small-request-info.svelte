@@ -109,7 +109,4 @@
    .no-member-needed {
       box-shadow: 0 0 8px 2px #58de49;
    }
-   .downvoted {
-      box-shadow: 0 0 8px 2px #de5149;
-   }
 </style>
