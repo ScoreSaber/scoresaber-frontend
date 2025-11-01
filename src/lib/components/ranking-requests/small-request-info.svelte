@@ -21,11 +21,32 @@
       searchModal?.setVisibility(true);
       searchModal?.search(val);
    };
+
+   function membersNeeded(req: RankRequestListing) {
+      if (!req || req.difficultyCount === 0) return -1;
+      return Math.max(0, 3 - Math.floor(req.totalRankVotes.upvotes / req.difficultyCount));
+   }
+
+   function chooseGlowClass(req: RankRequestListing) {
+      let needed = membersNeeded(req);
+      if (req.totalRankVotes.downvotes + req.totalQATVotes.downvotes > 0) return '';
+      if (needed > 1) return '';
+      return needed === 1 ? 'one-member-needed' : 'no-member-needed';
+   }
 </script>
 
 <div class="song-container">
    <div class="song-image-wrapper">
-      <img class="song-image" src={request.leaderboardInfo.coverImage} alt="Cover" />
+      <img
+         class="song-image {chooseGlowClass(request)}"
+         title={membersNeeded(request) === 0
+            ? 'Ready for qualification!'
+            : request.totalRankVotes.downvotes + request.totalQATVotes.downvotes > 0
+            ? 'Request has downvotes'
+            : membersNeeded(request) + ' RT member' + (membersNeeded(request) === 1 ? '' : 's') + ' needed'}
+         src={request.leaderboardInfo.coverImage}
+         alt="Cover"
+      />
    </div>
    <div class="song-info-container">
       <div class="song-info">
@@ -80,5 +101,12 @@
       align-items: center;
       justify-content: center;
       position: relative;
+   }
+
+   .one-member-needed {
+      box-shadow: 0 0 8px 2px #cfde49;
+   }
+   .no-member-needed {
+      box-shadow: 0 0 8px 2px #58de49;
    }
 </style>
