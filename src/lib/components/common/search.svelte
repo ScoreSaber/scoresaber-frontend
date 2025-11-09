@@ -230,7 +230,7 @@
       {:else}
          <div class="search-results" bind:this={resultsElement}>
             <div class="results">
-               {#if searchValue.length > 3}
+               {#if searchValue.length >= 3}
                   <div
                      class="section-title"
                      on:click={togglePlayersSection}
@@ -264,7 +264,7 @@
                {/if}
             </div>
             <div class="results">
-               {#if searchValue.length > 3}
+               {#if searchValue.length >= 3}
                   <div
                      class="section-title"
                      on:click={toggleLeaderboardsSection}
