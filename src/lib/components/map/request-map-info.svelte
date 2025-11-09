@@ -96,6 +96,11 @@
       z-index: 1;
       color: var(--textColor);
       background: none;
+      border-radius: 0.9rem;
+   }
+
+   .map-card .card-content {
+      border-radius: 0.9rem;
    }
 
    .tag {

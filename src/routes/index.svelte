@@ -167,7 +167,9 @@
 <style>
    .hero-section {
       position: relative;
-      width: 100%;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
       min-height: 60vh;
       display: flex;
       align-items: center;
@@ -194,7 +196,6 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 1200px;
       padding: 3rem 1.5rem;
       display: flex;
       align-items: center;
