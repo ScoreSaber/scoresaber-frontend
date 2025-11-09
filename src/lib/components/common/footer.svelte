@@ -80,9 +80,6 @@
 </footer>
 
 <style type="scss">
-   .toggle {
-      border-radius: 20px !important;
-   }
    .sticky-footer {
       bottom: 0;
       position: fixed;

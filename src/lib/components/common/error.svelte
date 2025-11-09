@@ -1,9 +1,14 @@
 <script lang="ts">
+   import { browser } from '$app/env';
+
    import type { AccioError } from '$lib/utils/accio';
 
    export let error: AccioError;
    export let fullpage = false;
-   console.error(error);
+
+   if (browser && error.status !== 404) {
+      console.error(error);
+   }
 </script>
 
 <div class="error {fullpage ? 'fullpage' : ''}">

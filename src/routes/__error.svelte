@@ -12,10 +12,10 @@
 
    import { AccioError } from '$lib/utils/accio';
 
-   export let name: string;
-   export let message: string;
-   export let stack = '';
-   export let status: number;
+   export let name: string | undefined;
+   export let message: string | undefined;
+   export let stack: string | undefined = '';
+   export let status: number | undefined;
 </script>
 
 <div class="page-container">

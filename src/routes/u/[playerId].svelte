@@ -33,7 +33,6 @@
    import ScoreModal from '$lib/components/player/score-modal.svelte';
    import CountryResetModal from '$lib/components/player/country-reset-modal.svelte';
    import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
-   import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import Denyah from '$lib/components/misc/denyah.svelte';
    import Bio, { SaveStatus } from '$lib/components/common/bio.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
@@ -373,8 +372,6 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
          {/if}
       {/key}
    {/if}
-
-   <HorizontalAd />
 
    {#if $scoreInitialLoadComplete && $playerData}
       {#if !$playerData.banned}

@@ -27,8 +27,6 @@
    import Filter from '$lib/components/common/filter.svelte';
    import Error from '$lib/components/common/error.svelte';
    import Loader from '$lib/components/common/loader.svelte';
-   import LeaderboardRightAd from '$lib/components/ads/leaderboard-right.svelte';
-   import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import ScoreModal from '$lib/components/leaderboard/score-modal.svelte';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
@@ -357,10 +355,6 @@ Stars: ${metadata.stars}★`}
                      {/if}
                   </div>
                {/if}
-               <LeaderboardRightAd />
-               <div class="mobile">
-                  <HorizontalAd />
-               </div>
             </div>
          {/if}
       </div>

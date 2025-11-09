@@ -1,7 +1,6 @@
 <script lang="ts">
    import { searchView, userData } from '$lib/stores/global-store';
 
-   import MusicAd from '$lib/components/ads/tfp.svelte';
    import type SearchView from '$lib/components/common/search.svelte';
 
    import Permissions from '$lib/utils/permissions';
@@ -63,10 +62,9 @@
             ><a href="web+bsmap://{leaderboardInfo.songHash}" title="Download Map" class="btn" on:click={() => downloadModal.showModal()}
                ><i class="fa fa-sm fa-download" />
             </a>{leaderboardInfo.songHash}</strong
-         ><br />
+         >         <br />
       </div>
    </div>
-   <MusicAd {leaderboardInfo} />
 </div>
 
 <dialog class="card download-overlay" bind:this={downloadModal}>

@@ -9,7 +9,6 @@
    import { defaultBackground } from '$lib/stores/global-store';
    import { pageQueryStore } from '$lib/stores/query-store';
 
-   import HorizontalAd from '$lib/components/ads/horizontal-ad.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import Error from '$lib/components/common/error.svelte';
    import Filter from '$lib/components/common/filter.svelte';
@@ -173,7 +172,6 @@
          <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
       </div>
    </div>
-   <HorizontalAd />
    {#if firstLoad && loading}
       <Loader />
    {/if}
