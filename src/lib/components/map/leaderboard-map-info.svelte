@@ -91,16 +91,17 @@
       background-repeat: no-repeat !important;
       background-size: cover !important;
       z-index: -1;
-      border-radius: 5px;
+      border-radius: 6px;
    }
 
    .download-overlay {
-      background: var(--gray);
+      background: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
       color: var(--textColor);
       width: 100%;
       max-width: 32rem;
       padding: 3rem 2rem;
-      border: 0;
+      border-radius: 6px;
    }
 
    .download-overlay .close {
@@ -120,7 +121,7 @@
    }
 
    .download-overlay .close:hover {
-      background: #fff1;
+      background: var(--gray-light);
    }
 
    .map-card {
@@ -149,13 +150,14 @@
 
    .vote {
       background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
       padding: 0.2rem 0.3rem;
-      border-radius: 5px;
+      border-radius: 6px;
       flex-grow: 1;
    }
 
    .map-cover {
-      border-radius: 5px;
+      border-radius: 6px;
    }
 
    .subtitle {

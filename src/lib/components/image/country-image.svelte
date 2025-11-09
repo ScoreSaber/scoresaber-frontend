@@ -33,6 +33,7 @@
       width: 18px;
       height: 18px;
       display: inline-block;
-      vertical-align: sub;
+      vertical-align: middle;
+      flex-shrink: 0;
    }
 </style>

@@ -1,6 +1,4 @@
 <script type="ts">
-   import { fly } from 'svelte/transition';
-
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
 
@@ -18,19 +16,11 @@
    }
 
    export let row = 1;
-   export let pageDirection = 1;
-
-   export let transitioning = false;
 </script>
 
 <div
    class="table-item"
    class:highlighted
-   in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
-   out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 40 * (row - 1) }}
-   on:introstart={() => (transitioning = true)}
-   on:outrostart={() => (transitioning = true)}
-   on:outroend={() => (transitioning = false)}
    style="grid-row: {row} / span 1;"
 >
    <div class="rank">
@@ -82,15 +72,18 @@
       display: grid;
       grid-template-columns: var(--columns);
       background-color: var(--gray);
+      border: 1px solid var(--borderColor);
       margin: 2.5px 1px;
       padding: 5px;
-      border-radius: 5px;
+      border-radius: 6px;
       grid-column: 1;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
       .centered {
          text-align: center;
       }
       &:hover {
          background-color: var(--gray-light);
+         border-color: var(--gray-light);
       }
    }
    .rank {
@@ -132,6 +125,6 @@
    }
 
    .highlighted {
-      outline: 1px solid var(--scoreSaberYellow);
+      border: 2px solid var(--scoreSaberYellow);
    }
 </style>

@@ -273,7 +273,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       {/if}
 
       {#if $playerData}
-         <div in:fly={{ x: 20, duration: 1000 }} class="columns">
+         <div in:fly={{ x: 20, duration: 1000 }} class="columns profile-section">
             <!-- Profile picture & badges -->
             <div class="column is-narrow">
                <div class="profile-picture">
@@ -439,16 +439,20 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
 <Modal show={$modal} />
 
 <style lang="scss">
-   .top-arrowpagination,
+   .top-arrowpagination {
+      margin-bottom: 1rem;
+   }
+
    .bottom-arrowpagination {
-      margin-top: 15px;
+      margin-top: 1rem;
    }
 
    .gridTable {
       display: grid;
       grid-template-columns: 1fr;
-      margin-top: 6px;
+      margin-top: 0.75rem;
       min-height: 200px;
+      gap: 0.5rem;
    }
 
    .bottomSection {
@@ -458,10 +462,11 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
    .button-container {
       display: flex;
       justify-content: center;
+      margin-bottom: 1rem;
    }
 
    .search-container {
-      margin-top: 6px;
+      margin-top: 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -473,15 +478,46 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
 
    h5.player {
       display: flex;
+      align-items: center;
       gap: 10px;
       margin-bottom: 0px !important;
+      line-height: 1.3;
       .pp {
          align-self: flex-end;
+         font-weight: 600;
       }
       .divider {
-         border-left: 1px solid var(--dimmed);
+         border-left: 1px solid var(--borderColor);
+         height: 18px;
+         opacity: 0.6;
+      }
+      small {
+         display: inline-flex;
+         align-items: center;
+         gap: 0;
+         vertical-align: middle;
+         margin-top: 0.25rem;
+      }
+      .title-header {
+         display: inline-flex;
+         align-items: center;
+         gap: 5px;
+         vertical-align: middle;
+         a {
+            display: inline-flex;
+            align-items: center;
+            line-height: 1;
+            transition: color 0.2s ease;
+         }
+         a:hover {
+            color: var(--scoreSaberYellow);
+         }
       }
    }
+   .profile-section {
+      margin-bottom: 1.25rem;
+   }
+
    .column.is-narrow {
       position: relative;
       width: 200px;
@@ -490,10 +526,24 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
    .profile-picture {
       display: flex;
       justify-content: center;
+      margin-bottom: 0.5rem;
    }
    .profile-picture .button {
       position: absolute;
-      border-radius: 20px;
+      border-radius: 6px;
+      border: 1px solid var(--borderColor);
+      background-color: var(--foregroundItem);
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+   }
+
+   .profile-picture .button:hover {
+      background-color: var(--gray-light);
+      border-color: var(--scoreSaberYellow);
+      transform: scale(1.05);
+   }
+
+   .profile-picture .button:active {
+      transform: scale(0.95);
    }
 
    .profile-picture .refresh {
@@ -512,31 +562,49 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
    .profile-picture .image img {
       position: absolute;
       border-radius: 100%;
+      border: 2px solid var(--borderColor);
    }
 
    .title-header {
       font-size: smaller;
+      vertical-align: middle;
+      a {
+         display: inline-flex;
+         align-items: center;
+         line-height: 1;
+      }
    }
 
    .text-inactive {
       font-size: 14px;
       font-weight: 400;
+      color: var(--muted);
    }
 
    .title-header.spacer {
-      border-left: 1px solid var(--dimmed);
-      margin-left: 5px;
-      padding-left: 10px;
+      border-left: 1px solid var(--borderColor);
+      margin-left: 8px;
+      padding-left: 12px;
+      opacity: 0.6;
    }
 
-   .fas.fa-globe-americas {
-      height: 11px;
-      width: 16px;
+   .title-header .fas.fa-globe-americas {
       cursor: help;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875em;
+      line-height: 1;
+      flex-shrink: 0;
+      vertical-align: middle;
+      &::before {
+         display: block;
+         line-height: 1;
+      }
    }
 
    .stats {
-      margin-top: 5px;
+      margin-top: 0.75rem;
    }
 
    .pagination {
@@ -544,7 +612,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       width: 100%;
       justify-content: center;
       align-items: center;
-      margin: 15px 0;
+      margin: 1rem 0;
    }
 
    @media only screen and (min-width: 769px) {

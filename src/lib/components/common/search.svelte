@@ -19,6 +19,9 @@
    let visible = false;
    let focusElement = 0;
    let resultsElement: HTMLDivElement;
+   let playersCollapsed = false;
+   let leaderboardsCollapsed = false;
+   let isMac = false;
 
    export const isVisible = () => visible;
 
@@ -35,14 +38,21 @@
    };
 
    const bounceCursor = () => {
-      const max = searchResults.leaderboards.length + searchResults.players.length - 1;
+      const playersCount = playersCollapsed ? 0 : searchResults.players.length;
+      const leaderboardsCount = leaderboardsCollapsed ? 0 : searchResults.leaderboards.length;
+      const max = leaderboardsCount + playersCount - 1;
       if (focusElement > max) focusElement = 0;
       if (focusElement < 0) focusElement = max;
    };
 
    export const setVisibility = (value: boolean) => {
       visible = value;
-      if (value) inputBox.focus();
+      if (value) {
+         inputBox.focus();
+         if (typeof navigator !== 'undefined') {
+            isMac = navigator.platform.includes('Mac');
+         }
+      }
    };
 
    const pageUnsubscribe = page.subscribe(() => {
@@ -60,25 +70,50 @@
       target.scrollIntoView({ behavior: 'smooth' });
    };
 
-   const handleKeydown = ({ key }: KeyboardEvent) => {
-      switch (key) {
+   const handleKeydown = (event: KeyboardEvent) => {
+      switch (event.key) {
+         case 'Escape':
+            event.preventDefault();
+            event.stopPropagation();
+            setVisibility(false);
+            break;
          case 'ArrowUp':
+            event.preventDefault();
             focusElement--;
             bounceCursor();
             scrollToActive();
             break;
          case 'ArrowDown':
+            event.preventDefault();
             focusElement++;
             bounceCursor();
             scrollToActive();
             break;
-         case 'Enter':
-            if (focusElement < searchResults.players.length && !searchResults.loading) {
+         case 'Enter': {
+            const playersCount = playersCollapsed ? 0 : searchResults.players.length;
+            if (focusElement < playersCount && !searchResults.loading) {
                goto(`/u/${searchResults.players[focusElement].id}`);
             } else if (!searchResults.loading) {
-               const leaderboard = searchResults.leaderboards[focusElement - searchResults.players.length];
-               goto(`/leaderboard/${leaderboard.id}`);
+               const leaderboardIndex = focusElement - playersCount;
+               const leaderboard = searchResults.leaderboards[leaderboardIndex];
+               if (leaderboard) {
+                  goto(`/leaderboard/${leaderboard.id}`);
+               }
             }
+            break;
+         }
+         case '1':
+            if (event.ctrlKey || event.metaKey) {
+               event.preventDefault();
+               togglePlayersSection(event);
+            }
+            break;
+         case '2':
+            if (event.ctrlKey || event.metaKey) {
+               event.preventDefault();
+               toggleLeaderboardsSection(event);
+            }
+            break;
       }
    };
 
@@ -139,12 +174,32 @@
          search(searchValue);
       }, 300);
    };
+
+   function togglePlayersSection(event: MouseEvent | KeyboardEvent) {
+      event.preventDefault();
+      event.stopPropagation();
+      playersCollapsed = !playersCollapsed;
+      bounceCursor();
+   }
+
+   function toggleLeaderboardsSection(event: MouseEvent | KeyboardEvent) {
+      event.preventDefault();
+      event.stopPropagation();
+      leaderboardsCollapsed = !leaderboardsCollapsed;
+      bounceCursor();
+   }
 </script>
 
 <div
    class="modal-background {visible ? 'is-visible' : ''}"
    on:click={() => setVisibility(false)}
-   on:keydown={(e) => e.key === 'Enter' && setVisibility(false)}
+   on:keydown={(e) => {
+      if (e.key === 'Escape' || e.key === 'Enter') {
+         e.preventDefault();
+         e.stopPropagation();
+         setVisibility(false);
+      }
+   }}
    tabindex="0"
    role="button"
    aria-label="Close search"
@@ -163,7 +218,7 @@
                <img src="/images/loading.svg" alt="Loading..." />
             {/if}
          </div>
-         <input bind:value={searchValue} bind:this={inputBox} on:input={handleInput} on:keydown={handleKeydown} type="search" placeholder="Search" />
+         <input bind:value={searchValue} bind:this={inputBox} on:input={handleInput} on:keydown={handleKeydown} type="text" placeholder="Search" />
          <button on:click={() => setVisibility(false)} class="close" aria-label="close"
             ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -176,33 +231,70 @@
          <div class="search-results" bind:this={resultsElement}>
             <div class="results">
                {#if searchValue.length > 3}
-                  <div class="section-title">
-                     <a href="/rankings?search={encodeURIComponent(searchValue)}" title="Advanced Search"
-                        >Players <i class="fa fa-external-link-alt" /></a
-                     >
+                  <div
+                     class="section-title"
+                     on:click={togglePlayersSection}
+                     role="button"
+                     tabindex="0"
+                     on:keydown={(e) => e.key === 'Enter' && togglePlayersSection(e)}
+                  >
+                     <div class="section-title-content">
+                        <i class="fa fa-chevron-{playersCollapsed ? 'right' : 'down'}" />
+                        <span>Players</span>
+                        <span class="count">({searchResults.players.length})</span>
+                        <span class="shortcut">
+                           <kbd>{isMac ? '⌘' : 'Ctrl'}</kbd>
+                           <span class="separator">+</span>
+                           <kbd>1</kbd>
+                        </span>
+                     </div>
+                     <a href="/rankings?search={encodeURIComponent(searchValue)}" title="Advanced Search" on:click={(e) => e.stopPropagation()}>
+                        <i class="fa fa-external-link-alt" />
+                     </a>
                   </div>
                {/if}
-               {#each searchResults.players as player, i}
-                  <div class="result {i == focusElement ? 'focus' : ''}">
-                     <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
-                     <div class="player-name"><PlayerLink {player} destination="/u/{player.id}" /></div>
-                     <div class="rank">#{player.rank.toLocaleString(navigator?.language ?? 'en-AU')}</div>
-                  </div>
-               {/each}
+               {#if !playersCollapsed}
+                  {#each searchResults.players as player, i}
+                     <div class="result {i == focusElement ? 'focus' : ''}">
+                        <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
+                        <div class="player-name"><PlayerLink {player} destination="/u/{player.id}" /></div>
+                        <div class="rank">#{player.rank.toLocaleString(navigator?.language ?? 'en-AU')}</div>
+                     </div>
+                  {/each}
+               {/if}
             </div>
             <div class="results">
                {#if searchValue.length > 3}
-                  <div class="section-title">
-                     <a href="/leaderboards?search={encodeURIComponent(searchValue)}" title="Advanced Search"
-                        >Leaderboards <i class="fa fa-external-link-alt" /></a
-                     >
+                  <div
+                     class="section-title"
+                     on:click={toggleLeaderboardsSection}
+                     role="button"
+                     tabindex="0"
+                     on:keydown={(e) => e.key === 'Enter' && toggleLeaderboardsSection(e)}
+                  >
+                     <div class="section-title-content">
+                        <i class="fa fa-chevron-{leaderboardsCollapsed ? 'right' : 'down'}" />
+                        <span>Leaderboards</span>
+                        <span class="count">({searchResults.leaderboards.length})</span>
+                        <span class="shortcut">
+                           <kbd>{isMac ? '⌘' : 'Ctrl'}</kbd>
+                           <span class="separator">+</span>
+                           <kbd>2</kbd>
+                        </span>
+                     </div>
+                     <a href="/leaderboards?search={encodeURIComponent(searchValue)}" title="Advanced Search" on:click={(e) => e.stopPropagation()}>
+                        <i class="fa fa-external-link-alt" />
+                     </a>
                   </div>
                {/if}
-               {#each searchResults.leaderboards as leaderboard, i}
-                  <div class="result map {i == focusElement - searchResults.players.length ? 'focus' : ''}">
-                     <div><SmallSongInfo {leaderboard} margin={false} /></div>
-                  </div>
-               {/each}
+               {#if !leaderboardsCollapsed}
+                  {#each searchResults.leaderboards as leaderboard, i}
+                     {@const playersCount = playersCollapsed ? 0 : searchResults.players.length}
+                     <div class="result map {i == focusElement - playersCount ? 'focus' : ''}">
+                        <div><SmallSongInfo {leaderboard} margin={false} /></div>
+                     </div>
+                  {/each}
+               {/if}
             </div>
          </div>
       {/if}
@@ -216,7 +308,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #0003;
+      background: rgba(0, 0, 0, 0.4);
       z-index: 500;
       opacity: 0;
       pointer-events: none;
@@ -226,8 +318,8 @@
    .modal-background.is-visible {
       opacity: 1;
       pointer-events: all;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(8px) saturate(180%);
+      -webkit-backdrop-filter: blur(8px) saturate(180%);
    }
 
    .modal-container {
@@ -244,8 +336,11 @@
    }
 
    .search-wrapper {
-      border-radius: 5px;
-      background: var(--gray);
+      border-radius: 0.85rem;
+      background: rgba(12, 12, 15, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       height: min-content;
       width: 100%;
       max-width: 640px;
@@ -253,8 +348,7 @@
       transition: all 0.25s ease;
       overflow: hidden;
       transform: translate3d(0, -30px, 0);
-      box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
-         rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
    }
 
    .modal-container.is-visible .search-wrapper {
@@ -265,6 +359,7 @@
 
    .search-wrapper .search-box {
       display: flex;
+      align-items: center;
    }
 
    .search-results {
@@ -281,13 +376,14 @@
       padding: 10px 15px;
       display: flex;
       gap: 10px;
-      color: #eee;
+      color: rgba(255, 255, 255, 0.9);
       align-items: center;
       position: relative;
       font-size: 1.25em;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      transition: background 0.2s ease;
    }
 
    .result.map {
@@ -300,28 +396,30 @@
 
    .results .rank {
       content: '⏎';
-      border: solid 1px #777;
+      border: solid 1px rgba(255, 255, 255, 0.2);
       flex: 1;
       max-width: min-content;
       padding: 3px 7px;
       border-radius: 5px;
       font-size: 0.8em;
       height: 29px;
+      color: rgba(255, 255, 255, 0.7);
    }
 
    .results .result:focus,
    .results .result.focus {
-      background: #0002;
+      background: rgba(255, 255, 255, 0.08);
    }
 
    .results .result.focus::after {
       content: '⏎';
-      border: solid 1px #777;
+      border: solid 1px rgba(255, 255, 255, 0.3);
       padding: 5px 7px;
       border-radius: 5px;
       font-size: 0.5em;
       display: flex;
       align-items: center;
+      color: rgba(255, 255, 255, 0.8);
    }
 
    .search-box input {
@@ -331,6 +429,9 @@
       padding: 15px;
       font-size: 1.25em;
       color: #fff;
+      cursor: text;
+      line-height: 1.5;
+      vertical-align: middle;
    }
 
    .search-box input:focus {
@@ -339,15 +440,95 @@
 
    .section-title {
       padding: 15px;
-      border-top: solid 1px #4a4a4a;
-      border-bottom: solid 1px #4a4a4a;
-      color: #eee;
+      border-top: solid 1px rgba(255, 255, 255, 0.1);
+      border-bottom: solid 1px rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.95);
       text-transform: uppercase;
       font-weight: bold;
-      background: #323232;
+      background: rgba(12, 12, 15, 0.95);
+      backdrop-filter: blur(10px) saturate(180%);
+      -webkit-backdrop-filter: blur(10px) saturate(180%);
       position: sticky;
       top: 0;
       z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s ease;
+   }
+
+   .section-title:hover {
+      background: rgba(12, 12, 15, 0.98);
+   }
+
+   .section-title:focus {
+      outline: 2px solid rgba(255, 215, 0, 0.5);
+      outline-offset: -2px;
+   }
+
+   .section-title-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+   }
+
+   .section-title-content i {
+      font-size: 0.85em;
+      width: 12px;
+      transition: transform 0.2s ease;
+   }
+
+   .section-title-content .count {
+      font-size: 0.85em;
+      opacity: 0.7;
+      font-weight: normal;
+   }
+
+   .section-title-content .shortcut {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75em;
+      opacity: 0.6;
+      margin-left: auto;
+      margin-right: 10px;
+   }
+
+   .section-title-content .shortcut kbd {
+      font-family: inherit;
+      font-size: 0.7em;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.35rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      color: inherit;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      vertical-align: middle;
+   }
+
+   .section-title-content .shortcut .separator {
+      opacity: 0.5;
+      font-size: 0.8em;
+   }
+
+   .section-title a {
+      display: flex;
+      align-items: center;
+      color: inherit;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      margin-left: 10px;
+   }
+
+   .section-title a:hover {
+      opacity: 1;
    }
 
    .close,
@@ -359,6 +540,13 @@
       padding: 15px;
       font-size: 2em;
       color: #fff;
+      cursor: pointer;
+      transition: color 0.2s ease, background 0.2s ease;
+   }
+
+   .close:hover {
+      color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.05);
    }
 
    .search-icon {
@@ -379,6 +567,10 @@
 
       .search-results {
          max-height: calc(100% - 51px);
+      }
+
+      .section-title-content .shortcut {
+         display: none;
       }
    }
 </style>

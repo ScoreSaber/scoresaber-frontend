@@ -76,7 +76,9 @@
    hr {
       margin-top: 1rem;
       margin-bottom: 1rem;
-      background-color: var(--dimmed);
+      background-color: var(--borderColor);
+      border: none;
+      height: 1px;
    }
 
    .bg-image {
@@ -87,7 +89,7 @@
       background-repeat: no-repeat !important;
       background-size: cover !important;
       z-index: -1;
-      border-radius: 5px;
+      border-radius: 6px;
    }
 
    .map-card {
@@ -116,13 +118,14 @@
 
    .vote {
       background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
       padding: 0.2rem 0.3rem;
-      border-radius: 5px;
+      border-radius: 6px;
       flex-grow: 1;
    }
 
    .map-cover {
-      border-radius: 5px;
+      border-radius: 6px;
    }
 
    .subtitle {

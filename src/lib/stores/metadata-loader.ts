@@ -13,11 +13,19 @@ export async function loadMetadata(fetch: Function, url: string) {
          return {};
       }
       if (res.ok) {
-         return {
-            props: {
-               metadata: await res.json()
+         const contentType = res.headers.get('content-type');
+         if (contentType && contentType.includes('application/json')) {
+            try {
+               return {
+                  props: {
+                     metadata: await res.json()
+                  }
+               };
+            } catch (error) {
+               console.error('Failed to parse JSON response:', error);
+               return {};
             }
-         };
+         }
       }
 
       return {};

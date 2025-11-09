@@ -28,18 +28,21 @@
    .chip {
       margin: 0;
       background-color: var(--foregroundItem);
-      padding: 5px 12px;
-      border-radius: 7px;
+      border: 1px solid var(--borderColor);
+      padding: 0.375rem 0.625rem;
+      border-radius: 6px;
       position: relative;
-      font-weight: bold;
+      font-weight: 500;
+      font-size: 0.875rem;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: background-color var(--transitionTime) ease;
+      gap: 0.375rem;
+      transition: all var(--transitionTime) ease;
    }
 
    .chip:hover {
-      background-color: #323232;
+      background-color: var(--gray-light);
+      border-color: var(--gray-light);
    }
 
    .remove {
@@ -48,40 +51,38 @@
       position: absolute;
       top: 0;
       right: 0;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       padding: 0;
       border: none;
       border-radius: 50%;
-      background-color: var(--borderColor);
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 10px;
+      background-color: rgba(220, 53, 69, 0.9);
+      color: white;
+      font-size: 9px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transform: translate(50%, -50%);
-      transition: opacity var(--transitionTime) ease, background-color var(--transitionTime) ease, visibility 0s var(--transitionTime);
+      transition: all var(--transitionTime) ease;
    }
 
    .remove:hover,
    .remove:focus-visible {
-      background-color: rgba(220, 53, 69, 0.9);
-      color: white;
+      background-color: rgba(220, 53, 69, 1);
+      transform: translate(50%, -50%) scale(1.1);
       outline: none;
    }
 
    .chip:hover .remove {
       visibility: visible;
       opacity: 1;
-      transition: opacity var(--transitionTime) ease, background-color var(--transitionTime) ease, visibility 0s 0s;
    }
 
    @media only screen and (max-width: 769px) {
       .remove {
          visibility: visible;
          opacity: 1;
-         transition: opacity var(--transitionTime) ease, background-color var(--transitionTime) ease, visibility 0s 0s;
       }
    }
 </style>

@@ -9,57 +9,106 @@
    export let currentDiff: Difficulty;
 </script>
 
-<div class="tabs is-centered">
-   <ul class="m-0">
+<div class="difficulty-tabs">
+   <div class="tabs-container">
       {#if diffs}
          {#each diffs as difficulty}
-            <li>
-               <a
-                  href="/leaderboard/{difficulty.leaderboardId}"
-                  class={getDifficultyStyle(difficulty) + ' ' + (currentDiff.difficulty === difficulty.difficulty ? 'selected' : '')}
-               >
-                  <span>{getDifficultyLabel(difficulty)}</span>
-               </a>
-            </li>
+            <a
+               href="/leaderboard/{difficulty.leaderboardId}"
+               data-sveltekit-preload-data
+               data-sveltekit-noscroll
+               class="tab-item {getDifficultyStyle(difficulty)} {currentDiff.difficulty === difficulty.difficulty ? 'active' : ''}"
+            >
+               <span>{getDifficultyLabel(difficulty)}</span>
+            </a>
          {/each}
       {:else}
          {#each rankingDiffs as difficulty}
-            <li>
-               <a
-                  href="/ranking/request/{difficulty.requestId}"
-                  class={getDifficultyStyle(difficulty) + ' ' + (currentDiff.difficulty === difficulty.difficulty ? 'selected' : '')}
-               >
-                  <span>{getDifficultyLabel(difficulty)}</span>
-               </a>
-            </li>
+            <a
+               href="/ranking/request/{difficulty.requestId}"
+               data-sveltekit-preload-data
+               data-sveltekit-noscroll
+               class="tab-item {getDifficultyStyle(difficulty)} {currentDiff.difficulty === difficulty.difficulty ? 'active' : ''}"
+            >
+               <span>{getDifficultyLabel(difficulty)}</span>
+            </a>
          {/each}
       {/if}
-   </ul>
+   </div>
 </div>
 
 <style>
-   .tabs a.easy {
+   .difficulty-tabs {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--borderColor);
+   }
+
+   .tabs-container {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+   }
+
+   .tabs-container::-webkit-scrollbar {
+      display: none;
+   }
+
+   .tab-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      position: relative;
+   }
+
+   .tab-item:hover {
+      color: var(--textColor);
+      background-color: var(--foregroundItem);
+      border-radius: 6px 6px 0 0;
+   }
+
+   .tab-item.active {
+      color: var(--textColor);
+      border-bottom-color: currentColor;
+      font-weight: 600;
+   }
+
+   .tab-item.easy.active {
       border-bottom-color: var(--easy);
       color: var(--easy);
    }
 
-   .tabs a.normal {
+   .tab-item.normal.active {
       border-bottom-color: var(--normal);
       color: var(--normal);
    }
 
-   .tabs a.hard {
+   .tab-item.hard.active {
       border-bottom-color: var(--hard);
       color: var(--hard);
    }
 
-   .tabs a.expert {
+   .tab-item.expert.active {
       border-bottom-color: var(--expert);
       color: var(--expert);
    }
 
-   .tabs a.expert-plus {
+   .tab-item.expert-plus.active {
       border-bottom-color: var(--expert-plus);
       color: var(--expert-plus);
+   }
+
+   .tab-item span {
+      display: inline-block;
    }
 </style>

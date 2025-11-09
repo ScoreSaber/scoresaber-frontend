@@ -77,29 +77,58 @@
    .stats-container {
       display: flex;
       flex-wrap: wrap;
+      gap: 0.375rem;
+      align-items: center;
    }
    .stat-item {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       background-color: var(--foregroundItem);
       color: var(--textColor);
-      padding: 5px 10px 5px 10px;
-      border-radius: 10px;
-      margin: 0 5px 5px 0;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid var(--borderColor);
+      border-radius: 4px;
       cursor: default;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+      font-size: 0.8125rem;
+      line-height: 1.4;
+      white-space: nowrap;
    }
    .stat-item.ranked {
       background-color: var(--ppColourDark);
+      border-color: rgba(137, 146, 232, 0.3);
+      color: #fff;
+   }
+   .stat-item.ranked .stat-title {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.75rem;
+   }
+   .stat-item.ranked .stat-content {
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.8125rem;
    }
    .stat-title {
-      font-weight: 700;
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 0.75rem;
    }
    .stat-spacer {
-      border-left: 1px solid var(--textColor);
+      border-left: 1px solid var(--borderColor);
       width: 0;
-      height: 15px;
-      margin-left: 7px;
-      margin-top: 1px;
-      padding-right: 10px;
+      height: 12px;
+      margin-left: 0.375rem;
+      margin-right: 0.375rem;
+      opacity: 0.5;
+   }
+   .stat-item.ranked .stat-spacer {
+      border-left-color: rgba(255, 255, 255, 0.25);
+      height: 12px;
+   }
+   .stat-content {
+      font-weight: 500;
+      color: var(--textColor);
+      font-size: 0.8125rem;
    }
    @media only screen and (max-width: 769px) {
       .stats-container {

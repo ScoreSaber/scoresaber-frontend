@@ -1,5 +1,4 @@
 <script lang="ts">
-   import { fly } from 'svelte/transition';
    import queryString from 'query-string';
 
    import { goto } from '$app/navigation';
@@ -14,12 +13,17 @@
 
    import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
+   import { useDelayedBlur } from '$lib/utils/delayed-blur';
    import permissions from '$lib/utils/permissions';
 
    import type { RankRequestListing } from '$lib/models/Ranking';
    import type { LeaderboardInfoCollection } from '$lib/models/LeaderboardData';
 
-   const { data: topRequests, error: topRequestsError } = useAccio<RankRequestListing[]>(
+   const {
+      data: topRequests,
+      error: topRequestsError,
+      loading: topRequestsLoading
+   } = useAccio<RankRequestListing[]>(
       queryString.stringifyUrl({
          url: '/api/ranking/requests/top'
       }),
@@ -29,6 +33,7 @@
    const {
       data: belowTopRequests,
       error: belowTopRequestsError,
+      loading: belowTopRequestsLoading,
       refresh: refreshBelowTopRequests
    } = useAccio<RankRequestListing[]>(
       queryString.stringifyUrl({
@@ -37,7 +42,14 @@
       { fetcher: axios }
    );
 
-   const { data: qualifiedMapsPage1 } = useAccio<LeaderboardInfoCollection>(
+   const showTopRequestsBlur = useDelayedBlur(topRequestsLoading, { delayMs: 200 });
+   const showBelowTopRequestsBlur = useDelayedBlur(belowTopRequestsLoading, { delayMs: 200 });
+
+   const {
+      data: qualifiedMapsPage1,
+      error: qualifiedMapsPage1Error,
+      loading: qualifiedMapsPage1Loading
+   } = useAccio<LeaderboardInfoCollection>(
       queryString.stringifyUrl({
          url: '/api/leaderboards',
          query: { qualified: 1, unique: 1, page: 1 }
@@ -45,13 +57,27 @@
       { fetcher: axios }
    );
 
-   const { data: qualifiedMapsPage2 } = useAccio<LeaderboardInfoCollection>(
+   const {
+      data: qualifiedMapsPage2,
+      error: qualifiedMapsPage2Error,
+      loading: qualifiedMapsPage2Loading
+   } = useAccio<LeaderboardInfoCollection>(
       queryString.stringifyUrl({
          url: '/api/leaderboards',
          query: { qualified: 1, unique: 1, page: 2 }
       }),
       { fetcher: axios }
    );
+
+   $: navBarReady =
+      ($topRequests || $topRequestsError) &&
+      ($belowTopRequests || $belowTopRequestsError) &&
+      ($qualifiedMapsPage1 !== undefined || $qualifiedMapsPage1Error) &&
+      ($qualifiedMapsPage2 !== undefined || $qualifiedMapsPage2Error) &&
+      !$topRequestsLoading &&
+      !$belowTopRequestsLoading &&
+      !$qualifiedMapsPage1Loading &&
+      !$qualifiedMapsPage2Loading;
 
    $: qualifiedMapsCount = ($qualifiedMapsPage1?.leaderboards?.length || 0) + ($qualifiedMapsPage2?.leaderboards?.length || 0);
 
@@ -90,10 +116,10 @@
    <title>Rank Requests | ScoreSaber!</title>
 </head>
 
-<div>
+<div class="bg-content">
    <div class="section breakout">
-      {#if $topRequests && $belowTopRequests}
-         <nav in:fly={{ x: 20, duration: 1000 }} class="level mb-5">
+      {#if navBarReady}
+         <nav class="level mb-5">
             <div class="level-item has-text-centered">
                <div>
                   <p class="heading">Rank Requests</p>
@@ -116,15 +142,20 @@
             </div>
          </nav>
       {/if}
-      <div class="window has-shadow">
-         {#if !$topRequests && !$topRequestsError}
-            <Loader />
+      <div class="window has-shadow" aria-busy={$topRequestsLoading || $showTopRequestsBlur}>
+         {#if !navBarReady || (!$topRequests && !$topRequestsError)}
+            <div class="loader-placeholder">
+               <Loader />
+            </div>
          {/if}
          {#if $topRequestsError}
             <Error error={$topRequestsError} />
          {/if}
-         {#if $topRequests}
-            <div in:fly={{ x: 20, duration: 1000 }}>
+         {#if navBarReady && $topRequests}
+            {#if $showTopRequestsBlur}
+               <Loader displayOver={true} />
+            {/if}
+            <div class:blur={$showTopRequestsBlur}>
                <h3>Next items in queue</h3>
                <div class="ranking">
                   <table>
@@ -190,44 +221,51 @@
          />
       {/if}
       {#if showBelowTop}
-         <div in:fly={{ x: 20, duration: 500 }} class="window has-shadow below-top">
+         <div class="window has-shadow below-top" aria-busy={$belowTopRequestsLoading || $showBelowTopRequestsBlur}>
             {#if $belowTopRequests}
-               <h3>Open rank/unrank requests</h3>
-               <div class="ranking">
-                  <table>
-                     <thead>
-                        <tr>
-                           <th class="diffs_created_at" />
-                           <th class="map" />
-                           <th class="rt_upvotes">RT 👍</th>
-                           <th class="rt_downvotes">RT 👎</th>
-                           <th class="qat_upvotes">QAT 👍</th>
-                           <th class="qat_neutral">QAT ✅</th>
-                           <th class="qat_downvotes">QAT 👎</th>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        {#each belowTopRequestsToShow as request}
-                           <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
-                              <td class="diffs_created_at"
-                                 ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
-                                    date={new Date(request.created_at)}
-                                 /></td
-                              ><td class="map">
-                                 <SmallRequestInfo {request} />
-                              </td>
-                              <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
-                              <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
-                              <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
-                              <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
-                              <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
+               {#if $showBelowTopRequestsBlur}
+                  <Loader displayOver={true} />
+               {/if}
+               <div class:blur={$showBelowTopRequestsBlur}>
+                  <h3>Open rank/unrank requests</h3>
+                  <div class="ranking">
+                     <table>
+                        <thead>
+                           <tr>
+                              <th class="diffs_created_at" />
+                              <th class="map" />
+                              <th class="rt_upvotes">RT 👍</th>
+                              <th class="rt_downvotes">RT 👎</th>
+                              <th class="qat_upvotes">QAT 👍</th>
+                              <th class="qat_neutral">QAT ✅</th>
+                              <th class="qat_downvotes">QAT 👎</th>
                            </tr>
-                        {/each}
-                     </tbody>
-                  </table>
+                        </thead>
+                        <tbody>
+                           {#each belowTopRequestsToShow as request}
+                              <tr class="table-item" class:highlight={request.totalQATVotes.myVote || request.totalRankVotes.myVote}>
+                                 <td class="diffs_created_at"
+                                    ><b>{request.difficultyCount} difficult{request.difficultyCount > 1 ? 'ies' : 'y'}</b><br /><FormattedDate
+                                       date={new Date(request.created_at)}
+                                    /></td
+                                 ><td class="map">
+                                    <SmallRequestInfo {request} />
+                                 </td>
+                                 <td class="rt_upvotes centered">{request.totalRankVotes.upvotes}</td>
+                                 <td class="rt_downvotes centered">{request.totalRankVotes.downvotes}</td>
+                                 <td class="qat_upvotes centered">{request.totalQATVotes.upvotes}</td>
+                                 <td class="qat_neutral centered">{request.totalQATVotes.neutral}</td>
+                                 <td class="qat_downvotes centered">{request.totalQATVotes.downvotes}</td>
+                              </tr>
+                           {/each}
+                        </tbody>
+                     </table>
+                  </div>
                </div>
-            {:else if !$belowTopRequests}
-               <Loader />
+            {:else if !$belowTopRequests && !$belowTopRequestsError}
+               <div class="loader-placeholder">
+                  <Loader />
+               </div>
             {/if}
             {#if $belowTopRequestsError}
                <Error error={$belowTopRequestsError} />
@@ -238,6 +276,26 @@
 </div>
 
 <style lang="scss">
+   .bg-content {
+      min-height: 100vh;
+   }
+
+   .window {
+      position: relative;
+   }
+
+   .loader-placeholder {
+      display: flex;
+      justify-content: center;
+      padding: 4rem 0;
+   }
+
+   .blur {
+      filter: blur(3px) saturate(1.2);
+      transition: 0.25s filter linear;
+      pointer-events: none;
+   }
+
    table {
       border-collapse: separate;
       border-spacing: 0 5px;
@@ -258,32 +316,34 @@
    }
    tr.highlight {
       td {
-         border-top: 1px solid var(--scoreSaberYellow) !important;
-         border-bottom: 1px solid var(--scoreSaberYellow) !important;
+         border-top: 2px solid var(--scoreSaberYellow) !important;
+         border-bottom: 2px solid var(--scoreSaberYellow) !important;
       }
       td:first-child {
-         border-left: 1px solid var(--scoreSaberYellow) !important;
+         border-left: 2px solid var(--scoreSaberYellow) !important;
       }
       td:last-child {
-         border-right: 1px solid var(--scoreSaberYellow) !important;
+         border-right: 2px solid var(--scoreSaberYellow) !important;
       }
    }
 
    tr.table-item td {
       background-color: var(--gray);
+      border: 1px solid var(--borderColor);
    }
    tr.table-item:hover td {
       background-color: var(--gray-light);
+      border-color: var(--gray-light);
    }
    td:first-child {
       border-left-style: solid;
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
    }
    td:last-child {
       border-right-style: solid;
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
+      border-bottom-right-radius: 6px;
+      border-top-right-radius: 6px;
    }
 
    .below-top {

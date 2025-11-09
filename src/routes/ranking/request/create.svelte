@@ -152,17 +152,19 @@
 <style>
    .existing {
       background-color: var(--gray);
+      border: 1px solid var(--borderColor);
       padding: 10px;
       padding-top: 15px;
-      border-radius: 4px;
+      border-radius: 6px;
    }
 
    .smallSongInfo {
       margin-top: 1rem;
       background-color: var(--gray);
-      border-radius: 4px;
+      border: 1px solid var(--borderColor);
+      border-radius: 6px;
       padding: 10px;
-      color: #fff;
+      color: var(--textColor);
    }
 
    table {
@@ -182,15 +184,16 @@
    }
    tr.table-item td {
       background-color: var(--gray-dark);
+      border: 1px solid var(--borderColor);
    }
    td:first-child {
       border-left-style: solid;
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
    }
    td:last-child {
       border-right-style: solid;
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
+      border-bottom-right-radius: 6px;
+      border-top-right-radius: 6px;
    }
 </style>

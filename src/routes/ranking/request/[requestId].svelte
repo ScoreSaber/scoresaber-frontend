@@ -1,7 +1,14 @@
+<script lang="ts" context="module">
+   import { loadMetadata } from '$lib/stores/metadata-loader';
+
+   export async function load({ fetch, params }) {
+      return await loadMetadata(fetch, `/api/ranking/request/${params.requestId}`);
+   }
+</script>
+
 <script lang="ts">
    import { decode } from 'html-entities';
-   import { fly } from 'svelte/transition';
-   import { onDestroy } from 'svelte';
+   import { get } from 'svelte/store';
 
    import { page } from '$app/stores';
    import { browser } from '$app/env';
@@ -14,33 +21,60 @@
    import AvatarImage from '$lib/components/image/avatar-image.svelte';
    import RequestMapInfo from '$lib/components/map/request-map-info.svelte';
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
+   import Meta from '$lib/components/common/meta.svelte';
 
    import Permissions from '$lib/utils/permissions';
    import axios from '$lib/utils/fetcher';
    import { useAccio } from '$lib/utils/accio';
+   import { useDelayedBlur } from '$lib/utils/delayed-blur';
    import poster from '$lib/utils/poster';
    import { getCDNUrl } from '$lib/utils/helpers';
 
    import type { RankRequestInformation } from '$lib/models/Ranking';
 
+   export let metadata: RankRequestInformation = undefined;
+
    function getBloq(rank: string) {
       return getCDNUrl(`/badges/name/${rank}.png`);
    }
 
+   function getRequestUrl(requestId: string) {
+      return `/api/ranking/request/${requestId}`;
+   }
+
+   const initialPage = get(page);
+   let activeRequestId = initialPage.params.requestId;
+   let currentRequestUrl = getRequestUrl(activeRequestId);
+
    const {
       data: request,
       error: requestError,
-      refresh: refreshRequest
-   } = useAccio<RankRequestInformation>(`/api/ranking/request/${$page.params.requestId}`, {
+      refresh: refreshRequest,
+      loading: requestLoading
+   } = useAccio<RankRequestInformation>(currentRequestUrl, {
       fetcher: axios,
-      onSuccess: (data) => setBackground(data.leaderboardInfo.coverImage)
+      onSuccess: handleRequestSuccess
    });
 
-   const pageUnsubscribe = page.subscribe(() => {
-      if (browser) {
-         refreshRequest({ newUrl: `/api/ranking/request/${$page.params.requestId}` });
+   const showRequestBlur = useDelayedBlur(requestLoading, { delayMs: 200 });
+
+   function handleRequestSuccess(data: RankRequestInformation) {
+      setBackground(data.leaderboardInfo.coverImage);
+   }
+
+   $: if (browser) {
+      const nextRequestId = $page.params.requestId;
+      if (nextRequestId && nextRequestId !== activeRequestId) {
+         activeRequestId = nextRequestId;
+         const nextRequestUrl = getRequestUrl(nextRequestId);
+         currentRequestUrl = nextRequestUrl;
+         refreshRequest({
+            newUrl: nextRequestUrl,
+            softRefresh: Boolean($request),
+            bypassInitialCheck: true
+         });
       }
-   });
+   }
 
    const requestActionEndpoint = '/api/ranking/request/action';
    $: comment = '';
@@ -83,20 +117,25 @@
       }
       refreshRequest({ forceRevalidate: true });
    }
-
-   onDestroy(pageUnsubscribe);
 </script>
 
 <head>
    <title>{$request ? $request.leaderboardInfo.songName + ' - Rank Request' : 'Rank Request'} | ScoreSaber!</title>
+   {#if metadata}
+      <Meta
+         description={`Rank Request for ${metadata.leaderboardInfo.songAuthorName} - ${metadata.leaderboardInfo.songName} mapped by ${metadata.leaderboardInfo.levelAuthorName}`}
+         image={metadata.leaderboardInfo.coverImage}
+         title="{metadata.leaderboardInfo.songAuthorName} - {metadata.leaderboardInfo.songName} mapped by {metadata.leaderboardInfo.levelAuthorName}"
+      />
+   {/if}
 </head>
 
-<div>
+<div class="bg-content">
    <div class="section">
       <div class="columns">
          {#if !$request && !$requestError}
             <div class="column is-12">
-               <div class="window has-shadow">
+               <div class="window has-shadow request-window">
                   <Loader />
                </div>
             </div>
@@ -105,10 +144,15 @@
             <Error error={$requestError} />
          {/if}
          {#if $request}
-            <div in:fly={{ y: -20, duration: 1000 }} class="column is-8">
-               <div class="window has-shadow">
-                  <DifficultySelection rankingDiffs={$request.difficulties} currentDiff={$request.leaderboardInfo.difficulty} />
-                  <code>{decode($request.requestDescription)}</code>
+            <div class="column is-8">
+               <div class="window has-shadow request-window" aria-busy={$requestLoading || $showRequestBlur}>
+                  {#if $showRequestBlur}
+                     <Loader displayOver={true} />
+                  {/if}
+                  <div class:blur={$showRequestBlur}>
+                     <DifficultySelection rankingDiffs={$request.difficulties} currentDiff={$request.leaderboardInfo.difficulty} />
+                     <code>{decode($request.requestDescription)}</code>
+                  </div>
                </div>
                <div class="title is-5 mt-3 mb-3">Comments</div>
                {#if $userData && (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT) || Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT))}
@@ -180,7 +224,7 @@
                   {/each}
                </div>
             </div>
-            <div in:fly={{ y: -20, duration: 1000 }} class="column is-4">
+            <div class="column is-4">
                <RequestMapInfo request={$request} />
                {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
                   <div class="window has-shadow mt-3">
@@ -310,12 +354,30 @@
    </div>
 </div>
 
-<style>
+<style lang="scss">
    @media screen and (max-width: 769px), print {
       .columns {
          display: flex;
          flex-direction: column-reverse;
       }
+   }
+
+   .bg-content {
+      min-height: 100vh;
+   }
+
+   .window {
+      position: relative;
+      margin-bottom: 1rem;
+   }
+
+   .window.mt-3 {
+      margin-top: 1rem;
+   }
+
+   .blur {
+      filter: blur(3px) saturate(1.2);
+      transition: 0.25s filter linear;
    }
 
    .tooling {
@@ -337,10 +399,39 @@
       display: block;
       width: 100%;
       color: var(--textColor);
-      background-color: var(--dimmed);
-      border-radius: 5px;
+      background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
+      border-radius: 6px;
+      padding: 1rem;
       white-space: pre-line;
       overflow-wrap: anywhere;
+      margin-top: 1rem;
+   }
+
+   .comment-list {
+      .content {
+         color: var(--textColor);
+
+         a {
+            color: var(--textColor);
+            text-decoration: none;
+
+            &:hover {
+               color: var(--scoreSaberYellow);
+            }
+         }
+
+         strong {
+            color: var(--textColor);
+         }
+      }
+
+      code {
+         background-color: var(--gray);
+         border: 1px solid var(--borderColor);
+         padding: 0.75rem;
+         margin-top: 0.5rem;
+      }
    }
 
    span.rank {

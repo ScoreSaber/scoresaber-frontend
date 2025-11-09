@@ -12,15 +12,20 @@
    let highlighted = 0;
    let optionsElement: HTMLDivElement | null = null;
 
+   $: searchTerm = value.toLowerCase();
    $: filteredOptions =
       value === '' && showAll
          ? options
-         : options.filter((x) => {
-              const term = value.toLowerCase();
-              return x.friendlyName?.toLowerCase().includes(term) || x.key?.toLowerCase().includes(term);
+         : options.filter((item) => {
+              const friendlyName = item.friendlyName?.toLowerCase() ?? '';
+              const key = item.key?.toLowerCase() ?? '';
+              return friendlyName.includes(searchTerm) || key.includes(searchTerm);
            });
 
-   $: if (filteredOptions.length > 0 && highlighted >= filteredOptions.length) highlighted = 0;
+   $: if (filteredOptions.length > 0 && highlighted >= filteredOptions.length) {
+      highlighted = 0;
+   }
+
    $: isOpen = filteredOptions.length > 0 && (showAll || value !== '');
 
    function selectOption(option: FilterItem): void {
@@ -99,13 +104,14 @@
    .autocomplete {
       position: relative;
       width: 100%;
+      z-index: 100;
    }
 
    input {
       background-color: transparent;
       border: none;
       color: inherit;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      border-bottom: 1px solid var(--borderColor);
       width: 100%;
       padding: 2px 0;
       font-size: inherit;
@@ -115,7 +121,7 @@
 
    input:focus {
       outline: none;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+      border-bottom: 2px solid var(--scoreSaberYellow);
    }
 
    input::placeholder {
@@ -129,14 +135,15 @@
       right: 0;
       width: 100%;
       padding: 4px;
-      background-color: var(--gray-dark);
-      border-radius: 0 0 5px 5px;
-      z-index: 10;
+      background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      z-index: 200;
       overflow-y: auto;
       overflow-x: hidden;
       max-height: 300px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-      margin-top: 2px;
+      margin-top: 0;
    }
 
    .option {

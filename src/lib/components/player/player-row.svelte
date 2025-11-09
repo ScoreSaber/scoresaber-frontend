@@ -1,6 +1,4 @@
 <script type="ts">
-   import { fly } from 'svelte/transition';
-
    import { userData } from '$lib/stores/global-store';
 
    import PlayerLink from '$lib/components/player/player-link.svelte';
@@ -23,8 +21,6 @@
 </script>
 
 <div
-   in:fly|local={{ x: 100 * pageDirection, duration: 300, delay: 10 * (row - 1) }}
-   out:fly|local={{ x: -100 * pageDirection, duration: 300, delay: 10 * (row - 1) }}
    class="table-item {isExpanded ? 'expanded' : ''}"
    on:click={toggleExpanded}
    on:keydown={(e) => e.key === 'Enter' && toggleExpanded()}
@@ -46,7 +42,6 @@
    <div class="player">
       <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" />
       <span class="playerName"><PlayerLink {player} destination={`/u/${player.id}`} /></span>
-      <!-- <span class="playerName">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span> -->
    </div>
    <div class="pp centered">
       <span class="pp">{player.pp.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span><span class="pp ppLabel"
@@ -104,14 +99,16 @@
    .table-item {
       display: grid;
       grid-template-columns: 100px 3fr 2fr 2fr 2fr 3fr 2fr;
-      border-radius: 5px;
+      border-radius: 6px;
       margin: 2.5px 2px;
       background-color: var(--gray);
+      border: 1px solid var(--borderColor);
       padding: 8px;
-      transition: all 0.25s ease;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
       grid-column: 1;
       &:hover {
          background-color: var(--gray-light);
+         border-color: var(--gray-light);
       }
       .centered {
          text-align: center;
@@ -128,7 +125,7 @@
          padding-right: 5px;
       }
       &.highlighted {
-         outline: 1px solid var(--scoreSaberYellow);
+         border: 2px solid var(--scoreSaberYellow);
       }
       .global-rank {
          text-overflow: ellipsis;
@@ -168,8 +165,10 @@
       box-sizing: border-box;
       overflow: hidden;
       pointer-events: none;
-      background-color: #3c3c3c;
-      border-radius: 0 0 5px 5px;
+      background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
+      border-top: none;
+      border-radius: 0 0 6px 6px;
       grid-column: 1;
       &:not(.is-expanded) {
          background-color: var(--gray);
@@ -180,8 +179,9 @@
       display: inline-block;
       padding: 8px 15px;
       margin-top: 5px;
-      border-radius: 5px;
-      background: #fff1;
+      border-radius: 6px;
+      background: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
    }
 
    .infobox-content {
@@ -216,16 +216,18 @@
    @media (max-width: 512px) {
       div.table-item:hover,
       div.table-item.expanded {
-         background-color: #3c3c3c;
+         background-color: var(--gray-light);
       }
 
       div.table-item {
          cursor: pointer;
-         background-color: #323232;
+         background-color: var(--gray);
       }
 
       div.table-item.expanded {
-         border-radius: 5px 5px 0 0;
+         border-radius: 6px 6px 0 0;
+         border-bottom: none !important;
+         margin-bottom: 0;
       }
       .rank {
          width: max-content;
@@ -237,7 +239,7 @@
       }
       .table-item:hover,
       .table-item.expanded {
-         background-color: #3c3c3c;
+         background-color: var(--gray-light);
       }
 
       .infobox-row {
@@ -279,6 +281,21 @@
          grid-row-start: 2;
          justify-content: flex-start;
          padding-left: 0.6rem;
+      }
+
+      .infobox {
+         border: none !important;
+         margin-top: 0 !important;
+         margin-bottom: 0 !important;
+         border-radius: 0 0 6px 6px;
+      }
+
+      .infobox-row {
+         margin: 0 !important;
+      }
+
+      .infobox-container {
+         margin: 0 !important;
       }
    }
 

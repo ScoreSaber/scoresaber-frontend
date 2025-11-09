@@ -1,10 +1,12 @@
-<script type="ts">
+<script lang="ts">
    import { onMount } from 'svelte';
+   import { fly } from 'svelte/transition';
 
    export let extraClasses = '';
    export let rememberClose = false;
    export let id: string;
    export let style = '';
+   export let mobile = false;
    let hidden = true;
    let formattedId = `announcement-${id}`;
 
@@ -22,112 +24,194 @@
    }
 </script>
 
-<div class="announcement {extraClasses} {hidden ? 'hidden' : ''}" {style}>
-   <div class="container">
-      <div class="announcement-content">
-         <slot />
+{#if !hidden}
+   <div class="announcement {extraClasses} {mobile ? 'mobile' : ''}" {style} transition:fly={{ y: mobile ? 0 : -20, duration: 300 }}>
+      <div class="announcement-container">
+         <div class="announcement-content">
+            <slot />
+         </div>
+         <button type="button" on:click={hideAnnouncement} aria-label="Close announcement">
+            <i class="fa fa-times" />
+         </button>
       </div>
-      <button on:click={() => hideAnnouncement()}>
-         <i class="fa fa-times" />
-      </button>
    </div>
-</div>
+{/if}
 
 <style>
    .announcement {
-      background-color: #2563eb;
-      color: #fff;
       position: relative;
-      transition: all 0.5s ease-out;
-      max-height: 200px;
-      opacity: 1;
-      overflow: visible;
+      z-index: 1000;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(59, 130, 246, 0.95));
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
    }
 
-   .announcement::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 0px;
-      background: transparent;
-      box-shadow: 0 0 10px 2px #ff0000;
-      animation: pulse 5s ease-in-out infinite;
-      opacity: 0.7;
-      pointer-events: none;
-   }
-
-   .announcement-link {
-      color: #fff;
-      text-decoration: underline;
-   }
-
-   @keyframes pulse {
-      0% {
-         opacity: 0;
-         box-shadow: 0 0 3px 3px #ff0000;
-      }
-      50% {
-         opacity: 0.4;
-         box-shadow: 0 0 13px 10px #cc0000;
-      }
-      100% {
-         opacity: 0;
-         box-shadow: 0 0 3px 3px #ff0000;
-      }
+   .announcement-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1.25rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 48px;
    }
 
    .announcement-content {
       flex: 1;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.05em;
+      gap: 0.5rem;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.5;
+      flex-wrap: wrap;
+   }
+
+   .announcement-content :global(i) {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 1.1rem;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      margin-right: 0.375rem;
+   }
+
+   .announcement-content :global(a) {
+      display: inline;
+      white-space: nowrap;
+   }
+
+   .announcement-link {
+      color: #fff;
       font-weight: 600;
+      text-decoration: underline;
+      transition: color 0.2s ease;
+   }
+
+   .announcement-link:hover {
+      color: var(--scoreSaberYellow);
    }
 
    button {
       display: flex;
-      width: 24px;
-      height: 24px;
       align-items: center;
       justify-content: center;
-      background: transparent;
-      color: inherit;
-      font: inherit;
-      border-radius: 12px;
-      transition: all 0.25s ease;
-      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
       border: 0;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+      flex-shrink: 0;
    }
 
    button:hover {
-      background: #fff2;
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
    }
 
-   .announcement.hidden {
-      max-height: 0;
-      opacity: 0;
-      padding: 0;
-      margin: 0;
-      visibility: hidden;
-      transition: all 0.5s ease-out, visibility 0s 0.5s;
+   button:active {
+      transform: scale(0.95);
    }
 
-   .container {
-      display: flex;
-      align-items: center;
-      padding: 10px;
+   button i {
+      font-size: 0.85rem;
    }
 
-   .announcement :global(.icon-container) {
-      background: #fff2;
-      padding: 8px;
-      display: flex;
-      height: 35px;
-      width: 35px;
-      border-radius: 5px;
-      margin-right: 10px;
+   @media (max-width: 768px) {
+      .announcement-container {
+         padding: 0.75rem 1rem;
+         gap: 0.5rem;
+         min-height: 44px;
+      }
+
+      .announcement-content {
+         font-size: 0.875rem;
+         gap: 0.375rem;
+         line-height: 1.4;
+      }
+
+      .announcement-content :global(i) {
+         font-size: 1rem;
+         margin-right: 0.375rem;
+      }
+
+      button {
+         width: 28px;
+         height: 28px;
+         flex-shrink: 0;
+      }
+
+      button i {
+         font-size: 0.8rem;
+      }
+   }
+
+   @media (max-width: 480px) {
+      .announcement-container {
+         padding: 0.65rem 0.875rem;
+      }
+
+      .announcement-content {
+         font-size: 0.8rem;
+      }
+   }
+
+   @media (max-width: 960px) {
+      .announcement:not(.mobile) {
+         display: none;
+      }
+   }
+
+   .announcement.mobile {
+      position: static;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      box-shadow: none;
+   }
+
+   .announcement.mobile .announcement-container {
+      padding: 0.75rem 1rem;
+      min-height: auto;
+   }
+
+   .announcement.mobile .announcement-content {
+      font-size: 0.875rem;
+      color: var(--textColor);
+   }
+
+   .announcement.mobile .announcement-content :global(i) {
+      color: rgba(59, 130, 246, 0.9);
+   }
+
+   .announcement.mobile :global(.announcement-link) {
+      color: var(--scoreSaberYellow);
+   }
+
+   .announcement.mobile :global(.announcement-link:hover) {
+      color: var(--alternate);
+   }
+
+   .announcement.mobile button {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--textColor);
+   }
+
+   .announcement.mobile button:hover {
+      background: rgba(255, 255, 255, 0.15);
+   }
+
+   @media (min-width: 961px) {
+      .announcement.mobile {
+         display: none;
+      }
    }
 </style>

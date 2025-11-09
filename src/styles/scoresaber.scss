@@ -3,20 +3,20 @@
 @import url('https://cdn.quilljs.com/1.3.7/quill.snow.css');
 
 :root {
-   --background-color: #202020;
+   --background-color: #0d1117;
 
    --background: var(--background-color);
-   --foreground: #252525;
-   --foregroundItem: #2d2d2d;
-   --textColor: #eee;
-   --borderColor: #1a1a1a;
+   --foreground: #161b22;
+   --foregroundItem: #21262d;
+   --textColor: #c9d1d9;
+   --borderColor: #30363d;
    --scoreSaberYellow: #ffde1a;
 
-   --gray: #323232;
-   --gray-dark: #2b2b2b;
-   --gray-light: #3c3c3c;
+   --gray: #21262d;
+   --gray-dark: #161b22;
+   --gray-light: #30363d;
 
-   --muted: #848484;
+   --muted: #8b949e;
 
    --ppColour: #8992e8;
    --ppColourDark: #6b76da;
@@ -104,11 +104,10 @@ html {
 }
 
 .cover::before {
-   content: 'bbb';
-   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpolygon points='0,100 100,0 100,100' style='fill:%23202020%3B' /%3E%3C/svg%3E");
+   content: '';
+   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpolygon points='0,100 100,0 100,100' style='fill:%230d1117%3B' /%3E%3C/svg%3E");
    background-repeat: no-repeat;
    background-size: 100% 100%;
-   content: '';
    display: block;
    height: 10em;
    position: absolute;
@@ -205,19 +204,25 @@ div.is-center {
 .window {
    display: block;
    margin-bottom: 10px;
-   padding: 1.25rem 1.25rem 1.25rem 1.25rem;
+   padding: 1.25rem 1.5rem;
    background-color: var(--foreground) !important;
    color: var(--textColor);
-   border-radius: 3px 3px 0px 3px !important;
+   border: 1px solid var(--borderColor);
+   border-radius: 0.9rem;
 }
 
 .window-header {
-   padding: 0.75rem 1.25rem;
-   border-radius: 3px 3px 0px 0px !important;
+   padding: 1.25rem 1.5rem;
+   border-radius: 0.9rem 0.9rem 0 0;
    color: var(--textColor);
-   background-color: rgb(51, 51, 51);
-   font-size: large;
+   background-color: var(--foreground);
+   font-size: 1.25rem;
    font-weight: 600;
+   margin-bottom: 0;
+}
+
+.window-header + .window {
+   border-radius: 0 0 0.9rem 0.9rem;
 }
 
 .fas.header {
@@ -225,12 +230,10 @@ div.is-center {
 }
 
 .window.noheading {
-   border-radius: 3px 3px 3px 3px !important;
+   border-radius: 0.9rem;
 }
 
-.window.has-shadow {
-   box-shadow: 0 0px 6px rgba(0, 0, 0, 0.23), 0 0px 0px rgba(0, 0, 0, 0.18);
-}
+/* .window.has-shadow - Shadows removed for modern design - using borders instead */
 
 .button {
    outline: none !important;
@@ -297,9 +300,9 @@ div.is-center {
 .textarea,
 .select select {
    background-color: var(--gray);
-   border-color: var(--gray-dark);
-   border-radius: 4px;
-   color: #fff;
+   border: 1px solid var(--borderColor);
+   border-radius: 6px;
+   color: var(--textColor);
    box-shadow: none;
    max-width: 100%;
    width: 100%;
@@ -318,7 +321,8 @@ div.is-center {
 .is-active.textarea,
 .select select.is-active {
    border-color: var(--scoreSaberYellow);
-   box-shadow: 0 0 0 0.125em rgba(72, 95, 199, 0.25);
+   outline: 2px solid var(--scoreSaberYellow);
+   outline-offset: 0;
 }
 
 .text-muted {
@@ -379,7 +383,9 @@ input {
 }
 
 hr {
-   background-color: var(--gray);
+   background-color: var(--borderColor);
+   border: none;
+   height: 1px;
 }
 
 .select:not(.is-multiple):not(.is-loading)::after {
@@ -394,28 +400,36 @@ hr {
 
 .tabs a.selected {
    border-bottom-width: 2px;
-   font-weight: 700;
+   font-weight: 600;
    border-bottom-color: var(--scoreSaberYellow);
    color: var(--scoreSaberYellow);
 }
 
 .tabs li > .selected {
-   background-color: var(--gray-dark);
-   border-top-left-radius: 5px;
-   border-top-right-radius: 5px;
+   background-color: var(--foregroundItem);
+   border-top-left-radius: 6px;
+   border-top-right-radius: 6px;
 }
 
 .tabs a {
-   color: white;
+   color: var(--textColor);
    font-size: 14px;
+   transition: all 0.2s ease;
 }
+
 .tabs ul {
-   border-bottom-color: var(--dimmed);
+   border-bottom-color: var(--borderColor);
 }
 
 .tabs a {
    border-bottom-color: var(--muted);
    color: var(--muted);
+}
+
+.tabs a:hover {
+   color: var(--textColor);
+   background-color: var(--foregroundItem);
+   border-radius: 6px 6px 0 0;
 }
 
 .loadingBlur {
@@ -447,8 +461,9 @@ ins {
 .live-score {
    padding: 10px;
    margin-bottom: 10px;
-   background-color: #33333370;
-   border-radius: 5px;
+   background-color: var(--foregroundItem);
+   border: 1px solid var(--borderColor);
+   border-radius: 6px;
 }
 
 .live-score-player {

@@ -6,15 +6,13 @@
    export let leaderboardScores: Score[];
    export let leaderboard: LeaderboardInfo;
    export let showScoreModal: (score: Score, leaderboard: LeaderboardInfo) => void;
-   export let pageDirection = 1;
    export let playerHighlight: string = undefined;
-   let transitioning: boolean[] = [];
 
    $: hasModifiers = (leaderboardScores ?? []).filter((score) => score.modifiers.length > 0).length > 0 ? 1 : 0;
    $: columns = (leaderboard.ranked ? 4 : leaderboard.maxScore ? 3 : 2) + hasModifiers;
 </script>
 
-<div class="gridTable" style="--columns: 1fr 5fr repeat({columns}, 2fr)" class:transitioning={transitioning.some((t) => t)}>
+<div class="gridTable" style="--columns: 1fr 5fr repeat({columns}, 2fr)">
    <div class="header">
       <div />
       <div />
@@ -38,8 +36,6 @@
          otherScores={leaderboardScores ?? []}
          {showScoreModal}
          row={i + 2}
-         {pageDirection}
-         bind:transitioning={transitioning[i]}
       />
    {/each}
 </div>
@@ -50,9 +46,6 @@
       grid-template-columns: 1fr;
       min-width: 500px;
       margin-bottom: 10px;
-      &.transitioning {
-         overflow: hidden;
-      }
       .header {
          font-weight: bold;
          grid-row: 1;

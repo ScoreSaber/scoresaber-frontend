@@ -1,7 +1,6 @@
 <script lang="ts">
    import { onDestroy, onMount } from 'svelte';
    import queryString from 'query-string';
-   import { fly } from 'svelte/transition';
    import Slider from '@bulatdashiev/svelte-slider';
 
    import { browser } from '$app/env';
@@ -20,6 +19,7 @@
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
    import { useAccio } from '$lib/utils/accio';
+   import { useDelayedBlur } from '$lib/utils/delayed-blur';
    import axios from '$lib/utils/fetcher';
 
    import {
@@ -65,6 +65,7 @@
    const {
       data: leaderboards,
       error: leaderboardsError,
+      loading: isLoading,
       refresh: refreshLeaderboards
    } = useAccio<LeaderboardInfoCollection>(
       queryString.stringifyUrl({
@@ -74,8 +75,10 @@
       { fetcher: axios }
    );
 
+   const showBlur = useDelayedBlur(isLoading, { delayMs: 200 });
+
    function changePage(newPage: number) {
-      $requestCancel.cancel('Filter Changed');
+      $requestCancel.cancel('Page Changed');
       updateCancelToken();
       pageQuery.updateSingle('page', newPage);
    }
@@ -153,7 +156,8 @@
             newUrl: queryString.stringifyUrl({
                url: '/api/leaderboards',
                query: queryString.parse(p.url.searchParams.toString())
-            })
+            }),
+            softRefresh: true
          });
       }
    });
@@ -167,130 +171,164 @@
    <title>Leaderboards | ScoreSaber!</title>
 </head>
 
-<div class="section">
-   <div class="columns">
-      <div class="column is-8">
-         <div class="window has-shadow noheading">
-            {#if !$leaderboards && !$leaderboardsError}
-               <Loader />
-            {/if}
+<div class="bg-content">
+   <div class="section">
+      <div class="columns">
+         <div class="column is-8">
             {#if $leaderboardsError}
                <Error error={$leaderboardsError} />
             {/if}
+
             {#if $leaderboards}
-               <div in:fly={{ y: -20, duration: 1000 }} class="ranking">
-                  <table>
-                     <thead>
-                        <tr class="headers">
-                           <th class="map" />
-                           <th class="plays centered desktop">Plays</th>
-                           <th class="plays-daily centered desktop">Last 24h</th>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        {#each $leaderboards.leaderboards as leaderboard}
-                           <tr class="table-item">
-                              <td class="map"
-                                 ><SmallSongInfo {leaderboard} margin={false} /><span class="text-muted mobile plays">
-                                    <b>{leaderboard.plays.toLocaleString('en-US')}</b> plays ({leaderboard.dailyPlays.toLocaleString('en-US')} in the last
-                                    24h)</span
-                                 ></td
-                              >
-                              <td class="plays centered desktop">
-                                 {leaderboard.plays.toLocaleString('en-US')}
-                              </td>
-                              <td class="plays-daily centered desktop">
-                                 {leaderboard.dailyPlays.toLocaleString('en-US')}
-                              </td>
-                           </tr>
-                        {/each}
-                     </tbody>
-                  </table>
+               <div class="window has-shadow noheading" aria-busy={$isLoading || $showBlur}>
+                  {#if $showBlur}
+                     <Loader displayOver={true} />
+                  {/if}
+
+                  <div class="content" class:blur={$showBlur}>
+                     <div class="ranking">
+                        <table>
+                           <thead>
+                              <tr class="headers">
+                                 <th class="map" />
+                                 <th class="plays centered desktop">Plays</th>
+                                 <th class="plays-daily centered desktop">Last 24h</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {#each $leaderboards.leaderboards as leaderboard}
+                                 <tr class="table-item">
+                                    <td class="map"
+                                       ><SmallSongInfo {leaderboard} margin={false} /><span class="text-muted mobile plays">
+                                          <b>{leaderboard.plays.toLocaleString('en-US')}</b> plays ({leaderboard.dailyPlays.toLocaleString('en-US')} in
+                                          the last 24h)</span
+                                       ></td
+                                    >
+                                    <td class="plays centered desktop">
+                                       {leaderboard.plays.toLocaleString('en-US')}
+                                    </td>
+                                    <td class="plays-daily centered desktop">
+                                       {leaderboard.dailyPlays.toLocaleString('en-US')}
+                                    </td>
+                                 </tr>
+                              {/each}
+                           </tbody>
+                        </table>
+                     </div>
+                     <br />
+                     <div class="desktop">
+                        <ClassicPagination totalItems={$leaderboards.metadata.total} pageSize={14} currentPage={$pageQuery.page} {changePage} />
+                     </div>
+                     <div class="mobile">
+                        <ArrowPagination
+                           pageClicked={changePage}
+                           page={$pageQuery.page}
+                           pageSize={$leaderboards.metadata.itemsPerPage}
+                           maxPages={$leaderboards.metadata.total}
+                        />
+                     </div>
+                  </div>
                </div>
-               <br />
-               <div class="desktop">
-                  <ClassicPagination totalItems={$leaderboards.metadata.total} pageSize={14} currentPage={$pageQuery.page} {changePage} />
-               </div>
-               <div class="mobile">
-                  <ArrowPagination
-                     pageClicked={changePage}
-                     page={$pageQuery.page}
-                     pageSize={$leaderboards.metadata.itemsPerPage}
-                     maxPages={$leaderboards.metadata.total}
-                  />
+            {:else if $isLoading}
+               <div class="window has-shadow noheading">
+                  <div class="loader-placeholder">
+                     <Loader />
+                  </div>
                </div>
             {/if}
          </div>
-      </div>
-      <div class="column is-4">
-         <div class="window has-shadow noheading">
-            <div class="mb-2">Search Terms</div>
-            <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
-         </div>
-         <div class="window has-shadow noheading">
-            <label class="checkbox">
-               <input type="checkbox" checked={$pageQuery.verified == 1} on:click|preventDefault={toggleVerified} />
-               Only show verified leaderboards
-            </label>
-            <label class="checkbox">
-               <input type="checkbox" checked={$pageQuery.ranked == 1} on:click|preventDefault={toggleRanked} />
-               Only show ranked leaderboards
-            </label>
-            <label class="checkbox">
-               <input type="checkbox" checked={$pageQuery.qualified == 1} on:click|preventDefault={toggleQualified} />
-               Only show qualified leaderboards
-            </label>
-         </div>
-         <div class="window has-shadow noheading">
-            <div class="mb-2">Sort By</div>
-            <div class="select">
-               <select value={getCategoryFromNumber($pageQuery.category)} on:change={changeCategory}>
-                  <option value={Category.Trending}>Trending</option>
-                  <option value={Category.DateRanked}>Date Ranked</option>
-                  <option value={Category.DateQualified}>Date Qualified</option>
-                  <option value={Category.ScoresSet}>Scores Set</option>
-                  <option value={Category.StarDifficulty}>Star Difficulty</option>
-                  <option value={Category.Author}>Mapper</option>
-               </select>
+         <div class="column is-4">
+            <div class="window has-shadow noheading">
+               <div class="mb-2">Search Terms</div>
+               <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
             </div>
-            <div class="control mt-2">
-               <label class="radio">
-                  <input
-                     type="radio"
-                     name="sortOrder"
-                     on:change={changeSortDirection}
-                     checked={getSortDirectionFromNumber($pageQuery.sort) === SortDirection.Descending}
-                     value={SortDirection.Descending}
-                  />
-                  Descending
+            <div class="window has-shadow noheading">
+               <label class="checkbox">
+                  <input type="checkbox" checked={$pageQuery.verified == 1} on:click|preventDefault={toggleVerified} />
+                  Only show verified leaderboards
                </label>
-               <label class="radio">
-                  <input
-                     type="radio"
-                     name="sortOrder"
-                     on:change={changeSortDirection}
-                     checked={getSortDirectionFromNumber($pageQuery.sort) === SortDirection.Ascending}
-                     value={SortDirection.Ascending}
-                  />
-                  Ascending
+               <label class="checkbox">
+                  <input type="checkbox" checked={$pageQuery.ranked == 1} on:click|preventDefault={toggleRanked} />
+                  Only show ranked leaderboards
+               </label>
+               <label class="checkbox">
+                  <input type="checkbox" checked={$pageQuery.qualified == 1} on:click|preventDefault={toggleQualified} />
+                  Only show qualified leaderboards
                </label>
             </div>
+            <div class="window has-shadow noheading">
+               <div class="mb-2">Sort By</div>
+               <div class="select">
+                  <select value={getCategoryFromNumber($pageQuery.category)} on:change={changeCategory}>
+                     <option value={Category.Trending}>Trending</option>
+                     <option value={Category.DateRanked}>Date Ranked</option>
+                     <option value={Category.DateQualified}>Date Qualified</option>
+                     <option value={Category.ScoresSet}>Scores Set</option>
+                     <option value={Category.StarDifficulty}>Star Difficulty</option>
+                     <option value={Category.Author}>Mapper</option>
+                  </select>
+               </div>
+               <div class="control mt-2">
+                  <label class="radio">
+                     <input
+                        type="radio"
+                        name="sortOrder"
+                        on:change={changeSortDirection}
+                        checked={getSortDirectionFromNumber($pageQuery.sort) === SortDirection.Descending}
+                        value={SortDirection.Descending}
+                     />
+                     Descending
+                  </label>
+                  <label class="radio">
+                     <input
+                        type="radio"
+                        name="sortOrder"
+                        on:change={changeSortDirection}
+                        checked={getSortDirectionFromNumber($pageQuery.sort) === SortDirection.Ascending}
+                        value={SortDirection.Ascending}
+                     />
+                     Ascending
+                  </label>
+               </div>
+            </div>
+            <div class="window has-shadow noheading">
+               <div class="mb-2 mt-2">Difficulty</div>
+               <b>{rangeStars[0]}</b> to <b>{rangeStars[1]}</b> stars
+               <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />
+            </div>
+            <RankedVideoBlock
+               videoId="kWqdTFP6bs8"
+               title="November Ranked Batch Overview"
+               dismissMessage="If you dismiss this video, it won't be shown again on this page until the next ranked batch. Are you sure?"
+            />
          </div>
-         <div class="window has-shadow noheading">
-            <div class="mb-2 mt-2">Difficulty</div>
-            <b>{rangeStars[0]}</b> to <b>{rangeStars[1]}</b> stars
-            <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />
-         </div>
-         <RankedVideoBlock
-            videoId="kWqdTFP6bs8"
-            title="November Ranked Batch Overview"
-            dismissMessage="If you dismiss this video, it won't be shown again on this page until the next ranked batch. Are you sure?"
-         />
       </div>
    </div>
 </div>
 
-<style>
+<style lang="scss">
+   .bg-content {
+      min-height: 100vh;
+   }
+
+   .window {
+      position: relative;
+   }
+
+   .content {
+      transition: filter 0.25s ease;
+
+      &.blur {
+         filter: blur(3px) saturate(1.2);
+         pointer-events: none;
+      }
+   }
+
+   .loader-placeholder {
+      display: flex;
+      justify-content: center;
+      padding: 4rem 0;
+   }
    table {
       border-collapse: separate;
       border-spacing: 0 5px;
@@ -312,19 +350,21 @@
 
    tr.table-item td {
       background-color: var(--gray);
+      border: 1px solid var(--borderColor);
    }
    tr.table-item:hover td {
       background-color: var(--gray-light);
+      border-color: var(--gray-light);
    }
    td:first-child {
       border-left-style: solid;
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
    }
    td:last-child {
       border-right-style: solid;
-      border-bottom-right-radius: 5px;
-      border-top-right-radius: 5px;
+      border-bottom-right-radius: 6px;
+      border-top-right-radius: 6px;
    }
 
    div.ranking {
@@ -345,7 +385,7 @@
       }
 
       .map {
-         border-radius: 5px;
+         border-radius: 6px;
       }
    }
 
@@ -373,5 +413,33 @@
       display: block;
       margin-left: 2px;
       margin-top: 0.4rem;
+   }
+
+   .window .checkbox {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 0;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      color: var(--textColor);
+
+      &:hover {
+         color: var(--scoreSaberYellow);
+      }
+
+      input[type='checkbox'] {
+         width: 1.125rem;
+         height: 1.125rem;
+         margin-right: 0.75rem;
+         margin-top: 0;
+         margin-bottom: 0;
+         cursor: pointer;
+         accent-color: var(--scoreSaberYellow);
+         flex-shrink: 0;
+      }
+
+      &:not(:last-child) {
+         margin-bottom: 0;
+      }
    }
 </style>

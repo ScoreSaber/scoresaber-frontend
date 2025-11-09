@@ -190,7 +190,7 @@
    }
    .table-item > div:nth-child(2) {
       grid-column: 1;
-      border-radius: 8px 0 0 8px;
+      border-radius: 6px 0 0 6px;
       display: flex;
       align-items: center;
       height: 100%;
@@ -202,7 +202,7 @@
    }
    .table-item > div:nth-child(4) {
       grid-column: 3;
-      border-radius: 0 8px 8px 0;
+      border-radius: 0 6px 6px 0;
    }
    .table-item {
       display: grid;
@@ -212,6 +212,8 @@
       grid-column: 1;
       margin: 3px 0px;
       padding: 7px 0;
+      border: 1px solid var(--borderColor);
+      border-radius: 6px;
       .leaderboard {
          grid-row: 2;
          grid-column: 1 / span 4;
@@ -305,7 +307,7 @@
       background-repeat: no-repeat !important;
       background-size: cover !important;
       z-index: 0;
-      border-radius: 8px;
+      border-radius: 6px;
       background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%,
          rgba(0, 0, 0, 0) var(--bgURL) repeat scroll 0% 0%;
    }

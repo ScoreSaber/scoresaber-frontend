@@ -120,9 +120,10 @@
    }
    a {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
+      gap: 5px;
       span:not(:first-child) {
-         margin-left: 5px;
+         margin-left: 0;
       }
    }
    .player-link {

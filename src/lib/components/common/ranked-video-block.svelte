@@ -86,21 +86,23 @@
 
 <style>
    .video-block {
-      background: var(--gray);
-      border-radius: 5px;
+      background: var(--foreground);
+      border: 1px solid var(--borderColor);
+      border-radius: 6px;
       margin-bottom: 1rem;
       overflow: hidden;
    }
 
    .video-header {
-      padding: 0.5rem;
+      padding: 0.75rem 1.25rem;
       font-weight: 600;
-      background: var(--gray-light);
+      background: var(--foregroundItem);
       color: var(--textColor);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       justify-content: center;
+      border-bottom: 1px solid var(--borderColor);
    }
 
    .video-header :nth-child(2) {
@@ -126,6 +128,7 @@
       padding-bottom: 56.25%;
       height: 0;
       overflow: hidden;
+      background: var(--foreground);
    }
 
    .video-container iframe {
@@ -139,23 +142,30 @@
    .dismiss-button,
    .toggle-button {
       display: flex;
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       align-items: center;
       justify-content: center;
       background: transparent;
       color: var(--textColor);
       border: 0;
-      border-radius: 12px;
-      transition: all 0.25s ease;
+      border-radius: 6px;
+      transition: all 0.2s ease;
       cursor: pointer;
-      opacity: 0.6;
+      opacity: 0.7;
    }
 
    .dismiss-button:hover,
    .toggle-button:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--scoreSaberYellow);
       opacity: 1;
+   }
+
+   .dismiss-button:focus-visible,
+   .toggle-button:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.5);
+      outline-offset: 2px;
    }
 
    .dismiss-button i,

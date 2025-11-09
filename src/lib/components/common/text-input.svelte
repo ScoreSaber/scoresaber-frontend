@@ -85,9 +85,10 @@
       align-items: center;
       justify-content: flex-start;
       padding: 0.5rem;
-      border-radius: 0.25rem;
+      border-radius: 6px;
       background-color: var(--foregroundItem);
-      transition: max-width var(--transitionTime) ease-in-out;
+      border: 1px solid var(--borderColor);
+      transition: max-width var(--transitionTime) ease-in-out, border-color var(--transitionTime) ease;
       width: 100%;
       font-size: 1rem;
       &.expandable {
@@ -127,6 +128,7 @@
       }
       &:focus-within,
       &.active {
+         border-color: var(--scoreSaberYellow);
          .active {
             width: 100%;
          }

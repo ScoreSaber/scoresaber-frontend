@@ -8,8 +8,9 @@
 
 <script lang="ts">
    import queryString from 'query-string';
-   import { fly } from 'svelte/transition';
-   import { onDestroy } from 'svelte';
+   import { get } from 'svelte/store';
+   import { setContext } from 'svelte';
+   import { writable } from 'svelte/store';
 
    import { page } from '$app/stores';
    import { browser } from '$app/env';
@@ -25,6 +26,7 @@
    import DifficultySelection from '$lib/components/map/difficulty-selection.svelte';
    import LeaderboardMapInfo from '$lib/components/map/leaderboard-map-info.svelte';
    import Filter from '$lib/components/common/filter.svelte';
+   import { FILTER_CONTEXT_KEY } from '$lib/components/common/filter-context';
    import Error from '$lib/components/common/error.svelte';
    import Loader from '$lib/components/common/loader.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
@@ -32,6 +34,7 @@
    import Modal, { bind } from '$lib/components/common/modal.svelte';
 
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
+   import { useDelayedBlur } from '$lib/utils/delayed-blur';
    import poster from '$lib/utils/poster';
    import Permissions from '$lib/utils/permissions';
    import filters from '$lib/utils/filters';
@@ -41,28 +44,32 @@
    import type { FilterItem } from '$lib/models/Filter';
    import type { Difficulty, LeaderboardInfo, Score, ScoreCollection } from '$lib/models/LeaderboardData';
 
-   export let metadata: LeaderboardInfo = undefined;
-   let leaderboardId = $page.params.leaderboardId;
+   const expandedFilterStore = writable<string | null>(null);
+   setContext(FILTER_CONTEXT_KEY, expandedFilterStore);
 
-   type leaderboardQuery = {
+   export let metadata: LeaderboardInfo = undefined;
+
+   interface LeaderboardQuery {
       page: number;
       search: string;
       countries: string;
-   };
+   }
 
-   $: pageQuery = pageQueryStore<leaderboardQuery>({
+   const pageQuery = pageQueryStore<LeaderboardQuery>({
       page: 1,
       search: null,
       countries: null
    });
 
-   $: loading = true;
-   $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).includes(x.key));
+   const initialPage = get(page);
+   let activeLeaderboardId = initialPage.params.leaderboardId;
+   const initialQuery = initialPage.url.searchParams.toString();
 
-   $: filteredDiffs = [];
-   $: selectedGameMode = '';
-
-   const gameModes: string[] = [];
+   let selectedGameMode = '';
+   let filteredDiffs: Difficulty[] = [];
+   let availableGameModes: string[] = [];
+   let manualPP: number;
+   let countryFilters: FilterItem[] = [];
 
    function getLeaderboardInfoUrl(leaderboardId: string) {
       return `/api/leaderboard/by-id/${leaderboardId}/info`;
@@ -75,44 +82,84 @@
       });
    }
 
+   let currentInfoUrl = getLeaderboardInfoUrl(activeLeaderboardId);
+   let currentScoresUrl = getLeaderboardScoresUrl(activeLeaderboardId, initialQuery);
+
    const {
       data: leaderboard,
       error: leaderboardError,
-      refresh: refreshLeaderboard
-   } = useAccio<LeaderboardInfo>(getLeaderboardInfoUrl($page.params.leaderboardId), {
+      refresh: refreshLeaderboard,
+      loading: leaderboardLoading
+   } = useAccio<LeaderboardInfo>(currentInfoUrl, {
       fetcher: axios,
-      onSuccess: onLeaderboardSuccess
+      onSuccess: handleLeaderboardSuccess
    });
 
    const {
       data: leaderboardScores,
       error: leaderboardScoresError,
-      refresh: refreshLeaderboardScores
-   } = useAccio<ScoreCollection>(getLeaderboardScoresUrl($page.params.leaderboardId, $page.url.searchParams.toString()), { fetcher: axios });
+      refresh: refreshLeaderboardScores,
+      loading: leaderboardScoresLoading
+   } = useAccio<ScoreCollection>(currentScoresUrl, { fetcher: axios });
 
-   function onLeaderboardSuccess(data: LeaderboardInfo) {
-      setBackground(data.coverImage);
-      for (const diff of $leaderboard.difficulties) {
-         if (!gameModes.includes(diff.gameMode)) {
-            gameModes.push(diff.gameMode);
+   const showScoresBlur = useDelayedBlur(leaderboardScoresLoading, { delayMs: 200 });
+
+   $: countryFilters = filters.countryFilter.filter((x) => ($pageQuery.countries?.split(',') ?? []).includes(x.key));
+
+   $: availableGameModes = $leaderboard ? Array.from(new Set($leaderboard.difficulties.map((diff) => diff.gameMode))) : [];
+
+   $: {
+      if ($leaderboard) {
+         const fallbackMode = $leaderboard.difficulty.gameMode ?? availableGameModes[0] ?? '';
+         if (!selectedGameMode || !availableGameModes.includes(selectedGameMode)) {
+            selectedGameMode = fallbackMode;
          }
+      } else {
+         selectedGameMode = '';
       }
-      selectedGameMode = $leaderboard.difficulty.gameMode;
-      gameModeChanged(false);
    }
 
-   function gameModeChanged(refresh: boolean) {
-      filteredDiffs = $leaderboard.difficulties.filter((x) => x.gameMode === selectedGameMode);
+   $: filteredDiffs = $leaderboard ? $leaderboard.difficulties.filter((diff) => diff.gameMode === selectedGameMode) : [];
 
-      if (refresh) {
-         const sameDiff: Difficulty[] = filteredDiffs.filter((x: Difficulty) => x.difficulty == $leaderboard.difficulty.difficulty);
-         let newLeaderboardId: string;
-         if (sameDiff.length > 0) {
-            newLeaderboardId = sameDiff[0].leaderboardId.toString();
-         } else {
-            newLeaderboardId = filteredDiffs[0].leaderboardId.toString();
-         }
-         goto(`/leaderboard/${newLeaderboardId}`, { keepfocus: true, noscroll: true });
+   $: if (browser) {
+      const nextLeaderboardId = $page.params.leaderboardId;
+      if (nextLeaderboardId && nextLeaderboardId !== activeLeaderboardId) {
+         activeLeaderboardId = nextLeaderboardId;
+         const nextInfoUrl = getLeaderboardInfoUrl(nextLeaderboardId);
+         currentInfoUrl = nextInfoUrl;
+         refreshLeaderboard({
+            newUrl: nextInfoUrl,
+            softRefresh: Boolean($leaderboard),
+            bypassInitialCheck: true
+         });
+      }
+   }
+
+   $: if (browser) {
+      const nextScoresUrl = getLeaderboardScoresUrl($page.params.leaderboardId, $page.url.searchParams.toString());
+      if (nextScoresUrl !== currentScoresUrl) {
+         currentScoresUrl = nextScoresUrl;
+         refreshLeaderboardScores({
+            newUrl: nextScoresUrl,
+            softRefresh: Boolean($leaderboardScores),
+            bypassInitialCheck: true
+         });
+      }
+   }
+
+   function handleLeaderboardSuccess(data: LeaderboardInfo) {
+      setBackground(data.coverImage);
+      selectedGameMode = data.difficulty.gameMode;
+   }
+
+   function gameModeChanged(shouldNavigate: boolean) {
+      if (!$leaderboard) return;
+
+      const diffsForMode = $leaderboard.difficulties.filter((diff) => diff.gameMode === selectedGameMode);
+      if (shouldNavigate && diffsForMode.length > 0) {
+         const currentDifficulty = $leaderboard.difficulty.difficulty;
+         const targetDiff = diffsForMode.find((diff) => diff.difficulty === currentDifficulty) ?? diffsForMode[0];
+         goto(`/leaderboard/${targetDiff.leaderboardId}`, { keepfocus: true, noscroll: true, replaceState: true });
       }
    }
 
@@ -124,12 +171,9 @@
       }
    }
 
-   let pageDirection = 1;
-
    function changePage(newPage: number) {
       $requestCancel.cancel('Page Changed');
       updateCancelToken();
-      pageDirection = newPage > $pageQuery.page ? 1 : -1;
       pageQuery.updateSingle('page', newPage);
    }
 
@@ -150,21 +194,6 @@
          pageQuery.updateSingle('search', null);
       }
    }
-
-   const pageUnsubscribe = page.subscribe(async (p) => {
-      if (browser) {
-         loading = true;
-         await refreshLeaderboardScores({
-            newUrl: getLeaderboardScoresUrl(p.params.leaderboardId, p.url.searchParams.toString()),
-            softRefresh: true
-         });
-         if (leaderboardId != p.params.leaderboardId) {
-            await refreshLeaderboard({ newUrl: getLeaderboardInfoUrl(p.params.leaderboardId) });
-            leaderboardId = p.params.leaderboardId;
-         }
-         loading = false;
-      }
-   });
 
    function showScoreModal(score: Score, leaderboard: LeaderboardInfo) {
       modal.set(bind(ScoreModal, { score, leaderboard }));
@@ -198,24 +227,18 @@
       refreshLeaderboard({ forceRevalidate: true, softRefresh: true });
    }
 
-   let manualPP: number;
    async function handleManualPP(event) {
       event.preventDefault();
       const ranked = $leaderboard.ranked;
       leaderboard.set(undefined);
       leaderboardScores.set(undefined);
-      await poster(
-         '/api/ranking/request/action/admin/pp-manual',
-         { leaderboardId: $page.params.leaderboardId, pp: manualPP },
-         { withCredentials: true }
-      );
+      await poster('/api/ranking/request/action/admin/pp-manual', { leaderboardId: activeLeaderboardId, pp: manualPP }, { withCredentials: true });
       if (ranked) {
          await new Promise((f) => setTimeout(f, 2000));
       }
       refreshLeaderboard({ forceRevalidate: true });
       refreshLeaderboardScores({ forceRevalidate: true });
    }
-   onDestroy(pageUnsubscribe);
 </script>
 
 <head>
@@ -236,29 +259,32 @@ Stars: ${metadata.stars}★`}
    <div class="section">
       <div class="columns">
          {#if !$leaderboard && !$leaderboardError}
-            <div class="column is-12"><div class="window has-shadow"><Loader /></div></div>
+            <div class="column is-12">
+               <div class="window has-shadow leaderboard-window">
+                  <Loader />
+               </div>
+            </div>
          {/if}
          {#if $leaderboardError}
             <Error error={$leaderboardError} />
          {/if}
          {#if $leaderboard}
             <div class="column is-8">
-               <div class="window has-shadow">
-                  {#if loading}
-                     <Loader displayOver={true} />
-                  {/if}
+               <div class="window has-shadow leaderboard-window" aria-busy={$leaderboardLoading || $showScoresBlur}>
                   <DifficultySelection diffs={filteredDiffs} currentDiff={$leaderboard.difficulty} />
                   {#if $leaderboardScoresError}
                      <Error error={$leaderboardScoresError} />
                   {/if}
-                  {#if $leaderboardScores && !$leaderboardScoresError}
-                     <div in:fly={{ y: -20, duration: 1000 }} class="leaderboard" class:blur={loading}>
+                  {#if $leaderboardScores}
+                     {#if $showScoresBlur}
+                        <Loader displayOver={true} />
+                     {/if}
+                     <div class="leaderboard" class:blur={$showScoresBlur}>
                         {#if $leaderboardScores.scores?.length > 0}
                            <LeaderboardGrid
                               playerHighlight={$userData?.playerId}
                               leaderboardScores={$leaderboardScores.scores}
                               leaderboard={$leaderboard}
-                              {pageDirection}
                               {showScoreModal}
                            />
                         {/if}
@@ -280,40 +306,53 @@ Stars: ${metadata.stars}★`}
                            withFirstLast={true}
                         />
                      </div>
+                  {:else if $leaderboardScoresLoading}
+                     <div class="loader-placeholder">
+                        <Loader />
+                     </div>
+                  {:else}
+                     <div class="empty-state">No scores available.</div>
                   {/if}
                </div>
             </div>
             <div class="column is-4">
                <LeaderboardMapInfo leaderboardInfo={$leaderboard} />
                <div class="window has-shadow mt-3">
-                  <div class="negative-margin-filters">
-                     <Filter
-                        items={filters.countryFilter}
-                        bind:selectedItems={countryFilters}
-                        initialItems={$pageQuery.countries}
-                        filterName={'Country'}
-                        withCountryImages={true}
-                        filterUpdated={countryFilterUpdated}
-                     />
-                  </div>
-                  {#if gameModes.length > 1}
-                     <div class="title is-6 mb-2 mt-3">Game Mode</div>
-                     <div class="select">
-                        <select bind:value={selectedGameMode} on:change={() => gameModeChanged(true)} class="select">
-                           {#each gameModes as gameMode}
-                              <option value={gameMode}>{gameMode}</option>
-                           {/each}
-                        </select>
+                  <div class="sidebar-section">
+                     <div class="title is-6">Filters</div>
+                     <div class="filters-content">
+                        <div class="filter-group">
+                           <Filter
+                              items={filters.countryFilter}
+                              bind:selectedItems={countryFilters}
+                              initialItems={$pageQuery.countries}
+                              filterName="Country"
+                              withCountryImages={true}
+                              filterUpdated={countryFilterUpdated}
+                           />
+                        </div>
+                        {#if availableGameModes.length > 1}
+                           <div class="filter-group">
+                              <label class="filter-label">Game Mode</label>
+                              <div class="select">
+                                 <select bind:value={selectedGameMode} on:change={() => gameModeChanged(true)} class="select">
+                                    {#each availableGameModes as gameMode}
+                                       <option value={gameMode}>{gameMode}</option>
+                                    {/each}
+                                 </select>
+                              </div>
+                           </div>
+                        {/if}
+                        <div class="filter-group">
+                           <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} placeholder="Search players..." />
+                        </div>
                      </div>
-                  {/if}
-
-                  <div class="title is-6 mb-2 mt-3">Search Terms</div>
-                  <TextInput icon="fa-search" onInput={searchUpdated} value={$pageQuery.search} />
+                  </div>
                </div>
                {#if $userData && (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT) || Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN))}
                   <div class="window has-shadow mt-3">
-                     <div class="title is-6 mb-3">Ranking Tool</div>
-                     <a href="/ranking/request/create?leaderboardId={leaderboardId}" class="button is-small is-dark">
+                     <div class="title is-6 mb-3">Ranking Tools</div>
+                     <a href="/ranking/request/create?leaderboardId={activeLeaderboardId}" class="button is-small is-dark">
                         <span class="icon is-small">
                            <i class="fas fa-stream" />
                         </span>
@@ -393,11 +432,168 @@ Stars: ${metadata.stars}★`}
       margin-top: 0.5rem;
    }
 
-   .window {
-      position: relative;
+   .leaderboard-window {
+      min-height: 28rem;
    }
 
-   .negative-margin-filters {
-      margin-left: -0.4rem;
+   .loader-placeholder {
+      display: flex;
+      justify-content: center;
+      padding: 4rem 0;
+   }
+
+   .empty-state {
+      padding: 2rem 0;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 500;
+   }
+
+   .window {
+      position: relative;
+      margin-bottom: 1rem;
+   }
+
+   .bg-content {
+      min-height: 100vh;
+   }
+
+   .window.mt-3 {
+      margin-top: 1rem;
+   }
+
+   .title.is-6 {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--textColor);
+   }
+
+   .sidebar-section {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--borderColor);
+   }
+
+   .sidebar-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+   }
+
+   .filters-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+   }
+
+   .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+   }
+
+   .filter-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--textColor);
+      opacity: 0.9;
+   }
+
+   .select {
+      width: 100%;
+   }
+
+   .select select {
+      width: 100%;
+      background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
+      border-radius: 6px;
+      color: var(--textColor);
+      padding: 0.5rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: border-color var(--transitionTime) ease;
+   }
+
+   .select select:hover {
+      border-color: var(--gray-light);
+   }
+
+   .select select:focus {
+      outline: none;
+      border-color: var(--scoreSaberYellow);
+   }
+
+   .voting-tool {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--borderColor);
+   }
+
+   .field.has-addons {
+      margin-top: 0.75rem;
+   }
+
+   .field.has-addons .control:first-child {
+      flex: 1;
+   }
+
+   .field.has-addons .button {
+      border-left: none;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+   }
+
+   .field.has-addons .input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+   }
+
+   .button.is-small {
+      font-size: 0.875rem;
+      padding: 0.375rem 0.75rem;
+      border: 1px solid var(--borderColor);
+      transition: all 0.2s ease;
+   }
+
+   .button.is-small:hover {
+      border-color: var(--gray-light);
+   }
+
+   .button.is-dark {
+      background-color: var(--foregroundItem);
+      color: var(--textColor);
+   }
+
+   .button.is-dark:hover {
+      background-color: var(--gray-light);
+      color: var(--scoreSaberYellow);
+   }
+
+   .button.is-info {
+      background-color: var(--alternate);
+      color: white;
+   }
+
+   .button.is-info:hover {
+      background-color: var(--ppColour);
+   }
+
+   .button.is-success {
+      background-color: var(--success);
+      color: white;
+   }
+
+   .button.is-success:hover {
+      opacity: 0.9;
+   }
+
+   .button.is-danger {
+      background-color: var(--danger);
+      color: white;
+   }
+
+   .button.is-danger:hover {
+      opacity: 0.9;
    }
 </style>

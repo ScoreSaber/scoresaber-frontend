@@ -1,5 +1,7 @@
 <script lang="ts">
-   import { onDestroy, onMount } from 'svelte';
+   import type { Writable } from 'svelte/store';
+
+   import { onDestroy, onMount, getContext } from 'svelte';
 
    import { browser } from '$app/env';
 
@@ -8,6 +10,8 @@
 
    import type { FilterItem } from '$lib/models/Filter';
 
+   import { FILTER_CONTEXT_KEY } from './filter-context';
+
    export let filterName: string;
    export let items: FilterItem[];
    export let initialItems: string | undefined = undefined;
@@ -15,49 +19,101 @@
    export let filterUpdated: (items: FilterItem[]) => void;
    export let selectedItems: FilterItem[] = [];
 
-   let expanded = false;
    let input: HTMLInputElement | null = null;
    let newOption = '';
    let container: HTMLDivElement | null = null;
+   let filterId = '';
 
-   $: availableItems = items.filter((item) => !selectedItems.some((selected) => selected.key === item.key));
+   const expandedFilterStore = getContext<Writable<string | null>>(FILTER_CONTEXT_KEY);
 
-   $: if (expanded && input && browser) input.focus();
+   $: isExpanded = filterId !== '' && $expandedFilterStore === filterId;
+
+   $: selectedKeys = new Set(selectedItems.map((item) => item.key));
+   $: availableItems = items.filter((item) => !selectedKeys.has(item.key));
+
+   $: if (isExpanded && input && browser) {
+      input.focus();
+   }
+
+   function expandFilter(e: MouseEvent): void {
+      e.stopPropagation();
+      if (filterId) {
+         expandedFilterStore.set(filterId);
+      }
+   }
+
+   function collapseFilter(): void {
+      if ($expandedFilterStore === filterId) {
+         expandedFilterStore.set(null);
+      }
+   }
 
    function addItem(item: FilterItem, notify: boolean): void {
+      if (selectedItems.some((selected) => selected.key === item.key)) return;
+
       selectedItems = [...selectedItems, item];
-      expanded = false;
+      collapseFilter();
       newOption = '';
-      if (notify) filterUpdated(selectedItems);
+
+      if (notify) {
+         filterUpdated(selectedItems);
+      }
    }
 
    function removeItem(item: FilterItem, notify = true): void {
-      selectedItems = selectedItems.filter((x) => x.key !== item.key);
-      if (notify) filterUpdated(selectedItems);
+      selectedItems = selectedItems.filter((selected) => selected.key !== item.key);
+
+      if (notify) {
+         filterUpdated(selectedItems);
+      }
    }
 
    function handleClickOutside(e: MouseEvent): void {
-      if (container && expanded && !container.contains(e.target as Node)) expanded = false;
+      if (container && isExpanded && !container.contains(e.target as Node)) {
+         collapseFilter();
+      }
+   }
+
+   function initializeSelectedItems(): void {
+      if (!initialItems) return;
+
+      const itemKeys = initialItems
+         .split(',')
+         .map((key) => key.trim())
+         .filter(Boolean);
+
+      const itemsToAdd: FilterItem[] = [];
+
+      for (const key of itemKeys) {
+         const item = items.find((x) => x.key.toLowerCase() === key.toLowerCase());
+         if (item && !selectedItems.some((s) => s.key === item.key)) {
+            itemsToAdd.push(item);
+         }
+      }
+
+      if (itemsToAdd.length > 0) {
+         selectedItems = [...selectedItems, ...itemsToAdd];
+         filterUpdated(selectedItems);
+      }
    }
 
    onMount(() => {
-      if (!browser) return;
-      document.addEventListener('click', handleClickOutside);
-      if (initialItems) {
-         const itemKeys = initialItems
-            .split(',')
-            .map((k) => k.trim())
-            .filter(Boolean);
-         for (const key of itemKeys) {
-            const item = items.find((x) => x.key.toLowerCase() === key.toLowerCase());
-            if (item && !selectedItems.some((s) => s.key === item.key)) addItem(item, false);
-         }
-         if (itemKeys.length > 0) filterUpdated(selectedItems);
+      if (!browser) {
+         filterId = `${filterName}-${Math.random().toString(36).substr(2, 9)}`;
+         return;
       }
+
+      filterId = `${filterName}-${Math.random().toString(36).substr(2, 9)}`;
+
+      document.addEventListener('click', handleClickOutside);
+      initializeSelectedItems();
    });
 
    onDestroy(() => {
-      if (browser) document.removeEventListener('click', handleClickOutside);
+      if (browser) {
+         document.removeEventListener('click', handleClickOutside);
+         collapseFilter();
+      }
    });
 </script>
 
@@ -66,8 +122,8 @@
       <Chip item={option} remove={removeItem} {withCountryImages} />
    {/each}
    {#if availableItems.length > 0}
-      <div class="filter" class:expanded class:has-selected={selectedItems.length > 0}>
-         {#if expanded}
+      <div class="filter-button" class:expanded={isExpanded} class:has-selected={selectedItems.length > 0}>
+         {#if isExpanded}
             <Autocomplete
                options={availableItems}
                valueSelected={(item) => addItem(item, true)}
@@ -78,8 +134,8 @@
             />
          {:else}
             <button
-               class="add-label"
-               on:click|stopPropagation={() => (expanded = true)}
+               class="add-button"
+               on:click={expandFilter}
                type="button"
                aria-label={selectedItems.length > 0 ? `Add ${filterName}` : `Filter by ${filterName}`}
             >
@@ -94,46 +150,62 @@
    .filter-container {
       display: flex;
       flex-flow: row wrap;
-      gap: 5px;
+      gap: 0.375rem;
       align-items: center;
-      margin-bottom: 5px;
+      position: relative;
    }
 
-   .filter {
+   .filter-button {
+      position: relative;
       background-color: var(--foregroundItem);
-      padding: 5px 12px;
-      border-radius: 7px;
-      font-weight: bold;
+      border: 1px solid var(--borderColor);
+      padding: 0.375rem 0.625rem;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.875rem;
       white-space: nowrap;
-      transition: background-color var(--transitionTime) ease;
+      transition: all var(--transitionTime) ease;
+      overflow: visible;
+      min-width: fit-content;
    }
 
-   .filter.has-selected {
-      max-width: 70px;
+   .filter-button.has-selected {
+      max-width: 4.5rem;
    }
 
-   .filter.expanded {
-      max-width: 200px;
+   .filter-button.expanded {
+      max-width: 16rem;
+      z-index: 100;
+      background-color: var(--foregroundItem);
+      border-color: var(--scoreSaberYellow);
    }
 
-   .filter:hover:not(.expanded) {
-      background-color: #323232;
+   .filter-button:hover:not(.expanded) {
+      background-color: var(--gray-light);
+      border-color: var(--gray-light);
    }
 
-   .add-label {
+   .add-button {
       background: none;
       border: none;
-      color: inherit;
+      color: rgba(255, 255, 255, 0.9);
       font: inherit;
       padding: 0;
       width: 100%;
       text-align: left;
       cursor: pointer;
+      font-weight: inherit;
+      white-space: nowrap;
+      font-size: inherit;
    }
 
-   .add-label:focus-visible {
+   .add-button:hover {
+      color: rgba(255, 255, 255, 1);
+   }
+
+   .add-button:focus-visible {
       outline: 2px solid rgba(255, 255, 255, 0.5);
       outline-offset: -2px;
-      border-radius: 7px;
+      border-radius: 0.375rem;
    }
 </style>

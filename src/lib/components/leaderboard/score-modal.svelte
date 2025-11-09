@@ -118,8 +118,9 @@
 
    .score {
       background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
       padding: 0.2rem 0.3rem;
-      border-radius: 5px;
+      border-radius: 6px;
       flex-grow: 1;
    }
 
@@ -145,7 +146,7 @@
       background-repeat: no-repeat !important;
       background-size: cover !important;
       z-index: 0;
-      border-radius: 10px;
+      border-radius: 6px;
    }
 
    .media {
