@@ -1,5 +1,4 @@
 <script lang="ts">
-   import { slide } from 'svelte/transition';
    import { onDestroy, onMount } from 'svelte';
 
    import { browser } from '$app/env';
@@ -8,127 +7,84 @@
    import Chip from '$lib/components/common/chip.svelte';
 
    import type { FilterItem } from '$lib/models/Filter';
+
    export let filterName: string;
    export let items: FilterItem[];
-   export let initialItems: string = undefined;
+   export let initialItems: string | undefined = undefined;
    export let withCountryImages = false;
    export let filterUpdated: (items: FilterItem[]) => void;
-
    export let selectedItems: FilterItem[] = [];
 
-   $: expanded = false;
-
-   let input: HTMLInputElement;
+   let expanded = false;
+   let input: HTMLInputElement | null = null;
    let newOption = '';
-   let chip: HTMLDivElement;
-   $: input && focusInput();
+   let container: HTMLDivElement | null = null;
 
-   function addItemByKey(item: string, notify = true) {
-      const filterItem = items.find((x) => x.key.toLowerCase() === item.toLowerCase());
-      if (filterItem) {
-         addItem(filterItem, notify);
-      }
-   }
+   $: availableItems = items.filter((item) => !selectedItems.some((selected) => selected.key === item.key));
 
-   function addItemByFriendlyName(item: string, notify = true) {
-      const filterItem = items.find((x) => x.friendlyName.toLowerCase() === item.toLowerCase());
-      if (filterItem) {
-         addItem(filterItem, notify);
-      }
-   }
+   $: if (expanded && input && browser) input.focus();
 
-   function addItem(item: FilterItem, notify: boolean) {
-      items = items.filter((x) => x !== item);
+   function addItem(item: FilterItem, notify: boolean): void {
       selectedItems = [...selectedItems, item];
       expanded = false;
-      if (notify) {
-         filterUpdated(selectedItems);
-      }
+      newOption = '';
+      if (notify) filterUpdated(selectedItems);
    }
 
-   function removeItem(item: FilterItem, notify = true) {
-      selectedItems = selectedItems.filter((x) => x !== item);
-      items = [item, ...items];
-      if (notify) {
-         filterUpdated(selectedItems);
-      }
+   function removeItem(item: FilterItem, notify = true): void {
+      selectedItems = selectedItems.filter((x) => x.key !== item.key);
+      if (notify) filterUpdated(selectedItems);
+   }
+
+   function handleClickOutside(e: MouseEvent): void {
+      if (container && expanded && !container.contains(e.target as Node)) expanded = false;
    }
 
    onMount(() => {
-      if (browser) {
-         document.addEventListener('click', checkChipClick);
-         document.addEventListener('keydown', checkKeyDown);
-         if (initialItems) {
-            for (const item of initialItems.split(',')) {
-               addItemByKey(item, false);
-            }
+      if (!browser) return;
+      document.addEventListener('click', handleClickOutside);
+      if (initialItems) {
+         const itemKeys = initialItems
+            .split(',')
+            .map((k) => k.trim())
+            .filter(Boolean);
+         for (const key of itemKeys) {
+            const item = items.find((x) => x.key.toLowerCase() === key.toLowerCase());
+            if (item && !selectedItems.some((s) => s.key === item.key)) addItem(item, false);
          }
+         if (itemKeys.length > 0) filterUpdated(selectedItems);
       }
    });
 
    onDestroy(() => {
-      if (browser) {
-         document.removeEventListener('click', checkChipClick);
-         document.removeEventListener('keydown', checkKeyDown);
-      }
+      if (browser) document.removeEventListener('click', handleClickOutside);
    });
-
-   function checkKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Enter') {
-         if (newOption !== '') {
-            addItemByFriendlyName(newOption);
-            newOption = '';
-         }
-      } else if (e.key === 'Escape') {
-         expanded = false;
-      }
-   }
-
-   function checkChipClick(e: MouseEvent) {
-      if (chip && !chip.contains(e.target as Node)) {
-         expanded = false;
-      }
-   }
-
-   function focusInput() {
-      if (expanded) input.focus();
-   }
 </script>
 
-<div class="filter-container">
-   {#if selectedItems.length > 0}
-      {#each selectedItems as option}
-         <Chip item={option} remove={removeItem} {withCountryImages} />
-      {/each}
-   {/if}
-   {#if items.length > 0}
-      <div class="filter" bind:this={chip} class:expanded class:hasSelected={selectedItems.length > 0}>
+<div class="filter-container" bind:this={container}>
+   {#each selectedItems as option (option.key)}
+      <Chip item={option} remove={removeItem} {withCountryImages} />
+   {/each}
+   {#if availableItems.length > 0}
+      <div class="filter" class:expanded class:has-selected={selectedItems.length > 0}>
          {#if expanded}
-            <div transition:slide|local={{ duration: 300 }}>
-               <Autocomplete
-                  options={items}
-                  valueSelected={() => addItemByFriendlyName(newOption)}
-                  bind:elementRef={input}
-                  bind:value={newOption}
-                  placeholder={`Add ${filterName}`}
-                  showAll={true}
-               />
-            </div>
+            <Autocomplete
+               options={availableItems}
+               valueSelected={(item) => addItem(item, true)}
+               bind:elementRef={input}
+               bind:value={newOption}
+               placeholder={`Add ${filterName}`}
+               showAll={true}
+            />
          {:else}
-            <div
-               transition:slide|local={{ duration: 300 }}
-               class="addLabel"
-               on:click={() => (expanded = !expanded)}
-               on:keydown={(e) => e.key === 'Enter' && (expanded = !expanded)}
-               tabindex="0"
-               role="button"
+            <button
+               class="add-label"
+               on:click|stopPropagation={() => (expanded = true)}
+               type="button"
+               aria-label={selectedItems.length > 0 ? `Add ${filterName}` : `Filter by ${filterName}`}
             >
-               {#if selectedItems.length > 0}
-                  + Add
-               {:else}
-                  Filter By {filterName}
-               {/if}
-            </div>
+               {selectedItems.length > 0 ? '+ Add' : `Filter By ${filterName}`}
+            </button>
          {/if}
       </div>
    {/if}
@@ -138,26 +94,46 @@
    .filter-container {
       display: flex;
       flex-flow: row wrap;
+      gap: 5px;
+      align-items: center;
+      margin-bottom: 5px;
    }
+
    .filter {
-      margin: 5px;
       background-color: var(--foregroundItem);
-      transition: background-color var(--transitionTime), width var(--transitionTime), max-width var(--transitionTime);
       padding: 5px 12px;
       border-radius: 7px;
-      position: relative;
       font-weight: bold;
-      max-width: 100%;
       white-space: nowrap;
+      transition: background-color var(--transitionTime) ease;
    }
-   .hasSelected {
+
+   .filter.has-selected {
       max-width: 70px;
    }
+
    .filter.expanded {
       max-width: 200px;
    }
-   .filter:hover {
+
+   .filter:hover:not(.expanded) {
       background-color: #323232;
+   }
+
+   .add-label {
+      background: none;
+      border: none;
+      color: inherit;
+      font: inherit;
+      padding: 0;
+      width: 100%;
+      text-align: left;
       cursor: pointer;
+   }
+
+   .add-label:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.5);
+      outline-offset: -2px;
+      border-radius: 7px;
    }
 </style>
