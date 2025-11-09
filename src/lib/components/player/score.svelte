@@ -308,8 +308,12 @@
       background-size: cover !important;
       z-index: 0;
       border-radius: 6px;
-      background: linear-gradient(to left, rgba(36, 36, 36, 0.93), rgb(33, 33, 33)) repeat scroll 0% 0%,
+      background: linear-gradient(to left, rgba(12, 12, 15, 0.92), rgba(22, 27, 34, 0.95)) repeat scroll 0% 0%,
          rgba(0, 0, 0, 0) var(--bgURL) repeat scroll 0% 0%;
+      filter: blur(8px);
+      -webkit-filter: blur(8px);
+      backdrop-filter: blur(8px) saturate(120%);
+      -webkit-backdrop-filter: blur(8px) saturate(120%);
    }
 
    .pagination {

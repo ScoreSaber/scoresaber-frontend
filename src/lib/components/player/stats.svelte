@@ -77,7 +77,7 @@
    .stats-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.375rem;
+      gap: 0.5rem;
       align-items: center;
    }
    .stat-item {
@@ -85,12 +85,12 @@
       align-items: center;
       background-color: var(--foregroundItem);
       color: var(--textColor);
-      padding: 0.25rem 0.5rem;
+      padding: 0.5rem 0.875rem;
       border: 1px solid var(--borderColor);
       border-radius: 4px;
       cursor: default;
       transition: border-color 0.2s ease, background-color 0.2s ease;
-      font-size: 0.8125rem;
+      font-size: 0.9375rem;
       line-height: 1.4;
       white-space: nowrap;
    }
@@ -101,34 +101,34 @@
    }
    .stat-item.ranked .stat-title {
       color: rgba(255, 255, 255, 0.85);
-      font-size: 0.75rem;
+      font-size: 0.875rem;
    }
    .stat-item.ranked .stat-content {
       color: #fff;
       font-weight: 600;
-      font-size: 0.8125rem;
+      font-size: 0.9375rem;
    }
    .stat-title {
       font-weight: 500;
       color: var(--muted);
-      font-size: 0.75rem;
+      font-size: 0.875rem;
    }
    .stat-spacer {
       border-left: 1px solid var(--borderColor);
       width: 0;
-      height: 12px;
-      margin-left: 0.375rem;
-      margin-right: 0.375rem;
+      height: 16px;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
       opacity: 0.5;
    }
    .stat-item.ranked .stat-spacer {
       border-left-color: rgba(255, 255, 255, 0.25);
-      height: 12px;
+      height: 16px;
    }
    .stat-content {
       font-weight: 500;
       color: var(--textColor);
-      font-size: 0.8125rem;
+      font-size: 0.9375rem;
    }
    @media only screen and (max-width: 769px) {
       .stats-container {
