@@ -1,11 +1,13 @@
 function getEnv(name: string, defaultValue = ''): string {
-   const fromImportMeta = (
-      typeof import.meta !== 'undefined' ? (import.meta as unknown as { env?: Record<string, string | undefined> }).env : undefined
-   )?.[name];
-   if (fromImportMeta != null && fromImportMeta !== '') return fromImportMeta;
+   if (typeof process !== 'undefined' && process.env) {
+      const value = process.env[name];
+      if (value != null && value !== '') return value;
+   }
 
-   const fromProcess = typeof process !== 'undefined' && process.versions?.node != null ? process.env?.[name] : undefined;
-   if (fromProcess != null && fromProcess !== '') return fromProcess;
+   if (typeof import.meta !== 'undefined' && import.meta.env) {
+      const value = (import.meta.env as Record<string, string | undefined>)[name];
+      if (value != null && value !== '') return value;
+   }
 
    return defaultValue;
 }
