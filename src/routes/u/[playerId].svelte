@@ -551,12 +551,12 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
    }
 
    .profile-picture .refresh-country {
-      top: 30px;
+      top: 40px;
       right: -15px;
    }
 
    .profile-picture .admin {
-      right: 95px;
+      right: 105px;
    }
 
    .profile-picture .image img {
