@@ -53,6 +53,28 @@
       dispatch('setPage', { page: option.value });
    }
 
+   function handleOptionKeydown(e: KeyboardEvent, option: PaginationOptions) {
+      if (e.key === 'Enter' || e.key === ' ') {
+         e.preventDefault();
+         handleOptionClick(option);
+      }
+   }
+
+   function getAriaLabel(option: PaginationOptions): string {
+      if (option.type === 'symbol') {
+         if (option.symbol === PREVIOUS_PAGE) {
+            return 'Go to previous page';
+         }
+         if (option.symbol === NEXT_PAGE) {
+            return 'Go to next page';
+         }
+         if (option.symbol === ELLIPSIS) {
+            return 'Jump to page';
+         }
+      }
+      return `Go to page ${option.value}`;
+   }
+
    function handleInputSubmit() {
       const page = parseInt(inputValue, 10);
       if (!isNaN(page) && page >= 1 && page <= totalPages) {
@@ -79,10 +101,12 @@
    }
 </script>
 
-<div class="pagination-nav">
+<nav class="pagination-nav" aria-label="Pagination navigation">
    {#if showInput}
       <div class="page-input-container">
+         <label for="page-input" class="sr-only">Page number</label>
          <input
+            id="page-input"
             bind:this={inputElement}
             bind:value={inputValue}
             on:keydown={handleInputKeydown}
@@ -92,23 +116,29 @@
             max={totalPages}
             placeholder="Page"
             class="page-input"
+            aria-label={`Page number, 1 to ${totalPages}`}
          />
-         <button on:click={handleInputSubmit} class="go-button">Go</button>
+         <button on:click={handleInputSubmit} class="go-button" aria-label="Go to page">Go</button>
       </div>
    {:else}
       {#each options as option}
+         {@const disabled = isOptionDisabled(option)}
+         {@const isCurrentPage = option.type === 'number' && option.value == currentPage}
          <span
             class="option"
             class:number={option.type === 'number'}
             class:prev={option.type === 'symbol' && option.symbol === PREVIOUS_PAGE}
             class:next={option.type === 'symbol' && option.symbol === NEXT_PAGE}
-            class:disabled={isOptionDisabled(option)}
+            class:disabled
             class:ellipsis={option.type === 'symbol' && option.symbol === ELLIPSIS}
-            class:active={option.type === 'number' && option.value == currentPage}
+            class:active={isCurrentPage}
             on:click={() => handleOptionClick(option)}
-            on:keydown={(e) => e.key === 'Enter' && handleOptionClick(option)}
-            tabindex="0"
+            on:keydown={(e) => handleOptionKeydown(e, option)}
+            tabindex={disabled ? -1 : 0}
             role="button"
+            aria-label={getAriaLabel(option)}
+            aria-current={isCurrentPage ? 'page' : undefined}
+            aria-disabled={disabled ? 'true' : undefined}
          >
             {#if option.type === 'number'}
                <slot name="number" value={option.value}>
@@ -116,21 +146,21 @@
                </slot>
             {:else if option.type === 'symbol' && option.symbol === ELLIPSIS}
                <slot name="ellipsis">
-                  <span>...</span>
+                  <span aria-hidden="true">...</span>
                </slot>
             {:else if option.type === 'symbol' && option.symbol === PREVIOUS_PAGE}
                <slot name="prev">
-                  <i class="fas fa-angle-left" />
+                  <i class="fas fa-angle-left" aria-hidden="true" />
                </slot>
             {:else if option.type === 'symbol' && option.symbol === NEXT_PAGE}
                <slot name="next">
-                  <i class="fas fa-angle-right" />
+                  <i class="fas fa-angle-right" aria-hidden="true" />
                </slot>
             {/if}
          </span>
       {/each}
    {/if}
-</div>
+</nav>
 
 <style>
    .page-input-container {
@@ -188,6 +218,18 @@
    .go-button:focus-visible {
       outline: 2px solid rgba(255, 255, 255, 0.5);
       outline-offset: 2px;
+   }
+
+   .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
    }
 
    /* Remove number input arrows */

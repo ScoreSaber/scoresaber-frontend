@@ -245,7 +245,7 @@
                {#if isFunction(state.closeButton)}
                   <svelte:component this={state.closeButton} onClose={close} />
                {:else}
-                  <button on:click={close} class="modal-close is-large" aria-label="close" style={cssCloseButton} />
+                  <button on:click={close} class="modal-close is-large" aria-label="Close modal" style={cssCloseButton} />
                {/if}
             {/if}
             <div class="content">

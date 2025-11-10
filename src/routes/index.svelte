@@ -1,5 +1,6 @@
 <script lang="ts">
    import { onMount } from 'svelte';
+
    import { defaultBackground } from '$lib/stores/global-store';
 
    import Meta from '$lib/components/common/meta.svelte';
@@ -177,10 +178,10 @@
                   loading="lazy"
                />
             {:else}
-               <div class="video-placeholder" on:click={() => (shouldLoadVideo = true)} role="button" tabindex="0" on:keydown={(e) => e.key === 'Enter' && (shouldLoadVideo = true)}>
+               <button type="button" class="video-placeholder" on:click={() => (shouldLoadVideo = true)}>
                   <i class="fab fa-youtube" />
                   <p>Click to load video</p>
-               </div>
+               </button>
             {/if}
          </div>
       </div>
@@ -534,6 +535,9 @@
       cursor: pointer;
       transition: background 0.2s ease;
       color: rgba(255, 255, 255, 0.6);
+      border: 0;
+      padding: 0;
+      font: inherit;
    }
 
    .video-placeholder:hover {

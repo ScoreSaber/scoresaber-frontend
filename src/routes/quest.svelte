@@ -27,7 +27,7 @@
          import('axios'),
          import('file-saver')
       ]);
-      
+
       const questKey = await fetcher('/api/user/quest-key', { withCredentials: true });
       const data = await axios.get(CDN_URL + `/downloads/quest/ScoreSaber_${gameVersion}_${modVersion}.qmod`, { responseType: 'blob' });
       const zip = new JSZip();
@@ -119,7 +119,7 @@
                         <tr>
                            <th>ScoreSaber Version</th>
                            <th>Beat Saber Version</th>
-                           <th></th>
+                           <th />
                         </tr>
                      </thead>
                      <tbody>
@@ -142,14 +142,17 @@
             {/if}
 
             {#if $pageQuery.step == 4}
-               <p class="quest-text">This guide assumes you are using <a href="https://mbf.bsquest.xyz/" class="quest-link" target="_blank" rel="noopener">MBF</a> to mod your game</p>
+               <p class="quest-text">
+                  This guide assumes you are using <a href="https://mbf.bsquest.xyz/" class="quest-link" target="_blank" rel="noopener">MBF</a> to mod
+                  your game
+               </p>
                <p class="quest-text">Connect your Quest to your PC or phone and open MBF</p>
                <div class="quest-image-wrapper">
                   <img alt="MBF Start Screen" src="/images/quest-install/mbf_start.png" class="quest-image" />
                </div>
                <p class="quest-text">
-                  Click <strong>Connect to Quest</strong> and select your Quest in the popup that follows. You should see the following screen (you might have to
-                  press on <strong>Add Mods</strong> first):
+                  Click <strong>Connect to Quest</strong> and select your Quest in the popup that follows. You should see the following screen (you
+                  might have to press on <strong>Add Mods</strong> first):
                </p>
                <div class="quest-image-wrapper">
                   <img alt="MBF Mods Screen" src="/images/quest-install/mbf.png" class="quest-image" />
@@ -189,7 +192,7 @@
          <div class="quest-footer-content">
             <a target="_blank" rel="external" href="https://patreon.com/scoresaber" class="quest-footer-link">
                <i class="fab fa-patreon" />
-               <span>Please consider supporting ScoreSaber on Patreon <span aria-label="heart" role="img">❤️</span></span>
+               <span>Please consider supporting ScoreSaber on Patreon ❤️</span>
             </a>
             <p class="quest-footer-note">You can get custom profile bios, a fancy leaderboard colour, badge and role</p>
             <a target="_blank" rel="external" href="https://github.com/ScoreSaber/ScoreSaber-Quest" class="quest-footer-link">

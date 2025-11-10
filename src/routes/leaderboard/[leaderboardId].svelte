@@ -348,10 +348,6 @@ Stars: ${metadata.stars}★`}
       margin-top: 1rem;
    }
 
-   .map-card {
-      margin-bottom: 1rem;
-   }
-
    .title.is-6 {
       font-weight: 600;
       margin-bottom: 1rem;

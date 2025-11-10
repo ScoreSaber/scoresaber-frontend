@@ -219,7 +219,7 @@
             {/if}
          </div>
          <input bind:value={searchValue} bind:this={inputBox} on:input={handleInput} on:keydown={handleKeydown} type="text" placeholder="Search" />
-         <button on:click={() => setVisibility(false)} class="close" aria-label="close"
+         <button on:click={() => setVisibility(false)} class="close" aria-label="Close search"
             ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg></button
