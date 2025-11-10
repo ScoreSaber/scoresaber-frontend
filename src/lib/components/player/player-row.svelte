@@ -12,7 +12,6 @@
 
    export let player: Player;
    export let row = 1;
-   export let pageDirection = 1;
    export let countryFiltered = false;
    export let pageNumber = 1;
 
@@ -40,7 +39,7 @@
       </div>
    {/if}
    <div class="player">
-      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" />
+      <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-24x24" loading="lazy" />
       <span class="playerName"><PlayerLink {player} destination={`/u/${player.id}`} /></span>
    </div>
    <div class="pp centered">
@@ -74,11 +73,12 @@
                   alt={player.name}
                   title={player.name}
                   class="profile-image image rounded is-64x64 has-text-weight-semibold"
+                  loading="lazy"
                />
                <div class="player is-size-4">{player.name}</div>
                <div>
                   <CountryImage country={player.country} />
-                  <a title="Country Ranking" href={`/rankings?page=${rankToPage(player.countryRank, 50)}&countries=${player.country.toLowerCase()}`}
+                  <a title="Country Ranking" href={`/rankings?page=${rankToPage(player.countryRank, 50)}&countries=${player.country.toLowerCase()}`} data-sveltekit-preload-code
                      >#{player.countryRank}</a
                   > <span class="separator" />
                   <span title="Performance Points" class="pp">{player.pp.toLocaleString('en-US', { minimumFractionDigits: 2 })}pp</span>
@@ -89,7 +89,7 @@
                   <Stats {player} small={true} />
                {/if}
             </div>
-            <a href="/u/{player.id}" class="full-profile-link">Full profile &rsaquo;</a>
+            <a href="/u/{player.id}" class="full-profile-link" data-sveltekit-preload-code>Full profile &rsaquo;</a>
          </div>
       </div>
    </div>

@@ -25,7 +25,7 @@
    }
 </script>
 
-<img alt={countryEmoji} title={getName(country)} src={countryImage} class="country" />
+<img alt={countryEmoji} title={getName(country)} src={countryImage} class="country" loading="lazy" />
 
 <style>
    .country {

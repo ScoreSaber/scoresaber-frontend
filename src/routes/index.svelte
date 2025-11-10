@@ -1,4 +1,5 @@
 <script lang="ts">
+   import { onMount } from 'svelte';
    import { defaultBackground } from '$lib/stores/global-store';
 
    import Meta from '$lib/components/common/meta.svelte';
@@ -6,6 +7,30 @@
    import { rankedBatch, getYouTubeEmbedUrl, getBatchTitle, getReweightsUrl, getReweightsLinkText } from '$lib/config/ranked-batch';
 
    defaultBackground();
+
+   let shouldLoadVideo = false;
+   let videoWrapper: HTMLDivElement;
+
+   onMount(() => {
+      // Lazy load YouTube iframe when it enters viewport
+      if (typeof IntersectionObserver !== 'undefined' && videoWrapper) {
+         const observer = new IntersectionObserver(
+            (entries) => {
+               if (entries[0].isIntersecting) {
+                  shouldLoadVideo = true;
+                  observer.disconnect();
+               }
+            },
+            { rootMargin: '50px' }
+         );
+         observer.observe(videoWrapper);
+      } else {
+         // Fallback: load after a short delay
+         setTimeout(() => {
+            shouldLoadVideo = true;
+         }, 1000);
+      }
+   });
 </script>
 
 <head>
@@ -139,16 +164,24 @@
                <h3 class="video-title">{getBatchTitle(rankedBatch.month)}</h3>
             </div>
          </div>
-         <div class="video-wrapper">
-            <iframe
-               width="100%"
-               height="100%"
-               src={getYouTubeEmbedUrl(rankedBatch.videoId)}
-               title={getBatchTitle(rankedBatch.month)}
-               frameborder="0"
-               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-               allowfullscreen
-            />
+         <div class="video-wrapper" bind:this={videoWrapper}>
+            {#if shouldLoadVideo}
+               <iframe
+                  width="100%"
+                  height="100%"
+                  src={getYouTubeEmbedUrl(rankedBatch.videoId)}
+                  title={getBatchTitle(rankedBatch.month)}
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy"
+               />
+            {:else}
+               <div class="video-placeholder" on:click={() => (shouldLoadVideo = true)} role="button" tabindex="0" on:keydown={(e) => e.key === 'Enter' && (shouldLoadVideo = true)}>
+                  <i class="fab fa-youtube" />
+                  <p>Click to load video</p>
+               </div>
+            {/if}
          </div>
       </div>
       <div class="reweights-section">
@@ -486,6 +519,37 @@
       height: 0;
       overflow: hidden;
       background: #000;
+   }
+
+   .video-placeholder {
+      width: 100%;
+      height: 100%;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      color: rgba(255, 255, 255, 0.6);
+   }
+
+   .video-placeholder:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.8);
+   }
+
+   .video-placeholder i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: #ff0000;
+   }
+
+   .video-placeholder p {
+      margin: 0;
+      font-size: 1rem;
    }
 
    .video-wrapper iframe {

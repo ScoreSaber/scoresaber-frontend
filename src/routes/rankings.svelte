@@ -218,7 +218,7 @@
 
                <div class="table-body">
                   {#each $rankings.players ?? [] as player, index (player.id)}
-                     <PlayerRow row={index + 1} {pageDirection} {player} countryFiltered={hasLocationFilter} pageNumber={$pageQuery.page - 1} />
+                     <PlayerRow row={index + 1} {player} countryFiltered={hasLocationFilter} pageNumber={$pageQuery.page - 1} />
                   {/each}
                </div>
             </div>

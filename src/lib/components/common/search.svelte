@@ -256,7 +256,7 @@
                {#if !playersCollapsed}
                   {#each searchResults.players as player, i}
                      <div class="result {i == focusElement ? 'focus' : ''}">
-                        <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" />
+                        <img src={player.profilePicture} alt={player.name} title={player.name} class="image rounded is-32x32" loading="lazy" />
                         <div class="player-name"><PlayerLink {player} destination="/u/{player.id}" /></div>
                         <div class="rank">#{player.rank.toLocaleString(navigator?.language ?? 'en-AU')}</div>
                      </div>

@@ -84,7 +84,7 @@
          <span class={playerClass}>{player.name}</span>
       </a>
    {:else}
-      <a title={playerTitle} href={destination}>
+      <a title={playerTitle} href={destination} data-sveltekit-preload-code>
          {#if countryImage}
             <CountryImage country={player.country} />
          {/if}

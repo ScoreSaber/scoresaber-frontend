@@ -214,7 +214,7 @@
 
 <header class:scrolled={headerIncreaseContrast} class:menu-open={isMobileMenuOpen} bind:this={header}>
    <div class="bar">
-      <a href="/" class="logo-link" on:click={handleNavSelect}>
+      <a href="/" class="logo-link" on:click={handleNavSelect} data-sveltekit-preload-code>
          <img src="/images/logo.svg" class="logo" alt="ScoreSaber logo" />
          <span class="logo-wordmark"><strong>ScoreSaber</strong></span>
       </a>

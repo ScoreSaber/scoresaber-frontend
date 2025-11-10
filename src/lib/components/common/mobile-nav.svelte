@@ -169,12 +169,12 @@
    {/if}
 
    <nav class="mobile-nav" aria-label="Mobile navigation">
-      <a href="/" class:current={isCurrent('/', $page.url.pathname)} on:click={onNavSelect}>
+      <a href="/" class:current={isCurrent('/', $page.url.pathname)} on:click={onNavSelect} data-sveltekit-preload-code>
          <i class="fa fa-home" />
          <span>Home</span>
       </a>
       {#each navItems as item}
-         <a href={item.href} class:current={isCurrent(item.href, $page.url.pathname)} on:click={onNavSelect}>
+         <a href={item.href} class:current={isCurrent(item.href, $page.url.pathname)} on:click={onNavSelect} data-sveltekit-preload-code>
             <i class={item.icon} />
             <span>{item.label}</span>
          </a>

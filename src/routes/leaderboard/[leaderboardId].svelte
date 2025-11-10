@@ -333,9 +333,9 @@ Stars: ${metadata.stars}★`}
                         </div>
                         {#if availableGameModes.length > 1}
                            <div class="filter-group">
-                              <label class="filter-label">Game Mode</label>
+                              <label for="game-mode-select" class="filter-label">Game Mode</label>
                               <div class="select">
-                                 <select bind:value={selectedGameMode} on:change={() => gameModeChanged(true)} class="select">
+                                 <select id="game-mode-select" bind:value={selectedGameMode} on:change={() => gameModeChanged(true)} class="select">
                                     {#each availableGameModes as gameMode}
                                        <option value={gameMode}>{gameMode}</option>
                                     {/each}

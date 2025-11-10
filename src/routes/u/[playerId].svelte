@@ -24,15 +24,21 @@
    import PlayerLink from '$lib/components/player/player-link.svelte';
    import CountryImage from '$lib/components/image/country-image.svelte';
    import Meta from '$lib/components/common/meta.svelte';
-   import RankChart from '$lib/components/player/rank-chart.svelte';
    import Score from '$lib/components/player/score.svelte';
    import ButtonGroup, { type buttonGroupItem } from '$lib/components/common/button-group.svelte';
    import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
    import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
    import Modal, { bind } from '$lib/components/common/modal.svelte';
-   import ScoreModal from '$lib/components/player/score-modal.svelte';
-   import CountryResetModal from '$lib/components/player/country-reset-modal.svelte';
-   import AdminModal from '$lib/components/admin/player-admin-modal.svelte';
+   // Lazy load heavy components
+   let RankChartComponent: any = null;
+   $: if ($playerData?.id && !$playerData.banned && !$playerData.inactive && $playerData.scoreStats && !RankChartComponent) {
+      import('$lib/components/player/rank-chart.svelte').then((mod) => {
+         RankChartComponent = mod.default;
+      });
+   }
+   const ScoreModal = () => import('$lib/components/player/score-modal.svelte');
+   const CountryResetModal = () => import('$lib/components/player/country-reset-modal.svelte');
+   const AdminModal = () => import('$lib/components/admin/player-admin-modal.svelte');
    import Denyah from '$lib/components/misc/denyah.svelte';
    import Bio, { SaveStatus } from '$lib/components/common/bio.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
@@ -133,13 +139,15 @@
       pageQuery.updateSingle('page', page);
    }
 
-   function openScoreModal(score: PlayerScore, player?: LeaderboardPlayer | Player) {
-      modal.set(bind(ScoreModal, { player: player ?? $playerData, score: score }));
+   async function openScoreModal(score: PlayerScore, player?: LeaderboardPlayer | Player) {
+      const ScoreModalComponent = (await ScoreModal()).default;
+      modal.set(bind(ScoreModalComponent, { player: player ?? $playerData, score: score }));
    }
 
-   function openAdminModal() {
+   async function openAdminModal() {
+      const AdminModalComponent = (await AdminModal()).default;
       modal.set(
-         bind(AdminModal, {
+         bind(AdminModalComponent, {
             player: $playerData,
             onBanClick: handleBan,
             onGiveRoleClick: handleGiveRole,
@@ -153,9 +161,10 @@
 
    async function openCountryResetModal() {
       const data = await fetcher<CanResetCountryData>(`/api/user/can-reset-country`, { withCredentials: true });
+      const CountryResetModalComponent = (await CountryResetModal()).default;
 
       modal.set(
-         bind(CountryResetModal, {
+         bind(CountryResetModalComponent, {
             canResetCountry: data,
             onResetCountryClick: handleResetCountryUser
          })
@@ -364,8 +373,8 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
          {#if $playerData.scoreStats}
             <div class="window has-shadow noheading">
                <Badges player={$playerData} />
-               {#if !$playerData.inactive}
-                  <RankChart player={$playerData} />
+               {#if !$playerData.inactive && RankChartComponent}
+                  <svelte:component this={RankChartComponent} player={$playerData} />
                {/if}
             </div>
             <Bio saveStatusUpdate={handleBioSaveStatus} player={$playerData} userData={$userData} />

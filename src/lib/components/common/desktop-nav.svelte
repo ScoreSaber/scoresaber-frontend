@@ -66,7 +66,13 @@
 
 <nav class="primary" aria-label="Primary navigation">
    {#each navItems as item}
-      <a href={item.href} aria-label={item.ariaLabel ?? item.label} class:current={isCurrent(item.href, $page.url.pathname)} on:click={onNavSelect}>
+      <a
+         href={item.href}
+         aria-label={item.ariaLabel ?? item.label}
+         class:current={isCurrent(item.href, $page.url.pathname)}
+         on:click={onNavSelect}
+         data-sveltekit-preload-code
+      >
          <i class={item.icon} />
          <span>{item.label}</span>
       </a>
@@ -110,6 +116,7 @@
             aria-expanded={userMenuVisible}
             on:click={handleUserMenuClick}
             on:dblclick={() => goto(`/u/${playerId}`)}
+            data-sveltekit-preload-code
          >
             <img src={`${CDN_URL}/avatars/${playerId}.jpg`} alt="Open profile menu" class="user-avatar" />
          </a>

@@ -5,7 +5,7 @@
    $: imagePath = `/avatars/${userId}.jpg`;
 </script>
 
-<img alt={userId + ' Avatar'} src={getCDNUrl(imagePath)} class="is-avatar" />
+<img alt={userId + ' Avatar'} src={getCDNUrl(imagePath)} class="is-avatar" loading="lazy" />
 
 <style>
    .is-avatar {

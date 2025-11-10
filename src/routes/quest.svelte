@@ -1,8 +1,4 @@
 <script lang="ts">
-   import JSZip from 'jszip';
-   import axios from 'axios';
-   import { saveAs } from 'file-saver';
-
    import { setBackground, userData } from '$lib/stores/global-store';
    import { pageQueryStore } from '$lib/stores/query-store';
 
@@ -25,6 +21,13 @@
    });
 
    async function generateQmod(modVersion, gameVersion) {
+      // Lazy load heavy libraries only when needed
+      const [{ default: JSZip }, { default: axios }, { default: saveAs }] = await Promise.all([
+         import('jszip'),
+         import('axios'),
+         import('file-saver')
+      ]);
+      
       const questKey = await fetcher('/api/user/quest-key', { withCredentials: true });
       const data = await axios.get(CDN_URL + `/downloads/quest/ScoreSaber_${gameVersion}_${modVersion}.qmod`, { responseType: 'blob' });
       const zip = new JSZip();
