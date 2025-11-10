@@ -1,8 +1,8 @@
 <script lang="ts">
-   import { searchView, userData } from '$lib/stores/global-store';
+   import { userData } from '$lib/stores/global-store';
 
+   import BaseMapInfo from '$lib/components/map/base-map-info.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
-   import type SearchView from '$lib/components/common/search.svelte';
 
    import Permissions from '$lib/utils/permissions';
    import { getDifficultyStyle, getDifficultyLabel, getRankingApprovalStatus, getDifficultyOrStarValue } from '$lib/utils/helpers';
@@ -10,100 +10,54 @@
    import type { RankRequestInformation } from '$lib/models/Ranking';
 
    export let request: RankRequestInformation;
-   let searchModal: SearchView;
 
-   searchView.subscribe((v) => (searchModal = v));
-
-   const openSearch = (val) => {
-      searchModal?.setVisibility(true);
-      searchModal?.search(val);
+   const getStatusClass = (approved: number): string => {
+      if (approved === 1) return 'approved';
+      if (approved === 2) return 'denied';
+      return 'pending';
    };
 </script>
 
-<div class="card map-card">
-   <div class="card-content window">
-      <div class="media">
-         <div class="media-content is-clipped">
-            <div
-               title={getDifficultyLabel(request.leaderboardInfo.difficulty)}
-               class="tag mb-2 {getDifficultyStyle(request.leaderboardInfo.difficulty)}"
-            >
-               {getDifficultyOrStarValue(request.leaderboardInfo)}
-            </div>
-            <div class="title is-5 mb-0">
-               <a href={`/leaderboard/${request.leaderboardInfo.id}`}>{request.leaderboardInfo.songName}</a>
-            </div>
-            {#if request?.leaderboardInfo?.songSubName?.length}
-               <div class="title is-6 mb-0">
-                  <a href={`/leaderboard/${request.leaderboardInfo.id}`}>{request.leaderboardInfo.songSubName}</a>
-               </div>
-            {/if}
-            <div class="subtitle is-6">by {request.leaderboardInfo.songAuthorName}</div>
-         </div>
-         <div class="media-right">
-            <figure class="image is-96x96 mr-0 ml-0">
-               <img src={request.leaderboardInfo.coverImage} alt="Map Cover" class="map-cover" />
-            </figure>
-         </div>
+<BaseMapInfo
+   coverImage={request.leaderboardInfo.coverImage}
+   songName={request.leaderboardInfo.songName}
+   songSubName={request.leaderboardInfo.songSubName}
+   songAuthorName={request.leaderboardInfo.songAuthorName}
+   levelAuthorName={request.leaderboardInfo.levelAuthorName}
+   difficultyLabel={getDifficultyLabel(request.leaderboardInfo.difficulty)}
+   difficultyStyle={getDifficultyStyle(request.leaderboardInfo.difficulty)}
+   difficultyOrStarValue={getDifficultyOrStarValue(request.leaderboardInfo)}
+   leaderboardId={request.leaderboardInfo.id}
+>
+   {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
+      <div class="info-row admin-info">
+         <span class="info-label">Max PP:</span>
+         <span class="info-value">{request.leaderboardInfo.maxPP}</span>
       </div>
-
-      <div class="content">
-         {#if $userData && Permissions.checkPermissionNumber($userData.permissions, Permissions.security.ADMIN)}
-            Max PP: <strong>{request.leaderboardInfo.maxPP}</strong> <br />
-         {/if}
-         Mapped by
-         <a href={'#'} on:click|preventDefault={() => openSearch(request.leaderboardInfo.levelAuthorName)}
-            ><b>{request.leaderboardInfo.levelAuthorName}</b></a
-         ><br />
-         Status: <strong>{getRankingApprovalStatus(request.approved)}</strong><br />
-         Request Type: <strong>{request.requestType == 1 ? 'Rank' : 'Unrank'}</strong><br />
-         Created: <strong><FormattedDate date={new Date(request.created_at)} /></strong><br />
-         <hr />
-         <div class="votes">
-            <div class="vote">RT 👍<br /><b>{request.rankVotes.upvotes}</b></div>
-            <div class="vote">RT 👎<br /><b>{request.rankVotes.downvotes}</b></div>
-         </div>
-         <div class="votes">
-            <div class="vote">QAT 👍<br /><b>{request.qatVotes.upvotes}</b></div>
-            <div class="vote">QAT ✅<br /><b>{request.qatVotes.neutral}</b></div>
-            <div class="vote">QAT 👎<br /><b>{request.qatVotes.downvotes}</b></div>
-         </div>
+   {/if}
+   <div class="info-row">
+      <span class="info-label">Status:</span>
+      <span class="info-value status-badge {getStatusClass(request.approved)}">
+         {getRankingApprovalStatus(request.approved)}
+      </span>
+   </div>
+   <div class="info-row">
+      <span class="info-label">Request Type:</span>
+      <span class="info-value">{request.requestType == 1 ? 'Rank' : 'Unrank'}</span>
+   </div>
+   <div class="info-row">
+      <span class="info-label">Created:</span>
+      <span class="info-value"><FormattedDate date={new Date(request.created_at)} /></span>
+   </div>
+   <div class="votes-container">
+      <div class="votes">
+         <div class="vote">RT 👍<br /><b>{request.rankVotes.upvotes}</b></div>
+         <div class="vote">RT 👎<br /><b>{request.rankVotes.downvotes}</b></div>
+      </div>
+      <div class="votes">
+         <div class="vote">QAT 👍<br /><b>{request.qatVotes.upvotes}</b></div>
+         <div class="vote">QAT ✅<br /><b>{request.qatVotes.neutral}</b></div>
+         <div class="vote">QAT 👎<br /><b>{request.qatVotes.downvotes}</b></div>
       </div>
    </div>
-</div>
-
-<style>
-   hr {
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      background-color: var(--borderColor);
-      border: none;
-      height: 1px;
-   }
-
-   .tag {
-      font-size: xx-small;
-      min-width: 20px;
-      color: var(--white);
-      padding: 4px 4px 3px 4px;
-      cursor: help;
-   }
-
-   .votes {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      align-items: center;
-      margin-top: 0.8rem;
-      text-align: center;
-      gap: 0.5rem;
-   }
-
-   .vote {
-      background-color: var(--foregroundItem);
-      border: 1px solid var(--borderColor);
-      padding: 0.2rem 0.3rem;
-      border-radius: 6px;
-      flex-grow: 1;
-   }
-</style>
+</BaseMapInfo>
