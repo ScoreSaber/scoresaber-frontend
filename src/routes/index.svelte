@@ -39,13 +39,13 @@
             </div>
          </div>
          <div class="hero-actions">
-            <a href="/leaderboards" class="cta-primary">
-               <i class="fa fa-map" />
-               <span>Browse Leaderboards</span>
-            </a>
-            <a href="/rankings" class="cta-secondary">
+            <a href="/rankings" class="cta-primary">
                <i class="fa fa-medal" />
                <span>View Rankings</span>
+            </a>
+            <a href="/leaderboards" class="cta-secondary">
+               <i class="fa fa-map" />
+               <span>Browse Leaderboards</span>
             </a>
             <a href="https://wiki.scoresaber.com" class="cta-secondary" target="_blank" rel="noopener">
                <i class="fas fa-book-open" />
