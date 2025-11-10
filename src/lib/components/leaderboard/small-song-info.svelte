@@ -77,11 +77,19 @@
       border-radius: 15%;
       display: block;
    }
+   .song-info-component {
+      min-width: 0;
+      overflow: hidden;
+   }
    .song-info-component .song-container {
       height: 100%;
+      display: flex;
+      min-width: 0;
    }
    .song-info-component .song-info-container {
       justify-content: center;
+      min-width: 0;
+      flex: 1;
    }
    .tag {
       display: flex;
@@ -107,11 +115,10 @@
    }
 
    .song-info {
-      display: inline-block;
-      width: 40vw;
-      max-width: 400px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: block;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      min-width: 0;
    }
 
    @media screen and (max-width: 768px), print {
