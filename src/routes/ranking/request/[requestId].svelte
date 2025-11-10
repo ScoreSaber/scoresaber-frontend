@@ -145,83 +145,119 @@
          {/if}
          {#if $request}
             <div class="column is-8">
-               <div class="window has-shadow request-window" aria-busy={$requestLoading || $showRequestBlur}>
-                  {#if $showRequestBlur}
-                     <Loader displayOver={true} />
-                  {/if}
-                  <div class:blur={$showRequestBlur}>
-                     <DifficultySelection rankingDiffs={$request.difficulties} currentDiff={$request.leaderboardInfo.difficulty} />
-                     <code>{decode($request.requestDescription)}</code>
-                  </div>
-               </div>
-               <div class="title is-5 mt-3 mb-3">Comments</div>
-               {#if $userData && (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT) || Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT))}
-                  <div class="window has-shadow">
-                     <textarea class="textarea mb-2" bind:value={comment} placeholder="Comment..." />
-                     {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT)}
-                        <button on:click={() => handleComment('rt')} class="button is-small is-dark">Submit comment as RT</button>
+               <div class="request-content-container">
+                  <div class="window has-shadow request-window" aria-busy={$requestLoading || $showRequestBlur}>
+                     {#if $showRequestBlur}
+                        <Loader displayOver={true} />
                      {/if}
-                     {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT)}
-                        <button on:click={() => handleComment('qat')} class="button is-small is-dark">Submit comment as QAT</button>
+                     <div class:blur={$showRequestBlur}>
+                        <DifficultySelection rankingDiffs={$request.difficulties} currentDiff={$request.leaderboardInfo.difficulty} />
+                        <div class="description-section">
+                           <h3 class="description-label">Request Description</h3>
+                           <div class="request-description">
+                              {decode($request.requestDescription)}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="comments-section">
+                     <div class="comments-header">
+                        <h2 class="section-title">Discussion</h2>
+                        {#if $request.rankComments.length + $request.qatComments.length > 0}
+                           <span class="comment-count"
+                              >{$request.rankComments.length + $request.qatComments.length}
+                              {$request.rankComments.length + $request.qatComments.length === 1 ? 'comment' : 'comments'}</span
+                           >
+                        {/if}
+                     </div>
+
+                     {#if $userData && (Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT) || Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT))}
+                        <div class="window has-shadow comment-form-card">
+                           <textarea class="textarea" bind:value={comment} placeholder="Write a comment..." rows="3" />
+                           <div class="comment-buttons">
+                              {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.ALL_RT)}
+                                 <button on:click={() => handleComment('rt')} class="button is-small is-dark">
+                                    <span class="button-icon rt-icon">RT</span>
+                                    Submit as RT
+                                 </button>
+                              {/if}
+                              {#if Permissions.checkPermissionNumber($userData.permissions, Permissions.groups.QAT)}
+                                 <button on:click={() => handleComment('qat')} class="button is-small is-dark">
+                                    <span class="button-icon qat-icon">QAT</span>
+                                    Submit as QAT
+                                 </button>
+                              {/if}
+                           </div>
+                        </div>
+                     {/if}
+
+                     {#if $request.rankComments.length + $request.qatComments.length === 0}
+                        <div class="window has-shadow no-comments-card">
+                           <div class="no-comments-content">
+                              <i class="far fa-comments no-comments-icon" />
+                              <p>No comments yet</p>
+                           </div>
+                        </div>
+                     {:else}
+                        <div class="comment-list">
+                           {#each $request.rankComments as comment}
+                              <div class="window has-shadow comment-card">
+                                 <div class="comment-header">
+                                    <div class="comment-author">
+                                       <figure class="comment-avatar">
+                                          {#if comment.userId != null}
+                                             <AvatarImage userId={comment.userId} />
+                                          {:else}
+                                             <img src={getBloq('ranking-team')} alt="Ranking Team" />
+                                          {/if}
+                                       </figure>
+                                       <div class="comment-meta">
+                                          <div class="comment-author-line">
+                                             <a href={comment.userId != null ? `/u/${comment.userId}` : ''} class="comment-author-name"
+                                                >{comment.username}</a
+                                             >
+                                             <span class="comment-badge rank rt">RT</span>
+                                          </div>
+                                          <span class="comment-date"><FormattedDate date={new Date(comment.timeStamp)} /></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="comment-body">
+                                    {decode(comment.comment)}
+                                 </div>
+                              </div>
+                           {/each}
+                           {#each $request.qatComments as comment}
+                              <div class="window has-shadow comment-card">
+                                 <div class="comment-header">
+                                    <div class="comment-author">
+                                       <figure class="comment-avatar">
+                                          {#if comment.userId != null}
+                                             <AvatarImage userId={comment.userId} />
+                                          {:else}
+                                             <img src={getBloq('qat')} alt="Quality Assurance Team" />
+                                          {/if}
+                                       </figure>
+                                       <div class="comment-meta">
+                                          <div class="comment-author-line">
+                                             <a href={comment.userId != null ? `/u/${comment.userId}` : ''} class="comment-author-name"
+                                                >{comment.username}</a
+                                             >
+                                             <span class="comment-badge rank qat">QAT</span>
+                                          </div>
+                                          <span class="comment-date"><FormattedDate date={new Date(comment.timeStamp)} /></span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="comment-body">
+                                    {decode(comment.comment)}
+                                 </div>
+                              </div>
+                           {/each}
+                        </div>
                      {/if}
                   </div>
-               {/if}
-               {#if $request.rankComments.length + $request.qatComments.length === 0}
-                  <span class="window has-shadow" color="has-text-color">No comments yet!</span>
-               {/if}
-               <div class="comment-list">
-                  {#each $request.rankComments as comment}
-                     <div class="window has-shadow">
-                        <article class="media">
-                           <figure class="media-left m-0 mr-4 ml-0">
-                              <p class="image is-48x48">
-                                 {#if comment.userId != null}
-                                    <AvatarImage userId={comment.userId} />
-                                 {:else}
-                                    <img src={getBloq('ranking-team')} alt="Ranking Team" />
-                                 {/if}
-                              </p>
-                           </figure>
-                           <div class="media-content">
-                              <div class="content">
-                                 <p>
-                                    <span class="tag mb-2 rank rt float">Ranking Team</span>
-                                    <strong><a href={comment.userId != null ? `/u/${comment.userId}` : ''}>{comment.username}</a></strong>
-                                    <small class="text-muted"><FormattedDate date={new Date(comment.timeStamp)} /></small>
-                                    <br />
-                                    <code class="mt-1">{decode(comment.comment)}</code>
-                                 </p>
-                              </div>
-                           </div>
-                        </article>
-                     </div>
-                  {/each}
-                  {#each $request.qatComments as comment}
-                     <div class="window has-shadow">
-                        <article class="media">
-                           <figure class="media-left m-0 mr-4 ml-0">
-                              <p class="image is-48x48">
-                                 {#if comment.userId != null}
-                                    <AvatarImage userId={comment.userId} />
-                                 {:else}
-                                    <img src={getBloq('qat')} alt="Quality Assurance Team" />
-                                 {/if}
-                              </p>
-                           </figure>
-                           <div class="media-content">
-                              <div class="content">
-                                 <p>
-                                    <span class="tag mb-2 rank qat float">Quality Assurance Team</span>
-                                    <strong><a href={comment.userId != null ? `/u/${comment.userId}` : ''}>{comment.username}</a></strong>
-                                    <small class="text-muted"><FormattedDate date={new Date(comment.timeStamp)} /></small>
-                                    <br />
-                                    <code class="mt-1">{decode(comment.comment)}</code>
-                                 </p>
-                              </div>
-                           </div>
-                        </article>
-                     </div>
-                  {/each}
                </div>
             </div>
             <div class="column is-4">
@@ -362,7 +398,6 @@
       }
    }
 
-
    .window {
       position: relative;
       margin-bottom: 1rem;
@@ -372,6 +407,230 @@
       margin-top: 1rem;
    }
 
+   .request-content-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+   }
+
+   .request-window {
+      margin-bottom: 0;
+   }
+
+   .description-section {
+      margin-top: 1rem;
+   }
+
+   .description-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--textColor);
+      margin-bottom: 0.75rem;
+      margin-top: 0;
+   }
+
+   .request-description {
+      padding: 1rem;
+      background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
+      border-radius: 6px;
+      color: var(--textColor);
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+      line-height: 1.6;
+   }
+
+   .comments-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+   }
+
+   .comments-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0;
+      margin: 0;
+
+      .section-title {
+         font-size: 1.25rem;
+         font-weight: 700;
+         color: var(--textColor);
+         margin: 0;
+      }
+
+      .comment-count {
+         color: var(--muted);
+         font-size: 0.875rem;
+         font-weight: 500;
+         padding: 0.25rem 0.75rem;
+         background-color: var(--foregroundItem);
+         border: 1px solid var(--borderColor);
+         border-radius: 12px;
+      }
+   }
+
+   .comment-form-card {
+      .textarea {
+         margin-bottom: 0.75rem;
+         resize: vertical;
+         min-height: 80px;
+         font-size: 0.9375rem;
+      }
+
+      .comment-buttons {
+         display: flex;
+         gap: 0.5rem;
+         flex-wrap: wrap;
+
+         .button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+         }
+
+         .button-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.625rem;
+            font-weight: 700;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            color: white;
+
+            &.rt-icon {
+               background-color: var(--rt);
+            }
+
+            &.qat-icon {
+               background-color: var(--qat);
+            }
+         }
+      }
+   }
+
+   .no-comments-card {
+      .no-comments-content {
+         text-align: center;
+         padding: 3rem 2rem;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         gap: 0.75rem;
+
+         .no-comments-icon {
+            font-size: 3rem;
+            color: var(--muted);
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+         }
+
+         p {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--textColor);
+            margin: 0;
+         }
+      }
+   }
+
+   .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+   }
+
+   .comment-card {
+      margin-bottom: 0 !important;
+   }
+
+   .comment-header {
+      margin-bottom: 0.75rem;
+
+      .comment-author {
+         display: flex;
+         align-items: flex-start;
+         gap: 0.75rem;
+      }
+
+      .comment-avatar {
+         width: 40px;
+         height: 40px;
+         overflow: hidden;
+         flex-shrink: 0;
+         margin: 0;
+
+         :global(img) {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+         }
+      }
+
+      .comment-meta {
+         display: flex;
+         flex-direction: column;
+         gap: 0.25rem;
+         flex: 1;
+      }
+
+      .comment-author-line {
+         display: flex;
+         align-items: center;
+         gap: 0.5rem;
+         flex-wrap: wrap;
+         line-height: 1;
+      }
+
+      .comment-author-name {
+         font-weight: 700;
+         font-size: 0.9375rem;
+         color: var(--textColor);
+         text-decoration: none;
+         transition: color 0.2s ease;
+
+         &:hover {
+            color: var(--scoreSaberYellow);
+         }
+      }
+
+      .comment-badge {
+         display: inline-flex;
+         align-items: center;
+         font-size: 0.625rem;
+         font-weight: 700;
+         padding: 0.125rem 0.5rem;
+         border-radius: 3px;
+         color: white;
+         text-transform: uppercase;
+         letter-spacing: 0.5px;
+         transform: translateY(-1px);
+
+         &.rt {
+            background-color: var(--rt);
+         }
+
+         &.qat {
+            background-color: var(--qat);
+         }
+      }
+
+      .comment-date {
+         font-size: 0.8125rem;
+         color: var(--muted);
+      }
+   }
+
+   .comment-body {
+      color: var(--textColor);
+      line-height: 1.6;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+      padding-left: 3.25rem;
+      font-size: 0.9375rem;
+   }
 
    .tooling {
       display: flex;
@@ -384,60 +643,8 @@
       padding: 0.6rem 0.9rem;
    }
 
-
-   code {
-      display: block;
-      width: 100%;
-      color: var(--textColor);
-      background-color: var(--foregroundItem);
-      border: 1px solid var(--borderColor);
-      border-radius: 6px;
-      padding: 1rem;
-      white-space: pre-line;
-      overflow-wrap: anywhere;
-      margin-top: 1rem;
-   }
-
-   .comment-list {
-      .content {
-         color: var(--textColor);
-
-         a {
-            color: var(--textColor);
-            text-decoration: none;
-
-            &:hover {
-               color: var(--scoreSaberYellow);
-            }
-         }
-
-         strong {
-            color: var(--textColor);
-         }
-      }
-
-      code {
-         background-color: var(--gray);
-         border: 1px solid var(--borderColor);
-         padding: 0.75rem;
-         margin-top: 0.5rem;
-      }
-   }
-
    span.rank {
       font-size: x-small;
-   }
-
-   span.rank.float {
-      float: right;
-   }
-
-   .rank.rt {
-      background-color: var(--rt);
-   }
-
-   .rank.qat {
-      background-color: var(--qat);
    }
 
    .rank.nat {
@@ -455,5 +662,19 @@
       color: white;
       padding: 4px 4px 3px 4px;
       cursor: help;
+   }
+
+   @media only screen and (max-width: 768px) {
+      .comment-body {
+         padding-left: 0;
+         margin-top: 0.5rem;
+      }
+
+      .comment-header {
+         .comment-avatar {
+            width: 36px;
+            height: 36px;
+         }
+      }
    }
 </style>
