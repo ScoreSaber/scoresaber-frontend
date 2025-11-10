@@ -156,7 +156,7 @@
       {#if $rankingsError}
          <div class="error-with-controls">
             <div class="controls-bar">
-               <div class="desktop tablet pagination-left" />
+               <div class="is-hidden-mobile pagination-left" />
 
                <div class="controls-center">
                   <div class="filters-group">
@@ -188,7 +188,7 @@
                   </div>
                </div>
 
-               <div class="desktop tablet pagination-right" />
+               <div class="is-hidden-mobile pagination-right" />
             </div>
 
             <div class="error-display">
@@ -201,8 +201,18 @@
          {/if}
 
          <div class="content" class:blur={$showBlur}>
+            <div class="is-hidden-desktop top-mobile-pagination">
+               <ArrowPagination
+                  pageClicked={handlePageChange}
+                  page={$pageQuery.page}
+                  pageSize={$rankings.metadata.itemsPerPage}
+                  maxPages={$rankings.metadata.total}
+                  withFirstLast={true}
+               />
+            </div>
+
             <div class="controls-bar">
-               <div class="desktop tablet pagination-left">
+               <div class="is-hidden-mobile pagination-left">
                   <ArrowButton icon="fa-arrow-left" on:click={() => handlePageChange($pageQuery.page - 1)} disabled={$pageQuery.page <= 1} />
                </div>
 
@@ -236,7 +246,7 @@
                   </div>
                </div>
 
-               <div class="desktop tablet pagination-right">
+               <div class="is-hidden-mobile pagination-right">
                   <ArrowButton
                      icon="fa-arrow-right"
                      on:click={() => handlePageChange($pageQuery.page + 1)}
@@ -265,7 +275,7 @@
                </div>
             </div>
 
-            <div class="desktop tablet bottom-desktop-pagination">
+            <div class="is-hidden-mobile bottom-desktop-pagination">
                <ArrowButton icon="fa-arrow-left" on:click={() => handlePageChange($pageQuery.page - 1)} disabled={$pageQuery.page <= 1} />
                <ArrowButton
                   icon="fa-arrow-right"
@@ -274,7 +284,7 @@
                />
             </div>
 
-            <div class="mobile bottom-arrowpagination">
+            <div class="is-hidden-desktop bottom-arrowpagination">
                <ArrowPagination
                   pageClicked={handlePageChange}
                   page={$pageQuery.page}
@@ -384,8 +394,12 @@
       max-width: 350px;
    }
 
+   .top-mobile-pagination {
+      display: none;
+   }
+
    .bottom-arrowpagination {
-      margin-top: 1rem;
+      display: none;
    }
 
    .bottom-desktop-pagination {
@@ -424,16 +438,21 @@
    }
 
    @media (max-width: 768px) {
+      .top-mobile-pagination {
+         display: block;
+         margin-bottom: 1rem;
+      }
+
+      .bottom-arrowpagination {
+         display: block;
+         margin-top: 1rem;
+      }
+
       .controls-bar {
          display: flex;
          flex-flow: column nowrap;
          gap: 0.75rem;
          align-items: stretch;
-      }
-
-      .controls-bar .pagination-left,
-      .controls-bar .pagination-right {
-         display: none;
       }
 
       .controls-center {

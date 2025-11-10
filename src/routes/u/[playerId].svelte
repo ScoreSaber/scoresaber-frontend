@@ -397,7 +397,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                   {/each}
                </div>
             </div>
-            <div class="pagination desktop tablet">
+            <div class="pagination is-hidden-mobile">
                <ClassicPagination
                   totalItems={$scoreData.metadata.total}
                   pageSize={$scoreData.metadata.itemsPerPage}
@@ -405,7 +405,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                   changePage={(e) => changePage(e)}
                />
             </div>
-            <div class="mobile bottom-arrowpagination">
+            <div class="is-hidden-desktop bottom-arrowpagination">
                <ArrowPagination
                   pageClicked={changePage}
                   page={$pageQuery.page}
@@ -416,7 +416,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
             </div>
          {/if}
       </div>
-   {:else if !$scoreData && !$scoreDataError}
+   {:else if $playerData && !$scoreData && !$scoreDataError}
       <Loader />
    {/if}
 </div>
@@ -598,7 +598,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       margin: 1rem 0;
    }
 
-   @media only screen and (max-width: 769px) {
+   @media only screen and (max-width: 768px) {
       .column.is-narrow {
          width: 100%;
       }

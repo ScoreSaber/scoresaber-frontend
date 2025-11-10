@@ -328,7 +328,7 @@ Stars: ${metadata.stars}★`}
 <Modal show={$modal} />
 
 <style lang="scss">
-   @media screen and (max-width: 769px), print {
+   @media screen and (max-width: 768px), print {
       .columns {
          display: flex;
          flex-direction: column-reverse;
@@ -346,6 +346,10 @@ Stars: ${metadata.stars}★`}
 
    .window.mt-3 {
       margin-top: 1rem;
+   }
+
+   .map-card {
+      margin-bottom: 1rem;
    }
 
    .title.is-6 {

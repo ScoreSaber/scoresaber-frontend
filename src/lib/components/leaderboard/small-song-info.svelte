@@ -114,7 +114,7 @@
       text-overflow: ellipsis;
    }
 
-   @media screen and (max-width: 769px), print {
+   @media screen and (max-width: 768px), print {
       .song-info {
          width: auto;
       }

@@ -355,7 +355,7 @@
 </div>
 
 <style lang="scss">
-   @media screen and (max-width: 769px), print {
+   @media screen and (max-width: 768px), print {
       .columns {
          display: flex;
          flex-direction: column-reverse;

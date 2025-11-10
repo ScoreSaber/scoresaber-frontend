@@ -46,4 +46,11 @@
       display: flex;
       gap: 0.5rem;
    }
+
+   @media only screen and (max-width: 768px) {
+      .pagination {
+         justify-content: center;
+         gap: 0.5rem;
+      }
+   }
 </style>

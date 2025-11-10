@@ -96,7 +96,7 @@ html {
    margin: 0 auto;
 }
 
-@media only screen and (max-width: 769px) {
+@media only screen and (max-width: 768px) {
    .cover {
       top: 32vh;
    }
@@ -127,6 +127,11 @@ html {
 
 .container {
    max-width: 1050px !important;
+}
+
+.columns .column {
+   padding-top: 0;
+   padding-bottom: 0;
 }
 
 .page-container {
@@ -610,17 +615,8 @@ ins {
    transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
-@media only screen and (min-width: 769px) {
-   .mobile {
-      display: none;
-   }
-}
-
-@media only screen and (max-width: 769px) {
-   .desktop {
-      display: none;
-   }
-}
+/* Responsive display utilities are now handled by Bulma's is-hidden-mobile, is-hidden-desktop, etc. */
+/* Legacy classes .mobile, .desktop, .tablet are deprecated in favor of Bulma utilities */
 
 .bg-content {
    min-height: 100vh;

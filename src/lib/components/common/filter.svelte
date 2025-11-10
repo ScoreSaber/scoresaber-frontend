@@ -162,7 +162,7 @@
       padding: 0.375rem 0.625rem;
       border-radius: 6px;
       font-weight: 500;
-      font-size: 0.875rem;
+      font-size: 16px;
       white-space: nowrap;
       transition: all var(--transitionTime) ease;
       overflow: visible;

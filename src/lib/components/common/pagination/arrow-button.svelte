@@ -40,4 +40,12 @@
       outline: 2px solid rgba(255, 255, 255, 0.5);
       outline-offset: 2px;
    }
+
+   @media only screen and (max-width: 768px) {
+      .arrow-btn {
+         padding: 0.5rem 0.625rem;
+         min-width: 2.25rem;
+         font-size: 0.875rem;
+      }
+   }
 </style>

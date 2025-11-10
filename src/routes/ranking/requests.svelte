@@ -194,32 +194,34 @@
             </div>
          {/if}
       </div>
-      <Button
-         isDisabled={false}
-         onClicked={() => {
-            toggleBelowTop();
-         }}
-         title={showBelowTop ? 'Hide all requests' : 'Show all requests'}
-         icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
-      />
-      <Button
-         isDisabled={false}
-         onClicked={() => {
-            toggleDownvotedRequests();
-         }}
-         title={showDownvotedRequests ? 'Hide downvoted maps' : 'Show downvoted maps'}
-         icon={showDownvotedRequests ? 'eye-slash' : 'eye'}
-      />
-      {#if $userData && permissions.checkPermissionNumber($userData.permissions, permissions.groups.ALL_RT)}
+      <div class="buttons-container">
          <Button
             isDisabled={false}
             onClicked={() => {
-               goto('/ranking/request/create');
+               toggleBelowTop();
             }}
-            title={'Create Rank Request'}
-            icon={'list'}
+            title={showBelowTop ? 'Hide all requests' : 'Show all requests'}
+            icon={showBelowTop ? 'chevron-up' : 'chevron-down'}
          />
-      {/if}
+         <Button
+            isDisabled={false}
+            onClicked={() => {
+               toggleDownvotedRequests();
+            }}
+            title={showDownvotedRequests ? 'Hide downvoted maps' : 'Show downvoted maps'}
+            icon={showDownvotedRequests ? 'eye-slash' : 'eye'}
+         />
+         {#if $userData && permissions.checkPermissionNumber($userData.permissions, permissions.groups.ALL_RT)}
+            <Button
+               isDisabled={false}
+               onClicked={() => {
+                  goto('/ranking/request/create');
+               }}
+               title={'Create Rank Request'}
+               icon={'list'}
+            />
+         {/if}
+      </div>
       {#if showBelowTop}
          <div class="window has-shadow below-top" aria-busy={$belowTopRequestsLoading || $showBelowTopRequestsBlur}>
             {#if $belowTopRequests}
@@ -336,5 +338,22 @@
    .qualified-link:hover .heading,
    .qualified-link:hover .title {
       color: var(--scoreSaberYellow);
+   }
+
+   .buttons-container {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+   }
+
+   @media only screen and (max-width: 1023px) {
+      .buttons-container {
+         flex-direction: column;
+         gap: 0.75rem;
+      }
+
+      .buttons-container :global(button) {
+         width: 100%;
+      }
    }
 </style>

@@ -99,10 +99,10 @@
          <div class="empty-state">No scores available.</div>
       {/if}
    </div>
-   <div class="pagination desktop tablet">
+   <div class="pagination is-hidden-mobile">
       <ClassicPagination totalItems={$scores.metadata.total} pageSize={$scores.metadata.itemsPerPage} {currentPage} {changePage} />
    </div>
-   <div class="mobile">
+   <div class="is-hidden-desktop">
       <ArrowPagination
          pageClicked={changePage}
          page={currentPage}
@@ -158,7 +158,8 @@
       font-weight: 500;
    }
 
-   .mobile {
-      margin-top: 0.5rem;
+   .is-hidden-desktop {
+      margin-top: 1rem;
+      padding: 0;
    }
 </style>

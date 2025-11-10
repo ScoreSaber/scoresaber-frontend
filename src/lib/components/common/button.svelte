@@ -42,10 +42,27 @@
 
 <style>
    .button {
-      font-size: 14px;
+      font-size: 0.875rem;
       height: 2.3em;
       line-height: 1;
-      border-color: var(--foreground);
-      border: transparent;
+      border: 1px solid var(--borderColor);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+   }
+
+   .button:hover:enabled {
+      background-color: var(--gray-light);
+      border-color: var(--scoreSaberYellow);
+   }
+
+   .button .icon {
+      margin: 0;
+      width: auto;
+      height: auto;
    }
 </style>

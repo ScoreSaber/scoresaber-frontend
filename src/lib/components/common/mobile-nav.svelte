@@ -1,4 +1,6 @@
 <script lang="ts">
+   import { slide } from 'svelte/transition';
+
    import { page } from '$app/stores';
 
    import { userData } from '$lib/stores/global-store';
@@ -9,6 +11,9 @@
    import { API_URL, CDN_URL } from '$lib/utils/env';
    import fetcher from '$lib/utils/fetcher';
    import { navItems, isCurrent } from '$lib/utils/nav-utils';
+   import { useAccio } from '$lib/utils/accio';
+
+   import type { Player } from '$lib/models/PlayerData';
 
    import { rankedBatch, getYouTubeUrl, getAnnouncementMessage } from '$lib/config/ranked-batch';
 
@@ -19,6 +24,7 @@
    let loggedIn = false;
    let playerId = '';
    let showPatreonLink = false;
+   let profileExpanded = false;
 
    let touchStartX = 0;
    let touchStartY = 0;
@@ -32,6 +38,25 @@
       loggedIn = Boolean(data);
       playerId = data?.playerId ?? '';
       showPatreonLink = Boolean(data) && !data?.patronId;
+   }
+
+   $: playerDataUrl = loggedIn && playerId ? `/api/player/${playerId}/full` : '';
+
+   const { data: playerData, refresh: refreshPlayerData } = useAccio<Player>(playerDataUrl, {
+      fetcher,
+      ignoreSubscriptions: true
+   });
+
+   $: if (playerDataUrl && playerDataUrl !== '') {
+      refreshPlayerData({ newUrl: playerDataUrl, bypassInitialCheck: true });
+   }
+
+   $: username = $playerData?.name ?? '';
+
+   function toggleProfile(event: MouseEvent) {
+      event.stopPropagation();
+      event.preventDefault();
+      profileExpanded = !profileExpanded;
    }
 
    async function logout() {
@@ -128,7 +153,7 @@
    }
 </script>
 
-<button type="button" class="mobile-overlay" class:visible={isOpen} on:click={onClose} aria-label="Close navigation" />
+<button type="button" class="mobile-overlay" class:visible={isOpen} on:click={onClose} aria-label="Close navigation" tabindex={isOpen ? 0 : -1} />
 
 <aside
    id="mobile-navigation"
@@ -155,17 +180,34 @@
       <a class="mobile-login" href={`${API_URL}/api/auth/steam`} rel="external">Log In</a>
    {:else}
       <div class="mobile-user">
-         <div class="avatar-row">
-            <img src={`${CDN_URL}/avatars/${playerId}.jpg`} alt="" />
-            <span>ID #{playerId}</span>
-         </div>
+         <button type="button" class="profile-toggle" on:click={toggleProfile}>
+            <div class="avatar-row">
+               <img src={`${CDN_URL}/avatars/${playerId}.jpg`} alt="" />
+               {#if username}
+                  <span class="username">{username}</span>
+               {/if}
+            </div>
+            {#if profileExpanded}
+               <i class="fa fa-chevron-up" />
+            {:else}
+               <i class="fa fa-chevron-down" />
+            {/if}
+         </button>
 
-         <a href={`/u/${playerId}`} on:click={onNavSelect}>My Profile</a>
-         {#if showPatreonLink}
-            <a href={`${API_URL}/api/auth/patreon`} rel="external">Link Patreon account</a>
+         {#if profileExpanded}
+            <div class="profile-options" transition:slide={{ duration: 200 }}>
+               <a href={`/u/${playerId}`} on:click={onNavSelect}>My Profile</a>
+               {#if showPatreonLink}
+                  <a href={`${API_URL}/api/auth/patreon`} rel="external">Link Patreon account</a>
+               {/if}
+               <button type="button" on:click={logout}>Log Out</button>
+            </div>
          {/if}
-         <button type="button" on:click={logout}>Log Out</button>
       </div>
+   {/if}
+
+   {#if loggedIn}
+      <div class="separator" />
    {/if}
 
    <nav class="mobile-nav" aria-label="Mobile navigation">
@@ -294,11 +336,30 @@
       gap: 0.55rem;
    }
 
+   .profile-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.75rem;
+      border: 0;
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(255, 255, 255, 0.85);
+      font: inherit;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+   }
+
+   .profile-toggle:hover {
+      background: rgba(255, 255, 255, 0.08);
+   }
+
    .avatar-row {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      color: rgba(255, 255, 255, 0.85);
+      gap: 0.75rem;
+      flex: 1;
    }
 
    .avatar-row img {
@@ -306,10 +367,33 @@
       height: 2.75rem;
       border-radius: 999px;
       object-fit: cover;
+      flex-shrink: 0;
    }
 
-   .mobile-user a,
-   .mobile-user button {
+   .username {
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+   }
+
+   .profile-toggle i {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      transition: transform 0.2s ease, color 0.2s ease;
+      flex-shrink: 0;
+   }
+
+   .profile-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding-left: 0.5rem;
+   }
+
+   .profile-options a,
+   .profile-options button {
       display: flex;
       align-items: center;
       gap: 0.75rem;
@@ -324,10 +408,16 @@
       transition: background 0.2s ease, color 0.2s ease;
    }
 
-   .mobile-user a:hover,
-   .mobile-user button:hover {
+   .profile-options a:hover,
+   .profile-options button:hover {
       background: rgba(255, 255, 255, 0.08);
       color: var(--scoreSaberYellow);
+   }
+
+   .separator {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 0.5rem 0;
    }
 
    @media (min-width: 961px) {

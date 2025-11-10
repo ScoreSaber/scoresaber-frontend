@@ -198,8 +198,8 @@
                               <thead>
                                  <tr class="headers">
                                     <th class="map" />
-                                    <th class="plays centered desktop">Plays</th>
-                                    <th class="plays-daily centered desktop">Last 24h</th>
+                                    <th class="plays centered is-hidden-mobile">Plays</th>
+                                    <th class="plays-daily centered is-hidden-mobile">Last 24h</th>
                                  </tr>
                               </thead>
                               <tbody>
@@ -212,10 +212,10 @@
                                              )} in the last 24h)</span
                                           ></td
                                        >
-                                       <td class="plays centered desktop">
+                                       <td class="plays centered is-hidden-mobile">
                                           {leaderboard.plays.toLocaleString('en-US')}
                                        </td>
-                                       <td class="plays-daily centered desktop">
+                                       <td class="plays-daily centered is-hidden-mobile">
                                           {leaderboard.dailyPlays.toLocaleString('en-US')}
                                        </td>
                                     </tr>
@@ -224,10 +224,10 @@
                            </table>
                         </div>
                         <br />
-                        <div class="desktop">
+                        <div class="is-hidden-mobile">
                            <ClassicPagination totalItems={$leaderboards.metadata.total} pageSize={14} currentPage={$pageQuery.page} {changePage} />
                         </div>
-                        <div class="mobile">
+                        <div class="is-hidden-desktop">
                            <ArrowPagination
                               pageClicked={changePage}
                               page={$pageQuery.page}
@@ -285,7 +285,7 @@
                      <option value={Category.Author}>Mapper</option>
                   </select>
                </div>
-               <div class="control mt-2">
+               <div class="control mt-4">
                   <label class="radio">
                      <input
                         type="radio"
@@ -313,11 +313,13 @@
                <b>{rangeStars[0]}</b> to <b>{rangeStars[1]}</b> stars
                <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />
             </div>
-            <RankedVideoBlock
-               videoId={rankedBatch.videoId}
-               title={getBatchTitle(rankedBatch.month)}
-               dismissMessage="If you dismiss this video, it won't be shown again on this page until the next ranked batch. Are you sure?"
-            />
+            <div class="ranked-video-wrapper">
+               <RankedVideoBlock
+                  videoId={rankedBatch.videoId}
+                  title={getBatchTitle(rankedBatch.month)}
+                  dismissMessage="If you dismiss this video, it won't be shown again on this page until the next ranked batch. Are you sure?"
+               />
+            </div>
          </div>
       </div>
    </div>
@@ -400,24 +402,14 @@
       border-color: var(--gray-light);
    }
 
-   @media screen and (max-width: 769px), print {
+   @media screen and (max-width: 768px), print {
       .columns {
          display: flex;
          flex-direction: column-reverse;
       }
 
-      .desktop {
-         display: none;
-      }
-
       .map {
          border-radius: 6px;
-      }
-   }
-
-   @media only screen and (min-width: 769px) {
-      .mobile {
-         display: none !important;
       }
    }
 
@@ -439,6 +431,11 @@
       display: block;
       margin-left: 2px;
       margin-top: 0.4rem;
+   }
+
+   .ranked-video-wrapper {
+      padding: 0 0.75rem;
+      margin-bottom: 1rem;
    }
 
    .window .checkbox {

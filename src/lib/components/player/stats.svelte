@@ -130,7 +130,7 @@
       color: var(--textColor);
       font-size: 0.9375rem;
    }
-   @media only screen and (max-width: 769px) {
+   @media only screen and (max-width: 768px) {
       .stats-container {
          justify-content: center;
          max-width: 100%;

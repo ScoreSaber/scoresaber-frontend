@@ -148,8 +148,8 @@
          &.expanded {
             max-height: 800px;
             min-height: 200px;
-            padding: 16px;
-            margin: 8px 16px 16px 16px;
+            padding: 16px 8px;
+            margin: 8px 8px 16px 8px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -248,7 +248,7 @@
       -webkit-backdrop-filter: blur(8px) saturate(120%);
    }
 
-   @media only screen and (max-width: 769px) {
+   @media only screen and (max-width: 768px) {
       .table-item {
          grid-template-columns: 20px 1fr;
          padding: 12px;
