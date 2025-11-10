@@ -362,9 +362,6 @@
       }
    }
 
-   .bg-content {
-      min-height: 100vh;
-   }
 
    .window {
       position: relative;
@@ -375,10 +372,6 @@
       margin-top: 1rem;
    }
 
-   .blur {
-      filter: blur(3px) saturate(1.2);
-      transition: 0.25s filter linear;
-   }
 
    .tooling {
       display: flex;
@@ -391,9 +384,6 @@
       padding: 0.6rem 0.9rem;
    }
 
-   .text-muted {
-      color: var(--muted);
-   }
 
    code {
       display: block;

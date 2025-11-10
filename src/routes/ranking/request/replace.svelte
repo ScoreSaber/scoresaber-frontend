@@ -109,7 +109,7 @@
       <div>
          <SearchInput icon="fa-list" placeholder="Request ID" onSearch={searchUpdated} value={$pageQuery.requestId} />
          {#if searchData}
-            <div class="existing">
+            <div class="existing ranking-table">
                <table>
                   <thead>
                      <tr>
@@ -182,34 +182,17 @@
       color: var(--textColor);
    }
 
-   table {
-      border-collapse: separate;
-      border-spacing: 0 5px;
-      white-space: nowrap;
+   .ranking-table table {
       margin-top: -15px;
-   }
-   .content table th {
-      border: none !important;
-   }
-   td {
-      border: none !important;
-      border-style: solid none;
-      align-items: center;
-      vertical-align: middle;
    }
 
    tr.table-item td {
       background-color: var(--gray-dark);
       border: 1px solid var(--borderColor);
    }
-   td:first-child {
-      border-left-style: solid;
-      border-top-left-radius: 6px;
-      border-bottom-left-radius: 6px;
-   }
-   td:last-child {
-      border-right-style: solid;
-      border-bottom-right-radius: 6px;
-      border-top-right-radius: 6px;
+
+   tr.table-item:hover td {
+      background-color: var(--gray-light);
+      border-color: var(--gray-light);
    }
 </style>

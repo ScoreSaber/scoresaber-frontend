@@ -285,11 +285,6 @@
       font-weight: 600;
    }
 
-   .logo {
-      width: 28px;
-      height: 28px;
-      display: block;
-   }
 
    .logo-wordmark {
       display: none;

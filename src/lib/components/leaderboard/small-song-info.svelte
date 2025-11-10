@@ -38,8 +38,9 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="song-container">
-   <div class="song-image-wrapper">
+<div class="song-info-component">
+   <div class="song-container">
+      <div class="song-image-wrapper">
       <figure style={margin === false ? 'margin: 0px 1.2rem 0 0rem !important;' : ''}>
          <img class="song-image" src={leaderboard.coverImage} alt="{songName} Cover" />
          <div title={getDifficultyLabel(leaderboard.difficulty)} class="tag {getDifficultyStyle(leaderboard.difficulty)}">
@@ -65,13 +66,10 @@
          <span class="text-muted"><FormattedDate date={new Date(leaderboard.createdDate)} /></span>
       </div>
    </div>
+   </div>
 </div>
 
 <style>
-   .song-name {
-      font-weight: 800;
-      font-size: larger;
-   }
    .song-image {
       min-width: 46px;
       width: 46px;
@@ -79,20 +77,11 @@
       border-radius: 15%;
       display: block;
    }
-   .song-info-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-   }
-   .song-container {
-      display: flex;
+   .song-info-component .song-container {
       height: 100%;
    }
-   .song-image-wrapper {
-      display: flex;
-      align-items: center;
+   .song-info-component .song-info-container {
       justify-content: center;
-      position: relative;
    }
    .tag {
       display: flex;

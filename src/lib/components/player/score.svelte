@@ -1,24 +1,13 @@
 <script type="ts">
-   import type { Writable } from 'svelte/store';
-
    import { fly } from 'svelte/transition';
-   import queryString from 'query-string';
 
    import SmallSongInfo from '$lib/components/leaderboard/small-song-info.svelte';
    import FormattedDate from '$lib/components/common/formatted-date.svelte';
-   import Loader from '$lib/components/common/loader.svelte';
-   import ClassicPagination from '$lib/components/common/classic-pagination.svelte';
-   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
-   import Error from '$lib/components/common/error.svelte';
-   import LeaderboardGrid from '$lib/components/leaderboard/leaderboard-grid.svelte';
+   import InlineLeaderboard from '$lib/components/leaderboard/inline-leaderboard.svelte';
 
-   import type { AccioRefreshOptions } from '$lib/utils/accio';
-   import axios from '$lib/utils/fetcher';
    import { rankToPage } from '$lib/utils/helpers';
-   import { useAccio } from '$lib/utils/accio';
-   import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
 
-   import type { Score, ScoreCollection } from '$lib/models/LeaderboardData';
+   import type { Score } from '$lib/models/LeaderboardData';
    import type { LeaderboardPlayer, Player, PlayerScore } from '$lib/models/PlayerData';
 
    import PlayerScoreComponent from './player-score.svelte';
@@ -28,62 +17,13 @@
    export let pageDirection = 1;
    export let openModal: (score: PlayerScore, player?: LeaderboardPlayer | Player) => void;
    export let expanded = false;
-   export let playerId: string = undefined;
+   export let playerId: string | undefined = undefined;
 
-   let leaderboardData: ScoreCollection;
-   let leaderboardDataLoading = false;
-   let leaderboardPage: number = Math.ceil(score.score.rank / 12);
-   let leaderboardPageDirection = 1;
+   let inlineLeaderboard: InlineLeaderboard;
+   const initialPage = Math.ceil(score.score.rank / 12);
 
-   $: expanded && loadLeaderboardData();
-
-   async function loadLeaderboardData() {
-      if (expanded && !leaderboardData) {
-         getLeaderboardData();
-      }
-   }
-
-   let scoreData: Writable<ScoreCollection>;
-   let scoreDataError: Writable<globalThis.Error>;
-   let refreshScores: (refreshOptions?: AccioRefreshOptions) => Promise<void>;
-
-   async function changePage(page: number) {
-      $requestCancel.cancel('Filter Changed');
-      updateCancelToken();
-      let oldPage = leaderboardPage;
-      leaderboardPageDirection = page > oldPage ? 1 : -1;
-      setTimeout(async () => {
-         leaderboardPage = page;
-         await getLeaderboardData();
-      });
-   }
-
-   async function getLeaderboardData() {
-      leaderboardDataLoading = true;
-      if (!scoreData) {
-         let {
-            data: tmpScoreData,
-            error: tmpScoreDataError,
-            refresh: tmpRefreshScores
-         } = useAccio<ScoreCollection>(
-            queryString.stringifyUrl({
-               url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
-               query: { page: leaderboardPage }
-            }),
-            { fetcher: axios }
-         );
-         scoreData = tmpScoreData;
-         scoreDataError = tmpScoreDataError;
-         refreshScores = tmpRefreshScores;
-      }
-      await refreshScores({
-         newUrl: queryString.stringifyUrl({
-            url: `/api/leaderboard/by-id/${score.leaderboard.id}/scores`,
-            query: { page: leaderboardPage }
-         }),
-         bypassInitialCheck: true
-      });
-      leaderboardDataLoading = false;
+   $: if (expanded && inlineLeaderboard) {
+      inlineLeaderboard.refresh(score.leaderboard.id.toString(), initialPage);
    }
 
    function modalOpen(newScore: Score) {
@@ -133,42 +73,15 @@
       <PlayerScoreComponent {openModal} {score} />
    </div>
    <div class="leaderboard" class:expanded>
-      {#if leaderboardDataLoading}
-         <Loader displayOver={true} />
-      {/if}
-      <div class:blur={leaderboardDataLoading}>
-         {#if $scoreData && !leaderboardDataLoading}
-            <div class="tableWrapper">
-               <LeaderboardGrid
-                  leaderboardScores={$scoreData.scores}
-                  leaderboard={score.leaderboard}
-                  pageDirection={leaderboardPageDirection}
-                  showScoreModal={modalOpen}
-                  playerHighlight={playerId}
-               />
-            </div>
-            <div class="pagination desktop tablet">
-               <ClassicPagination
-                  totalItems={$scoreData.metadata.total}
-                  pageSize={$scoreData.metadata.itemsPerPage}
-                  currentPage={leaderboardPage}
-                  {changePage}
-               />
-            </div>
-            <div class="mobile">
-               <ArrowPagination
-                  pageClicked={changePage}
-                  page={leaderboardPage}
-                  maxPages={$scoreData.metadata.total}
-                  pageSize={$scoreData.metadata.itemsPerPage}
-                  withFirstLast={true}
-               />
-            </div>
-         {/if}
-         {#if $scoreDataError}
-            <Error error={$scoreDataError} />
-         {/if}
-      </div>
+      <InlineLeaderboard
+         bind:this={inlineLeaderboard}
+         leaderboardId={score.leaderboard.id.toString()}
+         leaderboard={score.leaderboard}
+         {initialPage}
+         showScoreModal={modalOpen}
+         playerHighlight={playerId}
+         displayOver={true}
+      />
    </div>
 </div>
 
@@ -181,29 +94,7 @@
       height: 100%;
       justify-content: center;
    }
-   .table-item > div {
-      z-index: 1;
-   }
-   .table-item > div:not(.background, .leaderboard) {
-      position: relative;
-      grid-row: 1;
-   }
-   .table-item > div:nth-child(2) {
-      grid-column: 1;
-      border-radius: 6px 0 0 6px;
-      display: flex;
-      align-items: center;
-      height: 100%;
-      margin: 0px;
-   }
-   .table-item > div:nth-child(3) {
-      grid-column: 2;
-      padding: 12px 5px;
-   }
-   .table-item > div:nth-child(4) {
-      grid-column: 3;
-      border-radius: 0 6px 6px 0;
-   }
+
    .table-item {
       display: grid;
       grid-template-columns: 1fr 0.2fr 6fr 3fr;
@@ -214,6 +105,38 @@
       padding: 7px 0;
       border: 1px solid var(--borderColor);
       border-radius: 6px;
+
+      > div {
+         z-index: 1;
+
+         &:not(.background, .leaderboard) {
+            position: relative;
+            grid-row: 1;
+         }
+
+         &:nth-child(2) {
+            grid-column: 1;
+            border-radius: 6px 0 0 6px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin: 0px;
+         }
+
+         &:nth-child(3) {
+            grid-column: 2;
+            padding: 12px 5px;
+         }
+
+         &:nth-child(4) {
+            grid-column: 3;
+            border-radius: 0 6px 6px 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+         }
+      }
+
       .leaderboard {
          grid-row: 2;
          grid-column: 1 / span 4;
@@ -221,17 +144,17 @@
          transition: max-height var(--transitionTime) ease-out;
          overflow: hidden;
          position: relative;
-         .blur {
-            filter: blur(3px) saturate(1.2);
-            transition: 0.25s filter linear;
-         }
-         > div {
-            padding: 5px 20px;
-         }
+
          &.expanded {
             max-height: 800px;
             min-height: 200px;
+            padding: 16px;
+            margin: 8px 16px 16px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
          }
+
          * {
             z-index: 1;
             position: relative;
@@ -244,8 +167,10 @@
       flex-direction: column;
       justify-content: center;
       height: 100%;
+
       &:hover {
          cursor: pointer;
+
          .arrow {
             &:before,
             &:after {
@@ -253,6 +178,7 @@
             }
          }
       }
+
       .arrow {
          width: 13px;
          height: 13px;
@@ -264,6 +190,7 @@
          margin-top: 2px;
          text-align: left;
          transform: rotate(45deg);
+
          &:before,
          &:after {
             position: absolute;
@@ -274,17 +201,21 @@
             background-color: #fff;
             transition: 0.4s ease;
          }
+
          &:after {
             position: absolute;
             transform: rotate(90deg);
             top: -5px;
             left: 5px;
          }
+
          &.active {
             transform: rotate(45deg) translate(-5px, -5px);
+
             &:before {
                transform: translate(10px, 0);
             }
+
             &:after {
                transform: rotate(90deg) translate(10px, 0);
             }
@@ -297,6 +228,7 @@
       width: 16px;
       cursor: help;
    }
+
    .background {
       position: absolute;
       top: 0;
@@ -316,50 +248,41 @@
       -webkit-backdrop-filter: blur(8px) saturate(120%);
    }
 
-   .pagination {
-      display: flex;
-      width: 100%;
-      justify-content: center;
-      align-items: center;
-      margin: 15px 0;
-   }
-
-   @media only screen and (min-width: 769px) {
-      .mobile {
-         display: none;
-      }
-   }
    @media only screen and (max-width: 769px) {
-      .desktop {
-         display: none;
-      }
       .table-item {
          grid-template-columns: 20px 1fr;
          padding: 12px;
+
          > div:not(.background, .leaderboard) {
             grid-row: 2 !important;
          }
+
          > div:nth-child(2) {
             grid-row: 1 !important;
             grid-column: 1 / span 2;
+
             .rank-info {
                flex-flow: row nowrap;
                justify-content: space-between;
                width: 100%;
             }
          }
+
          > div:nth-child(3) {
             grid-column: 1;
          }
+
          > div:nth-child(4) {
             grid-column: 2;
          }
+
          > div:nth-child(5) {
             grid-row: 3 !important;
             grid-column: 1 / span 2;
             display: flex;
             flex-flow: row wrap;
             justify-content: center;
+
             > div {
                display: contents;
             }
@@ -367,13 +290,6 @@
 
          .leaderboard {
             grid-row: 4 !important;
-            > div {
-               padding: 5px 0px;
-            }
-            .tableWrapper {
-               overflow-x: auto;
-               margin-bottom: 8px;
-            }
          }
       }
    }

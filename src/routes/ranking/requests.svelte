@@ -157,7 +157,7 @@
             {/if}
             <div class:blur={$showTopRequestsBlur}>
                <h3>Next items in queue</h3>
-               <div class="ranking">
+               <div class="ranking ranking-table">
                   <table>
                      <thead>
                         <tr>
@@ -228,7 +228,7 @@
                {/if}
                <div class:blur={$showBelowTopRequestsBlur}>
                   <h3>Open rank/unrank requests</h3>
-                  <div class="ranking">
+                  <div class="ranking ranking-table">
                      <table>
                         <thead>
                            <tr>
@@ -276,44 +276,18 @@
 </div>
 
 <style lang="scss">
-   .bg-content {
-      min-height: 100vh;
-   }
-
    .window {
       position: relative;
    }
 
-   .loader-placeholder {
-      display: flex;
-      justify-content: center;
-      padding: 4rem 0;
-   }
-
-   .blur {
-      filter: blur(3px) saturate(1.2);
-      transition: 0.25s filter linear;
-      pointer-events: none;
-   }
-
-   table {
-      border-collapse: separate;
-      border-spacing: 0 5px;
-      white-space: nowrap;
+   .ranking-table table {
       margin-top: -15px;
    }
+
    div.ranking {
       overflow-x: auto;
    }
-   .content table th {
-      border: none !important;
-   }
-   td {
-      border: none !important;
-      border-style: solid none;
-      align-items: center;
-      vertical-align: middle;
-   }
+
    tr.highlight {
       td {
          border-top: 2px solid var(--scoreSaberYellow) !important;
@@ -331,19 +305,10 @@
       background-color: var(--gray);
       border: 1px solid var(--borderColor);
    }
+
    tr.table-item:hover td {
       background-color: var(--gray-light);
       border-color: var(--gray-light);
-   }
-   td:first-child {
-      border-left-style: solid;
-      border-top-left-radius: 6px;
-      border-bottom-left-radius: 6px;
-   }
-   td:last-child {
-      border-right-style: solid;
-      border-bottom-right-radius: 6px;
-      border-top-right-radius: 6px;
    }
 
    .below-top {

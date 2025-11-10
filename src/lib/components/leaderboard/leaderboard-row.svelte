@@ -73,7 +73,6 @@
       padding: 5px;
       border-radius: 6px;
       grid-column: 1;
-      transition: background-color 0.25s ease, border-color 0.25s ease;
       .centered {
          text-align: center;
       }
@@ -84,9 +83,6 @@
    }
    .rank {
       padding-right: 7px;
-   }
-   .old-score {
-      color: red;
    }
    div {
       border: none !important;
@@ -116,7 +112,7 @@
       display: flex;
    }
    span.score {
-      border-bottom: 1px dotted white;
+      border-bottom: 1px dotted var(--white);
       cursor: pointer;
    }
 

@@ -171,86 +171,74 @@
       );
    }
 
-   async function handleRefresh(player: Player) {
+   async function refreshPlayerWithAction(action: () => Promise<void>) {
       playerData.set(undefined);
-      await fetcher(`/api/user/${player.id}/refresh`);
+      await action();
       refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+   }
+
+   async function handleRefresh(player: Player) {
+      return refreshPlayerWithAction(() => fetcher(`/api/user/${player.id}/refresh`));
    }
 
    async function handleBan(player: Player, reason: string) {
-      playerData.set(undefined);
-      await fetcher(`/api/user/${player.id}/ban/${reason}`, { withCredentials: true });
-      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+      return refreshPlayerWithAction(() => fetcher(`/api/user/${player.id}/ban/${reason}`, { withCredentials: true }));
    }
 
    async function handleUnban(player: Player) {
-      playerData.set(undefined);
-      await fetcher(`/api/user/${player.id}/unban`, { withCredentials: true });
-      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+      return refreshPlayerWithAction(() => fetcher(`/api/user/${player.id}/unban`, { withCredentials: true }));
    }
 
    async function handleGiveRole(player: Player, role: string) {
-      playerData.set(undefined);
-      await fetcher(`/api/user/${player.id}/giveRole/${role}`, { withCredentials: true });
-      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+      return refreshPlayerWithAction(() => fetcher(`/api/user/${player.id}/giveRole/${role}`, { withCredentials: true }));
    }
 
    async function handleRemoveRole(player: Player, role: string) {
-      playerData.set(undefined);
-      await fetcher(`/api/user/${player.id}/removeRole/${role}`, { withCredentials: true });
-      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+      return refreshPlayerWithAction(() => fetcher(`/api/user/${player.id}/removeRole/${role}`, { withCredentials: true }));
    }
 
    async function handleOverrideRoleText(player: Player, role: string) {
-      playerData.set(undefined);
-      await fetcher(`/api/user/${player.id}/overrideRoleText/${role}`, { withCredentials: true });
-      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+      return refreshPlayerWithAction(() => fetcher(`/api/user/${player.id}/overrideRoleText/${role}`, { withCredentials: true }));
    }
 
    async function handleResetCountryAdmin(player: Player) {
-      playerData.set(undefined);
-      await fetcher(`/api/user/${player.id}/reset-country`, { withCredentials: true });
-      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+      return refreshPlayerWithAction(() => fetcher(`/api/user/${player.id}/reset-country`, { withCredentials: true }));
    }
 
    async function handleResetCountryUser() {
-      playerData.set(undefined);
-      await fetcher(`/api/user/reset-country`, { withCredentials: true });
-      refreshPlayerData({ forceRevalidate: true, softRefresh: true });
+      return refreshPlayerWithAction(() => fetcher(`/api/user/reset-country`, { withCredentials: true }));
    }
 
    function handleBioSaveStatus(status: SaveStatus) {
-      switch (status) {
-         case SaveStatus.Started: {
-            playerData.set(undefined);
-            break;
-         }
-         case SaveStatus.Completed: {
-            refreshPlayerData({ forceRevalidate: true, softRefresh: true });
-            break;
-         }
+      if (status === SaveStatus.Started) {
+         playerData.set(undefined);
+         return;
+      }
+
+      if (status === SaveStatus.Completed) {
+         refreshPlayerData({ forceRevalidate: true, softRefresh: true });
       }
    }
 
    function searchUpdated(search: string) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
-      if (search) {
-         if (search.length > 3) {
-            pageQuery.update({
-               page: 1,
-               search
-            });
-         } else {
-            pageQuery.updateSingle('search', null);
-         }
-      } else {
-         pageQuery.updateSingle('search', null);
-      }
+
+      const shouldSearch = search && search.length > 3;
+      pageQuery.update({
+         page: 1,
+         search: shouldSearch ? search : null
+      });
    }
 
    let isSteamPlayer: boolean;
    $: isSteamPlayer = $playerData?.id && parseInt($playerData.id, 10) >= 70000000000000000;
+
+   $: isCurrentUser = $userData && $playerData && $playerData.id === $userData.playerId;
+   $: isAdmin = $userData && permissions.checkPermissionNumber($userData.permissions, permissions.security.ADMIN);
+   $: isActivePlayer = $playerData && !$playerData.inactive && !$playerData.banned;
+   $: showScores = $scoreInitialLoadComplete && $playerData && !$playerData.banned;
+   $: showChartAndBadges = $playerData?.id && !$playerData.banned && $playerData.scoreStats;
 </script>
 
 <head>
@@ -289,21 +277,29 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                   <div class="image is-128x128 rounded">
                      <img src={$playerData.profilePicture} alt="{$playerData.name}'s profile picture" />
                      {#if isSteamPlayer}
-                        <button on:click={() => handleRefresh($playerData)} class="button refresh is-small is-dark mt-2" title="Refresh User">
+                        <button
+                           on:click={() => handleRefresh($playerData)}
+                           class="button profile-action refresh is-small is-dark mt-2"
+                           title="Refresh User"
+                        >
                            <span class="icon is-small">
                               <i class="fas fa-sync-alt" />
                            </span>
                         </button>
                      {/if}
-                     {#if $userData && $playerData.id == $userData.playerId}
-                        <button on:click={() => openCountryResetModal()} class="button refresh-country is-small is-dark mt-2" title="Refresh country">
+                     {#if isCurrentUser}
+                        <button
+                           on:click={() => openCountryResetModal()}
+                           class="button profile-action refresh-country is-small is-dark mt-2"
+                           title="Refresh country"
+                        >
                            <span class="icon is-small">
                               <i class="fas fa-flag" />
                            </span>
                         </button>
                      {/if}
-                     {#if $userData && permissions.checkPermissionNumber($userData.permissions, permissions.security.ADMIN)}
-                        <button on:click={() => openAdminModal()} class="button admin is-small is-dark mt-2" title="Admin Actions">
+                     {#if isAdmin}
+                        <button on:click={() => openAdminModal()} class="button profile-action admin is-small is-dark mt-2" title="Admin Actions">
                            <span class="icon is-small">
                               <i class="fas fa-users-cog" />
                            </span>
@@ -330,7 +326,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                </h5>
 
                <h5 class="title is-5 player has-text-centered-mobile">
-                  {#if !$playerData.inactive && !$playerData.banned}
+                  {#if isActivePlayer}
                      <small>
                         <span class="title-header">
                            <i class="fas fa-globe-americas" title="Global Ranking" />
@@ -350,11 +346,9 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                   {/if}
                   {#if $playerData.inactive}
                      <div class="text-inactive text-muted mb-3">Inactive account</div>
-                  {/if}
-                  {#if $playerData.banned}
+                  {:else if $playerData.banned}
                      <div class="text-inactive text-muted mb-3">Banned account</div>
-                  {/if}
-                  {#if !$playerData.scoreStats}
+                  {:else if !$playerData.scoreStats}
                      <div class="text-inactive text-muted mb-3">New account</div>
                   {/if}
                </h5>
@@ -368,71 +362,62 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       {/if}
    </div>
 
-   {#if $playerData?.id && !$playerData.banned}
+   {#if showChartAndBadges}
       {#key $playerData.id}
-         {#if $playerData.scoreStats}
-            <div class="window has-shadow noheading">
-               <Badges player={$playerData} />
-               {#if !$playerData.inactive && RankChartComponent}
-                  <svelte:component this={RankChartComponent} player={$playerData} />
-               {/if}
-            </div>
-            <Bio saveStatusUpdate={handleBioSaveStatus} player={$playerData} userData={$userData} />
-         {/if}
+         <div class="window has-shadow noheading">
+            <Badges player={$playerData} />
+            {#if !$playerData.inactive && RankChartComponent}
+               <svelte:component this={RankChartComponent} player={$playerData} />
+            {/if}
+         </div>
+         <Bio saveStatusUpdate={handleBioSaveStatus} player={$playerData} userData={$userData} />
       {/key}
    {/if}
 
-   {#if $scoreInitialLoadComplete && $playerData}
-      {#if !$playerData.banned}
-         <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading bottomSection">
-            {#if $scoreDataLoading}
-               <Loader displayOver={true} />
-            {/if}
-            <div class="button-container">
-               <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
-            </div>
-            <div class="search-container">
-               <div class="search">
-                  <TextInput isSmall={true} onInput={searchUpdated} value={$pageQuery.search} />
-               </div>
-            </div>
-            {#if $scoreData}
-               <div class="ranking songs">
-                  <div class="ranking songs gridTable" class:loadingBlur={$scoreDataLoading}>
-                     {#each $scoreData.playerScores ?? [] as score, i (score.score.id)}
-                        <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData.id} />
-                     {/each}
-                  </div>
-               </div>
-               <div class="pagination desktop tablet">
-                  <ClassicPagination
-                     totalItems={$scoreData.metadata.total}
-                     pageSize={$scoreData.metadata.itemsPerPage}
-                     currentPage={$pageQuery.page}
-                     changePage={(e) => changePage(e)}
-                  />
-               </div>
-               <div class="mobile bottom-arrowpagination">
-                  <ArrowPagination
-                     pageClicked={changePage}
-                     page={$pageQuery.page}
-                     pageSize={$scoreData.metadata.itemsPerPage}
-                     maxPages={$scoreData.metadata.total}
-                     withFirstLast={true}
-                  />
-               </div>
-            {/if}
+   {#if showScores}
+      <div in:fly={{ x: 20, duration: 1000 }} class="window has-shadow noheading bottomSection">
+         {#if $scoreDataLoading}
+            <Loader displayOver={true} />
+         {/if}
+         <div class="button-container">
+            <ButtonGroup onUpdate={sortChanged} options={sortButtons} bind:selected={selOption} />
          </div>
-      {/if}
-   {/if}
-
-   {#if !$scoreData && !$scoreDataError && !$scoreInitialLoadComplete}
+         <div class="search-container">
+            <div class="search">
+               <TextInput isSmall={true} onInput={searchUpdated} value={$pageQuery.search} />
+            </div>
+         </div>
+         {#if $scoreDataError && $pageQuery.search}
+            <Error error={$scoreDataError} />
+         {:else if $scoreData}
+            <div class="ranking songs">
+               <div class="ranking songs gridTable" class:loadingBlur={$scoreDataLoading}>
+                  {#each $scoreData.playerScores ?? [] as score, i (score.score.id)}
+                     <Score openModal={openScoreModal} {pageDirection} {score} row={i + 1} playerId={$playerData.id} />
+                  {/each}
+               </div>
+            </div>
+            <div class="pagination desktop tablet">
+               <ClassicPagination
+                  totalItems={$scoreData.metadata.total}
+                  pageSize={$scoreData.metadata.itemsPerPage}
+                  currentPage={$pageQuery.page}
+                  changePage={(e) => changePage(e)}
+               />
+            </div>
+            <div class="mobile bottom-arrowpagination">
+               <ArrowPagination
+                  pageClicked={changePage}
+                  page={$pageQuery.page}
+                  pageSize={$scoreData.metadata.itemsPerPage}
+                  maxPages={$scoreData.metadata.total}
+                  withFirstLast={true}
+               />
+            </div>
+         {/if}
+      </div>
+   {:else if !$scoreData && !$scoreDataError}
       <Loader />
-   {/if}
-   {#if $scoreDataError}
-      {#if $scoreDataError.status != 404}
-         <Error error={$scoreDataError} />
-      {/if}
    {/if}
 </div>
 
@@ -448,7 +433,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       grid-template-columns: 1fr;
       margin-top: 0.75rem;
       min-height: 200px;
-      gap: 0.5rem;
+      gap: 0.25rem;
    }
 
    .bottomSection {
@@ -525,35 +510,36 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       justify-content: center;
       margin-bottom: 0.5rem;
    }
-   .profile-picture .button {
+
+   .profile-picture .button.profile-action {
       position: absolute;
       border-radius: 6px;
       border: 1px solid var(--borderColor);
       background-color: var(--foregroundItem);
       transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
-   }
 
-   .profile-picture .button:hover {
-      background-color: var(--gray-light);
-      border-color: var(--scoreSaberYellow);
-      transform: scale(1.05);
-   }
+      &:hover {
+         background-color: var(--gray-light);
+         border-color: var(--scoreSaberYellow);
+         transform: scale(1.05);
+      }
 
-   .profile-picture .button:active {
-      transform: scale(0.95);
-   }
+      &:active {
+         transform: scale(0.95);
+      }
 
-   .profile-picture .refresh {
-      right: 3px;
-   }
+      &.refresh {
+         right: 3px;
+      }
 
-   .profile-picture .refresh-country {
-      top: 40px;
-      right: -15px;
-   }
+      &.refresh-country {
+         top: 40px;
+         right: -15px;
+      }
 
-   .profile-picture .admin {
-      right: 105px;
+      &.admin {
+         right: 105px;
+      }
    }
 
    .profile-picture .image img {
@@ -612,17 +598,9 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       margin: 1rem 0;
    }
 
-   @media only screen and (min-width: 769px) {
-      .mobile {
-         display: none;
-      }
-   }
    @media only screen and (max-width: 769px) {
       .column.is-narrow {
          width: 100%;
-      }
-      .desktop {
-         display: none;
       }
       .player {
          justify-content: center;

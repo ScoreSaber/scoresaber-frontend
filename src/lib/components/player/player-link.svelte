@@ -133,7 +133,7 @@
    }
    a,
    span {
-      transition: color 300ms;
+      transition: color var(--transitionTime);
       overflow: hidden;
       text-overflow: ellipsis;
    }

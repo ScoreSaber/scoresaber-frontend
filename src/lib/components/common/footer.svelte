@@ -137,11 +137,6 @@
       color: var(--scoreSaberYellow);
    }
 
-   .logo {
-      width: 28px;
-      height: 28px;
-      display: block;
-   }
 
    .site-footer.mobile .logo {
       width: 24px;
@@ -204,10 +199,6 @@
       border-radius: 0.75rem;
    }
 
-   .social-link:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--scoreSaberYellow);
-   }
 
    .legal {
       color: rgba(255, 255, 255, 0.6);

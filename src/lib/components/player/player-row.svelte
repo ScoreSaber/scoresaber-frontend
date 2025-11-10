@@ -104,7 +104,6 @@
       background-color: var(--gray);
       border: 1px solid var(--borderColor);
       padding: 8px;
-      transition: background-color 0.25s ease, border-color 0.25s ease;
       grid-column: 1;
       &:hover {
          background-color: var(--gray-light);

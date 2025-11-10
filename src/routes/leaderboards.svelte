@@ -21,7 +21,6 @@
    import { useAccio } from '$lib/utils/accio';
    import { useDelayedBlur } from '$lib/utils/delayed-blur';
    import axios from '$lib/utils/fetcher';
-   import { rankedBatch, getBatchTitle } from '$lib/config/ranked-batch';
 
    import {
       Category,
@@ -32,6 +31,8 @@
       type LeaderboardInfoCollection,
       SortDirection
    } from '$lib/models/LeaderboardData';
+
+   import { rankedBatch, getBatchTitle } from '$lib/config/ranked-batch';
 
    let rangeStars: number[] = [];
 
@@ -124,17 +125,21 @@
    function searchUpdated(search: string) {
       $requestCancel.cancel('Filter Changed');
       updateCancelToken();
-      if (search) {
-         if (search.length > 3) {
-            pageQuery.update({
-               page: 1,
-               search
-            });
-         } else {
-            pageQuery.updateSingle('search', null);
-         }
+
+      if (!search) {
+         // Clear search and reset to page 1
+         pageQuery.update({ page: 1, search: null });
+         return;
+      }
+
+      search = search.trim();
+      if (search.length > 3) {
+         pageQuery.update({
+            page: 1,
+            search
+         });
       } else {
-         pageQuery.updateSingle('search', null);
+         pageQuery.update({ page: 1, search: null });
       }
    }
    let debounceTimer;
@@ -177,57 +182,68 @@
       <div class="columns">
          <div class="column is-8">
             {#if $leaderboardsError}
-               <Error error={$leaderboardsError} />
-            {/if}
-
-            {#if $leaderboards}
+               <div class="window has-shadow error-container">
+                  <Error error={$leaderboardsError} />
+               </div>
+            {:else if $leaderboards}
                <div class="window has-shadow noheading" aria-busy={$isLoading || $showBlur}>
                   {#if $showBlur}
                      <Loader displayOver={true} />
                   {/if}
 
                   <div class="content" class:blur={$showBlur}>
-                     <div class="ranking">
-                        <table>
-                           <thead>
-                              <tr class="headers">
-                                 <th class="map" />
-                                 <th class="plays centered desktop">Plays</th>
-                                 <th class="plays-daily centered desktop">Last 24h</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {#each $leaderboards.leaderboards as leaderboard}
-                                 <tr class="table-item">
-                                    <td class="map"
-                                       ><SmallSongInfo {leaderboard} margin={false} /><span class="text-muted mobile plays">
-                                          <b>{leaderboard.plays.toLocaleString('en-US')}</b> plays ({leaderboard.dailyPlays.toLocaleString('en-US')} in
-                                          the last 24h)</span
-                                       ></td
-                                    >
-                                    <td class="plays centered desktop">
-                                       {leaderboard.plays.toLocaleString('en-US')}
-                                    </td>
-                                    <td class="plays-daily centered desktop">
-                                       {leaderboard.dailyPlays.toLocaleString('en-US')}
-                                    </td>
+                     {#if $leaderboards.leaderboards?.length > 0}
+                        <div class="ranking ranking-table">
+                           <table>
+                              <thead>
+                                 <tr class="headers">
+                                    <th class="map" />
+                                    <th class="plays centered desktop">Plays</th>
+                                    <th class="plays-daily centered desktop">Last 24h</th>
                                  </tr>
-                              {/each}
-                           </tbody>
-                        </table>
-                     </div>
-                     <br />
-                     <div class="desktop">
-                        <ClassicPagination totalItems={$leaderboards.metadata.total} pageSize={14} currentPage={$pageQuery.page} {changePage} />
-                     </div>
-                     <div class="mobile">
-                        <ArrowPagination
-                           pageClicked={changePage}
-                           page={$pageQuery.page}
-                           pageSize={$leaderboards.metadata.itemsPerPage}
-                           maxPages={$leaderboards.metadata.total}
-                        />
-                     </div>
+                              </thead>
+                              <tbody>
+                                 {#each $leaderboards.leaderboards as leaderboard}
+                                    <tr class="table-item">
+                                       <td class="map"
+                                          ><SmallSongInfo {leaderboard} margin={false} /><span class="text-muted mobile plays">
+                                             <b>{leaderboard.plays.toLocaleString('en-US')}</b> plays ({leaderboard.dailyPlays.toLocaleString(
+                                                'en-US'
+                                             )} in the last 24h)</span
+                                          ></td
+                                       >
+                                       <td class="plays centered desktop">
+                                          {leaderboard.plays.toLocaleString('en-US')}
+                                       </td>
+                                       <td class="plays-daily centered desktop">
+                                          {leaderboard.dailyPlays.toLocaleString('en-US')}
+                                       </td>
+                                    </tr>
+                                 {/each}
+                              </tbody>
+                           </table>
+                        </div>
+                        <br />
+                        <div class="desktop">
+                           <ClassicPagination totalItems={$leaderboards.metadata.total} pageSize={14} currentPage={$pageQuery.page} {changePage} />
+                        </div>
+                        <div class="mobile">
+                           <ArrowPagination
+                              pageClicked={changePage}
+                              page={$pageQuery.page}
+                              pageSize={$leaderboards.metadata.itemsPerPage}
+                              maxPages={$leaderboards.metadata.total}
+                           />
+                        </div>
+                     {:else}
+                        <div class="empty-state">
+                           <div class="empty-icon">
+                              <i class="fas fa-music" />
+                           </div>
+                           <div class="empty-message">No leaderboards found</div>
+                           <div class="empty-hint">Try adjusting your filters or search terms</div>
+                        </div>
+                     {/if}
                   </div>
                </div>
             {:else if $isLoading}
@@ -245,15 +261,15 @@
             </div>
             <div class="window has-shadow noheading">
                <label class="checkbox">
-                  <input type="checkbox" checked={$pageQuery.verified == 1} on:click|preventDefault={toggleVerified} />
+                  <input type="checkbox" checked={$pageQuery.verified == 1} on:change={toggleVerified} />
                   Only show verified leaderboards
                </label>
                <label class="checkbox">
-                  <input type="checkbox" checked={$pageQuery.ranked == 1} on:click|preventDefault={toggleRanked} />
+                  <input type="checkbox" checked={$pageQuery.ranked == 1} on:change={toggleRanked} />
                   Only show ranked leaderboards
                </label>
                <label class="checkbox">
-                  <input type="checkbox" checked={$pageQuery.qualified == 1} on:click|preventDefault={toggleQualified} />
+                  <input type="checkbox" checked={$pageQuery.qualified == 1} on:change={toggleQualified} />
                   Only show qualified leaderboards
                </label>
             </div>
@@ -308,12 +324,53 @@
 </div>
 
 <style lang="scss">
-   .bg-content {
-      min-height: 100vh;
-   }
-
    .window {
       position: relative;
+   }
+
+   .error-container {
+      padding: 2rem;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .loader-placeholder {
+      display: flex;
+      justify-content: center;
+      padding: 4rem 0;
+      min-height: 200px;
+   }
+
+   .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      min-height: 300px;
+      text-align: center;
+   }
+
+   .empty-icon {
+      font-size: 4rem;
+      color: var(--textColor);
+      opacity: 0.3;
+      margin-bottom: 1.5rem;
+   }
+
+   .empty-message {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--textColor);
+      margin-bottom: 0.5rem;
+   }
+
+   .empty-hint {
+      font-size: 1rem;
+      color: var(--textColor);
+      opacity: 0.6;
    }
 
    .content {
@@ -325,54 +382,22 @@
       }
    }
 
-   .loader-placeholder {
-      display: flex;
-      justify-content: center;
-      padding: 4rem 0;
-   }
-   table {
-      border-collapse: separate;
-      border-spacing: 0 5px;
-      white-space: nowrap;
+   .ranking-table table {
       margin-top: -15px;
    }
+
    div.ranking {
       overflow-x: auto;
-   }
-   .content table th {
-      border: none !important;
-   }
-   td {
-      border: none !important;
-      border-style: solid none;
-      align-items: center;
-      vertical-align: middle;
    }
 
    tr.table-item td {
       background-color: var(--gray);
       border: 1px solid var(--borderColor);
    }
+
    tr.table-item:hover td {
       background-color: var(--gray-light);
       border-color: var(--gray-light);
-   }
-   td:first-child {
-      border-left-style: solid;
-      border-top-left-radius: 6px;
-      border-bottom-left-radius: 6px;
-   }
-   td:last-child {
-      border-right-style: solid;
-      border-bottom-right-radius: 6px;
-      border-top-right-radius: 6px;
-   }
-
-   div.ranking {
-      overflow-x: auto;
-   }
-   .content table th {
-      border: none !important;
    }
 
    @media screen and (max-width: 769px), print {
@@ -419,10 +444,11 @@
    .window .checkbox {
       display: flex;
       align-items: center;
-      padding: 0.75rem 0;
+      padding: 0.4rem 0;
       cursor: pointer;
       transition: color 0.2s ease;
       color: var(--textColor);
+      user-select: none;
 
       &:hover {
          color: var(--scoreSaberYellow);

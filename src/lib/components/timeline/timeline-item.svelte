@@ -118,9 +118,6 @@
          margin: 25px 0;
       }
 
-      .spacer {
-         flex: 1;
-      }
 
       .line {
          height: 3px;

@@ -113,17 +113,21 @@
       $requestCancel.cancel('Search Changed');
       updateCancelToken();
 
-      const trimmedSearch = search?.trim() || null;
-
-      if (!trimmedSearch || trimmedSearch.length < MIN_SEARCH_LENGTH) {
-         pageQuery.updateSingle('search', null);
+      if (!search) {
+         // Clear search and reset to page 1
+         pageQuery.update({ page: 1, search: null });
          return;
       }
 
-      pageQuery.update({
-         page: 1,
-         search: trimmedSearch
-      });
+      const trimmedSearch = search.trim();
+      if (trimmedSearch.length >= MIN_SEARCH_LENGTH) {
+         pageQuery.update({
+            page: 1,
+            search: trimmedSearch
+         });
+      } else {
+         pageQuery.update({ page: 1, search: null });
+      }
    }
 
    const pageUnsubscribe = page.subscribe(async (p) => {
@@ -148,12 +152,50 @@
 </head>
 
 <div class="section">
-   {#if $rankingsError}
-      <Error error={$rankingsError} />
-   {/if}
+   <div class="rankings-container window has-shadow noheading">
+      {#if $rankingsError}
+         <div class="error-with-controls">
+            <div class="controls-bar">
+               <div class="desktop tablet pagination-left" />
 
-   {#if $rankings}
-      <div class="rankings-container window has-shadow noheading">
+               <div class="controls-center">
+                  <div class="filters-group">
+                     {#if $pageQuery.regions === null}
+                        <Filter
+                           items={filters.countryFilter}
+                           bind:selectedItems={countryFilters}
+                           initialItems={$pageQuery.countries}
+                           filterName="Country"
+                           withCountryImages={true}
+                           filterUpdated={handleCountryFilterUpdate}
+                        />
+                     {/if}
+                     {#if $pageQuery.countries === null}
+                        <Filter
+                           items={filters.regionFilter}
+                           bind:selectedItems={regionFilters}
+                           initialItems={$pageQuery.regions}
+                           filterName="Region"
+                           filterUpdated={handleRegionFilterUpdate}
+                        />
+                     {/if}
+                  </div>
+
+                  <div class="divider" />
+
+                  <div class="search-container">
+                     <TextInput icon="fa-search" onInput={handleSearchUpdate} value={$pageQuery.search} />
+                  </div>
+               </div>
+
+               <div class="desktop tablet pagination-right" />
+            </div>
+
+            <div class="error-display">
+               <Error error={$rankingsError} />
+            </div>
+         </div>
+      {:else if $rankings}
          {#if $showBlur}
             <Loader displayOver={true} />
          {/if}
@@ -242,16 +284,41 @@
                />
             </div>
          </div>
-      </div>
-   {:else if $isLoading}
-      <Loader />
-   {/if}
+      {:else if $isLoading}
+         <div class="loader-placeholder">
+            <Loader />
+         </div>
+      {/if}
+   </div>
 </div>
 
 <style lang="scss">
    .rankings-container {
       position: relative;
       padding: 1rem;
+   }
+
+   .error-with-controls {
+      .controls-bar {
+         padding-bottom: 1rem;
+         border-bottom: 1px solid var(--borderColor);
+         margin-bottom: 1.5rem;
+      }
+   }
+
+   .error-display {
+      padding: 2rem;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+   }
+
+   .loader-placeholder {
+      display: flex;
+      justify-content: center;
+      padding: 4rem 0;
+      min-height: 200px;
    }
 
    .content {
@@ -354,18 +421,6 @@
 
    .table-body {
       display: contents;
-   }
-
-   @media only screen and (min-width: 769px) {
-      .mobile {
-         display: none;
-      }
-   }
-
-   @media only screen and (max-width: 769px) {
-      .desktop {
-         display: none;
-      }
    }
 
    @media (max-width: 768px) {

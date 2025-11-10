@@ -161,10 +161,6 @@
       box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.3);
    }
 
-   .spacer {
-      flex: 1;
-   }
-
    .actions {
       display: flex;
       align-items: center;
@@ -234,11 +230,6 @@
       background: rgba(255, 255, 255, 0.04);
       color: rgba(255, 255, 255, 0.7);
       transition: background 0.2s ease, color 0.2s ease;
-   }
-
-   .social-link:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--scoreSaberYellow);
    }
 
    .login-button {

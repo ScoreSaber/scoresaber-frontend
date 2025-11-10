@@ -69,9 +69,6 @@
       position: relative;
       z-index: 1;
    }
-   .text-muted {
-      color: var(--muted);
-   }
    .warning {
       color: red;
    }

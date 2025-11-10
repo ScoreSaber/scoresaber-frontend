@@ -81,32 +81,10 @@
       height: 1px;
    }
 
-   .bg-image {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      background-position: 50% !important;
-      background-repeat: no-repeat !important;
-      background-size: cover !important;
-      z-index: -1;
-      border-radius: 6px;
-   }
-
-   .map-card {
-      z-index: 1;
-      color: var(--textColor);
-      background: none;
-      border-radius: 0.9rem;
-   }
-
-   .map-card .card-content {
-      border-radius: 0.9rem;
-   }
-
    .tag {
       font-size: xx-small;
       min-width: 20px;
-      color: white;
+      color: var(--white);
       padding: 4px 4px 3px 4px;
       cursor: help;
    }
@@ -127,16 +105,5 @@
       padding: 0.2rem 0.3rem;
       border-radius: 6px;
       flex-grow: 1;
-   }
-
-   .map-cover {
-      border-radius: 6px;
-   }
-
-   .subtitle {
-      display: block;
-      color: var(--textColor);
-      font-size: 14px;
-      margin-top: 0.5rem !important;
    }
 </style>

@@ -192,9 +192,6 @@
       align-items: center;
       gap: 0.4rem;
    }
-   .text-muted {
-      color: var(--muted);
-   }
 
    @media only screen and (max-width: 769px) {
       .tools-row {

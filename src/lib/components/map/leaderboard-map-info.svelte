@@ -83,17 +83,6 @@
 </dialog>
 
 <style>
-   .bg-image {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      background-position: 50% !important;
-      background-repeat: no-repeat !important;
-      background-size: cover !important;
-      z-index: -1;
-      border-radius: 6px;
-   }
-
    .download-overlay {
       background: var(--foregroundItem);
       border: 1px solid var(--borderColor);
@@ -124,17 +113,6 @@
       background: var(--gray-light);
    }
 
-   .map-card {
-      z-index: 1;
-      color: var(--textColor);
-      background: none;
-      border-radius: 0.9rem;
-   }
-
-   .map-card .card-content {
-      border-radius: 0.9rem;
-   }
-
    .tag {
       font-size: x-small;
       min-width: 20px;
@@ -143,40 +121,8 @@
       cursor: help;
    }
 
-   .votes {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      align-items: center;
-      margin-top: 0.8rem;
-      text-align: center;
-      gap: 0.5rem;
-   }
-
-   .vote {
-      background-color: var(--foregroundItem);
-      border: 1px solid var(--borderColor);
-      padding: 0.2rem 0.3rem;
-      border-radius: 6px;
-      flex-grow: 1;
-   }
-
-   .map-cover {
-      border-radius: 6px;
-   }
-
-   .subtitle {
-      display: block;
-      color: var(--textColor);
-      font-size: 14px;
-      margin-top: 0.5rem !important;
-   }
-
    .content {
       word-break: break-all;
    }
 
-   .text-muted {
-      color: var(--muted);
-   }
 </style>
