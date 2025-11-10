@@ -16,7 +16,8 @@
       }
    });
 
-   function hideAnnouncement() {
+   function hideAnnouncement(event: MouseEvent) {
+      event.stopPropagation();
       if (rememberClose) {
          localStorage.setItem(formattedId, 'closed');
       }

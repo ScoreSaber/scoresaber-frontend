@@ -3,6 +3,8 @@
 
    import Meta from '$lib/components/common/meta.svelte';
 
+   import { rankedBatch, getYouTubeEmbedUrl, getBatchTitle, getReweightsUrl, getReweightsLinkText } from '$lib/config/ranked-batch';
+
    defaultBackground();
 </script>
 
@@ -134,15 +136,15 @@
                <i class="fab fa-youtube" />
             </div>
             <div class="video-title-section">
-               <h3 class="video-title">November Ranked Batch Overview</h3>
+               <h3 class="video-title">{getBatchTitle(rankedBatch.month)}</h3>
             </div>
          </div>
          <div class="video-wrapper">
             <iframe
                width="100%"
                height="100%"
-               src="https://www.youtube.com/embed/kWqdTFP6bs8"
-               title="November Ranked Batch Overview"
+               src={getYouTubeEmbedUrl(rankedBatch.videoId)}
+               title={getBatchTitle(rankedBatch.month)}
                frameborder="0"
                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                allowfullscreen
@@ -156,8 +158,8 @@
             maps above 12 stars get reweighted again the next month, and maps above 14 stars get a third reweight the month after that. Sometimes
             there are global reweights that rebalance all maps.
          </p>
-         <a href="https://wiki.scoresaber.com/ranking/reweights/2025/November-2025.html" class="reweights-link" target="_blank" rel="noopener">
-            <span>View November 2025 Reweights</span>
+         <a href={getReweightsUrl(rankedBatch.month, rankedBatch.year)} class="reweights-link" target="_blank" rel="noopener">
+            <span>{getReweightsLinkText(rankedBatch.month, rankedBatch.year)}</span>
             <i class="fa fa-external-link-alt" />
          </a>
       </div>

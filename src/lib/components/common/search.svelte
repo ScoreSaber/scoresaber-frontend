@@ -434,6 +434,12 @@
       vertical-align: middle;
    }
 
+   @media (max-width: 640px) {
+      .search-box input {
+         font-size: 16px;
+      }
+   }
+
    .search-box input:focus {
       outline: 0;
    }

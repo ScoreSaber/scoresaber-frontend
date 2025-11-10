@@ -5,6 +5,8 @@
 
    import CookieConsent from './cookie-consent.svelte';
 
+   export let mobile = false;
+
    // onMount(() => {
    //    const snowDisabled = localStorage.getItem('snow-disabled-2024');
    //    if (snowDisabled == undefined) {
@@ -28,9 +30,11 @@
    // }
 </script>
 
-<CookieConsent />
+{#if !mobile}
+   <CookieConsent />
+{/if}
 
-<footer class="site-footer">
+<footer class="site-footer" class:mobile class:desktop-only={!mobile}>
    <div class="container">
       <a class="logo-link" href="/">
          <img src="/images/logo.svg" alt="ScoreSaber logo" class="logo" />
@@ -87,6 +91,24 @@
       position: relative;
    }
 
+   .site-footer.mobile {
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      padding: 1.5rem 0 0 0;
+      margin-top: auto;
+   }
+
+   .site-footer.desktop-only {
+      display: block;
+   }
+
+   @media (max-width: 960px) {
+      .site-footer.desktop-only {
+         display: none;
+      }
+   }
+
    .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -95,6 +117,10 @@
       align-items: center;
       gap: 1.5rem;
       text-align: center;
+   }
+
+   .site-footer.mobile .container {
+      gap: 1rem;
    }
 
    .logo-link {
@@ -117,6 +143,11 @@
       display: block;
    }
 
+   .site-footer.mobile .logo {
+      width: 24px;
+      height: 24px;
+   }
+
    .logo-wordmark {
       display: inline;
    }
@@ -125,6 +156,11 @@
       color: rgba(255, 255, 255, 0.75);
       font-size: 0.95rem;
       margin: 0;
+   }
+
+   .site-footer.mobile .credits {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
    }
 
    .credits a {
@@ -145,6 +181,10 @@
       gap: 0.5rem;
    }
 
+   .site-footer.mobile .social-links {
+      gap: 0.4rem;
+   }
+
    .social-link {
       width: 2.5rem;
       height: 2.5rem;
@@ -158,6 +198,12 @@
       text-decoration: none;
    }
 
+   .site-footer.mobile .social-link {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.75rem;
+   }
+
    .social-link:hover {
       background: rgba(255, 255, 255, 0.08);
       color: var(--scoreSaberYellow);
@@ -169,10 +215,19 @@
       margin: 0;
    }
 
+   .site-footer.mobile .legal {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.8rem;
+   }
+
    .legal a {
       color: rgba(255, 255, 255, 0.6);
       text-decoration: none;
       transition: color 0.2s ease;
+   }
+
+   .site-footer.mobile .legal a {
+      color: rgba(255, 255, 255, 0.55);
    }
 
    .legal a:hover {

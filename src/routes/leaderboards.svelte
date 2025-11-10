@@ -21,6 +21,7 @@
    import { useAccio } from '$lib/utils/accio';
    import { useDelayedBlur } from '$lib/utils/delayed-blur';
    import axios from '$lib/utils/fetcher';
+   import { rankedBatch, getBatchTitle } from '$lib/config/ranked-batch';
 
    import {
       Category,
@@ -297,8 +298,8 @@
                <Slider max="50" step="1" bind:value={rangeStars} on:input={(e) => changeRangeStars(e)} range order />
             </div>
             <RankedVideoBlock
-               videoId="kWqdTFP6bs8"
-               title="November Ranked Batch Overview"
+               videoId={rankedBatch.videoId}
+               title={getBatchTitle(rankedBatch.month)}
                dismissMessage="If you dismiss this video, it won't be shown again on this page until the next ranked batch. Are you sure?"
             />
          </div>
