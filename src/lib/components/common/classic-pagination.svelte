@@ -15,56 +15,77 @@
    .pages :global(.pagination-nav) {
       display: flex;
       justify-content: center;
-      gap: 1rem;
+      gap: 0.5rem;
    }
 
    .pages :global(.option) {
-      background-color: var(--gray);
+      background-color: var(--foregroundItem);
+      border: 1px solid var(--borderColor);
+      color: var(--textColor);
       cursor: pointer;
-      padding: 0.2rem 0.5rem;
-      font-size: 14px;
-      border-radius: 5px;
+      padding: 0.5rem 0.75rem;
+      font-size: 1rem;
+      border-radius: 6px;
       margin: 0;
-      transition: background-color var(--transitionTime) ease-in-out;
+      transition: all var(--transitionTime) ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      box-sizing: border-box;
    }
 
    .pages :global(.option.active) {
-      background-color: var(--background);
+      background: rgba(255, 215, 0, 0.15);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      color: var(--scoreSaberYellow);
    }
 
    .pages :global(.option.ellipsis) {
-      background-color: var(--foreground);
-      cursor: default;
+      background-color: transparent;
+      border-color: transparent;
+      cursor: pointer;
    }
 
    .pages :global(.option.disabled) {
-      background-color: var(--foreground);
-      color: var(--gray-light);
-      cursor: default;
+      opacity: 0.3;
+      cursor: not-allowed;
    }
 
    .pages :global(.option.prev) {
-      padding: 0.2rem 0.7rem;
+      padding: 0.5rem 0.75rem;
    }
 
    .pages :global(.option.next) {
-      padding: 0.2rem 0.7rem;
+      padding: 0.5rem 0.75rem;
    }
 
    .pages :global(.option.ellipsis):hover {
-      background-color: var(--foreground);
+      background-color: transparent;
+      border-color: transparent;
    }
 
    .pages :global(.option.disabled):hover {
-      background-color: var(--foreground);
+      background-color: var(--foregroundItem);
    }
 
    .pages :global(.option.active):hover {
-      background-color: var(--background);
+      background: rgba(255, 215, 0, 0.2);
+      border-color: var(--scoreSaberYellow);
       cursor: default;
    }
 
-   .pages :global(.option):hover {
+   .pages :global(.option):hover:not(.disabled):not(.ellipsis):not(.active) {
       background-color: var(--gray-light);
+      border-color: var(--gray-light);
+      color: var(--scoreSaberYellow);
+   }
+
+   .pages :global(.option:focus-visible) {
+      outline: 2px solid rgba(255, 255, 255, 0.5);
+      outline-offset: 2px;
    }
 </style>

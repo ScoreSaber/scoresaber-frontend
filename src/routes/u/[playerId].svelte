@@ -309,7 +309,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                   <PlayerLink
                      player={$playerData}
                      external={true}
-                     countryImage={true}
+                     countryImage={false}
                      destination={isSteamPlayer ? `https://steamcommunity.com/profiles/${$playerData.id}` : null}
                   />
                   {#if !$playerData.banned}
@@ -388,15 +388,6 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
                </div>
             </div>
             {#if $scoreData}
-               <div class="mobile top-arrowpagination">
-                  <ArrowPagination
-                     pageClicked={changePage}
-                     page={$pageQuery.page}
-                     pageSize={$scoreData.metadata.itemsPerPage}
-                     maxPages={$scoreData.metadata.total}
-                     withFirstLast={true}
-                  />
-               </div>
                <div class="ranking songs">
                   <div class="ranking songs gridTable" class:loadingBlur={$scoreDataLoading}>
                      {#each $scoreData.playerScores ?? [] as score, i (score.score.id)}
@@ -439,10 +430,6 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
 <Modal show={$modal} />
 
 <style lang="scss">
-   .top-arrowpagination {
-      margin-bottom: 1rem;
-   }
-
    .bottom-arrowpagination {
       margin-top: 1rem;
    }
@@ -467,6 +454,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
 
    .search-container {
       margin-top: 0.75rem;
+      margin-bottom: 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -585,7 +573,7 @@ Replays Watched by Others: ${metadata.scoreStats ? metadata.scoreStats.replaysWa
       border-left: 1px solid var(--borderColor);
       margin-left: 8px;
       padding-left: 12px;
-      opacity: 0.6;
+      opacity: 1;
    }
 
    .title-header .fas.fa-globe-americas {

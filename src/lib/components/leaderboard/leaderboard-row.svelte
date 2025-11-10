@@ -18,11 +18,7 @@
    export let row = 1;
 </script>
 
-<div
-   class="table-item"
-   class:highlighted
-   style="grid-row: {row} / span 1;"
->
+<div class="table-item" class:highlighted style="grid-row: {row} / span 1;">
    <div class="rank">
       #{score.rank.toLocaleString('en-US')}
    </div>

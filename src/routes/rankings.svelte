@@ -15,6 +15,8 @@
    import Loader from '$lib/components/common/loader.svelte';
    import TextInput from '$lib/components/common/text-input.svelte';
    import PlayerRow from '$lib/components/player/player-row.svelte';
+   import ArrowPagination from '$lib/components/common/arrow-pagination.svelte';
+   import ArrowButton from '$lib/components/common/pagination/arrow-button.svelte';
 
    import { useAccio } from '$lib/utils/accio';
    import { requestCancel, updateCancelToken } from '$lib/utils/accio/canceler';
@@ -158,15 +160,8 @@
 
          <div class="content" class:blur={$showBlur}>
             <div class="controls-bar">
-               <div class="pagination-left">
-                  <button
-                     class="arrow-btn"
-                     on:click={() => handlePageChange($pageQuery.page - 1)}
-                     disabled={$pageQuery.page <= 1}
-                     aria-label="Previous page"
-                  >
-                     <i class="fas fa-arrow-left" />
-                  </button>
+               <div class="desktop tablet pagination-left">
+                  <ArrowButton icon="fa-arrow-left" on:click={() => handlePageChange($pageQuery.page - 1)} disabled={$pageQuery.page <= 1} />
                </div>
 
                <div class="controls-center">
@@ -199,15 +194,12 @@
                   </div>
                </div>
 
-               <div class="pagination-right">
-                  <button
-                     class="arrow-btn"
+               <div class="desktop tablet pagination-right">
+                  <ArrowButton
+                     icon="fa-arrow-right"
                      on:click={() => handlePageChange($pageQuery.page + 1)}
                      disabled={$pageQuery.page >= Math.ceil($rankings.metadata.total / $rankings.metadata.itemsPerPage)}
-                     aria-label="Next page"
-                  >
-                     <i class="fas fa-arrow-right" />
-                  </button>
+                  />
                </div>
             </div>
 
@@ -231,27 +223,23 @@
                </div>
             </div>
 
-            <div class="bottom-pagination">
-               <div class="pagination-left">
-                  <button
-                     class="arrow-btn"
-                     on:click={() => handlePageChange($pageQuery.page - 1)}
-                     disabled={$pageQuery.page <= 1}
-                     aria-label="Previous page"
-                  >
-                     <i class="fas fa-arrow-left" />
-                  </button>
-               </div>
-               <div class="pagination-right">
-                  <button
-                     class="arrow-btn"
-                     on:click={() => handlePageChange($pageQuery.page + 1)}
-                     disabled={$pageQuery.page >= Math.ceil($rankings.metadata.total / $rankings.metadata.itemsPerPage)}
-                     aria-label="Next page"
-                  >
-                     <i class="fas fa-arrow-right" />
-                  </button>
-               </div>
+            <div class="desktop tablet bottom-desktop-pagination">
+               <ArrowButton icon="fa-arrow-left" on:click={() => handlePageChange($pageQuery.page - 1)} disabled={$pageQuery.page <= 1} />
+               <ArrowButton
+                  icon="fa-arrow-right"
+                  on:click={() => handlePageChange($pageQuery.page + 1)}
+                  disabled={$pageQuery.page >= Math.ceil($rankings.metadata.total / $rankings.metadata.itemsPerPage)}
+               />
+            </div>
+
+            <div class="mobile bottom-arrowpagination">
+               <ArrowPagination
+                  pageClicked={handlePageChange}
+                  page={$pageQuery.page}
+                  pageSize={$rankings.metadata.itemsPerPage}
+                  maxPages={$rankings.metadata.total}
+                  withFirstLast={true}
+               />
             </div>
          </div>
       </div>
@@ -329,39 +317,15 @@
       max-width: 350px;
    }
 
-   .arrow-btn {
-      background-color: var(--foregroundItem);
-      border: 1px solid var(--borderColor);
-      color: var(--textColor);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all var(--transitionTime) ease;
-      font-size: 1rem;
-
-      &:hover:not(:disabled) {
-         background-color: var(--gray-light);
-         border-color: var(--gray-light);
-         color: var(--scoreSaberYellow);
-      }
-
-      &:disabled {
-         opacity: 0.3;
-         cursor: not-allowed;
-      }
-
-      &:focus-visible {
-         outline: 2px solid rgba(255, 255, 255, 0.5);
-         outline-offset: 2px;
-      }
+   .bottom-arrowpagination {
+      margin-top: 1rem;
    }
 
-   .bottom-pagination {
+   .bottom-desktop-pagination {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 0.5rem;
-      margin-top: 0.5rem;
+      margin-top: 1rem;
    }
 
    .ranking-table {
@@ -392,6 +356,18 @@
       display: contents;
    }
 
+   @media only screen and (min-width: 769px) {
+      .mobile {
+         display: none;
+      }
+   }
+
+   @media only screen and (max-width: 769px) {
+      .desktop {
+         display: none;
+      }
+   }
+
    @media (max-width: 768px) {
       .controls-bar {
          display: flex;
@@ -400,8 +376,8 @@
          align-items: stretch;
       }
 
-      .pagination-left,
-      .pagination-right {
+      .controls-bar .pagination-left,
+      .controls-bar .pagination-right {
          display: none;
       }
 

@@ -35,10 +35,15 @@
 
 <style>
    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
       margin-bottom: 0.1rem;
    }
 
    .btn-group {
-      display: inline-flex;
+      display: flex;
+      gap: 0.5rem;
    }
 </style>
