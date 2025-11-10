@@ -416,7 +416,7 @@
 
    .table-header {
       display: grid;
-      grid-template-columns: 0.6fr 4fr 2fr 2fr 2fr 3fr 2fr;
+      grid-template-columns: 100px 3fr 2fr 2fr 2fr 3fr 2fr;
       font-weight: bold;
       padding: 0.5rem 0.75rem;
       margin: 0.25rem 0.125rem;
@@ -427,6 +427,7 @@
 
    .header-cell {
       padding: 0.25rem;
+      white-space: nowrap;
 
       &.centered {
          text-align: center;
