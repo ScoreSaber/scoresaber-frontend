@@ -141,7 +141,9 @@
          grid-row: 2;
          grid-column: 1 / span 4;
          max-height: 0px;
-         transition: max-height var(--transitionTime) ease-out;
+         padding: 0 8px;
+         margin: 0 8px;
+         transition: max-height var(--transitionTime) ease-out, padding var(--transitionTime) ease-out, margin var(--transitionTime) ease-out;
          overflow: hidden;
          position: relative;
 
