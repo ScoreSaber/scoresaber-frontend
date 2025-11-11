@@ -185,24 +185,31 @@
    .team-member-card.gay-border {
       border-color: transparent;
       position: relative;
+      isolation: isolate;
    }
 
    .team-member-card.gay-border::before {
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: inherit;
-      padding: 1px;
+      border-radius: 8px;
       background: var(--rainbow-gradient);
       background-size: 300px 100%;
       animation: rainbowScroll 8s linear infinite;
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask-composite: exclude;
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
       pointer-events: none;
       opacity: 0;
       transition: opacity var(--transitionTime);
+      z-index: -1;
+   }
+
+   .team-member-card.gay-border::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      border-radius: 7px;
+      background: var(--foregroundItem);
+      pointer-events: none;
+      z-index: -1;
    }
 
    .team-member-card.gay-border:hover::before {
