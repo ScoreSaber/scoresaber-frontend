@@ -15,6 +15,21 @@
    });
 
    setBackground('/images/banner.jpg');
+
+   $: teams = $team
+      ? [
+           { title: 'Creator & Project Lead', members: $team.TeamMembers.Backend },
+           { title: 'Admin', members: $team.TeamMembers.Admin, removeUmbra: true },
+           { title: 'Nomination Assessment Team', members: $team.TeamMembers.NAT },
+           { title: 'Ranking Team', members: $team.TeamMembers.RT },
+           { title: 'Quality Assurance Team', members: $team.TeamMembers.QAT },
+           { title: 'Criteria Assurance Team', members: $team.TeamMembers.CAT },
+           { title: 'Content Creation Team', members: $team.TeamMembers.CCT, removeUmbra: true },
+           { title: 'Frontend Developers', members: $team.TeamMembers.Frontend },
+           { title: 'PC Mod', members: $team.TeamMembers.Mod },
+           { title: 'PPv3', members: $team.TeamMembers.PPv3, removeUmbra: true }
+        ]
+      : [];
 </script>
 
 <head>
@@ -30,22 +45,30 @@
          <p>{$error}</p>
       {/if}
       {#if $team}
-         <h1 class="title is-4">The ScoreSaber Team</h1>
-         <div>
-            <TeamItem title="Creator & Project Lead" teamMembers={$team.TeamMembers.Backend} />
-            <TeamItem title="Admin" teamMembers={$team.TeamMembers.Admin} removeUmbra={true} />
-            <TeamItem title="Nomination Assessment Team" teamMembers={$team.TeamMembers.NAT} />
-            <TeamItem title="Ranking Team" teamMembers={$team.TeamMembers.RT} />
-            <TeamItem title="Quality Assurance Team" teamMembers={$team.TeamMembers.QAT} />
-            <TeamItem title="Criteria Assurance Team" teamMembers={$team.TeamMembers.CAT} />
-            <TeamItem title="Content Creation Team" teamMembers={$team.TeamMembers.CCT} removeUmbra={true} />
-            <TeamItem title="Frontend Developers" teamMembers={$team.TeamMembers.Frontend} />
-            <TeamItem title="PC Mod" teamMembers={$team.TeamMembers.Mod} />
-            <TeamItem title="PPv3" teamMembers={$team.TeamMembers.PPv3} removeUmbra={true} />
+         <h1 class="title is-4 team-page-title">The ScoreSaber Team</h1>
+         <div class="team-container">
+            {#each teams as teamConfig}
+               <TeamItem title={teamConfig.title} teamMembers={teamConfig.members} removeUmbra={teamConfig.removeUmbra || false} />
+            {/each}
          </div>
       {/if}
    </div>
 </div>
 
 <style>
+   .team-page-title {
+      margin-bottom: 2rem;
+      text-align: center;
+   }
+
+   .team-container {
+      padding-top: 0.5rem;
+   }
+
+   @media (max-width: 768px) {
+      .team-page-title {
+         margin-bottom: 1.5rem;
+         font-size: 1.5rem;
+      }
+   }
 </style>
