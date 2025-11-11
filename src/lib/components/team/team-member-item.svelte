@@ -256,7 +256,7 @@
       min-width: 0;
    }
 
-   @media (min-width: 757px) {
+   @media (min-width: 1024px) and (max-width: 1199px) {
       .team-member-column {
          max-width: 33.3333% !important;
          flex: 0 0 33.3333% !important;
