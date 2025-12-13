@@ -1,33 +1,32 @@
 <script lang="ts">
-   // import { onMount } from 'svelte';
+   import { onMount } from 'svelte';
 
-   // import { snowVisible } from '$lib/stores/global-store';
+   import { snowVisible } from '$lib/stores/global-store';
 
    import CookieConsent from './cookie-consent.svelte';
+   import Button from './button.svelte';
 
    export let mobile = false;
 
-   // onMount(() => {
-   //    const snowDisabled = localStorage.getItem('snow-disabled-2024');
-   //    if (snowDisabled == undefined) {
-   //       localStorage.setItem('snow-disabled-2024', 'false');
-   //       toggleSnow(true);
-   //    } else {
-   //       if (snowDisabled == 'false') {
-   //          toggleSnow(true);
-   //       }
-   //    }
-   // });
-   // function toggleSnow(fromMount = false) {
-   //    snowVisible.set(!$snowVisible);
-   //    if (!fromMount) {
-   //       if ($snowVisible) {
-   //          localStorage.setItem('snow-disabled-2024', 'false');
-   //       } else {
-   //          localStorage.setItem('snow-disabled-2024', 'true');
-   //       }
-   //    }
-   // }
+   onMount(() => {
+      const snowDisabled = localStorage.getItem('snow-disabled-2025');
+      if (snowDisabled == undefined) {
+         localStorage.setItem('snow-disabled-2025', 'false');
+         snowVisible.set(true);
+      } else {
+         if (snowDisabled == 'false') {
+            snowVisible.set(true);
+         }
+      }
+   });
+   function toggleSnow() {
+      snowVisible.set(!$snowVisible);
+      if ($snowVisible) {
+         localStorage.setItem('snow-disabled-2025', 'false');
+      } else {
+         localStorage.setItem('snow-disabled-2025', 'true');
+      }
+   }
 </script>
 
 {#if !mobile}
@@ -78,6 +77,8 @@
       <p class="legal">
          <a href="/legal/privacy">Privacy Policy</a>
       </p>
+
+      <Button onClicked={toggleSnow} title={$snowVisible ? 'Disable Snow' : 'Enable Snow'} icon="snowflake" />
    </div>
 </footer>
 
@@ -136,7 +137,6 @@
    .logo-link:hover {
       color: var(--scoreSaberYellow);
    }
-
 
    .site-footer.mobile .logo {
       width: 24px;
@@ -198,7 +198,6 @@
       height: 2.25rem;
       border-radius: 0.75rem;
    }
-
 
    .legal {
       color: rgba(255, 255, 255, 0.6);
