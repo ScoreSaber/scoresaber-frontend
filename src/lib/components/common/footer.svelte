@@ -8,25 +8,25 @@
 
    export let mobile = false;
 
-   onMount(() => {
-      const snowDisabled = localStorage.getItem('snow-disabled-2025');
-      if (snowDisabled == undefined) {
-         localStorage.setItem('snow-disabled-2025', 'false');
-         snowVisible.set(true);
-      } else {
-         if (snowDisabled == 'false') {
-            snowVisible.set(true);
-         }
-      }
-   });
-   function toggleSnow() {
-      snowVisible.set(!$snowVisible);
-      if ($snowVisible) {
-         localStorage.setItem('snow-disabled-2025', 'false');
-      } else {
-         localStorage.setItem('snow-disabled-2025', 'true');
-      }
-   }
+   // onMount(() => {
+   //    const snowDisabled = localStorage.getItem('snow-disabled-2025');
+   //    if (snowDisabled == undefined) {
+   //       localStorage.setItem('snow-disabled-2025', 'false');
+   //       snowVisible.set(true);
+   //    } else {
+   //       if (snowDisabled == 'false') {
+   //          snowVisible.set(true);
+   //       }
+   //    }
+   // });
+   // function toggleSnow() {
+   //    snowVisible.set(!$snowVisible);
+   //    if ($snowVisible) {
+   //       localStorage.setItem('snow-disabled-2025', 'false');
+   //    } else {
+   //       localStorage.setItem('snow-disabled-2025', 'true');
+   //    }
+   // }
 </script>
 
 {#if !mobile}
@@ -78,7 +78,7 @@
          <a href="/legal/privacy">Privacy Policy</a>
       </p>
 
-      <Button onClicked={toggleSnow} title={$snowVisible ? 'Disable Snow' : 'Enable Snow'} icon="snowflake" />
+      <!-- <Button onClicked={toggleSnow} title={$snowVisible ? 'Disable Snow' : 'Enable Snow'} icon="snowflake" /> -->
    </div>
 </footer>
 

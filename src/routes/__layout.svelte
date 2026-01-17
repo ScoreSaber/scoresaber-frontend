@@ -52,15 +52,15 @@
    });
 
    if (browser) {
-      const snowDisabled = localStorage.getItem('snow-disabled-2025');
-      if (snowDisabled == undefined) {
-         localStorage.setItem('snow-disabled-2025', 'false');
-         snowVisible.set(true);
-      } else {
-         if (snowDisabled == 'false') {
-            snowVisible.set(true);
-         }
-      }
+      // const snowDisabled = localStorage.getItem('snow-disabled-2025');
+      // if (snowDisabled == undefined) {
+      //    localStorage.setItem('snow-disabled-2025', 'false');
+      //    snowVisible.set(true);
+      // } else {
+      //    if (snowDisabled == 'false') {
+      //       snowVisible.set(true);
+      //    }
+      // }
 
       page.subscribe(() => {
          document.body.style.position = '';
@@ -105,14 +105,14 @@
    {/key}
    <div class="cover" />
    <Navbar />
-   <div id="snow" class="snow {$snowVisible ? 'visible' : ''}">
+   <!-- <div id="snow" class="snow {$snowVisible ? 'visible' : ''}">
       {#each Array(30) as _, i}
          <div class="snowflake" />
          {#if $page.url.pathname === '/u/76561198064659288'}
             <div class="snowflake denyah" />
          {/if}
       {/each}
-   </div>
+   </div> -->
    <div class="page-container content">
       <slot />
    </div>
