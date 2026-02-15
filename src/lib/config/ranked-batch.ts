@@ -6,10 +6,10 @@ export interface RankedBatchConfig {
 }
 
 export const rankedBatch: RankedBatchConfig = {
-   videoId: 'lMPpoh8DGU8',
-   month: 'January',
+   videoId: 'VqsE26E32s0',
+   month: 'February',
    year: 2026,
-   announcementId: 'january-2026-ranked-batch'
+   announcementId: 'february-2026-ranked-batch'
 };
 
 export function getYouTubeUrl(videoId: string): string {
