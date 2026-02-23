@@ -51,12 +51,14 @@
       },
       { platform: 'GitHub', url: teamMember.GitHub ? `https://github.com/${teamMember.GitHub}` : null, icon: 'fab fa-github', label: 'GitHub' }
    ].filter((link) => link.url);
-
-   $: scoreSaberLink = `https://scoresaber.com/u/${teamMember.ScoreSaberID}`;
 </script>
 
 <div class="column is-6-mobile is-4-tablet is-3-desktop team-member-column">
-   <a href={scoreSaberLink} class="cursor-pointer">
+   <a
+      href={teamMember.ScoreSaberID ? `/u/${teamMember.ScoreSaberID}` : null}
+      class={teamMember.ScoreSaberID ? '' : 'team-member-scoresaber-unprovided'}
+      target={teamMember.ScoreSaberID ? '' : '_blank'}
+   >
       <div class="team-member-card {finalColorClass === 'gay' ? 'gay-border' : ''}" style="--team-color: {teamColor}">
          <div class="team-member-content">
             <div class="avatar-wrapper {finalColorClass === 'gay' ? 'gay-border' : ''}">
@@ -251,6 +253,10 @@
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
+   }
+
+   .team-member-scoresaber-unprovided {
+      cursor: default;
    }
 
    .social-link .icon {
