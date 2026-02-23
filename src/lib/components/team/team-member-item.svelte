@@ -51,39 +51,43 @@
       },
       { platform: 'GitHub', url: teamMember.GitHub ? `https://github.com/${teamMember.GitHub}` : null, icon: 'fab fa-github', label: 'GitHub' }
    ].filter((link) => link.url);
+
+   $: scoreSaberLink = `https://scoresaber.com/u/${teamMember.ScoreSaberID}`;
 </script>
 
 <div class="column is-6-mobile is-4-tablet is-3-desktop team-member-column">
-   <div class="team-member-card {finalColorClass === 'gay' ? 'gay-border' : ''}" style="--team-color: {teamColor}">
-      <div class="team-member-content">
-         <div class="avatar-wrapper {finalColorClass === 'gay' ? 'gay-border' : ''}">
-            <img
-               class="avatar-image"
-               src="https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/images/{teamMember.ProfilePicture}"
-               alt={teamMember.Name}
-            />
-         </div>
-         <div class="member-info">
-            <h5
-               class="member-name {finalColorClass === 'gay' ? 'gay' : ''}"
-               style="color: {finalColorClass === 'default' ? 'var(--alternate)' : finalColorClass === 'gay' ? 'transparent' : teamColor}"
-            >
-               {teamMember.Name}
-            </h5>
-            {#if socialLinks.length > 0}
-               <div class="social-links">
-                  {#each socialLinks as link}
-                     <a href={link.url} rel="external" class="social-link" aria-label={link.label}>
-                        <span class="icon">
-                           <i class={link.icon} />
-                        </span>
-                     </a>
-                  {/each}
-               </div>
-            {/if}
+   <a href={scoreSaberLink} class="cursor-pointer">
+      <div class="team-member-card {finalColorClass === 'gay' ? 'gay-border' : ''}" style="--team-color: {teamColor}">
+         <div class="team-member-content">
+            <div class="avatar-wrapper {finalColorClass === 'gay' ? 'gay-border' : ''}">
+               <img
+                  class="avatar-image"
+                  src="https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/images/{teamMember.ProfilePicture}"
+                  alt={teamMember.Name}
+               />
+            </div>
+            <div class="member-info">
+               <h5
+                  class="member-name {finalColorClass === 'gay' ? 'gay' : ''}"
+                  style="color: {finalColorClass === 'default' ? 'var(--alternate)' : finalColorClass === 'gay' ? 'transparent' : teamColor}"
+               >
+                  {teamMember.Name}
+               </h5>
+               {#if socialLinks.length > 0}
+                  <div class="social-links">
+                     {#each socialLinks as link}
+                        <a href={link.url} rel="external" class="social-link" aria-label={link.label}>
+                           <span class="icon">
+                              <i class={link.icon} />
+                           </span>
+                        </a>
+                     {/each}
+                  </div>
+               {/if}
+            </div>
          </div>
       </div>
-   </div>
+   </a>
 </div>
 
 <style>
