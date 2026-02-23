@@ -54,42 +54,47 @@
 </script>
 
 <div class="column is-6-mobile is-4-tablet is-3-desktop team-member-column">
-   <a
-      href={teamMember.ScoreSaberID ? `/u/${teamMember.ScoreSaberID}` : null}
-      class={teamMember.ScoreSaberID ? '' : 'team-member-scoresaber-unprovided'}
-      target={teamMember.ScoreSaberID ? '' : '_blank'}
-   >
-      <div class="team-member-card {finalColorClass === 'gay' ? 'gay-border' : ''}" style="--team-color: {teamColor}">
-         <div class="team-member-content">
-            <div class="avatar-wrapper {finalColorClass === 'gay' ? 'gay-border' : ''}">
-               <img
-                  class="avatar-image"
-                  src="https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/images/{teamMember.ProfilePicture}"
-                  alt={teamMember.Name}
-               />
-            </div>
-            <div class="member-info">
+   <div class="team-member-card {finalColorClass === 'gay' ? 'gay-border' : ''}" style="--team-color: {teamColor}">
+      <div class="team-member-content">
+         <div class="avatar-wrapper {finalColorClass === 'gay' ? 'gay-border' : ''}">
+            <img
+               class="avatar-image"
+               src="https://raw.githubusercontent.com/Umbranoxio/ScoreSaber-Team/main/images/{teamMember.ProfilePicture}"
+               alt={teamMember.Name}
+            />
+         </div>
+         <div class="member-info">
+            {#if teamMember.ScoreSaberID}
+               <a href={`/u/${teamMember.ScoreSaberID}`}>
+                  <h5
+                     class="member-name {finalColorClass === 'gay' ? 'gay' : ''}"
+                     style="color: {finalColorClass === 'default' ? 'var(--alternate)' : finalColorClass === 'gay' ? 'transparent' : teamColor}"
+                  >
+                     {teamMember.Name}
+                  </h5>
+               </a>
+            {:else}
                <h5
-                  class="member-name {finalColorClass === 'gay' ? 'gay' : ''}"
+                  class="member-name {finalColorClass === 'gay' ? 'gay' : ''} team-member-scoresaber-unprovided"
                   style="color: {finalColorClass === 'default' ? 'var(--alternate)' : finalColorClass === 'gay' ? 'transparent' : teamColor}"
                >
                   {teamMember.Name}
                </h5>
-               {#if socialLinks.length > 0}
-                  <div class="social-links">
-                     {#each socialLinks as link}
-                        <a href={link.url} rel="external" class="social-link" aria-label={link.label}>
-                           <span class="icon">
-                              <i class={link.icon} />
-                           </span>
-                        </a>
-                     {/each}
-                  </div>
-               {/if}
-            </div>
+            {/if}
+            {#if socialLinks.length > 0}
+               <div class="social-links">
+                  {#each socialLinks as link}
+                     <a href={link.url} rel="external" class="social-link" aria-label={link.label}>
+                        <span class="icon">
+                           <i class={link.icon} />
+                        </span>
+                     </a>
+                  {/each}
+               </div>
+            {/if}
          </div>
       </div>
-   </a>
+   </div>
 </div>
 
 <style>
