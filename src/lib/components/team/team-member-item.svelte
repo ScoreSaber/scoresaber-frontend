@@ -68,7 +68,13 @@
                class="member-name {finalColorClass === 'gay' ? 'gay' : ''}"
                style="color: {finalColorClass === 'default' ? 'var(--alternate)' : finalColorClass === 'gay' ? 'transparent' : teamColor}"
             >
-               {teamMember.Name}
+               {#if teamMember.ScoreSaberID}
+                  <a href={`/u/${teamMember.ScoreSaberID}`}>
+                     {teamMember.Name}
+                  </a>
+               {:else}
+                  {teamMember.Name}
+               {/if}
             </h5>
             {#if socialLinks.length > 0}
                <div class="social-links">

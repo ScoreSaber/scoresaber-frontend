@@ -18,6 +18,7 @@ export interface TeamMembers {
 export interface TeamMember {
    Name: string;
    ProfilePicture: string;
+   ScoreSaberID?: string;
    Discord?: string;
    GitHub?: string;
    Twitch?: string;
