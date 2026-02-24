@@ -169,11 +169,6 @@
       text-overflow: ellipsis;
    }
 
-   .member-name a {
-      color: inherit;
-      text-decoration: none;
-   }
-
    @keyframes rainbowScroll {
       0% {
          background-position: 300px 0;
