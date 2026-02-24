@@ -260,10 +260,6 @@
       color: transparent;
    }
 
-   .team-member-scoresaber-unprovided {
-      cursor: default;
-   }
-
    .social-link .icon {
       font-size: 0.875rem;
       flex-shrink: 0;
