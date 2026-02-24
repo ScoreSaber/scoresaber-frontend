@@ -64,23 +64,18 @@
             />
          </div>
          <div class="member-info">
-            {#if teamMember.ScoreSaberID}
-               <a href={`/u/${teamMember.ScoreSaberID}`}>
-                  <h5
-                     class="member-name {finalColorClass === 'gay' ? 'gay' : ''}"
-                     style="color: {finalColorClass === 'default' ? 'var(--alternate)' : finalColorClass === 'gay' ? 'transparent' : teamColor}"
-                  >
+            <h5
+               class="member-name {finalColorClass === 'gay' ? 'gay' : ''}"
+               style="color: {finalColorClass === 'default' ? 'var(--alternate)' : finalColorClass === 'gay' ? 'transparent' : teamColor}"
+            >
+               {#if teamMember.ScoreSaberID}
+                  <a href={`/u/${teamMember.ScoreSaberID}`}>
                      {teamMember.Name}
-                  </h5>
-               </a>
-            {:else}
-               <h5
-                  class="member-name {finalColorClass === 'gay' ? 'gay' : ''} team-member-scoresaber-unprovided"
-                  style="color: {finalColorClass === 'default' ? 'var(--alternate)' : finalColorClass === 'gay' ? 'transparent' : teamColor}"
-               >
+                  </a>
+               {:else}
                   {teamMember.Name}
-               </h5>
-            {/if}
+               {/if}
+            </h5>
             {#if socialLinks.length > 0}
                <div class="social-links">
                   {#each socialLinks as link}
@@ -172,6 +167,11 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+   }
+
+   .member-name a {
+      color: inherit;
+      text-decoration: none;
    }
 
    @keyframes rainbowScroll {
