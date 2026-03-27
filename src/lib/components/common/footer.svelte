@@ -69,9 +69,6 @@
          <a href="https://docs.scoresaber.com" target="_blank" rel="noopener" class="social-link" title="API Documentation">
             <i class="fas fa-book fa-lg" />
          </a>
-         <a href="https://scoresaber.store" target="_blank" rel="noopener" class="social-link" title="Get ScoreSaber merch!">
-            <i class="fas fa-tshirt fa-lg" />
-         </a>
       </nav>
 
       <p class="legal">
