@@ -10,7 +10,7 @@
 
    import { lockBodyScroll, unlockBodyScroll } from '$lib/utils/nav-utils';
 
-   import { rankedBatch, getYouTubeUrl, getAnnouncementMessage } from '$lib/config/ranked-batch';
+   import { announcementBanner } from '$lib/config/announcement';
 
    let searchModal: SearchView;
    let header: HTMLElement | null = null;
@@ -204,10 +204,8 @@
    on:touchend={handleTouchEnd}
 />
 
-<Announcement id={rankedBatch.announcementId} rememberClose={true}>
-   <i class="fab fa-youtube" />
-   {getAnnouncementMessage(rankedBatch.month)}{' '}
-   <a class="announcement-link" href={getYouTubeUrl(rankedBatch.videoId)} target="_blank" rel="noopener">Click here</a> to watch
+<Announcement id={announcementBanner.id} rememberClose={true} extraClasses="scoresaber-2">
+   <a class="announcement-link" href={announcementBanner.href} target="_blank" rel="noopener">{announcementBanner.label}</a>
 </Announcement>
 
 <div class="scroll-probe" bind:this={scrollProbe} />

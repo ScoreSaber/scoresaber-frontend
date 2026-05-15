@@ -210,6 +210,52 @@
       background: rgba(255, 255, 255, 0.15);
    }
 
+   .announcement.scoresaber-2 {
+      background: var(--scoreSaberYellow);
+      border-bottom-color: rgba(34, 31, 28, 0.25);
+   }
+
+   .announcement.scoresaber-2 .announcement-container {
+      position: relative;
+   }
+
+   .announcement.scoresaber-2 .announcement-content {
+      justify-content: center;
+      color: #221f1c;
+      font-weight: 500;
+      text-align: center;
+      padding: 0 2.5rem;
+   }
+
+   .announcement.scoresaber-2 :global(.announcement-link) {
+      color: #221f1c;
+      text-decoration: underline;
+   }
+
+   .announcement.scoresaber-2 :global(.announcement-link:hover) {
+      color: #000;
+   }
+
+   .announcement.scoresaber-2 button {
+      position: absolute;
+      right: 1.25rem;
+      background: rgba(34, 31, 28, 0.12);
+      color: #221f1c;
+   }
+
+   .announcement.scoresaber-2 button:hover {
+      background: rgba(34, 31, 28, 0.2);
+   }
+
+   .announcement.scoresaber-2.mobile {
+      background: var(--scoreSaberYellow);
+      border-color: rgba(34, 31, 28, 0.25);
+   }
+
+   .announcement.scoresaber-2.mobile button {
+      right: 1rem;
+   }
+
    @media (min-width: 961px) {
       .announcement.mobile {
          display: none;

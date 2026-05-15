@@ -15,7 +15,7 @@
 
    import type { Player } from '$lib/models/PlayerData';
 
-   import { rankedBatch, getYouTubeUrl, getAnnouncementMessage } from '$lib/config/ranked-batch';
+   import { announcementBanner } from '$lib/config/announcement';
 
    export let isOpen: boolean;
    export let onClose: () => void;
@@ -170,10 +170,8 @@
       </button>
    </div>
 
-   <Announcement id={rankedBatch.announcementId} rememberClose={true} mobile={true}>
-      <i class="fab fa-youtube" />
-      {getAnnouncementMessage(rankedBatch.month)}{' '}
-      <a class="announcement-link" href={getYouTubeUrl(rankedBatch.videoId)} target="_blank" rel="noopener">Click here</a> to watch
+   <Announcement id={announcementBanner.id} rememberClose={true} mobile={true} extraClasses="scoresaber-2">
+      <a class="announcement-link" href={announcementBanner.href} target="_blank" rel="noopener">{announcementBanner.label}</a>
    </Announcement>
 
    {#if !loggedIn}
