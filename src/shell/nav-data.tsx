@@ -1,5 +1,5 @@
 import type { RegisteredRouter, RouteIds } from '@tanstack/react-router';
-import { BookOpen, Home, Search, Smartphone, Users } from 'lucide-react';
+import { BookOpen, Home, MessageSquareText, Search, Smartphone, Users } from 'lucide-react';
 import { FaList, FaMap, FaMedal } from 'react-icons/fa';
 import type { Messages } from 'use-intl';
 
@@ -58,7 +58,8 @@ export const socialLinks = [
    { href: 'https://youtube.com/@ScoreSaberOfficial', label: 'YouTube', Icon: Icons.youtube }
 ];
 
-export const githubLink = { href: 'https://github.com/Umbranoxio/ScoreSaber-Frontend', label: 'GitHub', Icon: Icons.github };
+export const githubLink = { href: 'https://github.com/ScoreSaber/website', label: 'GitHub', Icon: Icons.github };
+export const feedbackHubLink = { href: 'https://hub.scoresaber.com', label: 'Feedback Hub', Icon: MessageSquareText };
 
 const navRouteIds = {
    home: '/',
