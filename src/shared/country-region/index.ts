@@ -38,7 +38,10 @@ function parseCountryRegionParam(value: unknown): CountryRegionFilterValue | und
 
    const csv = raw.join(',');
    const parsedRegionCode = regionCodeSchema.safeParse(raw[0]);
-   const region = regionByCountries.get(csv) ?? (raw.length === 1 && parsedRegionCode.success ? regionByCode.get(parsedRegionCode.data) : undefined);
+   const parsedCountryCode = countryCodeSchema.safeParse(raw[0]);
+   const region =
+      regionByCountries.get(csv) ??
+      (raw.length === 1 && parsedRegionCode.success && !parsedCountryCode.success ? regionByCode.get(parsedRegionCode.data) : undefined);
    if (region) return { kind: 'region', region: region.code };
 
    const countries = raw.flatMap((code) => {
