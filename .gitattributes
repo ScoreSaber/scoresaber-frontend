@@ -1,4 +1,26 @@
-*.ts    text eol=crlf
-*.js    text eol=crlf
-*.html  text eol=crlf
-*.svelte text eol=crlf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+*.json text eol=lf
+*.jsonc text eol=lf
+*.md text eol=lf
+*.css text eol=lf
+*.svg text eol=lf
+*.txt text eol=lf
+*.env text eol=lf
+*.example text eol=lf
+*.lock text eol=lf
+
+.dockerignore text eol=lf
+.gitignore text eol=lf
+.nvmrc text eol=lf
+.node-version text eol=lf
+Dockerfile text eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary

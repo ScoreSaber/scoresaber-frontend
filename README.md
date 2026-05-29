@@ -1,45 +1,17 @@
-## Developing 🛠️
+<p align="center">
+   <img src="public/ScoreSaber-iOS-Default-1024x1024@1x.png" title="ScoreSaber" alt="ScoreSaber icon" width="96" />
+</p>
 
-### Prerequisites 📋
+<h1 align="center">ScoreSaber Website</h1>
 
-1. Clone the project repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+The frontend for [ScoreSaber](https://scoresaber.com)
 
-### Environment Configuration ⚙️
+## Getting Started
 
-1. Create a new `.env` file using the template from `.env.example` 📄
-2. Configure the following environment variables:
-   ```
-   PUBLIC_CDN_URL=https://cdn.scoresaber.com
-   PUBLIC_API_URL=https://scoresaber.com
-   ```
-   📝 Note: CORS is currently enabled for both the CDN and the API. This configuration will be improved in future updates.
+See [SETUP.md](SETUP.md) for the local development guide
 
-### Starting the Development Server 🖥️
+The default setup points at production ScoreSaber services, so most website work does not need a backend environment
 
-Run the following command to start the development server with HTTPS:
+## Contributing
 
-```bash
-npm run dev -- --https
-```
-
-## Building for Production 🏗️
-
-To build the app for production:
-
-```bash
-npm run build
-```
-
-### Preview the Built App 👀
-
-You can preview the built app using:
-
-```bash
-npm run preview
-```
-
-> ⚠️ **Important:** The preview command should not be used to serve ScoreSaber in production environments.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for code standards and pull request expectations

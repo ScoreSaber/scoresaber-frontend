@@ -1,0 +1,69 @@
+import { createEnv } from '@t3-oss/env-core';
+import * as z from 'zod';
+
+const booleanFlagSchema = z
+   .enum(['true', 'false'])
+   .default('false')
+   .transform((value) => value === 'true');
+
+const localHostnames = new Set(['localhost', '0.0.0.0', '127.0.0.1', '[::1]']);
+
+const serverUrlSchema = z.url().refine(
+   (value) => {
+      const url = new URL(value);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+   },
+   { message: 'must be http or https' }
+);
+
+const publicBrowserUrlSchema = z.url().refine(
+   (value) => {
+      const url = new URL(value);
+      if (url.protocol === 'https:') return true;
+      return url.protocol === 'http:' && localHostnames.has(url.hostname);
+   },
+   { message: 'must be https, or localhost http' }
+);
+
+function readEnv(key: string) {
+   const processValue = typeof process !== 'undefined' ? process.env[key] : undefined;
+   const importMetaValue = import.meta.env[key];
+   return processValue ?? importMetaValue;
+}
+
+export const env = createEnv({
+   isServer: typeof window === 'undefined',
+   shared: {
+      NODE_ENV: z.enum(['development', 'production', 'test']).default('development')
+   },
+   server: {
+      DEBUG_REACT_SCAN: booleanFlagSchema,
+      DEBUG_BREAKPOINTS: booleanFlagSchema,
+      DEBUG_PAGE_BACKGROUND: booleanFlagSchema,
+      API_URL: serverUrlSchema.default('https://api.scoresaber.local'),
+      CF_ACCESS_CLIENT_ID: z.string().optional(),
+      CF_ACCESS_CLIENT_SECRET: z.string().optional(),
+      VISITOR_RATE_LIMIT_SECRET: z.string().optional()
+   },
+   clientPrefix: 'NEXT_PUBLIC_',
+   client: {
+      NEXT_PUBLIC_API_URL: publicBrowserUrlSchema,
+      NEXT_PUBLIC_ARCVIEWER_URL: publicBrowserUrlSchema,
+      NEXT_PUBLIC_SITE_URL: publicBrowserUrlSchema.default('https://scoresaber.local')
+   },
+   runtimeEnvStrict: {
+      NODE_ENV: readEnv('NODE_ENV'),
+      DEBUG_REACT_SCAN: readEnv('DEBUG_REACT_SCAN'),
+      DEBUG_BREAKPOINTS: readEnv('DEBUG_BREAKPOINTS'),
+      DEBUG_PAGE_BACKGROUND: readEnv('DEBUG_PAGE_BACKGROUND'),
+      API_URL: readEnv('API_URL'),
+      CF_ACCESS_CLIENT_ID: readEnv('CF_ACCESS_CLIENT_ID'),
+      CF_ACCESS_CLIENT_SECRET: readEnv('CF_ACCESS_CLIENT_SECRET'),
+      VISITOR_RATE_LIMIT_SECRET: readEnv('VISITOR_RATE_LIMIT_SECRET'),
+      NEXT_PUBLIC_API_URL: readEnv('NEXT_PUBLIC_API_URL'),
+      NEXT_PUBLIC_ARCVIEWER_URL: readEnv('NEXT_PUBLIC_ARCVIEWER_URL'),
+      NEXT_PUBLIC_SITE_URL: readEnv('NEXT_PUBLIC_SITE_URL')
+   },
+   skipValidation: readEnv('SKIP_ENV_VALIDATION') === 'true',
+   emptyStringAsUndefined: true
+});

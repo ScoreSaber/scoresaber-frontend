@@ -1,0 +1,67 @@
+{
+   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+   "name": "website",
+   "sourceRoot": "apps/website/src",
+   "projectType": "application",
+   "tags": ["type:app", "scope:website"],
+   "targets": {
+      "build": {
+         "executor": "nx:run-script",
+         "cache": true,
+         "outputs": ["{projectRoot}/dist"],
+         "inputs": [
+            "production",
+            { "env": "NEXT_PUBLIC_API_URL" },
+            { "env": "NEXT_PUBLIC_SITE_URL" },
+            { "env": "NEXT_PUBLIC_ARCVIEWER_URL" },
+            { "env": "DEBUG_REACT_SCAN" },
+            { "env": "DEBUG_BREAKPOINTS" },
+            { "env": "DEBUG_PAGE_BACKGROUND" }
+         ],
+         "options": {
+            "script": "build"
+         }
+      },
+      "dev": {
+         "executor": "nx:run-script",
+         "continuous": true,
+         "options": {
+            "script": "dev"
+         }
+      },
+      "start": {
+         "executor": "nx:run-script",
+         "continuous": true,
+         "options": {
+            "script": "start"
+         }
+      },
+      "lint": {
+         "executor": "nx:run-commands",
+         "cache": true,
+         "inputs": ["default", "{projectRoot}/.oxlintrc.json", "{workspaceRoot}/.oxlintrc.website-boundary.json"],
+         "outputs": ["{options.outputFile}"],
+         "options": {
+            "commands": [
+               "bun run --cwd apps/website lint",
+               "env -u NO_COLOR oxlint apps/website/src apps/website/scripts apps/website/vite.config.ts apps/website/postcss.config.js apps/website/generator.config.js apps/website/lint-staged.config.mjs --disable-nested-config -c .oxlintrc.website-boundary.json"
+            ],
+            "parallel": false
+         }
+      },
+      "api-generate": {
+         "executor": "nx:run-script",
+         "cache": false,
+         "options": {
+            "script": "api:generate"
+         }
+      },
+      "api-regen": {
+         "executor": "nx:run-script",
+         "cache": false,
+         "options": {
+            "script": "api:regen"
+         }
+      }
+   }
+}

@@ -1,0 +1,150 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { createServerFn } from '@tanstack/react-start';
+import { z } from 'zod';
+
+import { MapCard } from '@/modules/maps/listing/map-card';
+import { MapFilters } from '@/modules/maps/listing/map-filters';
+import {
+   MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY,
+   MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION,
+   MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS
+} from '@/shared/api/generated/ApiParams';
+import { api } from '@/shared/api/server-api';
+import { PageError } from '@/shared/components/error/page-error';
+import { Pagination } from '@/shared/components/pagination';
+import { pageApiData } from '@/shared/result/api';
+import { isNumber } from '@/shared/url-state/params';
+import { mapFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
+import { applyPersistedSearchParams, readPersistedSearchStorage } from '@/shared/url-state/persisted-search';
+import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { updateSearchParams } from '@/shared/url-state/update-search-params';
+import { SetPageBackground } from '@/shell/background/page-background-provider';
+
+const isOptionalNumber = z.preprocess((val) => (val === '' ? undefined : val), z.coerce.number().min(0).optional());
+
+const isPageNumber = z.preprocess((val) => {
+   if (val == null || val === '') return 1;
+   return val;
+}, isNumber);
+
+const mapStatusListSchema = z
+   .preprocess(
+      (val) => (typeof val === 'string' ? val.split(',').filter(Boolean) : []),
+      z.array(z.enum(MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS).optional().catch(undefined))
+   )
+   .transform((statuses) => statuses.filter((status) => status != null));
+
+const mapsSearchSchema = z.object({
+   page: isPageNumber,
+   search: z.string().min(3).max(64).optional(),
+   status: z.string().optional(),
+   verified: z.enum(['true', 'false']).default('true'),
+   minStars: isOptionalNumber,
+   maxStars: isOptionalNumber,
+   sortBy: z.enum(MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY).optional(),
+   sortDirection: z.enum(MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION).optional()
+});
+
+type MapsSearchParams = Partial<z.output<typeof mapsSearchSchema>>;
+
+type MapsRouteInput = {
+   search: MapsSearchParams;
+   rawSearch: Record<string, unknown>;
+};
+
+const getMapsPageData = createServerFn({ method: 'GET' })
+   .inputValidator((data: MapsRouteInput) => data)
+   .handler(async ({ data }) => {
+      const rawSearchParams = normalizeSearchRecord(data.rawSearch);
+      const effectiveSearchParams = await applyPersistedSearchParams<MapsSearchParams>({
+         searchParams: rawSearchParams,
+         parseSearch: parseMapsSearch,
+         storageKey: mapFilterPreferences.storageKey,
+         persistedKeys: mapFilterPreferences.persistedKeys
+      });
+      const searchParams = mapsSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
+      const persistedStorage = await readPersistedSearchStorage(mapFilterPreferences.storageKey);
+      const statuses = parseMapListingStatuses(searchParams.status);
+      const result = await pageApiData(
+         api.map.mapControllerGetMapListings({
+            page: searchParams.page,
+            search: searchParams.search,
+            status: statuses.length > 0 ? statuses : undefined,
+            verified: searchParams.verified,
+            minStars: searchParams.minStars,
+            maxStars: searchParams.maxStars,
+            sortBy: searchParams.sortBy ?? 'trending',
+            sortDirection: searchParams.sortDirection ?? 'desc'
+         })
+      );
+
+      return { result, searchParams, persistedStorage };
+   });
+
+export const Route = createFileRoute('/maps')({
+   validateSearch: (search) => mapsSearchSchema.parse(search),
+   loaderDeps: ({ search }) => search,
+   loader: ({ deps, location }) => getMapsPageData({ data: { search: deps, rawSearch: location.search } }),
+   component: MapsRoute
+});
+
+function MapsRoute() {
+   const data = Route.useLoaderData();
+   const { result, searchParams, persistedStorage } = data;
+
+   if (!result.ok) return <PageError status={result.status} />;
+
+   const response = result.data;
+   const maps = response.data;
+   const meta = response.metadata;
+   const expandLowest = searchParams.sortBy === 'highestStars' && (searchParams.sortDirection ?? 'desc') === 'asc';
+   const bgCandidates = maps.filter((m) => m.coverUrl).map((m) => m.coverUrl);
+   const getPageHref = (page: number) => buildMapsHref(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
+
+   return (
+      <div className="relative flex-1 overflow-hidden">
+         {bgCandidates.length > 0 && <SetPageBackground src={bgCandidates[0]} candidates={bgCandidates} />}
+
+         <div className="app-container relative z-10 flex flex-col gap-4 p-4 md:p-8">
+            <MapFilters
+               currentPage={searchParams.page}
+               totalPages={meta.totalPages}
+               search={searchParams}
+               buildHref={buildMapsHref}
+               parseSearch={parseMapsSearch}
+               initialFiltersOpen={persistedStorage.filtersOpen === 'true'}
+            />
+
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+               {maps.map((map) => (
+                  <MapCard key={map.id} map={map} expandLowest={expandLowest} />
+               ))}
+            </div>
+
+            {meta.totalPages > 1 && (
+               <div className="flex justify-center">
+                  <Pagination
+                     currentPage={searchParams.page}
+                     totalItems={meta.totalItems}
+                     pageSize={meta.itemsPerPage}
+                     getPageHref={getPageHref}
+                     scroll={false}
+                  />
+               </div>
+            )}
+         </div>
+      </div>
+   );
+}
+
+function buildMapsHref(search?: MapsSearchParams) {
+   return `/maps${stringifyUrlSearch(search ?? {})}`;
+}
+
+function parseMapsSearch(search: Record<string, unknown>) {
+   return mapsSearchSchema.safeParse({ page: 1, ...search }).data ?? null;
+}
+
+function parseMapListingStatuses(status?: string) {
+   return mapStatusListSchema.parse(status);
+}

@@ -1,10 +1,34 @@
 {
-   "editor.defaultFormatter": "esbenp.prettier-vscode",
-   "editor.formatOnSave": true,
-   "[svelte]": {
-      "editor.defaultFormatter": "svelte.svelte-vscode"
+   "files.exclude": {
+      ".next": true,
+      "coverage": true,
+      "node_modules": true
    },
-   "prettier.documentSelectors": ["**/*.svelte"],
-   "svelte.plugin.svelte.format.enable": true,
-   "svelte.plugin.svelte.defaultScriptLanguage": "ts"
+   "search.exclude": {
+      ".next": true,
+      "coverage": true,
+      "node_modules": true
+   },
+   "editor.codeActionsOnSave": {
+      "source.format.oxc": "always",
+      "source.fixAll.oxc": "always"
+   },
+   "editor.formatOnSave": false,
+   "editor.formatOnSaveMode": "file",
+   "oxc.enable.oxfmt": true,
+   "oxc.enable.oxlint": true,
+   "oxc.lint.run": "onType",
+   "oxc.path.oxfmt": "node_modules/.bin/oxfmt",
+   "oxc.path.oxlint": "node_modules/.bin/oxlint",
+   "oxc.requireConfig": true,
+   "eslint.enable": false,
+   "prettier.enable": false,
+   "tailwindCSS.classFunctions": ["clsx", "cva", "twMerge"],
+   "tailwindCSS.experimental.configFile": {
+      "src/styles/globals.css": "src/**/*.{css,ts,tsx}"
+   },
+   "tailwindCSS.files.exclude": ["**/.git/**", "**/.next/**", "**/.output/**", "**/coverage/**", "**/dist/**", "**/node_modules/**"],
+   "i18n-ally.enabledFrameworks": ["next-intl"],
+   "i18n-ally.localesPaths": ["messages"],
+   "i18n-ally.sourceLanguage": "en"
 }

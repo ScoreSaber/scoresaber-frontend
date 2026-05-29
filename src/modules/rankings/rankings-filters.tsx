@@ -1,0 +1,276 @@
+'use client';
+
+import { useState } from 'react';
+
+import { FaChevronDown, FaGlobe, FaTimes, FaUser, FaUserFriends } from 'react-icons/fa';
+import { useTranslations } from 'use-intl';
+
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+
+import { useAuth } from '@/modules/auth';
+import type {
+   PlayerControllerGetPlayersPivot,
+   PlayerControllerGetPlayersSort,
+   PlayerControllerGetPlayersSortDirection
+} from '@/shared/api/generated/ApiParams';
+import { generateFlagUrl } from '@/shared/components/country-image';
+import { CountryRegionFilter } from '@/shared/components/country-region-filter';
+import { DebouncedSearchInput } from '@/shared/components/debounced-search-input';
+import { FadeInImage } from '@/shared/components/fade-in-image';
+import { FilterPill } from '@/shared/components/filter-pill';
+import { PaginationArrow } from '@/shared/components/pagination';
+import { formatCountryRegionParam, parseCountryRegionParam, type CountryRegionFilterValue } from '@/shared/country-region';
+import { cn } from '@/shared/format/helpers';
+import { removeStorageValue } from '@/shared/result/storage';
+import { rankingFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
+import { usePersistedParams } from '@/shared/url-state/persisted/use-persisted-params';
+import type { SearchParamsRecord } from '@/shared/url-state/search-params';
+import { updateSearchParams } from '@/shared/url-state/update-search-params';
+
+const QUICK_FILTER_BUTTON_CLASS = 'h-8 w-8 cursor-pointer p-0 sm:p-0';
+
+type RankingsFiltersSearch = SearchParamsRecord & {
+   page?: number;
+   search?: string;
+   countries?: CountryRegionFilterValue;
+   sort?: PlayerControllerGetPlayersSort;
+   sortDirection?: PlayerControllerGetPlayersSortDirection;
+   pivot?: PlayerControllerGetPlayersPivot;
+   includeInactive?: 'true' | 'false';
+   highlight?: string;
+};
+
+interface RankingsFiltersProps {
+   currentPage: number;
+   totalPages: number;
+   includeInactive: boolean;
+   search: RankingsFiltersSearch;
+   buildHref: (search?: RankingsFiltersSearch) => string;
+   parseSearch: (search: SearchParamsRecord) => RankingsFiltersSearch | null;
+   initialFiltersOpen: boolean;
+}
+
+export function RankingsFilters({
+   currentPage,
+   totalPages,
+   includeInactive,
+   search,
+   buildHref,
+   parseSearch,
+   initialFiltersOpen
+}: RankingsFiltersProps) {
+   const { user } = useAuth();
+   const t = useTranslations();
+   const tc = useTranslations();
+   const { navigate, loadStorage, saveStorage } = usePersistedParams({
+      storageKey: rankingFilterPreferences.storageKey,
+      search,
+      buildHref,
+      parseSearch,
+      persistedKeys: user ? rankingFilterPreferences.authPersistedKeys : rankingFilterPreferences.persistedKeys,
+      legacyStorageKeys: rankingFilterPreferences.legacyStorageKeys
+   });
+   const currentSearch = search.search;
+   const currentCountries = search.countries;
+   const currentPivot = search.pivot;
+   const userCountry = user ? parseCountryRegionParam(user.country) : undefined;
+   const userCountryActive = Boolean(userCountry && formatCountryRegionParam(currentCountries) === formatCountryRegionParam(userCountry));
+   const globalActive = !currentPivot && !userCountryActive;
+
+   const [filtersOpen, setFiltersOpen] = useState(() => {
+      const stored = loadStorage().filtersOpen;
+      return stored == null ? initialFiltersOpen : stored === 'true';
+   });
+   const isPlayerPivot = currentPivot === 'player';
+   const showPagination = totalPages > 1 && !isPlayerPivot;
+
+   function handleGlobalToggle() {
+      if (globalActive) return;
+      removeStorageValue(rankingFilterPreferences.pivotStorageKey);
+      navigate({ pivot: undefined, highlight: undefined, countries: userCountryActive ? undefined : currentCountries });
+   }
+
+   function handlePivotToggle(pivot: PlayerControllerGetPlayersPivot) {
+      if (currentPivot === pivot) {
+         removeStorageValue(rankingFilterPreferences.pivotStorageKey);
+         navigate({ pivot: undefined, highlight: undefined });
+      } else {
+         removeStorageValue(rankingFilterPreferences.pivotStorageKey);
+         // highlight current player when using "around me"
+         navigate({ pivot, highlight: pivot === 'player' && user ? user.id : undefined });
+      }
+   }
+
+   function handleCountryToggle() {
+      if (!userCountry) return;
+      navigate({ countries: userCountryActive ? undefined : userCountry });
+   }
+
+   const activeFilterCount =
+      (currentPivot ? 1 : 0) + (currentCountries ? 1 : 0) + (includeInactive ? 1 : 0) + (currentSearch && currentSearch.length >= 3 ? 1 : 0);
+   const hasActiveFilters = activeFilterCount > 0;
+   const getPageHref = (page: number) => buildHref(updateSearchParams(search, { page: page > 1 ? page : undefined }));
+
+   function handleClearAll() {
+      removeStorageValue(rankingFilterPreferences.pivotStorageKey);
+      navigate({
+         search: undefined,
+         countries: undefined,
+         includeInactive: undefined,
+         pivot: undefined,
+         highlight: undefined
+      });
+   }
+
+   return (
+      <Collapsible
+         open={isPlayerPivot || filtersOpen}
+         onOpenChange={(open) => {
+            setFiltersOpen(open);
+            saveStorage({ filtersOpen: String(open) });
+         }}
+      >
+         <div className="flex flex-col gap-3">
+            {/* search */}
+            {!isPlayerPivot && (
+               <div className="flex items-center gap-2 md:gap-3">
+                  {showPagination && (
+                     <PaginationArrow direction="left" page={currentPage - 1} disabled={currentPage <= 1} getPageHref={getPageHref} />
+                  )}
+
+                  <div className="relative min-w-0 flex-1">
+                     <DebouncedSearchInput
+                        id="ranking-search"
+                        initialValue={currentSearch ?? ''}
+                        placeholder={tc('common.searchPlaceholder')}
+                        clearLabel={tc('common.clearSearch')}
+                        srLabel={t('rankings.searchPlayers')}
+                        onSearchAction={(value) => navigate({ search: value })}
+                     />
+
+                     {/* toggle */}
+                     <Tooltip>
+                        <CollapsibleTrigger asChild>
+                           <TooltipTrigger asChild>
+                              <Button
+                                 type="button"
+                                 variant={hasActiveFilters ? 'default' : 'secondary'}
+                                 size="icon-xs"
+                                 aria-label={filtersOpen ? tc('common.hideFilters') : tc('common.showFilters')}
+                                 className={cn(
+                                    'absolute -bottom-2.5 left-1/2 z-10 h-5 -translate-x-1/2 rounded-full border',
+                                    hasActiveFilters ? 'w-auto gap-1 px-2' : 'w-8',
+                                    !hasActiveFilters && 'bg-secondary hover:bg-secondary/80'
+                                 )}
+                              >
+                                 <FaChevronDown className={cn('size-2.5 transition-transform', filtersOpen && 'rotate-180')} aria-hidden="true" />
+                                 {hasActiveFilters && <span className="text-[10px] leading-none">({activeFilterCount})</span>}
+                              </Button>
+                           </TooltipTrigger>
+                        </CollapsibleTrigger>
+                        <TooltipContent>{tc('common.filters')}</TooltipContent>
+                     </Tooltip>
+                  </div>
+
+                  {showPagination && (
+                     <PaginationArrow direction="right" page={currentPage + 1} disabled={currentPage >= totalPages} getPageHref={getPageHref} />
+                  )}
+               </div>
+            )}
+
+            <CollapsibleContent className="overflow-hidden pt-1">
+               <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:flex-wrap sm:gap-1.5">
+                  {/* pivot (authed only) */}
+                  {user && (
+                     <div className="flex items-center justify-center gap-1.5">
+                        <Tooltip>
+                           <TooltipTrigger asChild>
+                              <FilterPill
+                                 className={QUICK_FILTER_BUTTON_CLASS}
+                                 active={globalActive}
+                                 icon={FaGlobe}
+                                 aria-label={tc('common.global')}
+                                 onClick={handleGlobalToggle}
+                              />
+                           </TooltipTrigger>
+                           <TooltipContent>{tc('common.global')}</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                           <TooltipTrigger asChild>
+                              <FilterPill
+                                 className={QUICK_FILTER_BUTTON_CLASS}
+                                 active={isPlayerPivot}
+                                 icon={FaUser}
+                                 aria-label={tc('common.aroundMe')}
+                                 onClick={() => handlePivotToggle('player')}
+                              />
+                           </TooltipTrigger>
+                           <TooltipContent>{tc('common.aroundMe')}</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                           <TooltipTrigger asChild>
+                              <FilterPill
+                                 className={QUICK_FILTER_BUTTON_CLASS}
+                                 active={currentPivot === 'friends'}
+                                 icon={FaUserFriends}
+                                 aria-label={tc('common.friends')}
+                                 onClick={() => handlePivotToggle('friends')}
+                              />
+                           </TooltipTrigger>
+                           <TooltipContent>{tc('common.friends')}</TooltipContent>
+                        </Tooltip>
+                        {userCountry && (
+                           <Tooltip>
+                              <TooltipTrigger asChild>
+                                 <FilterPill
+                                    className={QUICK_FILTER_BUTTON_CLASS}
+                                    active={userCountryActive}
+                                    aria-label={tc('common.country')}
+                                    onClick={handleCountryToggle}
+                                 >
+                                    <FadeInImage
+                                       src={generateFlagUrl(user.country)}
+                                       alt={user.country.toUpperCase()}
+                                       width={14}
+                                       height={14}
+                                       className="pointer-events-none max-w-none"
+                                    />
+                                 </FilterPill>
+                              </TooltipTrigger>
+                              <TooltipContent>{tc('common.country')}</TooltipContent>
+                           </Tooltip>
+                        )}
+                     </div>
+                  )}
+
+                  {user && <Separator orientation="vertical" variant="gradient" size="toolbar" className="mx-1 hidden sm:block" />}
+
+                  <div className="flex max-w-full flex-wrap items-center justify-center gap-1.5">
+                     {/* inactive */}
+                     <FilterPill
+                        className="cursor-pointer"
+                        active={includeInactive}
+                        onClick={() => navigate({ includeInactive: includeInactive ? undefined : 'true' })}
+                     >
+                        {tc('common.includeInactive')}
+                     </FilterPill>
+
+                     {/* country */}
+                     <CountryRegionFilter value={currentCountries} onChangeAction={(value) => navigate({ countries: value })} />
+
+                     {/* clear */}
+                     {hasActiveFilters && (
+                        <FilterPill className="cursor-pointer" icon={FaTimes} onClick={handleClearAll}>
+                           {tc('common.clear')}
+                        </FilterPill>
+                     )}
+                  </div>
+               </div>
+            </CollapsibleContent>
+         </div>
+      </Collapsible>
+   );
+}

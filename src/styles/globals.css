@@ -1,0 +1,455 @@
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark {
+   &:where(.dark, .dark *) {
+      @slot;
+   }
+
+   @media (prefers-color-scheme: dark) {
+      &:where(:root:not(.light), :root:not(.light) *) {
+         @slot;
+      }
+   }
+}
+
+@font-face {
+   font-family: 'Geist';
+   font-style: normal;
+   font-weight: 400;
+   font-display: block;
+   src: url('/fonts/geist-latin-400-normal.woff2') format('woff2');
+   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+      U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+   font-family: 'Geist';
+   font-style: normal;
+   font-weight: 500;
+   font-display: block;
+   src: url('/fonts/geist-latin-500-normal.woff2') format('woff2');
+   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+      U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+   font-family: 'Geist';
+   font-style: normal;
+   font-weight: 600;
+   font-display: block;
+   src: url('/fonts/geist-latin-600-normal.woff2') format('woff2');
+   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+      U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+   font-family: 'Geist';
+   font-style: normal;
+   font-weight: 700;
+   font-display: block;
+   src: url('/fonts/geist-latin-700-normal.woff2') format('woff2');
+   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+      U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+   font-family: 'Geist Pixel';
+   font-style: normal;
+   font-weight: 500;
+   font-display: block;
+   src: url('/fonts/GeistPixel-Square.woff2') format('woff2');
+}
+
+:root {
+   color-scheme: light;
+
+   --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+   --font-pixel: 'Geist Pixel', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+   /* mobile bar offsets -- bar height + safe area for pwa standalone mode */
+   --content-offset-top: 3rem;
+   --content-offset-bottom: 4rem;
+
+   --background: hsl(0 0% 100%);
+   --foreground: hsl(24 10% 12%);
+   --card: hsl(0 0% 100%);
+   --card-foreground: hsl(20 14.3% 4.1%);
+   --popover: hsl(0 0% 100%);
+   --popover-foreground: hsl(20 14.3% 4.1%);
+   --primary: hsl(47.9 95.8% 53.1%);
+   --primary-foreground: hsl(26 83.3% 14.1%);
+   --secondary: hsl(60 4.8% 95.9%);
+   --secondary-foreground: hsl(24 9.8% 10%);
+   --muted: hsl(60 4.8% 95.9%);
+   --muted-foreground: hsl(25 5.3% 44.7%);
+   --accent: hsl(60 4.8% 95.9%);
+   --accent-foreground: hsl(24 9.8% 10%);
+   --destructive: hsl(0 84.2% 60.2%);
+   --destructive-foreground: hsl(60 9.1% 97.8%);
+   --border: hsl(20 5.9% 90%);
+   --input: hsl(20 5.9% 90%);
+   --ring: hsl(20 14.3% 4.1%);
+   --radius: 0.5rem;
+   --overlay: hsl(0 0% 0%);
+   --badge-foreground: hsl(0 0% 100%);
+   --chart-grid: hsl(20 14.3% 4.1%);
+   --chart-metric-rank: hsl(202 76% 56%);
+   --chart-metric-pp: hsl(243 75% 59%);
+   --chart-metric-acc: hsl(142 76% 36%);
+   --chart-metric-plays: hsl(173 58% 39%);
+
+   /* scoresaber colors -- shared across themes */
+   --chart-primary: hsl(202 76% 56%);
+   --difficulty-easy: #3cb371;
+   --difficulty-normal: #59b0f4;
+   --difficulty-hard: tomato;
+   --difficulty-expert: #bf2a42;
+   --difficulty-expert-plus: #8f48db;
+   --role-owner: hsl(307 100% 51%);
+   --role-admin: hsl(210 83% 86%);
+   --role-qat-head: hsl(334 100% 50%);
+   --role-nat: hsl(217 91% 49%);
+   --role-rt: hsl(168 76% 42%);
+   --role-rtr: hsl(168 77% 28%);
+   --role-qat: hsl(0 100% 48%);
+   --role-cat: hsl(326 64% 73%);
+   --role-ppv3: hsl(271 51% 55%);
+   --role-dev: hsl(0 0% 7%);
+   --role-cct: hsl(99 92% 50%);
+   --role-supporter: hsl(7 93% 65%);
+   --role-default: var(--foreground);
+   --score-pp: hsl(243 75% 59%);
+   --score-accuracy-good: hsl(0 0% 0%);
+   --score-combo-full: hsl(142 76% 36%);
+   --score-combo-broken: hsl(0 84% 60%);
+   --status-success: hsl(142 76% 36%);
+   --status-warning: hsl(45 93% 47%);
+   --status-error: hsl(0 84% 60%);
+}
+
+.dark {
+   color-scheme: dark;
+   --background: hsl(240 10% 4%);
+   --foreground: hsl(60 7% 90%);
+   --card: hsl(240 33% 1%);
+   --card-foreground: hsl(60 9.1% 97.8%);
+   --popover: hsl(20 14.3% 4.1%);
+   --popover-foreground: hsl(60 9.1% 97.8%);
+   --primary: hsl(47.9 95.8% 53.1%);
+   --primary-foreground: hsl(26 83.3% 14.1%);
+   --secondary: hsl(12 6.5% 15.1%);
+   --secondary-foreground: hsl(60 9.1% 97.8%);
+   --muted: hsl(12 6.5% 15.1%);
+   --muted-foreground: hsl(24 5.4% 63.9%);
+   --accent: hsl(12 6.5% 15.1%);
+   --accent-foreground: hsl(60 9.1% 97.8%);
+   --destructive: hsl(2 74% 66%);
+   --destructive-foreground: hsl(60 9.1% 97.8%);
+   --border: hsl(0 0% 20%);
+   --input: hsl(12 6.5% 15.1%);
+   --ring: hsl(35.5 91.7% 32.9%);
+
+   /* only the colors that actually differ from light */
+   --chart-grid: hsl(60 9.1% 97.8%);
+   --score-accuracy-good: hsl(60 9.1% 97.8%);
+}
+
+@media (prefers-color-scheme: dark) {
+   :root:not(.light) {
+      color-scheme: dark;
+      --background: hsl(240 10% 4%);
+      --foreground: hsl(60 7% 90%);
+      --card: hsl(240 33% 1%);
+      --card-foreground: hsl(60 9.1% 97.8%);
+      --popover: hsl(20 14.3% 4.1%);
+      --popover-foreground: hsl(60 9.1% 97.8%);
+      --primary: hsl(47.9 95.8% 53.1%);
+      --primary-foreground: hsl(26 83.3% 14.1%);
+      --secondary: hsl(12 6.5% 15.1%);
+      --secondary-foreground: hsl(60 9.1% 97.8%);
+      --muted: hsl(12 6.5% 15.1%);
+      --muted-foreground: hsl(24 5.4% 63.9%);
+      --accent: hsl(12 6.5% 15.1%);
+      --accent-foreground: hsl(60 9.1% 97.8%);
+      --destructive: hsl(2 74% 66%);
+      --destructive-foreground: hsl(60 9.1% 97.8%);
+      --border: hsl(0 0% 20%);
+      --input: hsl(12 6.5% 15.1%);
+      --ring: hsl(35.5 91.7% 32.9%);
+      --chart-grid: hsl(60 9.1% 97.8%);
+      --score-accuracy-good: hsl(60 9.1% 97.8%);
+   }
+}
+
+@theme inline {
+   --breakpoint-3xl: 1920px;
+
+   --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+   --font-pixel: 'Geist Pixel', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+   --color-border: var(--border);
+   --color-input: var(--input);
+   --color-ring: var(--ring);
+   --color-background: var(--background);
+   --color-foreground: var(--foreground);
+   --color-primary: var(--primary);
+   --color-primary-foreground: var(--primary-foreground);
+   --color-secondary: var(--secondary);
+   --color-secondary-foreground: var(--secondary-foreground);
+   --color-destructive: var(--destructive);
+   --color-destructive-foreground: var(--destructive-foreground);
+   --color-muted: var(--muted);
+   --color-muted-foreground: var(--muted-foreground);
+   --color-accent: var(--accent);
+   --color-accent-foreground: var(--accent-foreground);
+   --color-popover: var(--popover);
+   --color-popover-foreground: var(--popover-foreground);
+   --color-card: var(--card);
+   --color-card-foreground: var(--card-foreground);
+   --color-badge-foreground: var(--badge-foreground);
+
+   /* scoresaber colors */
+   --color-chart-primary: var(--chart-primary);
+   --color-difficulty-easy: var(--difficulty-easy);
+   --color-difficulty-normal: var(--difficulty-normal);
+   --color-difficulty-hard: var(--difficulty-hard);
+   --color-difficulty-expert: var(--difficulty-expert);
+   --color-difficulty-expert-plus: var(--difficulty-expert-plus);
+   --color-role-owner: var(--role-owner);
+   --color-role-admin: var(--role-admin);
+   --color-role-qat-head: var(--role-qat-head);
+   --color-role-nat: var(--role-nat);
+   --color-role-rt: var(--role-rt);
+   --color-role-rtr: var(--role-rtr);
+   --color-role-qat: var(--role-qat);
+   --color-role-cat: var(--role-cat);
+   --color-role-ppv3: var(--role-ppv3);
+   --color-role-dev: var(--role-dev);
+   --color-role-cct: var(--role-cct);
+   --color-role-supporter: var(--role-supporter);
+   --color-role-default: var(--role-default);
+   --color-score-pp: var(--score-pp);
+   --color-score-accuracy-good: var(--score-accuracy-good);
+   --color-score-combo-full: var(--score-combo-full);
+   --color-score-combo-broken: var(--score-combo-broken);
+   --color-status-success: var(--status-success);
+   --color-status-warning: var(--status-warning);
+   --color-status-error: var(--status-error);
+
+   --radius-sm: calc(var(--radius) - 4px);
+   --radius-md: calc(var(--radius) - 2px);
+   --radius-lg: var(--radius);
+
+   --animate-pulse-ring: pulse-ring 3s ease-out infinite;
+   --animate-collapsible-down: collapsible-down 180ms ease-out;
+   --animate-collapsible-up: collapsible-up 180ms ease-out;
+   --container-2xl: 1300px;
+}
+
+#nprogress {
+   pointer-events: none;
+}
+
+#nprogress .bar {
+   position: fixed;
+   top: 0;
+   left: 0;
+   z-index: 1600;
+   width: 100%;
+   height: 2px;
+   background: var(--primary);
+   transition:
+      transform 200ms ease,
+      opacity 200ms linear;
+}
+
+#nprogress .peg {
+   position: absolute;
+   right: 0;
+   display: block;
+   width: 100px;
+   height: 100%;
+   opacity: 1;
+   transform: rotate(3deg) translate(0, -4px);
+}
+
+@utility app-container {
+   margin-inline: auto;
+   padding-inline: 2rem;
+   max-width: 1300px;
+}
+
+@layer base {
+   *,
+   ::after,
+   ::before,
+   ::backdrop,
+   ::file-selector-button {
+      border-color: var(--color-border, currentcolor);
+   }
+   body {
+      background-color: var(--background);
+      color: var(--foreground);
+   }
+   a,
+   button,
+   [role='button'],
+   input,
+   select,
+   textarea {
+      touch-action: manipulation;
+   }
+
+   /* unified focus ring -- single outline in primary color */
+   *:focus-visible {
+      outline: 1.5px solid var(--primary);
+      outline-offset: 2px;
+   }
+
+   /* inputs/textareas handle focus internally */
+   input:focus-visible,
+   textarea:focus-visible,
+   select:focus-visible {
+      outline: none;
+      border-color: var(--primary);
+   }
+}
+
+@keyframes pulse-ring {
+   0% {
+      transform: scale(1);
+      opacity: 0.6;
+   }
+   50% {
+      transform: scale(1.8);
+      opacity: 0;
+   }
+   100% {
+      transform: scale(1);
+      opacity: 0;
+   }
+}
+
+@keyframes team-rainbow-scroll {
+   0% {
+      background-position: 300px 0;
+   }
+   100% {
+      background-position: 0 0;
+   }
+}
+
+@keyframes team-rainbow-icon {
+   0% {
+      filter: hue-rotate(0deg);
+   }
+   100% {
+      filter: hue-rotate(360deg);
+   }
+}
+
+.team-rainbow-text {
+   color: transparent;
+   background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet, indigo, blue, green, yellow, orange, red);
+   background-size: 300px 100%;
+   animation: team-rainbow-scroll 8s linear infinite;
+   background-clip: text;
+   -webkit-background-clip: text;
+}
+
+.team-rainbow-border::before {
+   content: '';
+   position: absolute;
+   inset: 0;
+   z-index: -1;
+   border-radius: inherit;
+   background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet, indigo, blue, green, yellow, orange, red);
+   background-size: 300px 100%;
+   opacity: 0;
+   transition: opacity 300ms ease;
+   animation: team-rainbow-scroll 8s linear infinite;
+}
+
+.team-rainbow-border::after {
+   content: '';
+   position: absolute;
+   inset: 1px;
+   z-index: -1;
+   border-radius: calc(var(--radius-lg) - 1px);
+   background: var(--card);
+}
+
+.team-rainbow-border:hover::before {
+   opacity: 1;
+}
+
+.team-rainbow-card:hover .team-rainbow-fill {
+   color: var(--primary);
+   animation: team-rainbow-icon 3s linear infinite;
+}
+
+@keyframes collapsible-down {
+   from {
+      height: 0;
+      opacity: 0;
+   }
+   to {
+      height: var(--radix-collapsible-content-height);
+      opacity: 1;
+   }
+}
+
+@keyframes collapsible-up {
+   from {
+      height: var(--radix-collapsible-content-height);
+      opacity: 1;
+   }
+   to {
+      height: 0;
+      opacity: 0;
+   }
+}
+
+html {
+   scrollbar-gutter: stable;
+}
+
+/* slight scale bump on wide screens -- uses font-size so all rem-based
+   tailwind utilities scale up without breaking radix positioning or canvas */
+@media (min-width: 1280px) {
+   html {
+      font-size: 18px; /* 16 * 1.1 */
+   }
+}
+
+body[style] {
+   margin: 0 auto !important;
+}
+
+body[data-scroll-locked] {
+   overflow: hidden;
+   position: fixed;
+   width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+   *,
+   ::before,
+   ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+   }
+}
+
+/* pwa standalone -- safe area aware content offsets */
+@supports (padding: env(safe-area-inset-bottom)) {
+   :root {
+      --content-offset-top: calc(3rem + env(safe-area-inset-top, 0px));
+      --content-offset-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+   }
+}

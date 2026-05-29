@@ -1,0 +1,197 @@
+'use client';
+
+import { useState } from 'react';
+
+import { FaGlobeAmericas } from 'react-icons/fa';
+
+import { Separator } from '@/components/ui/separator';
+
+import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
+import { PlayerLink } from '@/modules/player/shared/player-link';
+import { ScoreCardActions } from '@/modules/scores/score-card-actions';
+import { ScoreDetailsInline } from '@/modules/scores/score-details-inline';
+import { ScoreStats } from '@/modules/scores/score-stats';
+import type {
+   LeaderboardControllerGetLeaderboardByIdResponse,
+   LeaderboardControllerGetLeaderboardScoresByIdDataItem
+} from '@/shared/api/generated/ApiParams';
+import { DeviceDisplay } from '@/shared/components/device-display';
+import { Time } from '@/shared/components/time';
+import { cn, formatAccuracy, formatNumber, getHmdName, isLegacyAccuracyScore } from '@/shared/format/helpers';
+import { isLeaderboardRanked } from '@/shared/format/styling';
+
+interface LeaderboardScoresTableProps {
+   scores: LeaderboardControllerGetLeaderboardScoresByIdDataItem[];
+   leaderboard: LeaderboardControllerGetLeaderboardByIdResponse;
+   highlight?: number;
+   // when filtering by scope/search, pass pagination info to compute relative ranks
+   scopedPage?: number;
+   scopedPageSize?: number;
+}
+
+export function LeaderboardScoresTable({ scores, leaderboard, highlight, scopedPage, scopedPageSize }: LeaderboardScoresTableProps) {
+   const isRanked = isLeaderboardRanked(leaderboard);
+   const isScoped = scopedPage != null && scopedPageSize != null;
+
+   return (
+      <div className="flex flex-col gap-1.5">
+         {scores.map((score, index) => (
+            <LeaderboardScoreCard
+               key={score.id}
+               score={score}
+               isRanked={isRanked}
+               isHighlighted={highlight === score.id}
+               showAccuracy={leaderboard.maxScore > 0}
+               relativeRank={isScoped ? (scopedPage - 1) * scopedPageSize + index + 1 : undefined}
+            />
+         ))}
+      </div>
+   );
+}
+
+interface LeaderboardScoreCardProps {
+   score: LeaderboardControllerGetLeaderboardScoresByIdDataItem;
+   isRanked: boolean;
+   isHighlighted: boolean;
+   showAccuracy: boolean;
+   relativeRank?: number;
+}
+
+function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, relativeRank }: LeaderboardScoreCardProps) {
+   const [detailsExpanded, setDetailsExpanded] = useState(false);
+   const missedTotal = score.missedNotes + score.badCuts;
+   const accuracy = formatAccuracy(score.accuracy * 100);
+   const legacyAccuracy = isLegacyAccuracyScore(score.createdAt);
+
+   const hmdName = getHmdName(score.device, score.legacyHmdId);
+   const hasDevice = !!(hmdName || score.device?.controllerLeft || score.device?.controllerRight);
+
+   const deviceIcons = hasDevice ? (
+      <DeviceDisplay
+         hmd={hmdName}
+         controllerLeft={score.device?.controllerLeft}
+         controllerRight={score.device?.controllerRight}
+         className="-ml-0.5"
+      />
+   ) : null;
+
+   const scoreProps = {
+      modifiedScore: score.modifiedScore,
+      pp: score.pp,
+      accuracy,
+      mods: score.mods,
+      fullCombo: score.fullCombo,
+      missedTotal
+   };
+
+   const rankDisplay =
+      relativeRank != null ? (
+         <span className="flex items-baseline gap-1">
+            <span className="text-muted-foreground tabular-nums">#{formatNumber(relativeRank)}</span>
+            <span className="text-muted-foreground/60 text-xs tabular-nums">(#{formatNumber(score.rank)})</span>
+         </span>
+      ) : (
+         <span className="text-muted-foreground tabular-nums">#{formatNumber(score.rank)}</span>
+      );
+
+   return (
+      <div>
+         <div
+            className={cn(
+               'bg-secondary/40 relative w-full rounded-lg border px-3 py-2.5 text-left transition-colors',
+               score.hasReplay ? 'pb-10' : 'pb-2.5',
+               'md:pr-14 md:pb-2.5',
+               isHighlighted && 'border-primary'
+            )}
+         >
+            {/* mobile: stacked layout */}
+            <div className="md:hidden">
+               {/* top bar: rank / player / devices */}
+               <div className="mb-1 flex w-full items-center justify-between text-sm">
+                  <span className="flex items-center">
+                     <FaGlobeAmericas className="text-muted-foreground mr-1 size-4" />
+                     {rankDisplay}
+                  </span>
+                  <div className="flex items-center gap-2">
+                     <PlayerAvatar
+                        src={score.player.avatar}
+                        playerId={score.player.id}
+                        alt={score.player.name}
+                        width={28}
+                        height={28}
+                        className="shrink-0 rounded-full"
+                     />
+                     <PlayerLink player={score.player} />
+                  </div>
+                  {deviceIcons ?? <span />}
+               </div>
+
+               {/* stats */}
+               <ScoreStats
+                  score={scoreProps}
+                  showAccuracy={showAccuracy}
+                  showPP={isRanked}
+                  legacyAccuracy={legacyAccuracy}
+                  className="mx-auto mt-0 max-w-80 flex-row flex-wrap gap-1.5"
+                  timeSet={score.createdAt}
+               />
+            </div>
+
+            {/* desktop: horizontal layout */}
+            <div className="hidden md:flex md:items-center md:justify-between">
+               <div className="flex items-center gap-3">
+                  <div className={cn('flex shrink-0 flex-col items-center gap-0.5', relativeRank != null ? 'w-24' : 'w-16')}>
+                     <span className="flex items-center gap-1 text-sm">
+                        <FaGlobeAmericas className="text-muted-foreground size-3" />
+                        {rankDisplay}
+                     </span>
+                     <span className="text-muted-foreground text-[11px]">
+                        <Time short date={score.createdAt} />
+                     </span>
+                  </div>
+                  <PlayerAvatar
+                     src={score.player.avatar}
+                     playerId={score.player.id}
+                     alt={score.player.name}
+                     width={32}
+                     height={32}
+                     className="shrink-0 rounded-full"
+                  />
+                  <div className="min-w-0 flex-1">
+                     <PlayerLink player={score.player} />
+                     {deviceIcons && <div className="pt-0.5">{deviceIcons}</div>}
+                  </div>
+               </div>
+
+               <ScoreStats
+                  score={scoreProps}
+                  showAccuracy={showAccuracy}
+                  showPP={isRanked}
+                  legacyAccuracy={legacyAccuracy}
+                  className="mt-0 items-end"
+               />
+            </div>
+
+            {/* actions */}
+            {score.hasReplay && <Separator variant="gradient" className="absolute right-4 bottom-8 left-4 md:hidden" />}
+            <ScoreCardActions
+               score={score}
+               detailsExpanded={detailsExpanded}
+               onToggleDetailsAction={score.hasReplay ? () => setDetailsExpanded((prev) => !prev) : undefined}
+               replayTooltipSide="top"
+               tooltipSide="bottom"
+               mobileBottomRow
+               className={cn(
+                  'md:top-1/2 md:right-3 md:bottom-auto md:left-auto md:translate-x-0 md:-translate-y-1/2',
+                  score.hasReplay ? 'bottom-2 left-1/2 -translate-x-1/2' : 'hidden md:flex'
+               )}
+            />
+         </div>
+         {detailsExpanded && (
+            <div className="mt-2 lg:mx-6">
+               <ScoreDetailsInline score={score} />
+            </div>
+         )}
+      </div>
+   );
+}

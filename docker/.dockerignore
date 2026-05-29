@@ -1,9 +1,0 @@
-**/.env
-**/node_modules
-**/.git
-**/Dockerfile
-**/docker-compose.yml
-**/.prettierrc
-**/.gitignore
-**/.eslintrc.js
-**/README.md

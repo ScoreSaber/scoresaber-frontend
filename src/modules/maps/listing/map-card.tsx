@@ -1,0 +1,99 @@
+'use client';
+
+import { FaDrum, FaKey, FaMusic } from 'react-icons/fa';
+import { useTranslations } from 'use-intl';
+
+import { getDisplayLeaderboards } from '@/modules/maps/map-leaderboards';
+import { MapDifficultyChips } from '@/modules/maps/shared/map-difficulty-chips';
+import { SongCard } from '@/modules/maps/shared/song-card';
+import type { MapControllerGetMapByIdResponse, MapControllerGetMapListingsDataItem } from '@/shared/api/generated/ApiParams';
+import { formatNumber } from '@/shared/format/helpers';
+import { getHighestStatus, getStatusAccentClass } from '@/shared/format/styling';
+import { usePersistedLeaderboardSearch } from '@/shared/url-state/persisted/use-persisted-leaderboard-search';
+
+interface MapCardProps {
+   map: MapControllerGetMapListingsDataItem | MapControllerGetMapByIdResponse;
+   className?: string;
+   expandLowest?: boolean;
+   showChips?: boolean;
+   compact?: boolean;
+}
+
+export function MapCard({ map, className, expandLowest, showChips = true, compact = false }: MapCardProps) {
+   const t = useTranslations();
+   const linkSearch = usePersistedLeaderboardSearch();
+   const displayLeaderboards = getDisplayLeaderboards(map.leaderboards);
+   const status = getHighestStatus(displayLeaderboards);
+
+   return (
+      <SongCard
+         coverUrl={map.coverUrl}
+         songName={map.songName}
+         songSubName={map.songSubName}
+         songAuthorName={map.songAuthorName}
+         levelAuthorName={map.levelAuthorName}
+         createdAt={map.createdAt}
+         accentClass={getStatusAccentClass(status)}
+         accentTooltip={
+            status === 'RANKED'
+               ? t('map.statusRanked')
+               : status === 'QUALIFIED'
+                 ? t('map.statusQualified')
+                 : status === 'LOVED'
+                   ? t('map.statusLoved')
+                   : t('map.statusUnranked')
+         }
+         mapId={map.id}
+         linkSearch={linkSearch}
+         className={className}
+         compact={compact}
+         pills={showChips ? <MapDifficultyChips mapId={map.id} leaderboards={displayLeaderboards} expandLowest={expandLowest} /> : undefined}
+         mobileMetadata={
+            <>
+               {map.bsid && (
+                  <a
+                     href={`https://beatsaver.com/maps/${map.bsid}`}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="hover:text-primary z-20 flex items-center gap-1 transition-colors"
+                  >
+                     <FaKey className="size-2.5" />
+                     <span className="font-mono">{map.bsid}</span>
+                  </a>
+               )}
+               <span className="flex items-center gap-1">
+                  <FaDrum className="size-2.5" />
+                  {t('map.bpm', { bpm: map.bpm })}
+               </span>
+               <span className="flex items-center gap-1">
+                  <FaMusic className="size-2.5" />
+                  {t('map.playsCount', { count: formatNumber(map.totalScores) })}
+               </span>
+            </>
+         }
+         desktopMetadata={
+            <>
+               {map.bsid && (
+                  <a
+                     href={`https://beatsaver.com/maps/${map.bsid}`}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="text-muted-foreground hover:text-primary z-20 flex items-center gap-1.5 text-xs transition-colors"
+                  >
+                     <span className="font-mono">{map.bsid}</span>
+                     <FaKey className="size-2.5" />
+                  </a>
+               )}
+               <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                  <span>{t('map.bpm', { bpm: map.bpm })}</span>
+                  <FaDrum className="size-2.5" />
+               </div>
+               <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                  <span>{t('map.playsCount', { count: formatNumber(map.totalScores) })}</span>
+                  <FaMusic className="size-2.5" />
+               </div>
+            </>
+         }
+      />
+   );
+}
