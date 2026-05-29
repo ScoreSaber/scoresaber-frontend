@@ -55,11 +55,13 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                    ? tNav('nav.requests')
                    : key === 'wiki'
                      ? tNav('nav.wiki')
-                     : key === 'questInstaller'
-                       ? tNav('nav.questInstaller')
-                       : key === 'team'
-                         ? tNav('nav.team')
-                         : tNav('nav.apiDocs');
+                     : key === 'feedbackHub'
+                       ? tNav('nav.feedbackHub')
+                       : key === 'questInstaller'
+                         ? tNav('nav.questInstaller')
+                         : key === 'team'
+                           ? tNav('nav.team')
+                           : tNav('nav.apiDocs');
    }
 
    return (

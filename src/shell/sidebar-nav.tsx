@@ -89,11 +89,13 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                    ? t('nav.requests')
                    : key === 'wiki'
                      ? t('nav.wiki')
-                     : key === 'questInstaller'
-                       ? t('nav.questInstaller')
-                       : key === 'team'
-                         ? t('nav.team')
-                         : t('nav.apiDocs');
+                     : key === 'feedbackHub'
+                       ? t('nav.feedbackHub')
+                       : key === 'questInstaller'
+                         ? t('nav.questInstaller')
+                         : key === 'team'
+                           ? t('nav.team')
+                           : t('nav.apiDocs');
    }
 
    const realmSwitcherTrigger = (
