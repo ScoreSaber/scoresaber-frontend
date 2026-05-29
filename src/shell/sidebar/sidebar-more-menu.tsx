@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 
 import { useAuth } from '@/modules/auth';
 import { logout } from '@/modules/auth/actions/member';
-import { feedbackHubLink, githubLink } from '@/shell/nav-data';
+import { githubLink } from '@/shell/nav-data';
 import { SidebarAppSettings } from '@/shell/sidebar/sidebar-app-settings';
 
 const privacyRoute = getRouteApi('/legal/privacy');
@@ -98,15 +98,6 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                         <span className="flex min-w-0 items-center gap-2">
                            <githubLink.Icon data-icon className="fill-current" aria-hidden="true" />
                            <span className="truncate">{githubLink.label}</span>
-                        </span>
-                        <ExternalLink data-icon className="ml-auto" aria-hidden="true" />
-                     </a>
-                  </Button>
-                  <Button asChild variant="ghost" size="sm" className={menuActionClass}>
-                     <a href={feedbackHubLink.href} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
-                        <span className="flex min-w-0 items-center gap-2">
-                           <feedbackHubLink.Icon data-icon aria-hidden="true" />
-                           <span className="truncate">{feedbackHubLink.label}</span>
                         </span>
                         <ExternalLink data-icon className="ml-auto" aria-hidden="true" />
                      </a>

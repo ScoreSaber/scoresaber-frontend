@@ -42,6 +42,12 @@ export const bottomBarItems: (NavItem | SearchNavItem)[] = [
 export const secondaryItems: (InternalSecondaryItem | ExternalSecondaryItem)[] = [
    { key: 'wiki', icon: <BookOpen data-icon className="size-4" aria-hidden="true" />, href: 'https://wiki.scoresaber.com', external: true },
    {
+      key: 'feedbackHub',
+      icon: <MessageSquareText data-icon className="size-4" aria-hidden="true" />,
+      href: 'https://hub.scoresaber.com',
+      external: true
+   },
+   {
       key: 'questInstaller',
       icon: <Smartphone data-icon className="size-4" aria-hidden="true" />,
       route: 'questInstaller',
@@ -59,7 +65,6 @@ export const socialLinks = [
 ];
 
 export const githubLink = { href: 'https://github.com/ScoreSaber/website', label: 'GitHub', Icon: Icons.github };
-export const feedbackHubLink = { href: 'https://hub.scoresaber.com', label: 'Feedback Hub', Icon: MessageSquareText };
 
 const navRouteIds = {
    home: '/',
