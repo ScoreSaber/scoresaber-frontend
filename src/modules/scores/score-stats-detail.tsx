@@ -236,13 +236,13 @@ function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gr
             <Grid3X3 className="size-3" />
             <span>{t('score.gridAccuracy')}</span>
          </div>
-         <div className="grid grid-cols-4 gap-0.5 rounded-md">
+         <div className="grid grid-cols-4 gap-1 rounded-md sm:gap-0.5">
             {GRID_ROWS.map((row) =>
                row.map((idx) => {
                   const cell = grid[idx];
                   if (cell.count === 0) {
                      return (
-                        <div key={idx} className="flex h-7 w-9 items-center justify-center rounded-sm text-[10px] opacity-30">
+                        <div key={idx} className="flex h-8 w-11 items-center justify-center rounded-sm text-[10px] opacity-30 sm:h-7 sm:w-9">
                            --
                         </div>
                      );
@@ -254,7 +254,7 @@ function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gr
                   return (
                      <div
                         key={idx}
-                        className="flex h-7 w-9 items-center justify-center rounded-sm text-[10px] font-semibold"
+                        className="flex h-8 w-11 items-center justify-center rounded-sm text-[10px] font-semibold sm:h-7 sm:w-9"
                         style={{
                            backgroundColor: `rgba(${r}, ${g}, ${b}, 0.15)`,
                            color: `rgb(${r}, ${g}, ${b})`
