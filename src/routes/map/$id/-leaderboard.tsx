@@ -14,16 +14,11 @@ import { formatStars } from '@/shared/format/helpers';
 import { getDifficultyLabel, getDifficultyShortLabel } from '@/shared/format/strings';
 import { getStatusLabel } from '@/shared/format/styling';
 import { optionalApiData, pageApiData, pageDataOk } from '@/shared/result/api';
-import { isNumber } from '@/shared/url-state/params';
+import { isNumber, isPageNumber } from '@/shared/url-state/params';
 import { leaderboardFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
 import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
-
-const isPageNumber = z.preprocess((val) => {
-   if (val == null || val === '') return 1;
-   return val;
-}, isNumber);
 
 export const leaderboardSearchSchema = z.object({
    page: isPageNumber,
