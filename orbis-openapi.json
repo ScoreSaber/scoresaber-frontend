@@ -12866,6 +12866,13 @@
                   "required": true,
                   "in": "path",
                   "schema": { "type": "string", "pattern": "^\\d+$", "example": "76561199471863419" }
+               },
+               {
+                  "name": "description",
+                  "required": false,
+                  "in": "query",
+                  "schema": { "description": "Badge description override", "type": "string", "minLength": 1, "maxLength": 256 },
+                  "description": "Badge description override"
                }
             ],
             "responses": {
@@ -12883,7 +12890,7 @@
                   }
                },
                "400": {
-                  "description": "Bad Request",
+                  "description": "Bad Request\n\nBad Request",
                   "content": {
                      "application/json": {
                         "schema": {

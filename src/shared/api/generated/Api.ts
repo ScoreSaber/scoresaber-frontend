@@ -949,6 +949,12 @@ export interface AdminBadgeControllerDeleteBadgeParams {
 }
 
 export interface AdminBadgeControllerAssignBadgeParams {
+   /**
+    * Badge description override
+    * @minLength 1
+    * @maxLength 256
+    */
+   description?: string;
    /** @exclusiveMin true */
    id: number;
    /**
@@ -12782,7 +12788,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 
 },
 
-})` Bad Request
+})` Bad Request Bad Request
  * @response `401` `{
     statusCode: 401,
     error: "Unauthorized",
@@ -12830,7 +12836,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 
 })` Internal Server Error
  */
-      adminBadgeControllerAssignBadge: ({ id, playerId }: AdminBadgeControllerAssignBadgeParams, params: RequestParams = {}) =>
+      adminBadgeControllerAssignBadge: ({ id, playerId, ...query }: AdminBadgeControllerAssignBadgeParams, params: RequestParams = {}) =>
          this.request<
             {
                success: boolean;
@@ -12915,6 +12921,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          >({
             path: `/api/v2/admin/badges/${id}/assign/${playerId}`,
             method: 'POST',
+            query: query,
             format: 'json',
             ...params
          }),
