@@ -1,7 +1,7 @@
 {
    "$schema": "./node_modules/oxlint/configuration_schema.json",
    "plugins": ["typescript", "unicorn", "oxc"],
-   "ignorePatterns": [".next/**", "dist/**", "node_modules/**", "scoresaber-frontend-legacy/**"],
+   "ignorePatterns": [".next/**", "dist/**", "node_modules/**", "scoresaber-frontend-legacy/**", "src/routeTree.gen.ts"],
    "categories": {
       "correctness": "error"
    },

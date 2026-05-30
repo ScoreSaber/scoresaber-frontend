@@ -10,6 +10,7 @@ import { OmniSearch } from '@/modules/search';
 import { OmniSearchProvider } from '@/modules/search';
 import { ScoreSaber2BadgePrompt } from '@/modules/settings/score-saber-2-badge-prompt';
 import type { UserControllerGetMeResponse } from '@/shared/api/generated/ApiParams';
+import { ConsentManager } from '@/shared/privacy/consent-manager';
 import { QueryProvider } from '@/shared/query/query-provider';
 import { ThemeProvider } from '@/shared/ui-adjacent/theme-provider';
 import { Breakpoints } from '@/shell/debug-breakpoints';
@@ -35,25 +36,27 @@ export function AppShell({
 }) {
    return (
       <ThemeProvider>
-         {debugBreakpoints && <Breakpoints />}
-         <QueryProvider queryClient={queryClient}>
-            <AuthProvider initialUser={initialUser}>
-               <TooltipProvider>
-                  <OmniSearchProvider>
-                     <RouteTopLoader />
-                     <SidebarProvider>
-                        <Sidebar />
-                        <MobileTopBar />
-                        <MainContent debugPageBackground={debugPageBackground}>{children}</MainContent>
-                        <MobileBottomBar />
-                     </SidebarProvider>
-                     <OmniSearch />
-                     <ScoreSaber2BadgePrompt />
-                     <Toaster />
-                  </OmniSearchProvider>
-               </TooltipProvider>
-            </AuthProvider>
-         </QueryProvider>
+         <ConsentManager>
+            {debugBreakpoints && <Breakpoints />}
+            <QueryProvider queryClient={queryClient}>
+               <AuthProvider initialUser={initialUser}>
+                  <TooltipProvider>
+                     <OmniSearchProvider>
+                        <RouteTopLoader />
+                        <SidebarProvider>
+                           <Sidebar />
+                           <MobileTopBar />
+                           <MainContent debugPageBackground={debugPageBackground}>{children}</MainContent>
+                           <MobileBottomBar />
+                        </SidebarProvider>
+                        <OmniSearch />
+                        <ScoreSaber2BadgePrompt />
+                        <Toaster />
+                     </OmniSearchProvider>
+                  </TooltipProvider>
+               </AuthProvider>
+            </QueryProvider>
+         </ConsentManager>
       </ThemeProvider>
    );
 }

@@ -51,7 +51,20 @@ export default defineConfig(({ mode }) => {
               }
             : {})
       },
-      plugins: [tanstackStart({ rsc: { enabled: true } }), nitro({ preset: 'node-server' }), rsc(), viteReact(), tailwindcss()],
+      plugins: [
+         tanstackStart({
+            rsc: { enabled: true },
+            router: {
+               codeSplittingOptions: {
+                  splitBehavior: ({ routeId }) => (routeId === '/legal/cookies-policy' ? [] : undefined)
+               }
+            }
+         }),
+         nitro({ preset: 'node-server' }),
+         rsc(),
+         viteReact(),
+         tailwindcss()
+      ],
       resolve: {
          tsconfigPaths: true,
          alias: {

@@ -174,7 +174,10 @@
       "light": "Light",
       "dark": "Dark",
       "system": "System",
+      "legal": "Legal",
       "privacyPolicy": "Privacy Policy",
+      "cookiesPolicy": "Cookies Policy",
+      "copyrightTakedowns": "Copyright Takedowns",
       "logIn": "Login",
       "logOut": "Log Out",
       "settings": "Settings",
@@ -799,11 +802,32 @@
    "legal": {
       "privacy": {
          "pageTitle": "Privacy Policy",
-         "lastUpdated": "Last updated: November 30, 2021"
+         "lastUpdated": "Last updated: May 30, 2026"
       },
       "cookies": {
          "pageTitle": "Cookies Policy",
-         "lastUpdated": "Last updated: November 25, 2021"
+         "lastUpdated": "Last updated: May 30, 2026"
+      },
+      "copyright": {
+         "pageTitle": "Copyright Takedown Policy",
+         "lastUpdated": "Last updated: May 30, 2026"
+      },
+      "consent": {
+         "bannerTitle": "Cookie notice",
+         "bannerDescription": "ScoreSaber uses essential cookies and browser storage for login, security, and preferences",
+         "dialogTitle": "Cookie notice",
+         "dialogDescription": "Review the browser storage ScoreSaber needs to keep the site working",
+         "acceptAll": "Accept all",
+         "rejectAll": "Required only",
+         "customize": "Details",
+         "details": "Details",
+         "gotIt": "Got it",
+         "save": "Save choices",
+         "close": "Close",
+         "necessaryTitle": "Required cookies",
+         "necessaryDescription": "Needed for sign-in, security, rate limiting, language, theme, saved filters, and core site features. These are always on.",
+         "privacyPolicy": "Privacy Policy",
+         "cookiePolicy": "Cookies Policy"
       }
    }
 }

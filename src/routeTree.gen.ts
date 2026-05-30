@@ -24,6 +24,7 @@ import { Route as RankingRequestsRouteImport } from './routes/ranking/requests'
 import { Route as QuestVersionsRouteImport } from './routes/quest/versions'
 import { Route as QuestDownloadRouteImport } from './routes/quest/download'
 import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
+import { Route as LegalCopyrightRouteImport } from './routes/legal/copyright'
 import { Route as LegalCookiesPolicyRouteImport } from './routes/legal/cookies-policy'
 import { Route as AuthSteamRouteImport } from './routes/auth/steam'
 import { Route as AuthPatreonRouteImport } from './routes/auth/patreon'
@@ -114,6 +115,11 @@ const QuestDownloadRoute = QuestDownloadRouteImport.update({
 const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
   id: '/legal/privacy',
   path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCopyrightRoute = LegalCopyrightRouteImport.update({
+  id: '/legal/copyright',
+  path: '/legal/copyright',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegalCookiesPolicyRoute = LegalCookiesPolicyRouteImport.update({
@@ -215,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/auth/patreon': typeof AuthPatreonRouteWithChildren
   '/auth/steam': typeof AuthSteamRoute
   '/legal/cookies-policy': typeof LegalCookiesPolicyRoute
+  '/legal/copyright': typeof LegalCopyrightRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
@@ -247,6 +254,7 @@ export interface FileRoutesByTo {
   '/auth/patreon': typeof AuthPatreonRouteWithChildren
   '/auth/steam': typeof AuthSteamRoute
   '/legal/cookies-policy': typeof LegalCookiesPolicyRoute
+  '/legal/copyright': typeof LegalCopyrightRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
@@ -280,6 +288,7 @@ export interface FileRoutesById {
   '/auth/patreon': typeof AuthPatreonRouteWithChildren
   '/auth/steam': typeof AuthSteamRoute
   '/legal/cookies-policy': typeof LegalCookiesPolicyRoute
+  '/legal/copyright': typeof LegalCopyrightRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
@@ -315,6 +324,7 @@ export interface FileRouteTypes {
     | '/auth/patreon'
     | '/auth/steam'
     | '/legal/cookies-policy'
+    | '/legal/copyright'
     | '/legal/privacy'
     | '/quest/download'
     | '/quest/versions'
@@ -347,6 +357,7 @@ export interface FileRouteTypes {
     | '/auth/patreon'
     | '/auth/steam'
     | '/legal/cookies-policy'
+    | '/legal/copyright'
     | '/legal/privacy'
     | '/quest/download'
     | '/quest/versions'
@@ -379,6 +390,7 @@ export interface FileRouteTypes {
     | '/auth/patreon'
     | '/auth/steam'
     | '/legal/cookies-policy'
+    | '/legal/copyright'
     | '/legal/privacy'
     | '/quest/download'
     | '/quest/versions'
@@ -413,6 +425,7 @@ export interface RootRouteChildren {
   AuthPatreonRoute: typeof AuthPatreonRouteWithChildren
   AuthSteamRoute: typeof AuthSteamRoute
   LegalCookiesPolicyRoute: typeof LegalCookiesPolicyRoute
+  LegalCopyrightRoute: typeof LegalCopyrightRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   RankingRequestsRoute: typeof RankingRequestsRoute
   SettingsAccountRoute: typeof SettingsAccountRoute
@@ -528,6 +541,13 @@ declare module '@tanstack/react-router' {
       path: '/legal/privacy'
       fullPath: '/legal/privacy'
       preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/copyright': {
+      id: '/legal/copyright'
+      path: '/legal/copyright'
+      fullPath: '/legal/copyright'
+      preLoaderRoute: typeof LegalCopyrightRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/legal/cookies-policy': {
@@ -727,6 +747,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthPatreonRoute: AuthPatreonRouteWithChildren,
   AuthSteamRoute: AuthSteamRoute,
   LegalCookiesPolicyRoute: LegalCookiesPolicyRoute,
+  LegalCopyrightRoute: LegalCopyrightRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   RankingRequestsRoute: RankingRequestsRoute,
   SettingsAccountRoute: SettingsAccountRoute,

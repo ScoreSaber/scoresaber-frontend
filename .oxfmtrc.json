@@ -41,5 +41,5 @@
    },
    "sortTailwindcss": {},
    "sortPackageJson": false,
-   "ignorePatterns": []
+   "ignorePatterns": ["src/routeTree.gen.ts"]
 }

@@ -2,6 +2,7 @@
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import '@c15t/react/styles.css';
 
 @custom-variant dark {
    &:where(.dark, .dark *) {
@@ -21,8 +22,9 @@
    font-weight: 400;
    font-display: block;
    src: url('/fonts/geist-latin-400-normal.woff2') format('woff2');
-   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
-      U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+   unicode-range:
+      U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+      U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -31,8 +33,9 @@
    font-weight: 500;
    font-display: block;
    src: url('/fonts/geist-latin-500-normal.woff2') format('woff2');
-   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
-      U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+   unicode-range:
+      U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+      U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -41,8 +44,9 @@
    font-weight: 600;
    font-display: block;
    src: url('/fonts/geist-latin-600-normal.woff2') format('woff2');
-   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
-      U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+   unicode-range:
+      U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+      U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -51,8 +55,9 @@
    font-weight: 700;
    font-display: block;
    src: url('/fonts/geist-latin-700-normal.woff2') format('woff2');
-   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
-      U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+   unicode-range:
+      U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+      U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -451,5 +456,83 @@ body[data-scroll-locked] {
    :root {
       --content-offset-top: calc(3rem + env(safe-area-inset-top, 0px));
       --content-offset-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+   }
+}
+
+@media print {
+   @page {
+      margin: 16mm;
+   }
+
+   body:has(.legal-print-page) {
+      background: #fff !important;
+      color: #000 !important;
+   }
+
+   body:has(.legal-print-page) * {
+      box-shadow: none !important;
+      text-shadow: none !important;
+      visibility: hidden !important;
+   }
+
+   body:has(.legal-print-page) #main-content {
+      display: block !important;
+      min-height: auto !important;
+      padding: 0 !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page,
+   body:has(.legal-print-page) .legal-print-page * {
+      visibility: visible !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page {
+      margin: 0 !important;
+      max-width: none !important;
+      padding: 0 !important;
+      width: auto !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page [data-slot='card'] {
+      background: #fff !important;
+      border: 0 !important;
+      color: #000 !important;
+      gap: 0 !important;
+      padding: 0 !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page article {
+      color: #000 !important;
+      font-size: 10.5pt !important;
+      line-height: 1.45 !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page h1 {
+      color: #000 !important;
+      font-size: 20pt !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page h2 {
+      color: #000 !important;
+      font-size: 15pt !important;
+      margin-top: 18pt !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page h3 {
+      color: #000 !important;
+      font-size: 12pt !important;
+      margin-top: 12pt !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page p,
+   body:has(.legal-print-page) .legal-print-page li,
+   body:has(.legal-print-page) .legal-print-page ul,
+   body:has(.legal-print-page) .legal-print-page strong,
+   body:has(.legal-print-page) .legal-print-page a {
+      color: #000 !important;
+   }
+
+   body:has(.legal-print-page) .legal-print-page a {
+      text-decoration: none !important;
    }
 }

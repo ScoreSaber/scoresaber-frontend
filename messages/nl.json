@@ -174,7 +174,10 @@
       "light": "Licht",
       "dark": "Donker",
       "system": "Systeem",
+      "legal": "Juridisch",
       "privacyPolicy": "Privacybeleid",
+      "cookiesPolicy": "Cookiebeleid",
+      "copyrightTakedowns": "Auteursrechtverzoeken",
       "logIn": "Inloggen",
       "logOut": "Uitloggen",
       "settings": "Instellingen",
@@ -799,11 +802,32 @@
    "legal": {
       "privacy": {
          "pageTitle": "Privacybeleid",
-         "lastUpdated": "Laatst bijgewerkt: 30 november 2021"
+         "lastUpdated": "Laatst bijgewerkt: 30 mei 2026"
       },
       "cookies": {
          "pageTitle": "Cookiebeleid",
-         "lastUpdated": "Laatst bijgewerkt: 25 november 2021"
+         "lastUpdated": "Laatst bijgewerkt: 30 mei 2026"
+      },
+      "copyright": {
+         "pageTitle": "Auteursrechtverzoeken",
+         "lastUpdated": "Laatst bijgewerkt: 30 mei 2026"
+      },
+      "consent": {
+         "bannerTitle": "Cookiemelding",
+         "bannerDescription": "ScoreSaber gebruikt noodzakelijke cookies en browseropslag voor inloggen, beveiliging en voorkeuren",
+         "dialogTitle": "Cookiemelding",
+         "dialogDescription": "Bekijk welke browseropslag ScoreSaber nodig heeft om de site te laten werken",
+         "acceptAll": "Alles accepteren",
+         "rejectAll": "Alleen noodzakelijk",
+         "customize": "Details",
+         "details": "Details",
+         "gotIt": "Begrepen",
+         "save": "Keuzes opslaan",
+         "close": "Sluiten",
+         "necessaryTitle": "Noodzakelijke cookies",
+         "necessaryDescription": "Nodig voor inloggen, beveiliging, snelheidslimieten, taal, thema, opgeslagen filters en kernfuncties van de site. Deze staan altijd aan.",
+         "privacyPolicy": "Privacybeleid",
+         "cookiePolicy": "Cookiebeleid"
       }
    }
 }
