@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { ScoreAccuracyChart } from './chart/score-accuracy-chart';
 import { ScoreAccuracyDistributionChart, ScoreAccuracyTimelineChart } from './chart/score-replay-analysis-charts';
 import { HandAccuracyRing } from './hand-accuracy-ring';
+import { HitScoreValue } from './hit-score-value';
 
 import { Button } from '@/components/ui/button';
 
@@ -259,7 +260,7 @@ function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gr
                            color: `rgb(${r}, ${g}, ${b})`
                         }}
                      >
-                        {cell.avgScore.toFixed(1)}
+                        <HitScoreValue value={cell.avgScore} decimals={1} className="size-full rounded-sm" />
                      </div>
                   );
                })
