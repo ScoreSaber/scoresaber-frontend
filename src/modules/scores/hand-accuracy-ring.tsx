@@ -3,6 +3,8 @@
 import { Timer } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
+import { HitScoreValue } from './hit-score-value';
+
 import { Stat } from '@/shared/components/stat';
 import { cn } from '@/shared/format/helpers';
 
@@ -53,7 +55,7 @@ export function HandAccuracyRing({ side, accuracy, averageCut, timeDependence }:
                      className={cn(ringColor, 'transition-[stroke-dashoffset] duration-700 ease-out')}
                   />
                </svg>
-               <span className="absolute text-sm font-semibold tabular-nums">{accuracy.toFixed(2)}</span>
+               <HitScoreValue value={accuracy} className="absolute min-h-10 min-w-16 rounded-sm text-sm font-semibold" />
             </div>
             <Stat icon={Timer} label={t('score.timeDependenceShort')} className={cn('gap-1.5 px-2 py-0.5 text-[11px]', bgColor, borderColor)}>
                {timeDependence.toFixed(3)}
