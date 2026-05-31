@@ -112,7 +112,7 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                         {aliases && <PlayerAliases aliases={aliases} playerId={player.id} />}
                      </div>
 
-                     {isActive && (
+                     {!playerSummary.isBanned && (
                         <StatusBadge tooltip={t('common.performancePoints')} className={ppBadgeClass}>
                            {formatPP(stats.totalPP)}
                            <span className={ppUnitClass}>pp</span>
