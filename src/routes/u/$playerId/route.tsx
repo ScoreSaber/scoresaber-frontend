@@ -191,6 +191,7 @@ function PlayerProfileRouteContent({
                      page={input.search.page}
                      sort={input.search.sort}
                      search={input.search.search}
+                     hasScores={player.stats.totalSubmittedPlays > 0}
                      hasContentAbove={!player.inactive || hasBioContent}
                      parseSearch={parseSearch}
                   />
@@ -227,6 +228,7 @@ function PlayerScoresSection({
    page,
    sort,
    search,
+   hasScores,
    hasContentAbove,
    parseSearch
 }: {
@@ -235,6 +237,7 @@ function PlayerScoresSection({
    page: number;
    sort: PlayerControllerGetPlayerScoresSort;
    search?: string;
+   hasScores: boolean;
    hasContentAbove: boolean;
    parseSearch: ParsePlayerSearch;
 }) {
@@ -243,7 +246,7 @@ function PlayerScoresSection({
    const buildHref = (nextSearch?: Partial<PlayerProfileSearch>) => buildPlayerHref(playerId, nextSearch);
    const getPageHref = (nextPage: number) => buildHref(updateSearchParams(currentSearch, { page: nextPage > 1 ? nextPage : undefined }));
 
-   const hasNoScoresAtAll = scores.metadata.totalItems === 0;
+   const hasNoScoresAtAll = !hasScores;
 
    return (
       <div className="pb-3">
