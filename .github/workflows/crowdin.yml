@@ -1,16 +1,6 @@
 name: Crowdin
 
 on:
-   push:
-      branches:
-         - main
-      paths:
-         - messages/en.json
-         - scripts/sync-crowdin-context.ts
-         - src/**/*.ts
-         - src/**/*.tsx
-         - crowdin.yml
-         - .github/workflows/crowdin.yml
    schedule:
       - cron: '17 3 * * *'
    workflow_dispatch:
