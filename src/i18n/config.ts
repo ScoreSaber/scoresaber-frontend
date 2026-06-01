@@ -13,7 +13,8 @@ export const localeSchema = z.enum([
    'zh-TW',
    'cs-CZ',
    'ko-KR',
-   'it-IT'
+   'it-IT',
+   'es-ES'
 ]);
 export const locales = localeSchema.options;
 export type Locale = z.infer<typeof localeSchema>;
@@ -32,12 +33,14 @@ export const localeNames: Record<Locale, string> = {
    'zh-TW': 'Chinese Traditional',
    'cs-CZ': 'Czech',
    'ko-KR': 'Korean',
-   'it-IT': 'Italian'
+   'it-IT': 'Italian',
+   'es-ES': 'Spanish'
 };
 
 const legacyLocaleAliases: Record<string, Locale> = {
    cs: 'cs-CZ',
    de: 'de-DE',
+   es: 'es-ES',
    fr: 'fr-FR',
    ja: 'ja-JP',
    ko: 'ko-KR',

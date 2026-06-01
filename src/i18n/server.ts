@@ -3,6 +3,7 @@ import { getCookie } from '@tanstack/react-start/server';
 import csCzMessages from '../../messages/cs-CZ.json';
 import deDeMessages from '../../messages/de-DE.json';
 import enMessages from '../../messages/en.json';
+import esEsMessages from '../../messages/es-ES.json';
 import frFrMessages from '../../messages/fr-FR.json';
 import itItMessages from '../../messages/it-IT.json';
 import jaJpMessages from '../../messages/ja-JP.json';
@@ -31,7 +32,8 @@ const localeMessages: Record<Locale, Messages> = {
    'zh-TW': zhTwMessages,
    'cs-CZ': csCzMessages,
    'ko-KR': koKrMessages,
-   'it-IT': itItMessages
+   'it-IT': itItMessages,
+   'es-ES': esEsMessages
 };
 
 export async function getLocale(): Promise<Locale> {
