@@ -11,7 +11,7 @@ import { api } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { Pagination } from '@/shared/components/pagination';
 import { pageApiData } from '@/shared/result/api';
-import { isNumber } from '@/shared/url-state/params';
+import { isPageNumber } from '@/shared/url-state/params';
 import { rankRequestFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
 import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
@@ -19,11 +19,6 @@ import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const QUEUE_TOP_COUNT = 6;
-
-const isPageNumber = z.preprocess((val) => {
-   if (val == null || val === '') return 1;
-   return val;
-}, isNumber);
 
 function toTrue(): true {
    return true;

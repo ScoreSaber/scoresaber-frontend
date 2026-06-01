@@ -9,6 +9,13 @@ export const isNumber = z.preprocess((val) => {
    return val;
 }, z.coerce.number());
 
+export const isPageNumber = z
+   .preprocess((val) => {
+      if (val == null || (typeof val === 'string' && val.trim() === '')) return 1;
+      return val;
+   }, z.coerce.number().int())
+   .transform((n) => Math.max(1, n));
+
 export const isPlayerId = z.preprocess((val) => {
    const result = Result.try(() => BigInt(String(val)));
 

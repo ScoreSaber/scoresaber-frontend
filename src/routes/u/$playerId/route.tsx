@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { FaTrophy } from 'react-icons/fa';
+import { useTranslations } from 'use-intl';
 import { z } from 'zod';
 
 import { Separator } from '@/components/ui/separator';
@@ -17,16 +19,11 @@ import { PageError } from '@/shared/components/error/page-error';
 import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
 import { optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
-import { isNumber, isPlayerId, ScoreEnum, toInt64PathParam, validateRequest } from '@/shared/url-state/params';
+import { isPageNumber, isPlayerId, ScoreEnum, toInt64PathParam, validateRequest } from '@/shared/url-state/params';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
-
-const isPageNumber = z.preprocess((val) => {
-   if (val == null || val === '') return 1;
-   return val;
-}, isNumber);
 
 const playerParamsSchema = z.object({
    playerId: z.string().refine((value) => isPlayerId.safeParse(value).success)
@@ -241,17 +238,22 @@ function PlayerScoresSection({
    hasContentAbove: boolean;
    parseSearch: ParsePlayerSearch;
 }) {
+   const t = useTranslations();
    const currentSearch: PlayerProfileSearch = { page, sort, search };
    const buildHref = (nextSearch?: Partial<PlayerProfileSearch>) => buildPlayerHref(playerId, nextSearch);
    const getPageHref = (nextPage: number) => buildHref(updateSearchParams(currentSearch, { page: nextPage > 1 ? nextPage : undefined }));
 
+   const hasNoScoresAtAll = scores.metadata.totalItems === 0;
+
    return (
       <div className="pb-3">
          {hasContentAbove && <Separator variant="gradient" className="mb-4" />}
-         <div className="mb-4 flex justify-center">
-            <PlayerScoresToolbar search={currentSearch} buildHref={buildHref} parseSearch={parseSearch} />
-         </div>
-         {scores.data.length > 0 && (
+         {!hasNoScoresAtAll && (
+            <div className="mb-4 flex justify-center">
+               <PlayerScoresToolbar search={currentSearch} buildHref={buildHref} parseSearch={parseSearch} />
+            </div>
+         )}
+         {scores.data.length > 0 ? (
             <PlayerScoresList
                playerScores={scores.data}
                totalItems={scores.metadata.totalItems}
@@ -259,6 +261,12 @@ function PlayerScoresSection({
                currentPage={page}
                getPageHref={getPageHref}
             />
+         ) : (
+            <div className="text-muted-foreground flex flex-col items-center gap-2 py-16">
+               <FaTrophy className="size-8 opacity-20" />
+               <p className="text-sm font-medium">{hasNoScoresAtAll ? t('player.noScoresYet') : t('player.noScoresFound')}</p>
+               <p className="text-xs opacity-60">{hasNoScoresAtAll ? t('player.noScoresYetDesc') : t('player.adjustSearch')}</p>
+            </div>
          )}
       </div>
    );
