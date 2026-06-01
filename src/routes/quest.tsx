@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { QuestWizard } from '@/modules/quest/components/quest-wizard';
 import { fetchQuestReleases, type QuestRelease } from '@/modules/quest/lib/releases';
+import { buildSeoHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 type QuestReleasesState = { releases: QuestRelease[]; loadError: string | null };
@@ -42,6 +43,12 @@ export const Route = createFileRoute('/quest')({
    validateSearch: (search) => questSearchSchema.parse(search),
    loaderDeps: ({ search }) => search,
    loader: () => getQuestPageData(),
+   head: () =>
+      buildSeoHead({
+         title: 'Quest Installer',
+         description: 'Install and update the ScoreSaber Quest mod for Beat Saber',
+         path: '/quest'
+      }),
    component: QuestRoute
 });
 

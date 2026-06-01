@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TeamRouteImport } from './routes/team'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as QuestRouteImport } from './routes/quest'
 import { Route as MapsRouteImport } from './routes/maps'
@@ -45,6 +47,16 @@ import { Route as MapIdDifficultyLeaderboardIdRouteRouteImport } from './routes/
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingsRoute = RankingsRouteImport.update({
@@ -213,6 +225,8 @@ export interface FileRoutesByFullPath {
   '/maps': typeof MapsRoute
   '/quest': typeof QuestRouteWithChildren
   '/rankings': typeof RankingsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/map/$id': typeof MapIdRouteRouteWithChildren
   '/u/$playerId': typeof UPlayerIdRouteRoute
@@ -247,6 +261,8 @@ export interface FileRoutesByTo {
   '/maps': typeof MapsRoute
   '/quest': typeof QuestRouteWithChildren
   '/rankings': typeof RankingsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/u/$playerId': typeof UPlayerIdRouteRoute
   '/leaderboards': typeof legacyLeaderboardsRoute
@@ -280,6 +296,8 @@ export interface FileRoutesById {
   '/maps': typeof MapsRoute
   '/quest': typeof QuestRouteWithChildren
   '/rankings': typeof RankingsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/map/$id': typeof MapIdRouteRouteWithChildren
   '/u/$playerId': typeof UPlayerIdRouteRoute
@@ -316,6 +334,8 @@ export interface FileRouteTypes {
     | '/maps'
     | '/quest'
     | '/rankings'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/team'
     | '/map/$id'
     | '/u/$playerId'
@@ -350,6 +370,8 @@ export interface FileRouteTypes {
     | '/maps'
     | '/quest'
     | '/rankings'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/team'
     | '/u/$playerId'
     | '/leaderboards'
@@ -382,6 +404,8 @@ export interface FileRouteTypes {
     | '/maps'
     | '/quest'
     | '/rankings'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/team'
     | '/map/$id'
     | '/u/$playerId'
@@ -417,6 +441,8 @@ export interface RootRouteChildren {
   MapsRoute: typeof MapsRoute
   QuestRoute: typeof QuestRouteWithChildren
   RankingsRoute: typeof RankingsRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TeamRoute: typeof TeamRoute
   MapIdRouteRoute: typeof MapIdRouteRouteWithChildren
   UPlayerIdRouteRoute: typeof UPlayerIdRouteRoute
@@ -443,6 +469,20 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/team'
       preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings': {
@@ -739,6 +779,8 @@ const rootRouteChildren: RootRouteChildren = {
   MapsRoute: MapsRoute,
   QuestRoute: QuestRouteWithChildren,
   RankingsRoute: RankingsRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TeamRoute: TeamRoute,
   MapIdRouteRoute: MapIdRouteRouteWithChildren,
   UPlayerIdRouteRoute: UPlayerIdRouteRoute,

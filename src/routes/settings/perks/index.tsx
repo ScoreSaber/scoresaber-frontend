@@ -7,6 +7,7 @@ import { SettingsShell } from '@/modules/settings/settings-shell';
 import { api } from '@/shared/api/server-api';
 import { UnderConstruction } from '@/shared/components/under-construction';
 import { optionalApi } from '@/shared/result/api';
+import { buildNoindexHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const getPerksOverviewData = createServerFn({ method: 'GET' }).handler(async () => {
@@ -19,9 +20,7 @@ const getPerksOverviewData = createServerFn({ method: 'GET' }).handler(async () 
 
 export const Route = createFileRoute('/settings/perks/')({
    loader: () => getPerksOverviewData(),
-   head: () => ({
-      meta: [{ title: 'Perks | ScoreSaber!' }, { name: 'description', content: 'Manage your ScoreSaber settings' }]
-   }),
+   head: () => buildNoindexHead('Perks Settings', 'Manage your ScoreSaber supporter perks', '/settings/perks'),
    component: SettingsPerksIndexRoute
 });
 

@@ -49,7 +49,7 @@ export const env = createEnv({
    client: {
       NEXT_PUBLIC_API_URL: publicBrowserUrlSchema,
       NEXT_PUBLIC_ARCVIEWER_URL: publicBrowserUrlSchema,
-      NEXT_PUBLIC_SITE_URL: publicBrowserUrlSchema.default('https://scoresaber.local')
+      NEXT_PUBLIC_SITE_URL: publicBrowserUrlSchema.default('https://scoresaber.com')
    },
    runtimeEnvStrict: {
       NODE_ENV: readEnv('NODE_ENV'),

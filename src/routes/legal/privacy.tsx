@@ -4,6 +4,7 @@ import { useTranslations } from 'use-intl';
 import { Card } from '@/components/ui/card';
 
 import { cn } from '@/shared/format/helpers';
+import { buildSeoHead } from '@/shared/seo/metadata';
 
 function PrivacyPolicyPage() {
    const t = useTranslations('legal.privacy');
@@ -348,14 +349,11 @@ function PrivacyPolicyPage() {
 }
 
 export const Route = createFileRoute('/legal/privacy')({
-   head: () => ({
-      meta: [
-         { title: 'Privacy Policy | ScoreSaber!' },
-         {
-            name: 'description',
-            content: 'Read the ScoreSaber privacy policy'
-         }
-      ]
-   }),
+   head: () =>
+      buildSeoHead({
+         title: 'Privacy Policy',
+         description: 'Read the ScoreSaber privacy policy',
+         path: '/legal/privacy'
+      }),
    component: PrivacyPolicyPage
 });

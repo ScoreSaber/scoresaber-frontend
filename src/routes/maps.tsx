@@ -13,6 +13,7 @@ import { api } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { Pagination } from '@/shared/components/pagination';
 import { pageApiData } from '@/shared/result/api';
+import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { mapFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams, readPersistedSearchStorage } from '@/shared/url-state/persisted-search';
@@ -80,6 +81,12 @@ export const Route = createFileRoute('/maps')({
    validateSearch: (search) => mapsSearchSchema.parse(search),
    loaderDeps: ({ search }) => search,
    loader: ({ deps, location }) => getMapsPageData({ data: { search: deps, rawSearch: location.search } }),
+   head: () =>
+      buildSeoHead({
+         title: 'Maps',
+         description: 'Browse Beat Saber maps on ScoreSaber',
+         path: '/maps'
+      }),
    component: MapsRoute
 });
 

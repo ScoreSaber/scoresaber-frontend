@@ -10,6 +10,7 @@ import { ConnectionsSection } from '@/modules/settings/sections/connections-sect
 import { SettingsShell } from '@/modules/settings/settings-shell';
 import { api } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
+import { buildNoindexHead } from '@/shared/seo/metadata';
 import { validateRequest } from '@/shared/url-state/params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
@@ -40,9 +41,7 @@ export const Route = createFileRoute('/settings/connections')({
    validateSearch: (search) => validateRequest(settingsConnectionsSearchSchema, search),
    loaderDeps: ({ search }) => search,
    loader: () => getConnectionsSettingsData(),
-   head: () => ({
-      meta: [{ title: 'Connections | ScoreSaber!' }, { name: 'description', content: 'Manage your ScoreSaber settings' }]
-   }),
+   head: () => buildNoindexHead('Connections Settings', 'Manage your ScoreSaber connected accounts', '/settings/connections'),
    component: SettingsConnectionsRoute
 });
 

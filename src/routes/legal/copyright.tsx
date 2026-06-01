@@ -6,6 +6,7 @@ import { CopyrightNoticeTemplate } from './-copyright-notice-template';
 import { Card } from '@/components/ui/card';
 
 import { cn } from '@/shared/format/helpers';
+import { buildSeoHead } from '@/shared/seo/metadata';
 
 function CopyrightTakedownPolicyPage() {
    const t = useTranslations('legal.copyright');
@@ -144,14 +145,11 @@ function CopyrightTakedownPolicyPage() {
 }
 
 export const Route = createFileRoute('/legal/copyright')({
-   head: () => ({
-      meta: [
-         { title: 'Copyright Takedown Policy | ScoreSaber!' },
-         {
-            name: 'description',
-            content: 'Read the ScoreSaber copyright takedown policy'
-         }
-      ]
-   }),
+   head: () =>
+      buildSeoHead({
+         title: 'Copyright Takedown Policy',
+         description: 'Read the ScoreSaber copyright takedown policy',
+         path: '/legal/copyright'
+      }),
    component: CopyrightTakedownPolicyPage
 });

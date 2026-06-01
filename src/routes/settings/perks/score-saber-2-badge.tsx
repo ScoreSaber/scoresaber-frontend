@@ -7,6 +7,7 @@ import { ScoreSaber2BadgeRedeemer } from '@/modules/settings/score-saber-2-badge
 import { SettingsShell } from '@/modules/settings/settings-shell';
 import { api } from '@/shared/api/server-api';
 import { optionalApi, optionalApiData } from '@/shared/result/api';
+import { buildNoindexHead } from '@/shared/seo/metadata';
 import { toInt64PathParam } from '@/shared/url-state/params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
@@ -45,9 +46,7 @@ export const Route = createFileRoute('/settings/perks/score-saber-2-badge')({
          throw redirect({ to: settingsPerksRoute.id });
       }
    },
-   head: () => ({
-      meta: [{ title: 'ScoreSaber 2 Badge | ScoreSaber!' }]
-   }),
+   head: () => buildNoindexHead('ScoreSaber 2 Badge', 'Redeem your ScoreSaber 2 supporter badge', '/settings/perks/score-saber-2-badge'),
    component: SettingsPerksScoreSaber2BadgeRoute
 });
 

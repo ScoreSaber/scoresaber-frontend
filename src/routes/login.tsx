@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
 import { LoginScreen } from '@/modules/auth/login/login-screen';
+import { buildNoindexHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const searchParamString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
@@ -19,6 +20,7 @@ const loginSearchSchema = z.object({
 
 export const Route = createFileRoute('/login')({
    validateSearch: (search) => loginSearchSchema.parse(search),
+   head: () => buildNoindexHead('Log In', 'Log in to manage your ScoreSaber account', '/login'),
    component: LoginRoute
 });
 

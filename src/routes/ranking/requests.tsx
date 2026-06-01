@@ -11,6 +11,7 @@ import { api } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { Pagination } from '@/shared/components/pagination';
 import { pageApiData } from '@/shared/result/api';
+import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankRequestFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
@@ -70,6 +71,12 @@ export const Route = createFileRoute('/ranking/requests')({
    validateSearch: (search) => rankRequestsSearchSchema.parse(search),
    loaderDeps: ({ search }) => search,
    loader: ({ deps, location }) => getRankRequestsPageData({ data: { search: deps, rawSearch: location.search } }),
+   head: () =>
+      buildSeoHead({
+         title: 'Rank Requests',
+         description: 'Review ScoreSaber rank requests for Beat Saber maps',
+         path: '/ranking/requests'
+      }),
    component: RankRequestsRoute
 });
 

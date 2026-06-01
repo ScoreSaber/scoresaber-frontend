@@ -14,6 +14,7 @@ import { Icons } from '@/shared/components/icons';
 import { Image } from '@/shared/components/image';
 import { cn } from '@/shared/format/helpers';
 import { BLURRED_BG_IMAGE_CLASSES, CARD_GRADIENT_CLASSES } from '@/shared/format/styling';
+import { buildSeoHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 type TeamKey = 'Backend' | 'Admin' | 'NAT' | 'RT' | 'QAT' | 'CAT' | 'CCT' | 'Frontend' | 'Mod' | 'PPv3';
@@ -97,9 +98,12 @@ const getTeamPageData = createServerFn({ method: 'GET' }).handler(async (): Prom
 
 export const Route = createFileRoute('/team')({
    loader: () => getTeamPageData(),
-   head: () => ({
-      meta: [{ title: 'Team | ScoreSaber!' }, { name: 'description', content: 'Meet the ScoreSaber team' }]
-   }),
+   head: () =>
+      buildSeoHead({
+         title: 'Team',
+         description: 'Meet the ScoreSaber team',
+         path: '/team'
+      }),
    component: TeamRoute
 });
 

@@ -7,6 +7,7 @@ import { SettingsShell } from '@/modules/settings/settings-shell';
 import type { ScoreControllerGetScoreResponse } from '@/shared/api/generated/ApiParams';
 import { api } from '@/shared/api/server-api';
 import { optionalApiData } from '@/shared/result/api';
+import { buildNoindexHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const getPerksReplaysData = createServerFn({ method: 'GET' }).handler(async () => {
@@ -24,9 +25,7 @@ const getPerksReplaysData = createServerFn({ method: 'GET' }).handler(async () =
 
 export const Route = createFileRoute('/settings/perks/replays')({
    loader: () => getPerksReplaysData(),
-   head: () => ({
-      meta: [{ title: 'Replays | ScoreSaber!' }]
-   }),
+   head: () => buildNoindexHead('Replay Perks', 'Manage your ScoreSaber replay slots', '/settings/perks/replays'),
    component: SettingsPerksReplaysRoute
 });
 

@@ -13,6 +13,7 @@ import type { RouterContext } from '@/router';
 import { api } from '@/shared/api/server-api';
 import { cn } from '@/shared/format/helpers';
 import { optionalApi } from '@/shared/result/api';
+import { absoluteSiteUrl, SITE_DESCRIPTION, SITE_NAME, buildSeoHead } from '@/shared/seo/metadata';
 import { parseServerTheme, THEME_COOKIE_NAME, THEME_MEDIA_QUERY, THEME_STORAGE_KEY } from '@/shared/ui-adjacent/theme';
 import { AppShell } from '@/shell/app-shell';
 
@@ -46,14 +47,24 @@ export const Route = createRootRouteWithContext<RouterContext>()({
          { charSet: 'utf-8' },
          { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
          { name: 'theme-color', content: '#facc15' },
-         { title: 'ScoreSaber!' },
-         { name: 'description', content: 'Gaming' },
-         { name: 'application-name', content: 'ScoreSaber' }
+         { name: 'application-name', content: SITE_NAME },
+         { name: 'apple-mobile-web-app-title', content: SITE_NAME },
+         ...buildSeoHead().meta,
+         {
+            'script:ld+json': {
+               '@context': 'https://schema.org',
+               '@type': 'WebSite',
+               name: SITE_NAME,
+               url: absoluteSiteUrl('/'),
+               description: SITE_DESCRIPTION
+            }
+         }
       ],
       links: [
          { rel: 'icon', href: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
          { rel: 'icon', href: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
          { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+         { rel: 'manifest', href: '/site.webmanifest' },
          { rel: 'preload', href: '/fonts/geist-latin-400-normal.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
          { rel: 'preload', href: '/fonts/geist-latin-500-normal.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
          { rel: 'preload', href: '/fonts/geist-latin-600-normal.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },

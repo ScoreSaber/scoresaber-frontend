@@ -14,6 +14,7 @@ import { formatStars } from '@/shared/format/helpers';
 import { getDifficultyLabel, getDifficultyShortLabel } from '@/shared/format/strings';
 import { getStatusLabel } from '@/shared/format/styling';
 import { optionalApiData, pageApiData, pageDataOk } from '@/shared/result/api';
+import { buildSeoHead } from '@/shared/seo/metadata';
 import { isNumber, isPageNumber } from '@/shared/url-state/params';
 import { leaderboardFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
@@ -126,24 +127,18 @@ export function buildMapLeaderboardHead(
 ) {
    const title = buildMapLeaderboardTitle(loaderData, routeName);
    const description = buildMapLeaderboardDescription(loaderData, routeName);
-   const image = loaderData?.result.ok ? loaderData.result.data.mapInfo.coverUrl : undefined;
+   const data = loaderData?.result.ok ? loaderData.result.data : null;
+   const path =
+      data && routeName === 'map' ? `/map/${data.mapInfo.id}` : data ? `/map/${data.mapInfo.id}/difficulty/${data.leaderboardId}` : undefined;
 
-   return {
-      meta: [
-         { title: title === 'ScoreSaber' ? 'ScoreSaber!' : `${title} | ScoreSaber!` },
-         ...(description ? [{ name: 'description', content: description }] : []),
-         { property: 'og:title', content: title },
-         ...(description ? [{ property: 'og:description', content: description }] : []),
-         { property: 'og:site_name', content: 'Map - ScoreSaber' },
-         { property: 'og:type', content: 'website' },
-         ...(image ? [{ property: 'og:image', content: image }] : []),
-         { name: 'twitter:card', content: 'summary' },
-         { name: 'twitter:title', content: title },
-         ...(description ? [{ name: 'twitter:description', content: description }] : []),
-         ...(image ? [{ name: 'twitter:image', content: image }] : []),
-         { name: 'twitter:site', content: '@ScoreSaber' }
-      ]
-   };
+   return buildSeoHead({
+      title,
+      description,
+      path,
+      image: data?.mapInfo.coverUrl,
+      imageAlt: data ? `${data.mapInfo.songName} cover art` : undefined,
+      twitterCard: 'summary'
+   });
 }
 
 async function loadMapLeaderboardPageData({

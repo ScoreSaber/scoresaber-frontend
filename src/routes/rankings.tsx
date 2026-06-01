@@ -16,6 +16,7 @@ import { PaginationArrows } from '@/shared/components/pagination';
 import { countryRegionSearchSchema, formatCountryRegionParam } from '@/shared/country-region';
 import { isSteamPlayer } from '@/shared/format/helpers';
 import { pageApiData } from '@/shared/result/api';
+import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankingFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams, readPersistedSearchStorage } from '@/shared/url-state/persisted-search';
@@ -73,6 +74,12 @@ export const Route = createFileRoute('/rankings')({
    validateSearch: (search) => rankingsSearchSchema.parse(search),
    loaderDeps: ({ search }) => search,
    loader: ({ deps, location }) => getRankingsPageData({ data: { search: deps, rawSearch: location.search } }),
+   head: () =>
+      buildSeoHead({
+         title: 'Player Rankings',
+         description: 'View Beat Saber player rankings on ScoreSaber',
+         path: '/rankings'
+      }),
    component: RankingsRoute
 });
 

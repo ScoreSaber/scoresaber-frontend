@@ -5,6 +5,7 @@ import { AccountSection } from '@/modules/settings/sections/account-section';
 import { SettingsShell } from '@/modules/settings/settings-shell';
 import { api } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
+import { buildNoindexHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const getAccountSettingsData = createServerFn({ method: 'GET' }).handler(async () => {
@@ -21,9 +22,7 @@ const getAccountSettingsData = createServerFn({ method: 'GET' }).handler(async (
 
 export const Route = createFileRoute('/settings/account')({
    loader: () => getAccountSettingsData(),
-   head: () => ({
-      meta: [{ title: 'Account | ScoreSaber!' }, { name: 'description', content: 'Manage your ScoreSaber settings' }]
-   }),
+   head: () => buildNoindexHead('Account Settings', 'Manage your ScoreSaber account settings', '/settings/account'),
    component: SettingsAccountRoute
 });
 

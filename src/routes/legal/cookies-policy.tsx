@@ -4,6 +4,7 @@ import { useTranslations } from 'use-intl';
 import { Card } from '@/components/ui/card';
 
 import { cn } from '@/shared/format/helpers';
+import { buildSeoHead } from '@/shared/seo/metadata';
 
 function BrowserStoragePolicyPage() {
    const t = useTranslations('legal.cookies');
@@ -139,14 +140,11 @@ function BrowserStoragePolicyPage() {
 }
 
 export const Route = createFileRoute('/legal/cookies-policy')({
-   head: () => ({
-      meta: [
-         { title: 'Cookies Policy | ScoreSaber!' },
-         {
-            name: 'description',
-            content: 'Read the ScoreSaber cookies policy'
-         }
-      ]
-   }),
+   head: () =>
+      buildSeoHead({
+         title: 'Cookies Policy',
+         description: 'Read the ScoreSaber cookies policy',
+         path: '/legal/cookies-policy'
+      }),
    component: BrowserStoragePolicyPage
 });

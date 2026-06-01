@@ -19,6 +19,7 @@ import { PageError } from '@/shared/components/error/page-error';
 import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
 import { optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
+import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber, isPlayerId, ScoreEnum, toInt64PathParam, validateRequest } from '@/shared/url-state/params';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
@@ -207,17 +208,20 @@ export function buildPlayerProfileHead(loaderData: Awaited<ReturnType<typeof get
 
    const player = loaderData.result.data;
    const { stats } = player;
-   const globalRank = `${String.fromCodePoint(0x1f30d)} #${formatNumber(stats.rank)} Global`;
-   const countryRank = `${getFlagEmoji(player.country)} #${formatNumber(stats.countryRank)} ${player.country.toUpperCase()}`;
+   const globalRank = `Global #${formatNumber(stats.rank)}`;
+   const countryRank = `${player.country.toUpperCase()} #${formatNumber(stats.countryRank)}`;
 
    return playerProfileHead(`${player.name}'s Profile`, {
-      ogTitle: `${player.name}'s profile`,
+      ogTitle: `${player.name}'s Profile`,
       image: player.avatar,
+      path: `/u/${player.id}`,
+      noindex: player.banned,
       description: [
-         `${globalRank} / ${countryRank}`,
-         `Performance Points: ${formatPP(stats.totalPP)}pp`,
-         `Average Ranked Accuracy: ${formatAccuracy(stats.averageAccuracy)}`,
-         `Replay Views: ${formatNumber(stats.totalReplayViews)}`
+         globalRank,
+         countryRank,
+         `${formatPP(stats.totalPP)}pp`,
+         `${formatAccuracy(stats.averageAccuracy)} average ranked accuracy`,
+         `${formatNumber(stats.totalReplayViews)} replay views`
       ].join('\n')
    });
 }
@@ -285,31 +289,17 @@ function playerProfileHead(
       ogTitle?: string;
       description?: string;
       image?: string;
+      path?: string;
+      noindex?: boolean;
    } = {}
 ) {
-   const pageTitle = title === 'ScoreSaber' ? 'ScoreSaber!' : `${title} | ScoreSaber!`;
-
-   return {
-      meta: [
-         { title: pageTitle },
-         ...(options.description ? [{ name: 'description', content: options.description }] : []),
-         { property: 'og:title', content: options.ogTitle ?? title },
-         ...(options.description ? [{ property: 'og:description', content: options.description }] : []),
-         { property: 'og:site_name', content: 'Player - ScoreSaber' },
-         { property: 'og:type', content: 'website' },
-         ...(options.image ? [{ property: 'og:image', content: options.image }] : []),
-         { name: 'twitter:card', content: 'summary' },
-         { name: 'twitter:title', content: options.ogTitle ?? title },
-         ...(options.description ? [{ name: 'twitter:description', content: options.description }] : []),
-         ...(options.image ? [{ name: 'twitter:image', content: options.image }] : []),
-         { name: 'twitter:site', content: '@ScoreSaber' }
-      ]
-   };
-}
-
-function getFlagEmoji(countryCode: string) {
-   return countryCode.toLowerCase().replace(/[a-z]/g, (char) => {
-      const codePoint = char.codePointAt(0);
-      return codePoint ? String.fromCodePoint(codePoint - 97 + 0x1f1e6) : '';
+   return buildSeoHead({
+      title,
+      description: options.description,
+      path: options.path,
+      image: options.image,
+      imageAlt: options.ogTitle ?? title,
+      twitterCard: 'summary',
+      noindex: options.noindex
    });
 }
