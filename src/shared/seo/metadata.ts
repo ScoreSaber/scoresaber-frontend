@@ -32,7 +32,7 @@ export function buildSeoHead({
    path,
    image = DEFAULT_IMAGE_PATH,
    imageAlt = 'ScoreSaber',
-   twitterCard = 'summary_large_image',
+   twitterCard = 'summary',
    noindex = false
 }: PageHeadOptions = {}) {
    const pageTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
