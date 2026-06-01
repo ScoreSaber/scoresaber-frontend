@@ -13,7 +13,7 @@ export const isPageNumber = z
    .preprocess((val) => {
       if (val == null || val === '') return 1;
       return val;
-   }, isNumber)
+   }, isNumber.int())
    .transform((n) => Math.max(1, n));
 
 export const isPlayerId = z.preprocess((val) => {

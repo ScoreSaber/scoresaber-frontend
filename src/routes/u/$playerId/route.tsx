@@ -243,7 +243,7 @@ function PlayerScoresSection({
    const buildHref = (nextSearch?: Partial<PlayerProfileSearch>) => buildPlayerHref(playerId, nextSearch);
    const getPageHref = (nextPage: number) => buildHref(updateSearchParams(currentSearch, { page: nextPage > 1 ? nextPage : undefined }));
 
-   const hasNoScoresAtAll = !search && scores.metadata.totalItems === 0;
+   const hasNoScoresAtAll = scores.metadata.totalItems === 0;
 
    return (
       <div className="pb-3">
@@ -264,8 +264,8 @@ function PlayerScoresSection({
          ) : (
             <div className="text-muted-foreground flex flex-col items-center gap-2 py-16">
                <FaTrophy className="size-8 opacity-20" />
-               <p className="text-sm font-medium">{search ? t('player.noScoresFound') : t('player.noScoresYet')}</p>
-               <p className="text-xs opacity-60">{search ? t('player.adjustSearch') : t('player.noScoresYetDesc')}</p>
+               <p className="text-sm font-medium">{hasNoScoresAtAll ? t('player.noScoresYet') : t('player.noScoresFound')}</p>
+               <p className="text-xs opacity-60">{hasNoScoresAtAll ? t('player.noScoresYetDesc') : t('player.adjustSearch')}</p>
             </div>
          )}
       </div>
