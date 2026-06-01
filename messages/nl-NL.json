@@ -1,25 +1,25 @@
 {
    "team": {
       "errorTitle": "Team kon niet worden geladen",
-      "errorDescription": "We konden GitHub niet bereiken om het ScoreSaber-team te laden. Probeer het over een paar minuten opnieuw",
+      "errorDescription": "We konden GitHub niet bereiken om het ScoreSaber team te laden. Probeer het over een paar minuten opnieuw",
       "sections": {
-         "backend": "",
-         "admin": "",
-         "nat": "",
-         "rt": "",
-         "qat": "",
-         "cat": "",
-         "cct": "",
-         "frontend": "",
-         "mod": "",
-         "ppv3": ""
+         "backend": "Maker & projectleider",
+         "admin": "Beheerder",
+         "nat": "Nominatie Beoordeling Team",
+         "rt": "Ranking Team",
+         "qat": "Kwaliteit Beoordeling Team",
+         "cat": "Criteria Beoordeling Team",
+         "cct": "Content Creatie Team",
+         "frontend": "Frontend Ontwikkelaar",
+         "mod": "PC Mod",
+         "ppv3": "PPv3"
       },
       "social": {
-         "discord": "",
-         "twitter": "",
-         "twitch": "",
-         "youtube": "",
-         "github": ""
+         "discord": "Discord",
+         "twitter": "X",
+         "twitch": "Twitch",
+         "youtube": "YouTube",
+         "github": "GitHub"
       }
    },
    "quest": {
@@ -30,7 +30,7 @@
       },
       "error": {
          "releasesUnavailableTitle": "Releases konden niet worden geladen",
-         "releasesUnavailableDescription": "We konden GitHub niet bereiken om de beschikbare ScoreSaber Quest-versies te laden. Probeer het over een paar minuten opnieuw"
+         "releasesUnavailableDescription": "We konden GitHub niet bereiken om de beschikbare ScoreSaber Quest versies te laden. Probeer het over een paar minuten opnieuw"
       },
       "step": {
          "1": {
@@ -48,23 +48,23 @@
          "3": {
             "title": "Je download",
             "warningTitle": "Deel dit bestand niet",
-            "warningDescription": "Deze download bevat je persoonlijke ScoreSaber-gegevens. Iedereen met dit bestand kan scores namens jou spelen",
+            "warningDescription": "Deze download bevat je persoonlijke ScoreSaber gegevens. Iedereen met het bestand kan scores als jij indienen!",
             "privacyNotice": "Door ScoreSaber te downloaden ga je ermee akkoord dat je het <link>Privacybeleid</link> hebt gelezen en ermee instemt",
             "signInRequiredTitle": "Inloggen vereist",
             "signInRequiredDescription": "Ga een stap terug en log in voordat je een gepersonaliseerde download kunt genereren",
             "togglePrereleases": "Pre-releases tonen",
             "togglePrereleasesAria": "Pre-releaseversies in- of uitschakelen",
             "column": {
-               "modVersion": "",
-               "bsVersion": "",
+               "modVersion": "ScoreSaber",
+               "bsVersion": "Beat Saber",
                "published": "Uitgebracht"
             },
             "badge": {
                "latest": "Nieuwste",
-               "prerelease": ""
+               "prerelease": "Pre-release"
             },
             "downloadButton": "Genereren",
-            "downloadingButton": "Genereren...",
+            "downloadingButton": "Genereren",
             "downloadStarted": "Download gestart",
             "downloadAuthError": "Je sessie is verlopen. Log opnieuw in en probeer het nogmaals",
             "downloadGenericError": "Download genereren mislukt. Probeer het opnieuw",
@@ -90,18 +90,18 @@
       }
    },
    "nav": {
-      "home": "",
-      "comingSoon": "",
+      "home": "Thuis",
+      "comingSoon": "Binnenkort beschikbaar...",
       "search": "Zoeken",
-      "maps": "",
+      "maps": "Mappen",
       "rankings": "Ranglijsten",
       "rankRequests": "Rankverzoeken",
       "requests": "Verzoeken",
-      "wiki": "",
-      "feedbackHub": "",
+      "wiki": "Wiki",
+      "feedbackHub": "Feedback Hub",
       "apiDocs": "API-docs",
-      "questInstaller": "",
-      "team": ""
+      "questInstaller": "Quest installatie",
+      "team": "Team"
    },
    "supporterGate": {
       "title": "Supportervoordeel",
@@ -112,25 +112,25 @@
    },
    "login": {
       "titlePrefix": "Inloggen bij",
-      "titleBrand": "",
+      "titleBrand": "ScoreSaber",
       "showOtherMethods": "Andere methoden tonen",
       "hideOtherMethods": "Andere methoden verbergen",
       "secondaryDescription": "Secundaire koppelingen zoals Discord en Patreon kunnen pas worden gebruikt nadat ze in de accountinstellingen zijn gekoppeld",
       "providers": {
          "STEAM": {
-            "label": "",
+            "label": "Steam",
             "tooltip": "Inloggen met Steam"
          },
          "OCULUS": {
-            "label": "",
+            "label": "Meta",
             "tooltip": "Inloggen met Meta"
          },
          "PATREON": {
-            "label": "",
+            "label": "Patreon",
             "tooltip": "Inloggen met Patreon"
          },
          "DISCORD": {
-            "label": "",
+            "label": "Discord",
             "tooltip": "Inloggen met Discord"
          }
       },
@@ -146,7 +146,7 @@
          "sendCode": "Code sturen",
          "resendCode": "Opnieuw sturen",
          "resendIn": "Opnieuw sturen over {seconds}s",
-         "codeLabel": "",
+         "codeLabel": "Code",
          "expiresIn": "{seconds}s over",
          "verifyCode": "Controleren",
          "sentToast": "Controleer je e-mail",
@@ -164,7 +164,7 @@
       }
    },
    "sidebar": {
-      "scoreSaberLogoAlt": "ScoreSaber-logo",
+      "scoreSaberLogoAlt": "ScoreSaber Logo",
       "search": "Zoeken...",
       "activeRealm": "Actieve realm",
       "comingSoon": "Binnenkort...",
@@ -185,8 +185,8 @@
       "collapse": "Inklappen",
       "expand": "Uitklappen",
       "openMenu": "Menu openen",
-      "helpTranslate": "",
-      "helpTranslateAria": ""
+      "helpTranslate": "Help met vertalen",
+      "helpTranslateAria": "Help ScoreSaber te vertalen op Crowdin"
    },
    "common": {
       "language": "Taal",
@@ -203,7 +203,7 @@
       "goHome": "Naar home",
       "searchPlaceholder": "Zoeken...",
       "clearSearch": "Zoekopdracht wissen",
-      "filters": "",
+      "filters": "Filters",
       "hideFilters": "Filters verbergen",
       "showFilters": "Filters tonen",
       "global": "Wereldwijd",
@@ -219,12 +219,12 @@
       "goToPage": "Ga naar pagina",
       "by": "door",
       "mappedBy": "gemapt door",
-      "performancePoints": "",
+      "performancePoints": "Prestatie Punten",
       "totalPlays": "Totaal aantal plays",
       "actions": "Acties",
       "rankRequestActions": "Acties voor rankverzoeken",
       "adminActions": "Adminacties",
-      "scoreSaberLogo": "ScoreSaber-logo",
+      "scoreSaberLogo": "ScoreSaber Logo",
       "underConstruction": "in aanbouw"
    },
    "error": {
@@ -232,7 +232,7 @@
       "unexpectedError": "Er is een onverwachte fout opgetreden. Probeer het opnieuw",
       "unexpectedErrorLater": "Er is een onverwachte fout opgetreden. Probeer het later opnieuw",
       "errorId": "Fout-ID: {digest}",
-      "httpStatus": "",
+      "httpStatus": "HTTP {status}",
       "pageNotFound": "Niet gevonden",
       "pageNotFoundDesc": "De pagina die je zoekt bestaat niet",
       "notAuthenticated": "Niet ingelogd",
@@ -268,19 +268,19 @@
    },
    "rankings": {
       "searchPlayers": "Spelers zoeken",
-      "pp": "",
+      "pp": "PP",
       "totalPlayCount": "Totaal aantal plays",
-      "plays": "",
+      "plays": "Pogingen",
       "rankedPlayCount": "Ranked plays",
-      "ranked": "",
+      "ranked": "Gerangschikt",
       "averageRankedAccuracy": "Gem. ranked acc",
-      "acc": ""
+      "acc": "Acc"
    },
    "score": {
-      "accuracy": "",
+      "accuracy": "Nauwkeurigheid",
       "legacyAccuracy": "Score is gezet voor de wijziging van de maximale score",
       "weighted": "Gewogen {weightedPercent}",
-      "score": "",
+      "score": "Score",
       "watchReplay": "Replay bekijken",
       "noReplayAvailable": "Geen replay beschikbaar",
       "hideDetails": "Details verbergen",
@@ -293,51 +293,51 @@
       "openInNewTab": "Openen in nieuw tabblad",
       "openReplayNewTab": "Replayviewer openen in een nieuw tabblad",
       "gridAccuracy": "Grid-accuracy",
-      "misses": "",
+      "misses": "Gemist",
       "badCuts": "Bad cuts",
       "bombs": "Bommen",
       "streak115": "115-streak",
       "estFcAccuracy": "Geschatte FC-accuracy",
-      "timeDependenceShort": "",
-      "leftShort": "",
-      "rightShort": "",
+      "timeDependenceShort": "TD",
+      "leftShort": "L",
+      "rightShort": "R",
       "basicPage": "basis",
       "advancedPage": "geavanceerd",
       "distributionPage": "verdeling",
       "showStatsPage": "{page}-statspagina tonen",
       "predicted": "Voorspeld",
-      "scoreLine": "",
+      "scoreLine": "Score",
       "leftAccuracy": "Accuracy (links)",
       "rightAccuracy": "Accuracy (rechts)",
       "leftFullSwing": "Full swing (links)",
       "rightFullSwing": "Full swing (rechts)",
-      "timelineTooltip": "",
+      "timelineTooltip": "{label}: {score} ({accuracy}%)",
       "leftCount": "Aantal links",
       "rightCount": "Aantal rechts",
       "leftTd": "TD links",
       "rightTd": "TD rechts",
-      "timing": "",
-      "distributionPercentTooltip": "",
-      "distributionTimingTooltip": "",
-      "distributionTdTooltip": "",
-      "chartAccuracyTooltip": ""
+      "timing": "Timing",
+      "distributionPercentTooltip": "{label}: {count} ({percent}%)",
+      "distributionTimingTooltip": "{label}: {value} ms",
+      "distributionTdTooltip": "{label}: {value}",
+      "chartAccuracyTooltip": "Nauwkeurigheid: {accuracy}%"
    },
    "map": {
       "searchMaps": "Maps zoeken",
-      "statusRanked": "",
-      "statusQualified": "",
-      "statusLoved": "",
-      "statusUnranked": "",
-      "statusVerified": "",
-      "sortTrending": "",
+      "statusRanked": "Gerangschikt",
+      "statusQualified": "Gekwalificeerd",
+      "statusLoved": "Gelieft",
+      "statusUnranked": "Niet Gerangschikt",
+      "statusVerified": "Geverifieerd",
+      "sortTrending": "Trending",
       "sortDateAdded": "Toegevoegd op",
       "sortRecentlyRanked": "Recent ranked",
       "sortStarRating": "Sterrenrating",
       "sortMostPlayed": "Meest gespeeld",
       "stars": "sterren",
-      "bpm": "",
-      "playsCount": "",
-      "leaderboard": "",
+      "bpm": "{bpm} BPM",
+      "playsCount": "{count} Pogingen",
+      "leaderboard": "Ranglijst",
       "rankRequest": "Rankverzoek",
       "noScoresFound": "Geen scores gevonden",
       "noScoresYet": "Nog geen scores",
@@ -414,7 +414,7 @@
       "failedToSetCountry": "Land instellen mislukt",
       "setRoleTextDialogDesc": "Overschrijf de zichtbare roltekst van deze speler. Laat leeg om de overschrijving te wissen",
       "roleText": "Roltekst",
-      "roleTextPlaceholder": "",
+      "roleTextPlaceholder": "QAT Hoofd, Rang Team, geud",
       "roleTextUpdated": "Roltekst bijgewerkt",
       "failedToUpdateRoleText": "Roltekst bijwerken mislukt",
       "togglePermissions": "Zet individuele rechten voor deze speler aan of uit",
@@ -442,13 +442,13 @@
       "chartEnableJs": "Schakel JavaScript in om de grafiek te bekijken",
       "chartMetricRank": "Wereldwijde rang",
       "chartMetricRankShort": "Rang",
-      "chartMetricPP": "",
-      "chartMetricPPShort": "",
+      "chartMetricPP": "Prestatie Punten",
+      "chartMetricPPShort": "PP",
       "chartMetricAcc": "Gemiddelde accuracy",
       "chartMetricAccShort": "Gem. acc",
       "chartMetricPlays": "Totaal aantal plays",
-      "chartMetricPlaysShort": "",
-      "chartTimeWeek": "",
+      "chartMetricPlaysShort": "Pogingen",
+      "chartTimeWeek": "Week",
       "chartTimeMonth": "Maand",
       "chartTime3Months": "3 maanden",
       "chartTime6Months": "6 maanden",
@@ -467,9 +467,9 @@
       "chartAvgPerDay": "Gem./dag",
       "chartEstimatedSuffix": " (geschat)",
       "chartTooltipRank": "Rang: #{rank}",
-      "chartTooltipPP": "",
+      "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "Gem. acc.: {acc}%",
-      "chartTooltipPlays": "",
+      "chartTooltipPlays": "Afspeelzaken: {plays}",
       "chartTimeRange": "Periode"
    },
    "comments": {
@@ -480,21 +480,21 @@
       "commentDeleted": "Reactie verwijderd",
       "failedToDeleteComment": "Reactie verwijderen mislukt",
       "commentPosted": "Reactie geplaatst",
-      "charCount": "",
+      "charCount": "{count}/{max}",
       "postReply": "Schrijf je reactie...",
       "reply": "Reageren"
    },
    "rankRequest": {
-      "rt": "",
-      "qat": "",
+      "rt": "RT",
+      "qat": "QAT",
       "difficultyCount": "{count, plural, one {# moeilijkheidsgraad} other {# moeilijkheidsgraden}}",
       "hideDownvoted": "Verzoeken met downvotes verbergen",
-      "upvote": "",
-      "upvoteLower": "",
+      "upvote": "Upvote",
+      "upvoteLower": "upvote",
       "neutral": "Neutraal",
       "neutralLower": "neutraal",
-      "downvote": "",
-      "downvoteLower": "",
+      "downvote": "Downvote",
+      "downvoteLower": "downvote",
       "voteRecordedDetail": "Je {vote} is opgeslagen",
       "voteRemovedDetail": "Je {vote} is verwijderd",
       "failedToVote": "Stem registreren mislukt",
@@ -561,7 +561,7 @@
       "openRequests": "In de wachtrij"
    },
    "leaderboard": {
-      "admin": "",
+      "admin": "Beheerder",
       "qualify": "Kwalificeren",
       "love": "Loved maken",
       "recalculatePP": "PP herberekenen",
@@ -598,7 +598,7 @@
    "settings": {
       "pageTitle": "Instellingen",
       "tabs": {
-         "account": "",
+         "account": "Account",
          "connections": "Koppelingen",
          "perks": "Voordelen"
       },
@@ -614,9 +614,9 @@
          "avatarTooLarge": "Profielfoto moet 10MB of kleiner zijn",
          "displayName": "Weergavenaam",
          "resetName": "Naam resetten",
-         "bio": "",
+         "bio": "Bio",
          "writeBio": "Schrijf je bio...",
-         "bioCount": "",
+         "bioCount": "{count}/{max}",
          "nameSaved": "Naam opgeslagen",
          "nameSaveFailed": "Naam opslaan mislukt",
          "bioSaved": "Bio opgeslagen",
@@ -629,7 +629,7 @@
          "resetCountryDialogDesc": "Hiermee wordt je profielland opnieuw berekend op basis van je huidige locatie. Als dit lukt, wordt land resetten {days} dagen vergrendeld",
          "resetCountryHelper": "Gebruik dit alleen wanneer je in het land bent dat je op ScoreSaber wilt tonen, en zorg dat je geen VPN of proxy gebruikt",
          "resetCountryAvailableAt": "Je hebt je land onlangs al gereset. Je kunt het opnieuw resetten op {date}",
-         "resetCountryConfirmText": ""
+         "resetCountryConfirmText": "HERSTEL"
       },
       "connections": {
          "primaryHelper": "Dit is het primaire inlogaccount en kan hier niet worden ontkoppeld",
@@ -644,16 +644,16 @@
          "removeFailed": "Koppeling verwijderen mislukt",
          "providers": {
             "STEAM": {
-               "label": ""
+               "label": "Steam"
             },
             "OCULUS": {
-               "label": ""
+               "label": "Meta"
             },
             "PATREON": {
-               "label": ""
+               "label": "Patreon"
             },
             "DISCORD": {
-               "label": ""
+               "label": "Discord"
             }
          },
          "oauth": {
@@ -708,7 +708,7 @@
       "perks": {
          "tabs": {
             "overview": "Overzicht",
-            "replays": "",
+            "replays": "Replays",
             "scoreSaber2Badge": "ScoreSaber 2-badge inwisselen"
          },
          "gate": {
@@ -719,7 +719,7 @@
             "subscribe": "Abonneren op Patreon"
          },
          "replaySlots": {
-            "title": "",
+            "title": "Replay vakjes",
             "description": "Houd geselecteerde replays beschermd",
             "used": "gebruikt",
             "patreonCta": "Meer slots nodig? Steun ScoreSaber op Patreon",
@@ -732,10 +732,10 @@
             "emptyProtected": "Nog geen beschermde replays",
             "emptyClaimable": "Geen current-best replays beschikbaar om te beschermen",
             "timeRemainingColumn": "Tijd over",
-            "songColumn": "",
+            "songColumn": "Lied",
             "difficultyColumn": "Moeilijkheid",
-            "ppColumn": "",
-            "rankColumn": "",
+            "ppColumn": "PP",
+            "rankColumn": "Ranken",
             "actionColumn": "Actie",
             "claimAction": "Replay beschermen",
             "claimingAction": "Beschermen",
@@ -745,10 +745,10 @@
             "claimFailedToast": "Replay beschermen mislukt",
             "releasedToast": "Replay slot vrijgegeven",
             "releaseFailedToast": "Slot vrijgeven mislukt",
-            "scoreFallback": "",
-            "leaderboardFallback": "",
+            "scoreFallback": "Score #{scoreId}",
+            "leaderboardFallback": "Leaderboard #{leaderboardId}",
             "unknownDifficulty": "Onbekende moeilijkheid",
-            "unknownValue": "",
+            "unknownValue": "-",
             "loadFailed": "Replay slots konden niet worden geladen"
          },
          "scoreSaber2Badge": {
@@ -775,7 +775,7 @@
       "italic": "Cursief",
       "underline": "Onderstrepen",
       "strike": "Doorhalen",
-      "code": "",
+      "code": "Code",
       "bulletList": "Opsomming",
       "orderedList": "Genummerde lijst",
       "blockquote": "Citaat",
@@ -783,9 +783,9 @@
       "alignLeft": "Links uitlijnen",
       "alignCenter": "Centreren",
       "alignRight": "Rechts uitlijnen",
-      "link": "",
+      "link": "Link",
       "image": "Afbeelding",
-      "embed": "",
+      "embed": "Embedden",
       "unlink": "Link verwijderen",
       "linkDialogTitle": "Link toevoegen",
       "linkDialogDescription": "Plak een link om die op de geselecteerde tekst toe te passen",
@@ -825,8 +825,8 @@
          "dialogDescription": "Bekijk welke browseropslag ScoreSaber nodig heeft om de site te laten werken",
          "acceptAll": "Alles accepteren",
          "rejectAll": "Alleen noodzakelijk",
-         "customize": "",
-         "details": "",
+         "customize": "Details",
+         "details": "Details",
          "gotIt": "Begrepen",
          "save": "Keuzes opslaan",
          "close": "Sluiten",
