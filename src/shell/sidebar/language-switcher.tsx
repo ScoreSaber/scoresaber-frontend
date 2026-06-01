@@ -10,9 +10,10 @@ import { useLocale } from 'use-intl';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import type { Locale } from '@/i18n/config';
-import { localeNames, locales } from '@/i18n/config';
+import { localeNames } from '@/i18n/config';
 import { cn } from '@/shared/format/helpers';
 import { setLocale } from '@/shared/i18n/actions/public';
+import { useSidebar } from '@/shell/sidebar-provider';
 
 const navLinkClass = 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors';
 const inactiveClass = 'text-muted-foreground hover:bg-accent/50 hover:text-primary';
@@ -27,6 +28,7 @@ type LanguageSwitcherProps = {
 export function LanguageSwitcher({ className, contentClassName, open, onOpenChangeAction }: LanguageSwitcherProps) {
    const locale = useLocale();
    const router = useRouter();
+   const { visibleLocales } = useSidebar();
    const setLocaleAction = useServerFn(setLocale);
    const [pending, startTransition] = useTransition();
 
@@ -51,7 +53,7 @@ export function LanguageSwitcher({ className, contentClassName, open, onOpenChan
             <SelectValue />
          </SelectTrigger>
          <SelectContent className={contentClassName}>
-            {locales.map((loc: Locale) => (
+            {visibleLocales.map((loc: Locale) => (
                <SelectItem key={loc} value={loc} className="cursor-pointer">
                   {localeNames[loc]}
                </SelectItem>

@@ -1,18 +1,48 @@
 import { getCookie } from '@tanstack/react-start/server';
 
-import { defaultLocale, localeSchema, type Locale } from '@/i18n/config';
+import csMessages from '../../messages/cs.json';
+import deMessages from '../../messages/de.json';
+import enMessages from '../../messages/en.json';
+import frMessages from '../../messages/fr.json';
+import jaMessages from '../../messages/ja.json';
+import koMessages from '../../messages/ko.json';
+import nlMessages from '../../messages/nl.json';
+import plMessages from '../../messages/pl.json';
+import ptBrMessages from '../../messages/pt-BR.json';
+import ruMessages from '../../messages/ru.json';
+import zhCnMessages from '../../messages/zh-CN.json';
+import zhTwMessages from '../../messages/zh-TW.json';
 
-type Messages = Record<string, unknown>;
+import { defaultLocale, locales, localeSchema, type Locale } from '@/i18n/config';
 
-const requestLocaleSchema = localeSchema.catch(defaultLocale);
+type Messages = Record<string, string | Messages>;
+
+const localeMessages: Record<Locale, Messages> = {
+   en: enMessages,
+   de: deMessages,
+   ja: jaMessages,
+   'zh-CN': zhCnMessages,
+   ru: ruMessages,
+   fr: frMessages,
+   pl: plMessages,
+   nl: nlMessages,
+   'pt-BR': ptBrMessages,
+   'zh-TW': zhTwMessages,
+   cs: csMessages,
+   ko: koMessages
+};
 
 export async function getLocale(): Promise<Locale> {
-   return requestLocaleSchema.parse(getCookie('locale'));
+   return localeSchema.catch(defaultLocale).parse(getCookie('locale'));
 }
 
 export async function getMessages(): Promise<Messages> {
    const locale = await getLocale();
-   return (await import(`../../messages/${locale}.json`)).default;
+   return locale === defaultLocale ? enMessages : mergeMessages(enMessages, localeMessages[locale]);
+}
+
+export function getVisibleLocales(): Locale[] {
+   return locales.filter((locale) => locale === defaultLocale || hasMessages(localeMessages[locale]));
 }
 
 export async function getTranslations(namespace?: string) {
@@ -32,9 +62,21 @@ export function getRequestConfig<T>(callback: () => T) {
    return callback;
 }
 
-function getPath(source: unknown, path: string) {
-   return path.split('.').reduce<unknown>((current, segment) => {
-      if (typeof current !== 'object' || current == null || !(segment in current)) return undefined;
-      return (current as Record<string, unknown>)[segment];
-   }, source);
+function getPath(source: string | Messages | undefined, path: string) {
+   return path
+      .split('.')
+      .reduce<string | Messages | undefined>((current, segment) => (typeof current === 'string' ? undefined : current?.[segment]), source);
+}
+
+function mergeMessages(base: Messages, override: Messages): Messages {
+   return Object.fromEntries(Object.entries(base).map(([key, value]) => [key, mergeMessage(value, override[key])]));
+}
+
+function mergeMessage(base: string | Messages, override: string | Messages | undefined) {
+   if (typeof base === 'string') return typeof override === 'string' ? override : base;
+   return mergeMessages(base, (override ?? {}) as Messages);
+}
+
+function hasMessages(value: string | Messages): boolean {
+   return typeof value === 'string' ? value.trim().length > 0 : Object.values(value).some(hasMessages);
 }

@@ -5,6 +5,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
+import type { Locale } from '@/i18n/config';
 import { AuthProvider } from '@/modules/auth';
 import { OmniSearch } from '@/modules/search';
 import { OmniSearchProvider } from '@/modules/search';
@@ -25,6 +26,7 @@ import { SidebarProvider } from '@/shell/sidebar-provider';
 export function AppShell({
    initialUser,
    messages,
+   visibleLocales,
    queryClient,
    debugBreakpoints,
    debugPageBackground,
@@ -32,6 +34,7 @@ export function AppShell({
 }: {
    initialUser: UserControllerGetMeResponse | null;
    messages: TranslationMessages;
+   visibleLocales: Locale[];
    queryClient: QueryClient;
    debugBreakpoints: boolean;
    debugPageBackground: boolean;
@@ -46,7 +49,7 @@ export function AppShell({
                   <TooltipProvider>
                      <OmniSearchProvider>
                         <RouteTopLoader />
-                        <SidebarProvider>
+                        <SidebarProvider visibleLocales={visibleLocales}>
                            <Sidebar />
                            <MobileTopBar />
                            <TranslationContextHighlighter messages={messages} />

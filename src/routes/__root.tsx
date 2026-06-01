@@ -8,7 +8,7 @@ import { getCookie } from '@tanstack/react-start/server';
 import { IntlProvider } from 'use-intl';
 
 import { env } from '@/env';
-import { getLocale, getMessages } from '@/i18n/server';
+import { getLocale, getMessages, getVisibleLocales } from '@/i18n/server';
 import type { RouterContext } from '@/router';
 import { api } from '@/shared/api/server-api';
 import { cn } from '@/shared/format/helpers';
@@ -29,12 +29,14 @@ const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
    const initialTheme = parseServerTheme(getCookie(THEME_COOKIE_NAME)) ?? null;
    const locale = await getLocale();
    const messages = (await getMessages()) as RootMessages;
+   const visibleLocales = getVisibleLocales();
 
    return {
       user,
       initialTheme,
       locale,
       messages,
+      visibleLocales,
       debugBreakpoints: env.DEBUG_BREAKPOINTS,
       debugPageBackground: env.DEBUG_PAGE_BACKGROUND,
       debugReactScan: env.NODE_ENV !== 'production' && env.DEBUG_REACT_SCAN
@@ -87,6 +89,7 @@ function RootComponent() {
             <AppShell
                initialUser={data.user}
                messages={data.messages}
+               visibleLocales={data.visibleLocales}
                queryClient={queryClient}
                debugBreakpoints={data.debugBreakpoints}
                debugPageBackground={data.debugPageBackground}

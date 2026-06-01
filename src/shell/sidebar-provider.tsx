@@ -2,12 +2,15 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
-const SidebarContext = createContext<{ collapsed: boolean; toggle: () => void }>({
+import type { Locale } from '@/i18n/config';
+
+const SidebarContext = createContext<{ collapsed: boolean; toggle: () => void; visibleLocales: Locale[] }>({
    collapsed: false,
-   toggle: () => {}
+   toggle: () => {},
+   visibleLocales: []
 });
 
-export function SidebarProvider({ children }: { children: React.ReactNode }) {
+export function SidebarProvider({ visibleLocales, children }: { visibleLocales: Locale[]; children: React.ReactNode }) {
    const [collapsed, setCollapsed] = useState(false);
    const toggle = useCallback(() => setCollapsed((prev) => !prev), []);
 
@@ -22,7 +25,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
       return () => document.removeEventListener('keydown', handleKeyDown);
    }, [toggle]);
 
-   return <SidebarContext.Provider value={{ collapsed, toggle }}>{children}</SidebarContext.Provider>;
+   return <SidebarContext.Provider value={{ collapsed, toggle, visibleLocales }}>{children}</SidebarContext.Provider>;
 }
 
 export function useSidebar() {
