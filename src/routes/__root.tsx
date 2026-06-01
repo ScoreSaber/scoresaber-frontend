@@ -22,6 +22,7 @@ type RootMessages = Record<string, JsonValue>;
 
 const themeInitScript = `(function(){var theme='system';try{var stored=localStorage.getItem('${THEME_STORAGE_KEY}');if(stored==='light'||stored==='dark'||stored==='system')theme=stored}catch(e){}var resolved=theme==='system'?(window.matchMedia('${THEME_MEDIA_QUERY}').matches?'dark':'light'):theme;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved;try{document.cookie='${THEME_COOKIE_NAME}='+theme+'; Path=/; Max-Age=31536000; SameSite=Lax'}catch(e){}})()`;
 const criticalPaintStyles = `@layer theme,base,components,utilities;@layer base{*,::after,::before,::backdrop,::file-selector-button{border-color:var(--border,hsl(0 0% 20%))}body{background:var(--background,hsl(240 10% 4%));color:var(--foreground,hsl(60 7% 90%))}}@layer utilities{.app-container{margin-inline:auto;padding-inline:2rem;max-width:1300px}}`;
+const chunkLoadRecoveryScript = `(function(){var key='scoresaber:chunk-reload';var retryMs=60000;function message(error){return error&&typeof error.message==='string'?error.message:String(error||'')}function isChunkLoadError(error){var text=message(error);return text.indexOf('Failed to fetch dynamically imported module')!==-1||text.indexOf('Importing a module script failed')!==-1||text.indexOf('Unable to preload CSS')!==-1}function shouldReload(){try{var now=Date.now();var previous=JSON.parse(sessionStorage.getItem(key)||'null');if(previous&&previous.href===location.href&&now-previous.time<retryMs)return false;sessionStorage.setItem(key,JSON.stringify({href:location.href,time:now}));return true}catch(e){return false}}function reloadOnce(){if(shouldReload())location.reload()}window.addEventListener('vite:preloadError',function(event){if(!isChunkLoadError(event.payload))return;event.preventDefault();reloadOnce()});window.addEventListener('unhandledrejection',function(event){if(!isChunkLoadError(event.reason))return;event.preventDefault();reloadOnce()});window.addEventListener('error',function(event){if(!isChunkLoadError(event.error||event.message))return;event.preventDefault();reloadOnce()})})()`;
 
 const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
    const token = getCookie('token');
@@ -120,6 +121,12 @@ function RootDocument({
          suppressHydrationWarning
       >
          <head>
+            <script
+               id="chunk-load-recovery"
+               data-cfasync="false"
+               dangerouslySetInnerHTML={{ __html: chunkLoadRecoveryScript }}
+               suppressHydrationWarning
+            />
             <script id="theme-init" dangerouslySetInnerHTML={{ __html: themeInitScript }} suppressHydrationWarning />
             <style id="critical-paint" dangerouslySetInnerHTML={{ __html: criticalPaintStyles }} />
             <HeadContent />
