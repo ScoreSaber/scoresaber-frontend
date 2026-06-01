@@ -184,7 +184,9 @@
       "more": "Meer",
       "collapse": "Inklappen",
       "expand": "Uitklappen",
-      "openMenu": "Menu openen"
+      "openMenu": "Menu openen",
+      "helpTranslate": "Help vertalen",
+      "helpTranslateAria": "Help ScoreSaber vertalen op Crowdin"
    },
    "common": {
       "language": "Taal",

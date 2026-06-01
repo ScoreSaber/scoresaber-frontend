@@ -184,7 +184,9 @@
       "more": "More",
       "collapse": "Collapse",
       "expand": "Expand",
-      "openMenu": "Open menu"
+      "openMenu": "Open menu",
+      "helpTranslate": "Help translate",
+      "helpTranslateAria": "Help translate ScoreSaber on Crowdin"
    },
    "common": {
       "language": "Language",
