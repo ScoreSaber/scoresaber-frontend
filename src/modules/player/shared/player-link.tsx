@@ -46,20 +46,20 @@ export function PlayerLink({ player, outLink, className, withPFP, variant = 'lin
          />
       </a>
    ) : (
-      <PlayerHoverCard playerId={player.id}>
-         <playerRoute.Link
-            className="group/link text-foreground flex items-center overflow-hidden font-semibold"
-            params={{ playerId: player.id }}
-            search={{ page: 1, sort: 'top' }}
-         >
-            <CountryImage country={player.country} className="shrink-0" />
+      <playerRoute.Link
+         className="group/link text-foreground flex items-center overflow-hidden font-semibold"
+         params={{ playerId: player.id }}
+         search={{ page: 1, sort: 'top' }}
+      >
+         <CountryImage country={player.country} className="shrink-0" />
+         <PlayerHoverCard playerId={player.id}>
             <PlayerName
                player={player}
                className={cn('ml-2 truncate', isInactive && 'opacity-50', className)}
                playerStyle={playerSummary.roleClassName}
             />
-         </playerRoute.Link>
-      </PlayerHoverCard>
+         </PlayerHoverCard>
+      </playerRoute.Link>
    );
 
    return (
