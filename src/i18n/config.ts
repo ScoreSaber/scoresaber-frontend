@@ -1,6 +1,20 @@
 import { z } from 'zod';
 
-export const localeSchema = z.enum(['en', 'de-DE', 'ja-JP', 'zh-CN', 'ru-RU', 'fr-FR', 'pl-PL', 'nl-NL', 'pt-BR', 'zh-TW', 'cs-CZ', 'ko-KR']);
+export const localeSchema = z.enum([
+   'en',
+   'de-DE',
+   'ja-JP',
+   'zh-CN',
+   'ru-RU',
+   'fr-FR',
+   'pl-PL',
+   'nl-NL',
+   'pt-BR',
+   'zh-TW',
+   'cs-CZ',
+   'ko-KR',
+   'it-IT'
+]);
 export const locales = localeSchema.options;
 export type Locale = z.infer<typeof localeSchema>;
 export const defaultLocale: Locale = 'en';
@@ -17,7 +31,8 @@ export const localeNames: Record<Locale, string> = {
    'pt-BR': 'Portuguese, Brazilian',
    'zh-TW': 'Chinese Traditional',
    'cs-CZ': 'Czech',
-   'ko-KR': 'Korean'
+   'ko-KR': 'Korean',
+   'it-IT': 'Italian'
 };
 
 const legacyLocaleAliases: Record<string, Locale> = {
@@ -26,6 +41,7 @@ const legacyLocaleAliases: Record<string, Locale> = {
    fr: 'fr-FR',
    ja: 'ja-JP',
    ko: 'ko-KR',
+   it: 'it-IT',
    nl: 'nl-NL',
    pl: 'pl-PL',
    ru: 'ru-RU'

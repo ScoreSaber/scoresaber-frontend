@@ -4,6 +4,7 @@ import csCzMessages from '../../messages/cs-CZ.json';
 import deDeMessages from '../../messages/de-DE.json';
 import enMessages from '../../messages/en.json';
 import frFrMessages from '../../messages/fr-FR.json';
+import itItMessages from '../../messages/it-IT.json';
 import jaJpMessages from '../../messages/ja-JP.json';
 import koKrMessages from '../../messages/ko-KR.json';
 import nlNlMessages from '../../messages/nl-NL.json';
@@ -29,7 +30,8 @@ const localeMessages: Record<Locale, Messages> = {
    'pt-BR': ptBrMessages,
    'zh-TW': zhTwMessages,
    'cs-CZ': csCzMessages,
-   'ko-KR': koKrMessages
+   'ko-KR': koKrMessages,
+   'it-IT': itItMessages
 };
 
 export async function getLocale(): Promise<Locale> {
