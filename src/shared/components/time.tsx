@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+import { useLocale, useTranslations } from 'use-intl';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -11,6 +13,7 @@ type TimeProps = {
    short?: boolean;
    dateOnly?: boolean;
    className?: string;
+   longRelativeClassName?: string;
 };
 
 const RELATIVE_UNITS: { seconds: number; unit: Intl.RelativeTimeFormatUnit }[] = [
@@ -21,28 +24,30 @@ const RELATIVE_UNITS: { seconds: number; unit: Intl.RelativeTimeFormatUnit }[] =
    { seconds: 60, unit: 'minute' }
 ];
 
-const rtfLong = new Intl.RelativeTimeFormat('en', { numeric: 'always', style: 'long' });
-const rtfShort = new Intl.RelativeTimeFormat('en', { numeric: 'always', style: 'narrow' });
+const LONG_SHORT_TIME_LENGTH = 12;
 
-export function Time({ date, short, dateOnly, className }: TimeProps) {
+export function Time({ date, short, dateOnly, className, longRelativeClassName }: TimeProps) {
    const dateObj = date == null ? null : new Date(date);
    const [mounted, setMounted] = useState(false);
+   const locale = useLocale();
+   const t = useTranslations('common');
+   const formatters = useMemo(() => createTimeFormatters(locale), [locale]);
 
    useEffect(() => {
       setMounted(true);
    }, []);
 
    if (!dateObj || isNaN(dateObj.getTime())) {
-      return <span className={className}>Unknown date</span>;
+      return <span className={className}>{t('unknownDate')}</span>;
    }
 
-   const fullDate = fullDateFormatter.format(dateObj);
+   const fullDate = formatters.fullDate.format(dateObj);
 
    if (dateOnly) {
       return (
          <Tooltip>
             <TooltipTrigger asChild>
-               <span className={cn(className, 'cursor-help')}>{monthYearFormatter.format(dateObj)}</span>
+               <span className={cn(className, 'cursor-help')}>{formatters.monthYear.format(dateObj)}</span>
             </TooltipTrigger>
             <TooltipContent>
                <p>{fullDate}</p>
@@ -51,12 +56,20 @@ export function Time({ date, short, dateOnly, className }: TimeProps) {
       );
    }
 
-   const displayText = mounted ? timeAgo(dateObj, short) : shortDateFormatter.format(dateObj);
+   const displayText = mounted ? timeAgo(dateObj, short, formatters, t('justNow')) : formatters.shortDate.format(dateObj);
 
    return (
       <Tooltip>
          <TooltipTrigger asChild>
-            <span className={cn(className, 'cursor-help')} suppressHydrationWarning>
+            <span
+               className={cn(
+                  className,
+                  'cursor-help',
+                  short && 'whitespace-nowrap',
+                  short && displayText.length > LONG_SHORT_TIME_LENGTH && longRelativeClassName
+               )}
+               suppressHydrationWarning
+            >
                {displayText}
             </span>
          </TooltipTrigger>
@@ -67,34 +80,42 @@ export function Time({ date, short, dateOnly, className }: TimeProps) {
    );
 }
 
-function timeAgo(date: Date, isShort?: boolean) {
-   const secs = Math.floor((Date.now() - date.getTime()) / 1000);
-   const rtf = isShort ? rtfShort : rtfLong;
+function timeAgo(date: Date, isShort: boolean | undefined, formatters: TimeFormatters, justNow: string) {
+   const secondsFromNow = Math.round((date.getTime() - Date.now()) / 1000);
+   const absoluteSeconds = Math.abs(secondsFromNow);
 
    for (const { seconds, unit } of RELATIVE_UNITS) {
-      const count = Math.floor(secs / seconds);
-      if (count >= 1) return rtf.format(-count, unit);
+      if (absoluteSeconds < seconds) continue;
+      const value = Math.trunc(secondsFromNow / seconds);
+      const rtf = isShort ? formatters.relativeShort : formatters.relativeLong;
+      return rtf.format(value, unit);
    }
-   return 'just now';
+   return justNow;
 }
 
-const fullDateFormatter = new Intl.DateTimeFormat('en', {
-   weekday: 'long',
-   year: 'numeric',
-   month: 'long',
-   day: 'numeric',
-   hour: 'numeric',
-   minute: '2-digit',
-   second: '2-digit'
-});
+type TimeFormatters = ReturnType<typeof createTimeFormatters>;
 
-const monthYearFormatter = new Intl.DateTimeFormat('en', {
-   month: 'long',
-   year: 'numeric'
-});
-
-const shortDateFormatter = new Intl.DateTimeFormat('en', {
-   month: 'short',
-   day: 'numeric',
-   year: '2-digit'
-});
+function createTimeFormatters(locale: string) {
+   return {
+      relativeLong: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'long' }),
+      relativeShort: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'narrow' }),
+      fullDate: new Intl.DateTimeFormat(locale, {
+         weekday: 'long',
+         year: 'numeric',
+         month: 'long',
+         day: 'numeric',
+         hour: 'numeric',
+         minute: '2-digit',
+         second: '2-digit'
+      }),
+      monthYear: new Intl.DateTimeFormat(locale, {
+         month: 'long',
+         year: 'numeric'
+      }),
+      shortDate: new Intl.DateTimeFormat(locale, {
+         month: 'short',
+         day: 'numeric',
+         year: '2-digit'
+      })
+   };
+}
