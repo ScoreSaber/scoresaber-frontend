@@ -11,9 +11,9 @@ export const isNumber = z.preprocess((val) => {
 
 export const isPageNumber = z
    .preprocess((val) => {
-      if (val == null || val === '') return 1;
+      if (val == null || (typeof val === 'string' && val.trim() === '')) return 1;
       return val;
-   }, isNumber.int())
+   }, z.coerce.number().int())
    .transform((n) => Math.max(1, n));
 
 export const isPlayerId = z.preprocess((val) => {
