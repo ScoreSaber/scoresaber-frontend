@@ -1,82 +1,82 @@
 {
    "team": {
-      "errorTitle": "",
-      "errorDescription": "",
+      "errorTitle": "无法加载团队",
+      "errorDescription": "我们无法连接到GitHub 以加载ScoreSaber团队。请几分钟后再试",
       "sections": {
-         "backend": "",
-         "admin": "",
-         "nat": "",
+         "backend": "创建者和项目主导",
+         "admin": "管理员",
+         "nat": "提名评估团队",
          "rt": "",
-         "qat": "",
-         "cat": "",
-         "cct": "",
-         "frontend": "",
-         "mod": "",
+         "qat": "质量保障团队",
+         "cat": "标准保障团队",
+         "cct": "内容创作团队",
+         "frontend": "前端开发人员",
+         "mod": "PC 模组",
          "ppv3": ""
       },
       "social": {
          "discord": "",
-         "twitter": "",
+         "twitter": "推特",
          "twitch": "",
-         "youtube": "",
+         "youtube": "油管",
          "github": ""
       }
    },
    "quest": {
-      "progress": "",
+      "progress": "第 {current} 步，共 {total} 步",
       "action": {
-         "previous": "",
-         "next": ""
+         "previous": "上一步",
+         "next": "下一步"
       },
       "error": {
-         "releasesUnavailableTitle": "",
-         "releasesUnavailableDescription": ""
+         "releasesUnavailableTitle": "无法加载版本",
+         "releasesUnavailableDescription": "我们无法连接到 GitHub 来加载可用的 ScoreSaber Quest 版本，请几分钟后再试"
       },
       "step": {
          "1": {
-            "title": "",
-            "intro": "",
-            "continueHint": ""
+            "title": "欢迎使用 Quest版本安装程序",
+            "intro": "请按照以下步骤操作，即可在 Quest 设备上为《Beat Saber》安装 ScoreSaber",
+            "continueHint": "点击“下一步”继续"
          },
          "2": {
-            "title": "",
-            "signInPrompt": "",
-            "signInButton": "",
-            "signedInAs": "",
-            "continueHint": ""
+            "title": "登录",
+            "signInPrompt": "要在 Quest 上安装 ScoreSaber，请登录你希望在头显设备上使用的账号",
+            "signInButton": "登录",
+            "signedInAs": "当前登录账号：<b>{name}</b>",
+            "continueHint": "点击“下一步”继续"
          },
          "3": {
-            "title": "",
-            "warningTitle": "",
-            "warningDescription": "",
-            "privacyNotice": "",
-            "signInRequiredTitle": "",
-            "signInRequiredDescription": "",
-            "togglePrereleases": "",
-            "togglePrereleasesAria": "",
+            "title": "您下载的内容",
+            "warningTitle": "请勿分享此文件",
+            "warningDescription": "此下载文件包含您的 ScoreSabber 私密凭证，任何人只要拿到这个文件，都可以冒充您提交分数！",
+            "privacyNotice": "下载 ScoreSaber 即表示您已阅读并同意<link>隐私政策</link>",
+            "signInRequiredTitle": "需要登录",
+            "signInRequiredDescription": "请先返回上一步并登录，然后才能生成个性化下载",
+            "togglePrereleases": "显示预发布版本",
+            "togglePrereleasesAria": "切换至预发布版本",
             "column": {
                "modVersion": "",
-               "bsVersion": "",
-               "published": ""
+               "bsVersion": "节奏光剑",
+               "published": "已发布"
             },
             "badge": {
-               "latest": "",
-               "prerelease": ""
+               "latest": "最新版",
+               "prerelease": "预发布版本"
             },
-            "downloadButton": "",
-            "downloadingButton": "",
-            "downloadStarted": "",
-            "downloadAuthError": "",
-            "downloadGenericError": "",
-            "emptyTitle": "",
-            "emptyDescription": "",
-            "nextHint": ""
+            "downloadButton": "生成",
+            "downloadingButton": "正在生成",
+            "downloadStarted": "下载已开始",
+            "downloadAuthError": "您的登录已过期，请重新登录后重试",
+            "downloadGenericError": "生成下载失败，请重试",
+            "emptyTitle": "暂无可用版本",
+            "emptyDescription": "当前筛选项下没有匹配的 Quest 模组版本",
+            "nextHint": "下一步将向您展示如何在头显设备上安装此模组"
          },
          "4": {
-            "title": "",
-            "intro": "",
-            "connect": "",
-            "startScreenAlt": "",
+            "title": "安装",
+            "intro": "本指南假定您使用 <mbf>MBF</mbf> 来为游戏安装模组",
+            "connect": "将您的 Quest 设备连接到电脑或手机，然后打开 MBF",
+            "startScreenAlt": "MBF 启动界面",
             "addMods": "",
             "modsScreenAlt": "",
             "upload": "",
