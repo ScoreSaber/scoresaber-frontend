@@ -32,7 +32,7 @@ interface CrowdinListResponse {
    pagination: {
       limit: number;
       offset: number;
-      total: number;
+      total?: number;
    };
 }
 
@@ -211,11 +211,13 @@ async function listCrowdinStrings(): Promise<CrowdinResult<CrowdinString[]>> {
       const response = await crowdinFetch<CrowdinListResponse>(url, { method: 'GET' });
       if (Result.isError(response)) return new Err(response.error);
 
-      strings.push(...response.value.data.map((entry) => entry.data));
-      console.log(`listed ${strings.length}/${response.value.pagination.total} Crowdin strings`);
+      const page = response.value.data.map((entry) => entry.data);
+      const total = response.value.pagination.total;
+      strings.push(...page);
+      console.log(`listed ${total ? `${strings.length}/${total}` : strings.length} Crowdin strings`);
 
       offset += response.value.pagination.limit;
-      if (offset >= response.value.pagination.total) return Result.ok(strings);
+      if (total ? offset >= total : page.length < limit) return Result.ok(strings);
    }
 }
 
