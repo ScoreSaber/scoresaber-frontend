@@ -13,7 +13,7 @@ function MainContentInner({ children, debugPageBackground }: { children: React.R
       <main
          id="main-content"
          className={cn(
-            'relative flex min-h-dvh flex-col pt-(--content-offset-top) pb-(--content-offset-bottom) transition-[padding-left] duration-200 ease-in-out lg:pt-0 lg:pb-0',
+            'relative flex min-h-dvh flex-col pt-(--content-offset-top) pb-(--content-offset-bottom) transition-[padding-left] duration-300 ease-in-out lg:pt-0 lg:pb-0',
             collapsed ? 'lg:pl-14' : 'lg:pl-61 3xl:pl-68'
          )}
       >

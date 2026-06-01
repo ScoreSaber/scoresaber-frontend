@@ -213,11 +213,32 @@ export function Sidebar() {
    return (
       <aside
          className={cn(
-            'bg-background fixed top-0 left-0 z-40 hidden h-screen flex-col border-r transition-[width] duration-200 ease-in-out lg:flex',
+            'bg-background fixed top-0 left-0 z-40 hidden h-screen flex-col border-r transition-[width] duration-300 ease-in-out lg:flex overflow-x-hidden',
             collapsed ? 'w-14' : 'w-61 3xl:w-68'
          )}
       >
-         {collapsed ? <CollapsedSidebar onExpand={toggle} /> : <ExpandedSidebar onCollapse={toggle} />}
+         <div className="relative h-full w-full">
+            <div
+               aria-hidden={!collapsed}
+               inert={!collapsed}
+               className={cn(
+                  'absolute inset-0 w-14 flex flex-col transition-opacity duration-300 ease-in-out',
+                  collapsed ? 'opacity-100' : 'opacity-0 pointer-events-none'
+               )}
+            >
+               <CollapsedSidebar onExpand={toggle} />
+            </div>
+            <div
+               aria-hidden={collapsed}
+               inert={collapsed}
+               className={cn(
+                  'absolute inset-0 w-61 3xl:w-68 flex flex-col transition-opacity duration-300 ease-in-out',
+                  collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'
+               )}
+            >
+               <ExpandedSidebar onCollapse={toggle} />
+            </div>
+         </div>
       </aside>
    );
 }
