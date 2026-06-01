@@ -1,39 +1,39 @@
 import { getCookie } from '@tanstack/react-start/server';
 
-import csMessages from '../../messages/cs.json';
-import deMessages from '../../messages/de.json';
+import csCzMessages from '../../messages/cs-CZ.json';
+import deDeMessages from '../../messages/de-DE.json';
 import enMessages from '../../messages/en.json';
-import frMessages from '../../messages/fr.json';
-import jaMessages from '../../messages/ja.json';
-import koMessages from '../../messages/ko.json';
-import nlMessages from '../../messages/nl.json';
-import plMessages from '../../messages/pl.json';
+import frFrMessages from '../../messages/fr-FR.json';
+import jaJpMessages from '../../messages/ja-JP.json';
+import koKrMessages from '../../messages/ko-KR.json';
+import nlNlMessages from '../../messages/nl-NL.json';
+import plPlMessages from '../../messages/pl-PL.json';
 import ptBrMessages from '../../messages/pt-BR.json';
-import ruMessages from '../../messages/ru.json';
+import ruRuMessages from '../../messages/ru-RU.json';
 import zhCnMessages from '../../messages/zh-CN.json';
 import zhTwMessages from '../../messages/zh-TW.json';
 
-import { defaultLocale, locales, localeSchema, type Locale } from '@/i18n/config';
+import { defaultLocale, locales, parseLocale, type Locale } from '@/i18n/config';
 
 type Messages = Record<string, string | Messages>;
 
 const localeMessages: Record<Locale, Messages> = {
    en: enMessages,
-   de: deMessages,
-   ja: jaMessages,
+   'de-DE': deDeMessages,
+   'ja-JP': jaJpMessages,
    'zh-CN': zhCnMessages,
-   ru: ruMessages,
-   fr: frMessages,
-   pl: plMessages,
-   nl: nlMessages,
+   'ru-RU': ruRuMessages,
+   'fr-FR': frFrMessages,
+   'pl-PL': plPlMessages,
+   'nl-NL': nlNlMessages,
    'pt-BR': ptBrMessages,
    'zh-TW': zhTwMessages,
-   cs: csMessages,
-   ko: koMessages
+   'cs-CZ': csCzMessages,
+   'ko-KR': koKrMessages
 };
 
 export async function getLocale(): Promise<Locale> {
-   return localeSchema.catch(defaultLocale).parse(getCookie('locale'));
+   return parseLocale(getCookie('locale'));
 }
 
 export async function getMessages(): Promise<Messages> {
@@ -73,7 +73,7 @@ function mergeMessages(base: Messages, override: Messages): Messages {
 }
 
 function mergeMessage(base: string | Messages, override: string | Messages | undefined) {
-   if (typeof base === 'string') return typeof override === 'string' ? override : base;
+   if (typeof base === 'string') return typeof override === 'string' && override.trim() ? override : base;
    return mergeMessages(base, (override ?? {}) as Messages);
 }
 

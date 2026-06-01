@@ -1,21 +1,37 @@
 import { z } from 'zod';
 
-export const localeSchema = z.enum(['en', 'de', 'ja', 'zh-CN', 'ru', 'fr', 'pl', 'nl', 'pt-BR', 'zh-TW', 'cs', 'ko']);
+export const localeSchema = z.enum(['en', 'de-DE', 'ja-JP', 'zh-CN', 'ru-RU', 'fr-FR', 'pl-PL', 'nl-NL', 'pt-BR', 'zh-TW', 'cs-CZ', 'ko-KR']);
 export const locales = localeSchema.options;
 export type Locale = z.infer<typeof localeSchema>;
 export const defaultLocale: Locale = 'en';
 
 export const localeNames: Record<Locale, string> = {
    en: 'English',
-   de: 'German',
-   ja: 'Japanese',
+   'de-DE': 'German',
+   'ja-JP': 'Japanese',
    'zh-CN': 'Chinese Simplified',
-   ru: 'Russian',
-   fr: 'French',
-   pl: 'Polish',
-   nl: 'Dutch',
+   'ru-RU': 'Russian',
+   'fr-FR': 'French',
+   'pl-PL': 'Polish',
+   'nl-NL': 'Dutch',
    'pt-BR': 'Portuguese, Brazilian',
    'zh-TW': 'Chinese Traditional',
-   cs: 'Czech',
-   ko: 'Korean'
+   'cs-CZ': 'Czech',
+   'ko-KR': 'Korean'
 };
+
+const legacyLocaleAliases: Record<string, Locale> = {
+   cs: 'cs-CZ',
+   de: 'de-DE',
+   fr: 'fr-FR',
+   ja: 'ja-JP',
+   ko: 'ko-KR',
+   nl: 'nl-NL',
+   pl: 'pl-PL',
+   ru: 'ru-RU'
+};
+
+export function parseLocale(value: unknown): Locale {
+   if (typeof value === 'string' && value in legacyLocaleAliases) return legacyLocaleAliases[value];
+   return localeSchema.catch(defaultLocale).parse(value);
+}
