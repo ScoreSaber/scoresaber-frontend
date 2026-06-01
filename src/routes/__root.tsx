@@ -86,6 +86,7 @@ function RootComponent() {
          <IntlProvider locale={data.locale} messages={data.messages} timeZone="UTC">
             <AppShell
                initialUser={data.user}
+               messages={data.messages}
                queryClient={queryClient}
                debugBreakpoints={data.debugBreakpoints}
                debugPageBackground={data.debugPageBackground}

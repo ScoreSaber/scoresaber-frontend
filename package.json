@@ -11,7 +11,8 @@
       "api:regen": "curl https://api.scoresaber.local/api/openapi.json > orbis-openapi.json && bun run api:generate",
       "prepare": "husky",
       "format": "oxfmt .",
-      "format:check": "oxfmt --check ."
+      "format:check": "oxfmt --check .",
+      "crowdin:context": "bun scripts/sync-crowdin-context.ts"
    },
    "dependencies": {
       "@c15t/react": "^2.1.0",

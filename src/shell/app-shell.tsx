@@ -10,6 +10,7 @@ import { OmniSearch } from '@/modules/search';
 import { OmniSearchProvider } from '@/modules/search';
 import { ScoreSaber2BadgePrompt } from '@/modules/settings/score-saber-2-badge-prompt';
 import type { UserControllerGetMeResponse } from '@/shared/api/generated/ApiParams';
+import { TranslationContextHighlighter, type TranslationMessages } from '@/shared/i18n/translation-context-highlighter';
 import { ConsentManager } from '@/shared/privacy/consent-manager';
 import { QueryProvider } from '@/shared/query/query-provider';
 import { ThemeProvider } from '@/shared/ui-adjacent/theme-provider';
@@ -23,12 +24,14 @@ import { SidebarProvider } from '@/shell/sidebar-provider';
 
 export function AppShell({
    initialUser,
+   messages,
    queryClient,
    debugBreakpoints,
    debugPageBackground,
    children
 }: {
    initialUser: UserControllerGetMeResponse | null;
+   messages: TranslationMessages;
    queryClient: QueryClient;
    debugBreakpoints: boolean;
    debugPageBackground: boolean;
@@ -46,6 +49,7 @@ export function AppShell({
                         <SidebarProvider>
                            <Sidebar />
                            <MobileTopBar />
+                           <TranslationContextHighlighter messages={messages} />
                            <MainContent debugPageBackground={debugPageBackground}>{children}</MainContent>
                            <MobileBottomBar />
                         </SidebarProvider>
