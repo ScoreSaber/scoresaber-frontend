@@ -6,6 +6,8 @@
 
 The frontend for [ScoreSaber](https://scoresaber.com)
 
+<a title="Crowdin" target="_blank" href="https://crowdin.com/project/scoresaber-website"><img src="https://badges.crowdin.net/scoresaber-website/localized.svg"></a>
+
 ## Getting Started
 
 See [SETUP.md](SETUP.md) for the local development guide
