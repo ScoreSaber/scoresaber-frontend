@@ -14,7 +14,9 @@ export const localeSchema = z.enum([
    'cs-CZ',
    'ko-KR',
    'it-IT',
-   'es-ES'
+   'es-ES',
+   'sv-SE',
+   'fi-FI'
 ]);
 export const locales = localeSchema.options;
 export type Locale = z.infer<typeof localeSchema>;
@@ -34,20 +36,24 @@ export const localeNames: Record<Locale, string> = {
    'cs-CZ': 'Czech',
    'ko-KR': 'Korean',
    'it-IT': 'Italian',
-   'es-ES': 'Spanish'
+   'es-ES': 'Spanish',
+   'sv-SE': 'Swedish',
+   'fi-FI': 'Finnish'
 };
 
 const legacyLocaleAliases: Record<string, Locale> = {
    cs: 'cs-CZ',
    de: 'de-DE',
    es: 'es-ES',
+   fi: 'fi-FI',
    fr: 'fr-FR',
    ja: 'ja-JP',
    ko: 'ko-KR',
    it: 'it-IT',
    nl: 'nl-NL',
    pl: 'pl-PL',
-   ru: 'ru-RU'
+   ru: 'ru-RU',
+   sv: 'sv-SE'
 };
 
 export function parseLocale(value: unknown): Locale {

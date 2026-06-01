@@ -4,6 +4,7 @@ import csCzMessages from '../../messages/cs-CZ.json';
 import deDeMessages from '../../messages/de-DE.json';
 import enMessages from '../../messages/en.json';
 import esEsMessages from '../../messages/es-ES.json';
+import fiFiMessages from '../../messages/fi-FI.json';
 import frFrMessages from '../../messages/fr-FR.json';
 import itItMessages from '../../messages/it-IT.json';
 import jaJpMessages from '../../messages/ja-JP.json';
@@ -12,6 +13,7 @@ import nlNlMessages from '../../messages/nl-NL.json';
 import plPlMessages from '../../messages/pl-PL.json';
 import ptBrMessages from '../../messages/pt-BR.json';
 import ruRuMessages from '../../messages/ru-RU.json';
+import svSeMessages from '../../messages/sv-SE.json';
 import zhCnMessages from '../../messages/zh-CN.json';
 import zhTwMessages from '../../messages/zh-TW.json';
 
@@ -33,7 +35,9 @@ const localeMessages: Record<Locale, Messages> = {
    'cs-CZ': csCzMessages,
    'ko-KR': koKrMessages,
    'it-IT': itItMessages,
-   'es-ES': esEsMessages
+   'es-ES': esEsMessages,
+   'sv-SE': svSeMessages,
+   'fi-FI': fiFiMessages
 };
 
 export async function getLocale(): Promise<Locale> {
