@@ -72,6 +72,13 @@ const shouldUseRemote = shouldApply || Bun.argv.includes('--remote');
 const crowdinProjectId = process.env.CROWDIN_PROJECT_ID ?? '';
 const crowdinPersonalToken = process.env.CROWDIN_PERSONAL_TOKEN ?? '';
 const crowdinApiBaseUrl = process.env.CROWDIN_API_BASE_URL ?? 'https://api.crowdin.com/api/v2';
+const crowdinListPageSize = readIntegerEnv('CROWDIN_LIST_PAGE_SIZE', 500, 1);
+const crowdinApplyConcurrency = readIntegerEnv('CROWDIN_APPLY_CONCURRENCY', 4, 1);
+const crowdinApplyBatchDelayMs = readIntegerEnv('CROWDIN_APPLY_BATCH_DELAY_MS', 250, 0);
+const crowdinProgressEvery = readIntegerEnv('CROWDIN_PROGRESS_EVERY', 25, 1);
+const crowdinRequestTimeoutMs = readIntegerEnv('CROWDIN_REQUEST_TIMEOUT_MS', 30000, 1000);
+const crowdinMaxAttempts = readIntegerEnv('CROWDIN_MAX_ATTEMPTS', 4, 1);
+const crowdinRetryBaseDelayMs = readIntegerEnv('CROWDIN_RETRY_BASE_DELAY_MS', 1000, 0);
 const skippedPathParts = ['/dialog', '/popover', '/hover-card', '/omni-search'];
 const skippedJsxPrefixes = ['Dialog', 'Popover', 'Sheet', 'DropdownMenu', 'Command', 'AlertDialog', 'Tooltip'];
 const skippedJsxNames = new Set(['ConfirmDialog']);
@@ -192,7 +199,9 @@ async function buildCrowdinSyncPlan(contexts: ContextEntry[]): Promise<CrowdinRe
 async function listCrowdinStrings(): Promise<CrowdinResult<CrowdinString[]>> {
    const strings: CrowdinString[] = [];
    let offset = 0;
-   const limit = 500;
+   const limit = crowdinListPageSize;
+
+   console.log(`listing Crowdin strings with page size ${limit}`);
 
    while (true) {
       const url = new URL(`${crowdinApiBaseUrl}/projects/${crowdinProjectId}/strings`);
@@ -203,6 +212,7 @@ async function listCrowdinStrings(): Promise<CrowdinResult<CrowdinString[]>> {
       if (Result.isError(response)) return new Err(response.error);
 
       strings.push(...response.value.data.map((entry) => entry.data));
+      console.log(`listed ${strings.length}/${response.value.pagination.total} Crowdin strings`);
 
       offset += response.value.pagination.limit;
       if (offset >= response.value.pagination.total) return Result.ok(strings);
@@ -210,20 +220,42 @@ async function listCrowdinStrings(): Promise<CrowdinResult<CrowdinString[]>> {
 }
 
 async function applyCrowdinContextUpdates(updates: ContextUpdate[]): Promise<CrowdinResult<number>> {
-   for (const update of updates) {
-      const url = `${crowdinApiBaseUrl}/projects/${crowdinProjectId}/strings/${update.stringId}`;
-      const result = await crowdinFetch(url, {
-         method: 'PATCH',
-         body: JSON.stringify([
-            {
-               op: 'replace',
-               path: '/context',
-               value: update.nextContext
-            }
-         ])
-      });
+   if (updates.length === 0) return Result.ok(0);
 
-      if (Result.isError(result)) return new Err(result.error);
+   console.log(`applying ${updates.length} Crowdin context updates with concurrency ${crowdinApplyConcurrency}`);
+
+   let completed = 0;
+
+   for (let index = 0; index < updates.length; index += crowdinApplyConcurrency) {
+      const batch = updates.slice(index, index + crowdinApplyConcurrency);
+      const results = await Promise.all(
+         batch.map(async (update) => {
+            const result = await crowdinFetch(`${crowdinApiBaseUrl}/projects/${crowdinProjectId}/strings/${update.stringId}`, {
+               method: 'PATCH',
+               body: JSON.stringify([
+                  {
+                     op: 'replace',
+                     path: '/context',
+                     value: update.nextContext
+                  }
+               ])
+            });
+
+            completed += 1;
+            if (completed === 1 || completed === updates.length || completed % crowdinProgressEvery === 0) {
+               console.log(`processed ${completed}/${updates.length} Crowdin string context updates`);
+            }
+
+            return result;
+         })
+      );
+
+      const failed = results.find(Result.isError);
+      if (failed) return new Err(failed.error);
+
+      if (index + crowdinApplyConcurrency < updates.length && crowdinApplyBatchDelayMs > 0) {
+         await sleep(crowdinApplyBatchDelayMs);
+      }
    }
 
    return Result.ok(updates.length);
@@ -251,34 +283,71 @@ function buildNextContext(currentContext: string, generatedContext: string) {
 async function crowdinFetch<T = unknown>(url: string | URL, init: RequestInit): Promise<CrowdinResult<T>> {
    return Result.tryPromise({
       try: async () => {
-         const response = await fetch(url, {
-            ...init,
-            headers: {
-               Authorization: `Bearer ${crowdinPersonalToken}`,
-               'Content-Type': 'application/json'
-            }
-         });
+         let attempt = 1;
 
-         if (!response.ok) {
+         while (true) {
+            const response = await fetch(url, {
+               ...init,
+               signal: AbortSignal.timeout(crowdinRequestTimeoutMs),
+               headers: {
+                  Authorization: `Bearer ${crowdinPersonalToken}`,
+                  'Content-Type': 'application/json'
+               }
+            });
+
+            if (response.ok) {
+               if (response.status === 204) return undefined as T;
+               return (await response.json()) as T;
+            }
+
+            if ((response.status === 429 || response.status >= 500) && attempt < crowdinMaxAttempts) {
+               const retryDelayMs = getCrowdinRetryDelayMs(response, attempt);
+               console.warn(
+                  `Crowdin request returned ${response.status} ${response.statusText}; retrying in ${retryDelayMs}ms (${attempt}/${crowdinMaxAttempts})`
+               );
+               attempt += 1;
+               await sleep(retryDelayMs);
+               continue;
+            }
+
             throw new CrowdinRequestError({
                message: `Crowdin request failed with ${response.status} ${response.statusText}: ${await response.text()}`,
                status: response.status,
                cause: null
             });
          }
-
-         if (response.status === 204) return undefined as T;
-         return (await response.json()) as T;
       },
       catch: (cause) =>
          cause instanceof CrowdinRequestError
             ? cause
             : new CrowdinRequestError({
-                 message: 'Crowdin request failed',
+                 message: `Crowdin request failed: ${cause instanceof Error ? cause.message : String(cause)}`,
                  status: null,
                  cause
               })
    });
+}
+
+function getCrowdinRetryDelayMs(response: Response, attempt: number) {
+   const retryAfter = response.headers.get('Retry-After');
+   if (retryAfter) {
+      const seconds = Number(retryAfter);
+      if (Number.isFinite(seconds)) return Math.max(0, seconds * 1000);
+
+      const dateMs = Date.parse(retryAfter);
+      if (Number.isFinite(dateMs)) return Math.max(0, dateMs - Date.now());
+   }
+
+   return crowdinRetryBaseDelayMs * 2 ** (attempt - 1);
+}
+
+function sleep(ms: number) {
+   return new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
+}
+
+function readIntegerEnv(name: string, fallback: number, min: number) {
+   const value = Number.parseInt(process.env[name] ?? '', 10);
+   return value >= min ? value : fallback;
 }
 
 function scanSourceFiles(directory: string): string[] {
@@ -348,10 +417,6 @@ function getTranslatorName(expression: ts.Expression) {
 }
 
 function isInsideSkippedContext(node: ts.Node) {
-   return isInsideSkippedJsx(node) || isInsideSkippedJsxAttribute(node) || isInsideToastCall(node);
-}
-
-function isInsideSkippedJsx(node: ts.Node) {
    let current: ts.Node | undefined = node;
 
    while (current) {
@@ -361,27 +426,7 @@ function isInsideSkippedJsx(node: ts.Node) {
            ? getJsxTagName(current.tagName)
            : '';
       if (tagName && shouldSkipJsxTag(tagName)) return true;
-      current = current.parent;
-   }
-
-   return false;
-}
-
-function isInsideSkippedJsxAttribute(node: ts.Node) {
-   let current: ts.Node | undefined = node;
-
-   while (current) {
       if (ts.isJsxAttribute(current) && ts.isIdentifier(current.name) && skippedJsxAttributes.has(current.name.text)) return true;
-      current = current.parent;
-   }
-
-   return false;
-}
-
-function isInsideToastCall(node: ts.Node) {
-   let current: ts.Node | undefined = node;
-
-   while (current) {
       if (ts.isCallExpression(current) && isToastExpression(current.expression)) return true;
       current = current.parent;
    }
@@ -390,10 +435,11 @@ function isInsideToastCall(node: ts.Node) {
 }
 
 function isToastExpression(expression: ts.Expression) {
-   if (ts.isIdentifier(expression)) return expression.text === 'toast';
-   if (!ts.isPropertyAccessExpression(expression)) return false;
-   if (ts.isIdentifier(expression.expression)) return expression.expression.text === 'toast';
-   return isToastExpression(expression.expression);
+   while (ts.isPropertyAccessExpression(expression)) {
+      expression = expression.expression;
+   }
+
+   return ts.isIdentifier(expression) && expression.text === 'toast';
 }
 
 function getJsxTagName(tagName: ts.JsxTagNameExpression) {
@@ -421,13 +467,7 @@ function isSkippedKey(key: string) {
 }
 
 function buildContextEntries(usages: TranslationUsage[]) {
-   const byKey = new Map<string, TranslationUsage[]>();
-
-   for (const usage of usages) {
-      byKey.set(usage.key, [...(byKey.get(usage.key) ?? []), usage]);
-   }
-
-   return [...byKey.entries()]
+   return [...Map.groupBy(usages, (usage) => usage.key).entries()]
       .sort(([left], [right]) => left.localeCompare(right))
       .map(([key, usagesForKey]): ContextEntry => {
          const source = sourceStrings.get(key) ?? '';
