@@ -202,10 +202,10 @@ async function listCrowdinStrings(): Promise<CrowdinResult<CrowdinString[]>> {
       const response = await crowdinFetch<CrowdinListResponse>(url, { method: 'GET' });
       if (Result.isError(response)) return new Err(response.error);
 
-      strings.push(...response.data.map((entry) => entry.data));
+      strings.push(...response.value.data.map((entry) => entry.data));
 
-      offset += response.pagination.limit;
-      if (offset >= response.pagination.total) return Result.ok(strings);
+      offset += response.value.pagination.limit;
+      if (offset >= response.value.pagination.total) return Result.ok(strings);
    }
 }
 
