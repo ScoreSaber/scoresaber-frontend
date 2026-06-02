@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
+import { useTranslations } from 'use-intl';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -48,6 +49,7 @@ export function SongCard({
    className,
    compact = false
 }: SongCardProps) {
+   const tc = useTranslations('common');
    const accent = <div className={cn('absolute top-0 bottom-0 left-0 z-30 w-0.75', accentTooltip && 'cursor-help', accentClass)} />;
 
    return (
@@ -91,10 +93,11 @@ export function SongCard({
                   </mapRoute.Link>
                </h3>
                <p className={cn('text-muted-foreground truncate leading-snug', compact ? 'text-xs' : 'text-sm')}>
-                  by {compact ? <span className="text-foreground font-semibold">{songAuthorName}</span> : <LinkedNames name={songAuthorName} />}
+                  {tc('by')}{' '}
+                  {compact ? <span className="text-foreground font-semibold">{songAuthorName}</span> : <LinkedNames name={songAuthorName} />}
                </p>
                <p className="text-muted-foreground truncate text-xs">
-                  mapped by{' '}
+                  {tc('mappedBy')}{' '}
                   {compact ? (
                      <span className="text-foreground font-semibold">{levelAuthorName}</span>
                   ) : (
