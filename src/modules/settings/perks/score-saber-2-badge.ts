@@ -5,7 +5,9 @@ export const scoreSaber2Badge = {
    imageUrl: 'https://cdn.scoresaber.com/badges/scoresaber-2.gif',
    width: 80,
    height: 30,
-   dismissedStorageKey: 'scoresaber-score-saber-2-badge-dismissed'
+   claimsCloseAt: '2026-06-03T23:59:00-04:00',
+   dismissedStorageKey: 'scoresaber-score-saber-2-badge-dismissed',
+   promoDismissedStorageKey: 'scoresaber-score-saber-2-badge-promo-dismissed'
 };
 
 export function hasScoreSaber2Badge(player: { badges?: readonly { id: number }[] | null } | null | undefined) {

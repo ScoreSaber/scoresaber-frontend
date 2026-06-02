@@ -12,6 +12,7 @@ import { useAuth } from '@/modules/auth';
 import { redeemScoreSaber2Badge } from '@/modules/settings/actions/perks';
 import { scoreSaber2Badge } from '@/modules/settings/perks/score-saber-2-badge';
 import { FadeInImage } from '@/shared/components/fade-in-image';
+import { writeStorageValue } from '@/shared/result/storage';
 
 const playerRoute = getRouteApi('/u/$playerId');
 
@@ -29,7 +30,7 @@ export function ScoreSaber2BadgeRedeemer({ compact = false }: { compact?: boolea
          t('settings.perks.scoreSaber2Badge.redeemedToast'),
          t('settings.perks.scoreSaber2Badge.redeemFailedToast'),
          () => {
-            window.localStorage.setItem(scoreSaber2Badge.dismissedStorageKey, 'true');
+            writeStorageValue(scoreSaber2Badge.dismissedStorageKey, 'true');
             queryClient.invalidateQueries({ queryKey: ['score-saber-2-badge-player', user?.id] });
             if (user) {
                void router.navigate({ to: playerRoute.id, params: { playerId: user.id }, search: { page: 1, sort: 'top' } });
