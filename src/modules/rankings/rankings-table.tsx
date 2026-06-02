@@ -248,7 +248,7 @@ function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, hig
          className={cn(
             'group bg-secondary/40 hover:bg-primary/10 flex cursor-pointer flex-col gap-1.5 rounded-lg border px-3 py-2.5 transition-colors',
             player.inactive && 'opacity-60',
-            isHighlighted && 'bg-primary/40 hover:bg-primary/60'
+            isHighlighted && 'border-primary ring-primary/40 ring-1'
          )}
          onClick={() => router.navigate({ to: playerRoute.id, params: { playerId: player.id }, search: { page: 1, sort: 'top' } })}
          onMouseEnter={() => router.preloadRoute({ to: playerRoute.id, params: { playerId: player.id }, search: { page: 1, sort: 'top' } })}
