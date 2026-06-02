@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type PointerEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import { getRouteApi } from '@tanstack/react-router';
@@ -9,7 +9,7 @@ import { useTranslations } from 'use-intl';
 
 import { PlayerAvatar, usePlayerAvatarSrc } from './player-avatar';
 
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -52,31 +52,44 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
       staleTime: 5 * 60 * 1000
    });
 
-   function handleEnter() {
+   function handlePointerEnter(e: PointerEvent<HTMLDivElement>) {
+      if (e.pointerType !== 'mouse') return;
       delayedClose.cancel();
       delayedOpen.run();
    }
 
-   function handleLeave() {
+   function handlePointerLeave(e: PointerEvent<HTMLDivElement>) {
+      if (e.pointerType !== 'mouse') return;
       delayedOpen.cancel();
       delayedClose.run();
    }
 
+   function handleInteractOutside(e: Event) {
+      if (document.querySelector('[data-slot="dropdown-menu-content"], [data-slot="select-content"], [data-slot="dialog-overlay"]')) {
+         e.preventDefault();
+         return;
+      }
+      setOpen(false);
+   }
+
    return (
       <Popover open={open} onOpenChange={setOpen}>
-         <PopoverTrigger asChild>
-            <div className="min-w-0" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+         <PopoverAnchor asChild>
+            <div className="min-w-0" onPointerEnter={handlePointerEnter} onPointerLeave={handlePointerLeave}>
                {children}
             </div>
-         </PopoverTrigger>
+         </PopoverAnchor>
          <PopoverContent
             side="top"
             align="start"
             className="dark:bg-popover/80 w-80 overflow-hidden p-0 dark:backdrop-blur-xl"
             onMouseEnter={delayedClose.cancel}
-            onMouseLeave={handleLeave}
+            onMouseLeave={() => {
+               delayedOpen.cancel();
+               delayedClose.run();
+            }}
             onOpenAutoFocus={(e) => e.preventDefault()}
-            onInteractOutside={(e) => e.preventDefault()}
+            onInteractOutside={handleInteractOutside}
          >
             {loading && !player ? (
                <div className="flex items-center justify-center py-4">
