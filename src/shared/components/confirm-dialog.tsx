@@ -124,7 +124,7 @@ export function ConfirmDialog({
                   )}
                </div>
                <DialogFooter className="bg-background border-t p-4 sm:p-6">
-                  <Button type="button" variant="secondary" onClick={() => onOpenChangeAction(false)} className="cursor-pointer">
+                  <Button type="button" variant="secondary" onClick={() => onOpenChangeAction(false)}>
                      {t('common.cancel')}
                   </Button>
                   <Button type="submit" variant={variant} disabled={confirmDisabled} className="relative cursor-pointer">

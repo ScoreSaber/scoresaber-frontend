@@ -359,7 +359,7 @@ function MergePreview({
                {confirmMutation.isPending ? <Loader2 data-icon="inline-start" className="animate-spin" /> : <ShieldCheck data-icon="inline-start" />}
                {t('settings.connections.merge.confirmMerge')}
             </Button>
-            <Button type="button" variant="outline" disabled={confirmMutation.isPending} onClick={onCancel} className="cursor-pointer">
+            <Button type="button" variant="outline" disabled={confirmMutation.isPending} onClick={onCancel}>
                {t('common.cancel')}
             </Button>
          </div>

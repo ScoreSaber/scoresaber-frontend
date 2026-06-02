@@ -40,7 +40,6 @@ export function MobileTopBar() {
                   size="icon-sm"
                   onClick={() => setOpen(true)}
                   aria-label={tSidebar('sidebar.openMenu')}
-                  className="cursor-pointer"
                >
                   {user ? (
                      <PlayerAvatar src={user.avatar} playerId={user.id} alt={user.name} width={28} height={28} className="size-7 rounded-full" />

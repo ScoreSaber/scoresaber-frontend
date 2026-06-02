@@ -134,7 +134,7 @@ export function PlayerChartControls() {
                         aria-pressed={isShowingEstimated}
                         onClick={() => setIsShowingEstimated((prev) => !prev)}
                         className={cn(
-                           'size-auto cursor-pointer border p-1.5',
+                           'size-auto border p-1.5',
                            isShowingEstimated
                               ? 'bg-primary/20 text-primary hover:bg-primary/30 border-transparent shadow-xs'
                               : 'border-border/40 bg-card/80 text-muted-foreground/60 hover:bg-card hover:text-muted-foreground backdrop-blur-xs'

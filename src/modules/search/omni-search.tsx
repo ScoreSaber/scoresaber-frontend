@@ -460,7 +460,7 @@ const SearchTrailingControls = memo(function SearchTrailingControls({ onClose }:
    return (
       <>
          <Kbd className="hidden sm:inline-flex">Esc</Kbd>
-         <Button variant="ghost" size="icon-xs" onClick={onClose} className="text-muted-foreground cursor-pointer hover:bg-transparent sm:hidden">
+         <Button variant="ghost" size="icon-xs" onClick={onClose} className="text-muted-foreground hover:bg-transparent sm:hidden">
             <X data-icon className="size-5" />
          </Button>
       </>

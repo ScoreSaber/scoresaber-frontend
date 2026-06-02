@@ -60,7 +60,6 @@ export function ScoreSaber2BadgePrompt() {
                <Button
                   variant="ghost-icon"
                   size="icon-xs"
-                  className="cursor-pointer"
                   onClick={dismiss}
                   aria-label={t('settings.perks.scoreSaber2Badge.dismiss')}
                >

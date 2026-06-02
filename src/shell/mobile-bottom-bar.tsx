@@ -49,7 +49,7 @@ export function MobileBottomBar() {
                         key={item.key}
                         variant="ghost"
                         onClick={() => setSearchOpen(true)}
-                        className="text-muted-foreground flex h-auto cursor-pointer flex-col items-center gap-0.5 px-2 py-1 text-[10px] font-medium"
+                        className="text-muted-foreground flex h-auto flex-col items-center gap-0.5 px-2 py-1 text-[10px] font-medium"
                      >
                         {item.icon}
                         <span>{navLabel(item.shortKey)}</span>

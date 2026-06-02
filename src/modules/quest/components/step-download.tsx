@@ -106,7 +106,7 @@ export function StepDownload({ releases, hasPrereleases, showPrereleases, onTogg
                   pressed={showPrereleases}
                   onPressedChange={onTogglePrereleases}
                   variant="outline"
-                  className="cursor-pointer text-xs"
+                  className="text-xs"
                   aria-label={t('quest.step.3.togglePrereleasesAria')}
                >
                   {t('quest.step.3.togglePrereleases')}

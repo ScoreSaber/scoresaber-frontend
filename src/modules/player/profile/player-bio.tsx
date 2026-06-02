@@ -64,7 +64,7 @@ export function PlayerBio({ sanitizedBio }: PlayerBioProps) {
                   aria-label={expanded ? t('player.collapseBio') : t('player.expandBio')}
                   aria-expanded={expanded}
                   onClick={() => setExpanded((value) => !value)}
-                  className="pointer-events-auto cursor-pointer rounded-full shadow-sm"
+                  className="pointer-events-auto rounded-full shadow-sm"
                >
                   <ChevronDown data-icon className={cn('transition-transform duration-200', expanded && 'rotate-180')} />
                </Button>

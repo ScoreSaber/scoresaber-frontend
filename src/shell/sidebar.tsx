@@ -79,7 +79,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
          <nav className="flex flex-1 flex-col gap-1 overflow-x-hidden overflow-y-auto p-2">
             <Tooltip>
                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" onClick={() => setSearchOpen(true)} className={cn(iconLink, 'w-full cursor-pointer')}>
+                  <Button variant="ghost" size="sm" onClick={() => setSearchOpen(true)} className={cn(iconLink, 'w-full')}>
                      <Search data-icon />
                   </Button>
                </TooltipTrigger>
@@ -170,7 +170,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
             </div>
             <Tooltip>
                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" onClick={onExpand} className={cn(iconLink, 'w-full cursor-pointer')}>
+                  <Button variant="ghost" size="sm" onClick={onExpand} className={cn(iconLink, 'w-full')}>
                      <ChevronRight data-icon />
                   </Button>
                </TooltipTrigger>

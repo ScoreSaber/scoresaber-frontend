@@ -43,7 +43,7 @@ export function PlayerBioEditor({ bio }: PlayerBioEditorProps) {
                variant="ghost"
                size="icon-xs"
                onClick={() => setEditing(true)}
-               className="absolute top-0 right-0 cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
+               className="absolute top-0 right-0 opacity-0 transition-opacity group-hover:opacity-100"
             >
                <FaPen data-icon />
             </Button>

@@ -38,7 +38,7 @@ export function BackgroundDebugPanel({ results, onSwap }: BackgroundDebugPanelPr
          <Button
             size="icon-sm"
             variant="secondary"
-            className="fixed top-4 right-4 z-50 cursor-pointer shadow-lg backdrop-blur"
+            className="fixed top-4 right-4 z-50 shadow-lg backdrop-blur"
             onClick={() => setMinimized(false)}
             aria-label="expand page background debug"
          >
@@ -75,7 +75,7 @@ export function BackgroundDebugPanel({ results, onSwap }: BackgroundDebugPanelPr
       <div className="border-border bg-background/90 fixed top-4 right-4 z-50 flex max-h-[90vh] w-80 cursor-default flex-col overflow-hidden rounded-lg border shadow-lg backdrop-blur">
          <div className="border-border text-muted-foreground flex items-center justify-between gap-2 px-3 py-2 text-xs font-semibold">
             <span>background algo debug ({results.length})</span>
-            <Button size="icon-xs" variant="ghost" onClick={() => setMinimized(true)} aria-label="minimize panel" className="cursor-pointer">
+            <Button size="icon-xs" variant="ghost" onClick={() => setMinimized(true)} aria-label="minimize panel">
                <ChevronUp className="size-3" />
             </Button>
          </div>
