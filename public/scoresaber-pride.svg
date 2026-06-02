@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <defs>
+    <clipPath id="base-shape">
+      <rect x="25" y="9" width="21" height="32"/>
+      <rect x="9" y="4" width="32" height="21"/>
+      <rect x="4" y="9" width="21" height="32"/>
+      <rect x="9" y="25" width="32" height="21"/>
+      <rect x="9" y="9" width="32" height="32"/>
+    </clipPath>
+    <style>
+      .cls-3{fill:#6ccd8f;}
+    </style>
+  </defs>
+  <g fill="#221f1c">
+    <rect x="9" y="40" width="32" height="10"/>
+    <rect x="9" width="32" height="10"/>
+    <rect x="4" y="4" width="10" height="10"/>
+    <rect x="36" y="4" width="10" height="10"/>
+    <rect x="40" y="9" width="10" height="32"/>
+    <rect y="9" width="10" height="32"/>
+    <rect x="38" y="38" width="8" height="8"/>
+    <rect x="4" y="36" width="10" height="10"/>
+  </g>
+  <g clip-path="url(#base-shape)">
+    <g transform="rotate(-45 25 25)">
+      <rect x="-20" y="-5" width="90" height="10.12" fill="#f27483"/>
+      <rect x="-20" y="5" width="90" height="10.12" fill="#f2a45f"/>
+      <rect x="-20" y="15" width="90" height="10.12" fill="#f1db61"/>
+      <rect x="-20" y="25" width="90" height="10.12" fill="#6ccd8f"/>
+      <rect x="-20" y="35" width="90" height="10.12" fill="#65a5e3"/>
+      <rect x="-20" y="45" width="90" height="10.12" fill="#a879d1"/>
+    </g>
+  </g>
+  <g style="opacity:0" id="Aww_Man" data-name="Aww Man">
+    <rect id="Aww_Man-2" data-name="Aww Man" class="cls-3" x="21" y="25" width="8" height="8"/>
+    <rect id="Aww_Man-3" data-name="Aww Man" class="cls-3" x="13" y="13" width="8" height="8"/>
+    <rect id="Aww_Man-4" data-name="Aww Man" class="cls-3" x="29" y="13" width="8" height="8"/>
+    <rect id="Aww_Man-5" data-name="Aww Man" class="cls-3" x="21" y="21" width="8" height="4"/>
+    <rect id="Aww_Man-6" data-name="Aww Man" class="cls-3" x="17" y="25" width="4" height="12"/>
+    <rect id="Aww_Man-7" data-name="Aww Man" class="cls-3" x="29" y="25" width="4" height="12"/>
+  </g>
+  <g>
+    <path d="M17 13H33V18H17ZM13 16H19V21H13ZM31 16H37V21H31ZM17 19H23V24H17ZM27 19H33V24H27ZM21 22H29V27H21Z" fill="#221f1c" fill-opacity=".65"/>
+    <path d="M18 14H32V17H18ZM14 17H18V20H14ZM32 17H36V20H32ZM18 20H22V23H18ZM28 20H32V23H28ZM22 23H28V26H22Z" fill="#fff"/>
+  </g>
+</svg>

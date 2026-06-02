@@ -35,12 +35,7 @@ export function MobileTopBar() {
          >
             <div className="relative flex h-12 items-center px-4">
                {/* left: hamburger or pfp */}
-               <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={() => setOpen(true)}
-                  aria-label={tSidebar('sidebar.openMenu')}
-               >
+               <Button variant="ghost" size="icon-sm" onClick={() => setOpen(true)} aria-label={tSidebar('sidebar.openMenu')}>
                   {user ? (
                      <PlayerAvatar src={user.avatar} playerId={user.id} alt={user.name} width={28} height={28} className="size-7 rounded-full" />
                   ) : (
@@ -50,7 +45,7 @@ export function MobileTopBar() {
 
                {/* center: logo */}
                <homeRoute.Link className="absolute left-1/2 -translate-x-1/2" aria-label="ScoreSaber Home">
-                  <Image src="/scoresaber.svg" width={28} height={28} alt={tSidebar('sidebar.scoreSaberLogoAlt')} priority />
+                  <Image src="/scoresaber-pride.svg" width={28} height={28} alt={tSidebar('sidebar.scoreSaberLogoAlt')} priority />
                </homeRoute.Link>
 
                {/* right spacer */}

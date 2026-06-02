@@ -51,7 +51,7 @@ const SidebarBrand = memo(function SidebarBrand({ alt, onNavigateAction }: { alt
 
    return (
       <homeRoute.Link className="flex min-w-0 shrink-0 items-center gap-2.5" onClick={handleClick}>
-         <Image src="/scoresaber.svg" width={28} height={28} alt={alt} priority className="shrink-0" />
+         <Image src="/scoresaber-pride.svg" width={28} height={28} alt={alt} priority className="shrink-0" />
          <span className="sr-only">ScoreSaber</span>
          <span
             aria-hidden="true"
