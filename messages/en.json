@@ -219,6 +219,8 @@
       "goToPage": "Go to page",
       "by": "by",
       "mappedBy": "mapped by",
+      "unknownDate": "Unknown date",
+      "justNow": "just now",
       "performancePoints": "Performance Points",
       "totalPlays": "Total Plays",
       "actions": "Actions",
