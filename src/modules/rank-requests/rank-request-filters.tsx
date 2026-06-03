@@ -27,7 +27,7 @@ interface RankRequestFiltersProps {
 
 export function RankRequestFilters({ currentPage, totalPages, currentHideDownvoted, search, buildHref, parseSearch }: RankRequestFiltersProps) {
    const t = useTranslations();
-   const { navigate, clearAll } = usePersistedParams({
+   const { navigate, preload, preloadClearAll, cancelPreload, clearAll } = usePersistedParams({
       storageKey: rankRequestFilterPreferences.storageKey,
       search,
       buildHref,
@@ -38,6 +38,7 @@ export function RankRequestFilters({ currentPage, totalPages, currentHideDownvot
    const showPagination = totalPages > 1;
    const hasActiveFilters = Boolean(currentHideDownvoted);
    const getPageHref = (page: number) => buildHref(updateSearchParams(search, { page: page > 1 ? page : undefined }));
+   const hideDownvotedUpdates = { hideDownvoted: currentHideDownvoted ? undefined : true };
 
    return (
       <div className="flex flex-col gap-3">
@@ -49,13 +50,25 @@ export function RankRequestFilters({ currentPage, totalPages, currentHideDownvot
                   className="cursor-pointer"
                   active={currentHideDownvoted}
                   icon={FaEyeSlash}
+                  onMouseEnter={() => preload(hideDownvotedUpdates)}
+                  onFocus={() => preload(hideDownvotedUpdates)}
+                  onMouseLeave={cancelPreload}
+                  onBlur={cancelPreload}
                   onClick={() => navigate({ hideDownvoted: currentHideDownvoted ? undefined : true })}
                >
                   {t('rankRequest.hideDownvoted')}
                </FilterPill>
 
                {hasActiveFilters && (
-                  <FilterPill className="cursor-pointer" icon={FaTimes} onClick={() => clearAll()}>
+                  <FilterPill
+                     className="cursor-pointer"
+                     icon={FaTimes}
+                     onMouseEnter={preloadClearAll}
+                     onFocus={preloadClearAll}
+                     onMouseLeave={cancelPreload}
+                     onBlur={cancelPreload}
+                     onClick={() => clearAll()}
+                  >
                      {t('common.clear')}
                   </FilterPill>
                )}

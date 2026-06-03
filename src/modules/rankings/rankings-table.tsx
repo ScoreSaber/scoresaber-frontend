@@ -22,6 +22,7 @@ import type { CountryRegionFilterValue } from '@/shared/country-region';
 import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
+import { useRouteHrefPreload } from '@/shared/url-state/use-route-href-preload';
 
 const PAGE_SIZE = 50;
 const playerRoute = getRouteApi('/u/$playerId');
@@ -89,9 +90,10 @@ export function RankingsTable({
 }: RankingsTableProps) {
    const router = useRouter();
    const t = useTranslations();
+   const { schedulePreload, cancelPreload } = useRouteHrefPreload();
    const [isPending, startTransition] = useTransition();
 
-   const handleSort = useCallback(
+   const getSortHref = useCallback(
       (field: PlayerControllerGetPlayersSort) => {
          const updates: Partial<RankingsTableSearch> = {};
 
@@ -110,13 +112,16 @@ export function RankingsTable({
             updates.sortDirection = undefined;
          }
 
-         startTransition(() =>
-            router.navigate({
-               href: buildHref(updateSearchParams(search, updates, ['page']))
-            })
-         );
+         return buildHref(updateSearchParams(search, updates, ['page']));
       },
-      [buildHref, search, router, currentSort, currentSortDirection]
+      [buildHref, search, currentSort, currentSortDirection]
+   );
+
+   const handleSort = useCallback(
+      (field: PlayerControllerGetPlayersSort) => {
+         startTransition(() => router.navigate({ href: getSortHref(field) }));
+      },
+      [getSortHref, router]
    );
 
    const isPlayerPivot = currentPivot === 'player';
@@ -140,6 +145,10 @@ export function RankingsTable({
                            key={col.sortField}
                            active={isActive}
                            icon={col.icon}
+                           onMouseEnter={() => schedulePreload(getSortHref(col.sortField))}
+                           onFocus={() => schedulePreload(getSortHref(col.sortField))}
+                           onMouseLeave={cancelPreload}
+                           onBlur={cancelPreload}
                            onClick={() => handleSort(col.sortField)}
                         >
                            {col.sortField === 'totalPP'
@@ -183,6 +192,10 @@ export function RankingsTable({
                                  isPending && !isPlayerPivot && 'pointer-events-none opacity-50'
                               )}
                               onClick={isPlayerPivot ? undefined : () => handleSort(col.sortField)}
+                              onMouseEnter={isPlayerPivot ? undefined : () => schedulePreload(getSortHref(col.sortField))}
+                              onFocus={isPlayerPivot ? undefined : () => schedulePreload(getSortHref(col.sortField))}
+                              onMouseLeave={isPlayerPivot ? undefined : cancelPreload}
+                              onBlur={isPlayerPivot ? undefined : cancelPreload}
                            >
                               <span className="inline-flex items-center gap-1.5">
                                  <col.icon className="size-3" />
@@ -250,8 +263,8 @@ function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, hig
             player.inactive && 'opacity-60',
             isHighlighted && 'border-primary ring-primary/40 ring-1'
          )}
-         onClick={() => router.navigate({ to: playerRoute.id, params: { playerId: player.id }, search: { page: 1, sort: 'top' } })}
-         onMouseEnter={() => router.preloadRoute({ to: playerRoute.id, params: { playerId: player.id }, search: { page: 1, sort: 'top' } })}
+         onClick={() => router.navigate({ to: playerRoute.id, params: { playerId: player.id }, search: { sort: 'top', page: 1 } })}
+         onMouseEnter={() => router.preloadRoute({ to: playerRoute.id, params: { playerId: player.id }, search: { sort: 'top', page: 1 } })}
       >
          <div className="flex items-center gap-2">
             <span className="text-muted-foreground shrink-0 text-sm tabular-nums">

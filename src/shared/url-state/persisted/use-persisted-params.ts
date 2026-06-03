@@ -14,6 +14,7 @@ import {
 } from '@/shared/url-state/persisted/storage';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
+import { useRouteHrefPreload } from '@/shared/url-state/use-route-href-preload';
 
 interface UsePersistedParamsOptions<TSearch extends SearchParamsRecord & { page?: number }> {
    storageKey: string;
@@ -40,6 +41,7 @@ function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number
    resetKeys = ['page']
 }: UsePersistedParamsOptions<TSearch>) {
    const router = useRouter();
+   const { schedulePreload, cancelPreload } = useRouteHrefPreload();
    const [isPending, startTransition] = useTransition();
 
    const persistUrlValues = useCallback(
@@ -75,6 +77,11 @@ function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number
       (updates: Partial<TSearch>, options?: RouteUpdateOptions<TSearch>) => navigate('replace', updates, options),
       [navigate]
    );
+   const preload = useCallback(
+      (updates: Partial<TSearch>, options?: RouteUpdateOptions<TSearch>) => schedulePreload(buildUrl(updates, options)),
+      [buildUrl, schedulePreload]
+   );
+   const preloadClearAll = useCallback(() => schedulePreload(buildHref(undefined)), [buildHref, schedulePreload]);
 
    const clearAll = useCallback(
       (options?: { scroll?: boolean }) => {
@@ -105,6 +112,9 @@ function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number
       buildUrl,
       navigate: push,
       replace,
+      preload,
+      preloadClearAll,
+      cancelPreload,
       clearAll,
       loadStorage: () => loadPersistedSearchStorage(storageKey),
       saveStorage: (updates: Record<string, string | undefined>) => savePersistedSearchStorage(storageKey, updates)

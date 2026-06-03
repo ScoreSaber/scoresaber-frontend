@@ -27,7 +27,7 @@ const QUICK_FILTER_BUTTON_CLASS = 'h-8 w-8 cursor-pointer p-0 sm:p-0';
 export function MapLeaderboardFilters({ currentSearch, search, buildHref, parseSearch }: MapLeaderboardFiltersProps) {
    const tc = useTranslations();
    const { user } = useAuth();
-   const { navigate, saveStorage } = usePersistedParams({
+   const { navigate, preload, cancelPreload, saveStorage } = usePersistedParams({
       storageKey: leaderboardFilterPreferences.storageKey,
       search,
       buildHref,
@@ -44,6 +44,19 @@ export function MapLeaderboardFilters({ currentSearch, search, buildHref, parseS
    const activeFilterCount = (search.scope ? 1 : 0) + (currentSearch ? 1 : 0) + (currentPivot ? 1 : 0);
    const hasActiveFilters = activeFilterCount > 0;
 
+   function preloadHandlers(updates: Partial<LeaderboardSearchParams>) {
+      return {
+         onMouseEnter: () => preload(updates, { scroll: false }),
+         onFocus: () => preload(updates, { scroll: false }),
+         onMouseLeave: cancelPreload,
+         onBlur: cancelPreload
+      };
+   }
+
+   function getGlobalUpdates() {
+      return { pivot: undefined, highlight: undefined, scope: userCountryActive ? undefined : search.scope };
+   }
+
    function navigateSearch(updates: Partial<LeaderboardSearchParams>) {
       navigate(updates, { scroll: false });
    }
@@ -51,23 +64,33 @@ export function MapLeaderboardFilters({ currentSearch, search, buildHref, parseS
    function handleGlobalToggle() {
       if (globalActive) return;
       saveStorage({ active_pivot: undefined, active_scope: undefined });
-      navigateSearch({ pivot: undefined, highlight: undefined, scope: userCountryActive ? undefined : search.scope });
+      navigateSearch(getGlobalUpdates());
+   }
+
+   function getPivotUpdates(pivot: LeaderboardControllerGetLeaderboardScoresByIdPivot) {
+      if (currentPivot !== pivot) return { pivot, highlight: undefined };
+
+      return { pivot: undefined, highlight: undefined };
    }
 
    function handlePivotToggle(pivot: LeaderboardControllerGetLeaderboardScoresByIdPivot) {
       if (currentPivot !== pivot) {
          saveStorage({ active_pivot: pivot });
-         navigateSearch({ pivot, highlight: undefined });
+         navigateSearch(getPivotUpdates(pivot));
          return;
       }
       saveStorage({ active_pivot: undefined });
-      navigateSearch({ pivot: undefined, highlight: undefined });
+      navigateSearch(getPivotUpdates(pivot));
+   }
+
+   function getCountryUpdates() {
+      return { scope: userCountryActive ? undefined : userCountry };
    }
 
    function handleCountryToggle() {
       if (!userCountry) return;
       saveStorage({ active_scope: userCountryActive ? undefined : formatCountryRegionParam(userCountry) });
-      navigateSearch({ scope: userCountryActive ? undefined : userCountry });
+      navigateSearch(getCountryUpdates());
    }
 
    return (
@@ -102,6 +125,7 @@ export function MapLeaderboardFilters({ currentSearch, search, buildHref, parseS
                                  active={globalActive}
                                  icon={FaGlobe}
                                  aria-label={tc('common.global')}
+                                 {...preloadHandlers(getGlobalUpdates())}
                                  onClick={handleGlobalToggle}
                               />
                            </TooltipTrigger>
@@ -114,6 +138,7 @@ export function MapLeaderboardFilters({ currentSearch, search, buildHref, parseS
                                  active={currentPivot === 'player'}
                                  icon={FaUser}
                                  aria-label={tc('common.aroundMe')}
+                                 {...preloadHandlers(getPivotUpdates('player'))}
                                  onClick={() => handlePivotToggle('player')}
                               />
                            </TooltipTrigger>
@@ -126,6 +151,7 @@ export function MapLeaderboardFilters({ currentSearch, search, buildHref, parseS
                                  active={currentPivot === 'friends'}
                                  icon={FaUserFriends}
                                  aria-label={tc('common.friends')}
+                                 {...preloadHandlers(getPivotUpdates('friends'))}
                                  onClick={() => handlePivotToggle('friends')}
                               />
                            </TooltipTrigger>
@@ -138,6 +164,7 @@ export function MapLeaderboardFilters({ currentSearch, search, buildHref, parseS
                                     className={QUICK_FILTER_BUTTON_CLASS}
                                     active={userCountryActive}
                                     aria-label={tc('common.country')}
+                                    {...preloadHandlers(getCountryUpdates())}
                                     onClick={handleCountryToggle}
                                  >
                                     <FadeInImage

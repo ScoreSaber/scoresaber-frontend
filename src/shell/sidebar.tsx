@@ -135,7 +135,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
             {user ? (
                <Tooltip>
                   <TooltipTrigger asChild>
-                     <playerRoute.Link params={{ playerId: user.id }} search={{ page: 1, sort: 'top' }} className={iconLink}>
+                     <playerRoute.Link params={{ playerId: user.id }} search={{ sort: 'top', page: 1 }} className={iconLink}>
                         <PlayerAvatar src={user.avatar} playerId={user.id} alt={user.name} width={24} height={24} className="size-6 rounded-md" />
                      </playerRoute.Link>
                   </TooltipTrigger>

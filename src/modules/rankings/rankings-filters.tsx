@@ -65,7 +65,7 @@ export function RankingsFilters({
    const { user } = useAuth();
    const t = useTranslations();
    const tc = useTranslations();
-   const { navigate, loadStorage, saveStorage } = usePersistedParams({
+   const { navigate, preload, preloadClearAll, cancelPreload, loadStorage, saveStorage } = usePersistedParams({
       storageKey: rankingFilterPreferences.storageKey,
       search,
       buildHref,
@@ -87,26 +87,43 @@ export function RankingsFilters({
    const isPlayerPivot = currentPivot === 'player';
    const showPagination = totalPages > 1 && !isPlayerPivot;
 
+   function preloadHandlers(updates: Partial<RankingsFiltersSearch>) {
+      return {
+         onMouseEnter: () => preload(updates),
+         onFocus: () => preload(updates),
+         onMouseLeave: cancelPreload,
+         onBlur: cancelPreload
+      };
+   }
+
+   function getGlobalUpdates() {
+      return { pivot: undefined, highlight: undefined, countries: userCountryActive ? undefined : currentCountries };
+   }
+
    function handleGlobalToggle() {
       if (globalActive) return;
       removeStorageValue(rankingFilterPreferences.pivotStorageKey);
-      navigate({ pivot: undefined, highlight: undefined, countries: userCountryActive ? undefined : currentCountries });
+      navigate(getGlobalUpdates());
+   }
+
+   function getPivotUpdates(pivot: PlayerControllerGetPlayersPivot) {
+      if (currentPivot === pivot) return { pivot: undefined, highlight: undefined };
+
+      return { pivot, highlight: pivot === 'player' && user ? user.id : undefined };
    }
 
    function handlePivotToggle(pivot: PlayerControllerGetPlayersPivot) {
-      if (currentPivot === pivot) {
-         removeStorageValue(rankingFilterPreferences.pivotStorageKey);
-         navigate({ pivot: undefined, highlight: undefined });
-      } else {
-         removeStorageValue(rankingFilterPreferences.pivotStorageKey);
-         // highlight current player when using "around me"
-         navigate({ pivot, highlight: pivot === 'player' && user ? user.id : undefined });
-      }
+      removeStorageValue(rankingFilterPreferences.pivotStorageKey);
+      navigate(getPivotUpdates(pivot));
+   }
+
+   function getCountryUpdates() {
+      return { countries: userCountryActive ? undefined : userCountry };
    }
 
    function handleCountryToggle() {
       if (!userCountry) return;
-      navigate({ countries: userCountryActive ? undefined : userCountry });
+      navigate(getCountryUpdates());
    }
 
    const activeFilterCount =
@@ -193,6 +210,7 @@ export function RankingsFilters({
                                  active={globalActive}
                                  icon={FaGlobe}
                                  aria-label={tc('common.global')}
+                                 {...preloadHandlers(getGlobalUpdates())}
                                  onClick={handleGlobalToggle}
                               />
                            </TooltipTrigger>
@@ -205,6 +223,7 @@ export function RankingsFilters({
                                  active={isPlayerPivot}
                                  icon={FaUser}
                                  aria-label={tc('common.aroundMe')}
+                                 {...preloadHandlers(getPivotUpdates('player'))}
                                  onClick={() => handlePivotToggle('player')}
                               />
                            </TooltipTrigger>
@@ -217,6 +236,7 @@ export function RankingsFilters({
                                  active={currentPivot === 'friends'}
                                  icon={FaUserFriends}
                                  aria-label={tc('common.friends')}
+                                 {...preloadHandlers(getPivotUpdates('friends'))}
                                  onClick={() => handlePivotToggle('friends')}
                               />
                            </TooltipTrigger>
@@ -229,6 +249,7 @@ export function RankingsFilters({
                                     className={QUICK_FILTER_BUTTON_CLASS}
                                     active={userCountryActive}
                                     aria-label={tc('common.country')}
+                                    {...preloadHandlers(getCountryUpdates())}
                                     onClick={handleCountryToggle}
                                  >
                                     <FadeInImage
@@ -253,6 +274,7 @@ export function RankingsFilters({
                      <FilterPill
                         className="cursor-pointer"
                         active={includeInactive}
+                        {...preloadHandlers({ includeInactive: includeInactive ? undefined : 'true' })}
                         onClick={() => navigate({ includeInactive: includeInactive ? undefined : 'true' })}
                      >
                         {tc('common.includeInactive')}
@@ -263,7 +285,15 @@ export function RankingsFilters({
 
                      {/* clear */}
                      {hasActiveFilters && (
-                        <FilterPill className="cursor-pointer" icon={FaTimes} onClick={handleClearAll}>
+                        <FilterPill
+                           className="cursor-pointer"
+                           icon={FaTimes}
+                           onMouseEnter={preloadClearAll}
+                           onFocus={preloadClearAll}
+                           onMouseLeave={cancelPreload}
+                           onBlur={cancelPreload}
+                           onClick={handleClearAll}
+                        >
                            {tc('common.clear')}
                         </FilterPill>
                      )}

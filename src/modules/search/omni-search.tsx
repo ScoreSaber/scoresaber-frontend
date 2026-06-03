@@ -198,7 +198,7 @@ function OmniSearchBody() {
    const navigateToPlayer = useCallback(
       (playerId: string) => {
          setOpen(false);
-         void router.navigate({ to: playerRoute.id, params: { playerId }, search: { page: 1, sort: 'top' } });
+         void router.navigate({ to: playerRoute.id, params: { playerId }, search: { sort: 'top', page: 1 } });
       },
       [setOpen, router]
    );

@@ -85,6 +85,7 @@ export function MapLeaderboardRouteContent({
          <SetPageBackground src={mapInfo.coverUrl} />
          <div className="app-container relative z-10 p-4 md:p-8">
             <MapLeaderboardView
+               routeName={input.routeName}
                mapInfo={mapInfo}
                leaderboardInfo={leaderboardInfo}
                leaderboardScores={leaderboardScores}
@@ -157,17 +158,20 @@ async function loadMapLeaderboardPageData({
    const mapInfo = mapResult.data;
    const activeLeaderboardId = leaderboardId ?? getDefaultMapLeaderboardId(mapInfo, searchParams.tab);
 
+   const shouldLoadScores = searchParams.tab !== 'rank-request' || mapInfo.rankRequest == null;
    const [leaderboardInfoResult, leaderboardScores] = await Promise.all([
       pageApiData(api.leaderboard.leaderboardControllerGetLeaderboardById({ id: activeLeaderboardId })),
-      optionalApiData(
-         api.leaderboard.leaderboardControllerGetLeaderboardScoresById({
-            id: activeLeaderboardId,
-            page,
-            search: searchParams.search,
-            scope: formatCountryRegionParam(searchParams.scope),
-            pivot: searchParams.pivot
-         })
-      )
+      shouldLoadScores
+         ? optionalApiData(
+              api.leaderboard.leaderboardControllerGetLeaderboardScoresById({
+                 id: activeLeaderboardId,
+                 page,
+                 search: searchParams.search,
+                 scope: formatCountryRegionParam(searchParams.scope),
+                 pivot: searchParams.pivot
+              })
+           )
+         : null
    ]);
 
    if (!leaderboardInfoResult.ok) return leaderboardInfoResult;

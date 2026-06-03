@@ -1,12 +1,13 @@
 'use client';
 
-import { type MouseEvent, type ReactNode, useState } from 'react';
+import { type ReactNode } from 'react';
 
+import { getRouteApi } from '@tanstack/react-router';
 import { FaCheck, FaExchangeAlt, FaHourglassHalf, FaTimes, FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
 import { MapLeaderboardFilters } from './map-leaderboard-filters';
-import type { LeaderboardScores, MapLeaderboardTab, RankRequest } from './map-leaderboard-view-types';
+import type { LeaderboardScores, MapLeaderboardRouteName, MapLeaderboardTab, RankRequest } from './map-leaderboard-view-types';
 import { MapRankRequestDetails } from './map-rank-request-details';
 
 import { Button } from '@/components/ui/button';
@@ -37,8 +38,12 @@ const rankRequestStatusIcon: Record<RankRequestStatus, { icon: typeof FaCheck; c
 const tabLinkClass =
    '!h-7 w-8 cursor-pointer gap-1.5 border px-0 text-xs shadow-none md:!h-auto md:w-auto md:px-2.5 md:py-1.5 data-[state=active]:pointer-events-none data-[state=active]:border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:border-border data-[state=inactive]:bg-secondary/35 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-secondary/60 data-[state=inactive]:hover:text-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground';
 
+const mapRoute = getRouteApi('/map/$id');
+const mapDifficultyRoute = getRouteApi('/map/$id/difficulty/$leaderboardId');
+
 export function MapLeaderboardContent({
    mapInfo,
+   routeName,
    leaderboardInfo,
    leaderboardScores,
    search,
@@ -46,7 +51,7 @@ export function MapLeaderboardContent({
    currentSearch,
    highlight,
    rankRequest,
-   activeTab: initialTab,
+   activeTab,
    activeGameMode,
    hasMultipleGameModes,
    userPermissions,
@@ -56,23 +61,14 @@ export function MapLeaderboardContent({
 }: MapLeaderboardContentProps) {
    const t = useTranslations();
    const tRR = useTranslations();
-   const [activeTab, setActiveTab] = useState(initialTab);
    const isUnrank = rankRequest?.requestType === 'UNRANK';
 
-   function getTabHref(tab: MapLeaderboardTab) {
-      return buildHref(
+   function getTabSearch(tab: MapLeaderboardTab) {
+      return parseSearch(
          updateSearchParams(search, {
             tab: tab === 'rank-request' ? 'rank-request' : undefined
          })
       );
-   }
-
-   function handleTabClick(event: MouseEvent<HTMLAnchorElement>, nextTab: MapLeaderboardTab) {
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-
-      event.preventDefault();
-      setActiveTab(nextTab);
-      window.history.replaceState(null, '', getTabHref(nextTab));
    }
 
    if (!rankRequest) {
@@ -123,19 +119,23 @@ export function MapLeaderboardContent({
             <Separator orientation="vertical" variant="gradient" size="toolbar" className="hidden md:order-2 md:block" />
             <div className="text-muted-foreground flex w-fit shrink-0 flex-wrap items-center gap-1.5 bg-transparent md:order-3 md:w-auto md:justify-start">
                <MapTabLink
-                  href={getTabHref('leaderboard')}
+                  routeName={routeName}
+                  mapId={mapInfo.id}
+                  leaderboardId={leaderboardInfo.id}
+                  search={getTabSearch('leaderboard')}
                   active={activeTab === 'leaderboard'}
                   ariaLabel={t('map.leaderboard')}
-                  onClick={(event) => handleTabClick(event, 'leaderboard')}
                >
                   <FaTrophy className="size-2.5" />
                   <span className="hidden md:inline">{t('map.leaderboard')}</span>
                </MapTabLink>
                <MapTabLink
-                  href={getTabHref('rank-request')}
+                  routeName={routeName}
+                  mapId={mapInfo.id}
+                  leaderboardId={leaderboardInfo.id}
+                  search={getTabSearch('rank-request')}
                   active={activeTab === 'rank-request'}
                   ariaLabel={isUnrank ? tRR('rankRequest.unrankRequest') : t('map.rankRequest')}
-                  onClick={(event) => handleTabClick(event, 'rank-request')}
                   className={isUnrank ? 'data-[state=active]:text-destructive' : undefined}
                >
                   <RankRequestStatusIcon status={rankRequestTabStatus} />
@@ -177,25 +177,47 @@ export function MapLeaderboardContent({
 }
 
 function MapTabLink({
-   href,
+   routeName,
+   mapId,
+   leaderboardId,
+   search,
    active,
    ariaLabel,
-   onClick,
    className,
    children
 }: {
-   href: string;
+   routeName: MapLeaderboardRouteName;
+   mapId: number;
+   leaderboardId: number;
+   search: LeaderboardSearchParams | null;
    active: boolean;
    ariaLabel: string;
-   onClick: (event: MouseEvent<HTMLAnchorElement>) => void;
    className?: string;
    children: ReactNode;
 }) {
    return (
       <Button asChild variant="filter" size="filter" data-state={active ? 'active' : 'inactive'} className={cn(tabLinkClass, className)}>
-         <a href={href} aria-label={ariaLabel} aria-current={active ? 'page' : undefined} onClick={onClick} data-route-top-loader-skip>
-            {children}
-         </a>
+         {routeName === 'map' ? (
+            <mapRoute.Link
+               params={{ id: mapId }}
+               search={search ?? { page: 1 }}
+               resetScroll={false}
+               aria-label={ariaLabel}
+               aria-current={active ? 'page' : undefined}
+            >
+               {children}
+            </mapRoute.Link>
+         ) : (
+            <mapDifficultyRoute.Link
+               params={{ id: mapId, leaderboardId }}
+               search={search ?? { page: 1 }}
+               resetScroll={false}
+               aria-label={ariaLabel}
+               aria-current={active ? 'page' : undefined}
+            >
+               {children}
+            </mapDifficultyRoute.Link>
+         )}
       </Button>
    );
 }
@@ -318,6 +340,7 @@ function ScoresList({
 
 interface MapLeaderboardContentProps {
    mapInfo: MapControllerGetMapByIdResponse;
+   routeName: MapLeaderboardRouteName;
    leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
    leaderboardScores: LeaderboardScores;
    search: LeaderboardSearchParams;

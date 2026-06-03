@@ -1,10 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, getRouteApi } from '@tanstack/react-router';
 import { useTranslations } from 'use-intl';
 
 import { Card } from '@/components/ui/card';
 
 import { cn } from '@/shared/format/helpers';
 import { buildSeoHead } from '@/shared/seo/metadata';
+
+const privacyRoute = getRouteApi('/legal/privacy');
 
 function BrowserStoragePolicyPage() {
    const t = useTranslations('legal.cookies');
@@ -34,7 +36,7 @@ function BrowserStoragePolicyPage() {
                   This Cookies Policy explains how ScoreSaber uses cookies, local storage, session storage, and similar browser storage on ScoreSaber
                   websites and related web services, including ScoreSaber Hub, ScoreSaber Wiki, and ScoreSaber Cloud at{' '}
                   <a href="https://cloud.scoresaber.com/">cloud.scoresaber.com</a>. It should be read with our{' '}
-                  <a href="/legal/privacy">Privacy Policy</a>.
+                  <privacyRoute.Link>Privacy Policy</privacyRoute.Link>.
                </p>
                <p>
                   Cookies are small files stored by your browser. Local storage and session storage are browser storage areas that a website can read

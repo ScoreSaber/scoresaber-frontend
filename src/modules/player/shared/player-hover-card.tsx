@@ -147,7 +147,7 @@ function HoverCardContent({ player, onClose }: { player: PlayerControllerGetPlay
    const nameEl = (
       <playerRoute.Link
          params={{ playerId: player.id }}
-         search={{ page: 1, sort: 'top' }}
+         search={{ sort: 'top', page: 1 }}
          className="group/hovername min-w-0 text-sm font-semibold"
          onClick={onClose}
       >
@@ -265,7 +265,7 @@ function HoverCardContent({ player, onClose }: { player: PlayerControllerGetPlay
                      {visibleBadgeCount < badges.length && (
                         <playerRoute.Link
                            params={{ playerId: player.id }}
-                           search={{ page: 1, sort: 'top' }}
+                           search={{ sort: 'top', page: 1 }}
                            className="text-muted-foreground hover:text-foreground shrink-0 text-xs font-medium transition-colors"
                            onClick={onClose}
                         >

@@ -49,7 +49,7 @@ export function PlayerLink({ player, outLink, className, withPFP, variant = 'lin
       <playerRoute.Link
          className="group/link text-foreground flex items-center overflow-hidden font-semibold"
          params={{ playerId: player.id }}
-         search={{ page: 1, sort: 'top' }}
+         search={{ sort: 'top', page: 1 }}
       >
          <CountryImage country={player.country} className="shrink-0" />
          <PlayerHoverCard playerId={player.id}>

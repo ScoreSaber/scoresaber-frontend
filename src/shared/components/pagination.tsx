@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Icons } from '@/shared/components/icons';
 import { generateNavigationOptions } from '@/shared/components/pagination-options';
 import { cn, formatNumber } from '@/shared/format/helpers';
+import { useRouteHrefPreload } from '@/shared/url-state/use-route-href-preload';
 
 type PaginationProps = {
    totalItems: number;
@@ -27,6 +28,7 @@ type PaginationProps = {
 
 export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll = true, getPageHref: getBasePageHref }: PaginationProps) {
    const router = useRouter();
+   const { schedulePreload, preloadNow, cancelPreload } = useRouteHrefPreload();
    const getPageHref = useCallback(
       (page: number) => {
          const path = getBasePageHref(page);
@@ -87,7 +89,17 @@ export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll =
             }
 
             return (
-               <a key={key} href={href} onClick={handleClick} className={disabled ? 'pointer-events-none' : ''}>
+               <a
+                  key={key}
+                  href={href}
+                  onClick={handleClick}
+                  onMouseEnter={() => !disabled && schedulePreload(href)}
+                  onFocus={() => !disabled && schedulePreload(href)}
+                  onMouseLeave={cancelPreload}
+                  onBlur={cancelPreload}
+                  onTouchStart={() => !disabled && preloadNow(href)}
+                  className={disabled ? 'pointer-events-none' : ''}
+               >
                   <Button
                      disabled={disabled}
                      variant="secondary"
@@ -104,6 +116,7 @@ export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll =
 
 export function PaginationArrow({ direction, page, disabled, getPageHref }: PaginationArrowProps) {
    const router = useRouter();
+   const { schedulePreload, preloadNow, cancelPreload } = useRouteHrefPreload();
    const [pendingHref, setPendingHref] = useState<string | null>(null);
    const href = getPageHref(page);
    const Icon = direction === 'left' ? FaArrowLeft : FaArrowRight;
@@ -131,6 +144,11 @@ export function PaginationArrow({ direction, page, disabled, getPageHref }: Pagi
             setPendingHref(href);
             void router.navigate({ href, resetScroll: true });
          }}
+         onMouseEnter={() => schedulePreload(href)}
+         onFocus={() => schedulePreload(href)}
+         onMouseLeave={cancelPreload}
+         onBlur={cancelPreload}
+         onTouchStart={() => preloadNow(href)}
          className={loading ? 'pointer-events-none' : ''}
       >
          <Button variant="secondary" size="icon" className="cursor-pointer">

@@ -21,6 +21,27 @@ export function MapGameModeSelection({ mapInfo, activeGameMode, linkSearchParams
    const t = useTranslations();
    const router = useRouter();
    const gameModes = getAvailableGameModes(mapInfo.leaderboards);
+   const linkSearch = { ...linkSearchParams, page: linkSearchParams?.page ?? 1 };
+
+   function getModeLeaderboardId(mode: string) {
+      return getDefaultLeaderboardId(mapInfo.leaderboards, mode);
+   }
+
+   function preloadGameMode(mode: string) {
+      void router.preloadRoute({
+         to: '/map/$id/difficulty/$leaderboardId',
+         params: { id: mapInfo.id, leaderboardId: getModeLeaderboardId(mode) },
+         search: linkSearch
+      });
+   }
+
+   function handleOpenChange(open: boolean) {
+      if (!open) return;
+
+      for (const mode of gameModes) {
+         if (mode !== activeGameMode) preloadGameMode(mode);
+      }
+   }
 
    if (gameModes.length <= 1) {
       return null;
@@ -29,11 +50,12 @@ export function MapGameModeSelection({ mapInfo, activeGameMode, linkSearchParams
    return (
       <Select
          value={activeGameMode}
+         onOpenChange={handleOpenChange}
          onValueChange={(mode) =>
             router.navigate({
                to: '/map/$id/difficulty/$leaderboardId',
-               params: { id: mapInfo.id, leaderboardId: getDefaultLeaderboardId(mapInfo.leaderboards, mode) },
-               search: { ...linkSearchParams, page: linkSearchParams?.page ?? 1 }
+               params: { id: mapInfo.id, leaderboardId: getModeLeaderboardId(mode) },
+               search: linkSearch
             })
          }
       >
@@ -44,7 +66,13 @@ export function MapGameModeSelection({ mapInfo, activeGameMode, linkSearchParams
             <SelectGroup>
                <SelectLabel>{t('map.gameMode')}</SelectLabel>
                {gameModes.map((mode) => (
-                  <SelectItem key={mode} value={mode} className="cursor-pointer">
+                  <SelectItem
+                     key={mode}
+                     value={mode}
+                     onPointerMove={() => mode !== activeGameMode && preloadGameMode(mode)}
+                     onFocus={() => mode !== activeGameMode && preloadGameMode(mode)}
+                     className="cursor-pointer"
+                  >
                      {getGameModeLabel(mode)}
                   </SelectItem>
                ))}

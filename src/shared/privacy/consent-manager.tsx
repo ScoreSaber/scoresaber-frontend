@@ -5,9 +5,13 @@ import '@c15t/react/styles.css';
 import { type ReactNode, useMemo } from 'react';
 
 import { ConsentBanner, ConsentButton, ConsentDialog, ConsentManagerProvider, type Theme, type Translations } from '@c15t/react';
+import { getRouteApi } from '@tanstack/react-router';
 import { useLocale, useTranslations } from 'use-intl';
 
 import { consentStorageKey } from '@/shared/privacy/consent-storage';
+
+const privacyRoute = getRouteApi('/legal/privacy');
+const cookiesPolicyRoute = getRouteApi('/legal/cookies-policy');
 
 const consentColors = {
    primary: 'var(--primary)',
@@ -107,9 +111,9 @@ function ConsentDescription({ description, privacyPolicy, cookiePolicy }: { desc
       <>
          {description}
          <span>
-            <a href="/legal/privacy">{privacyPolicy}</a>
+            <privacyRoute.Link>{privacyPolicy}</privacyRoute.Link>
             <span aria-hidden="true">·</span>
-            <a href="/legal/cookies-policy">{cookiePolicy}</a>
+            <cookiesPolicyRoute.Link>{cookiePolicy}</cookiesPolicyRoute.Link>
          </span>
       </>
    );

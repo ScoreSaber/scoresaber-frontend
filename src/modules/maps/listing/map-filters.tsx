@@ -82,7 +82,7 @@ type MapsFilterSearch = SearchParamsRecord & {
 
 export function MapFilters({ currentPage, totalPages, search, buildHref, parseSearch, initialFiltersOpen }: MapFiltersProps) {
    const t = useTranslations();
-   const { navigate, clearAll, loadStorage, saveStorage } = usePersistedParams({
+   const { navigate, preload, preloadClearAll, cancelPreload, clearAll, loadStorage, saveStorage } = usePersistedParams({
       storageKey: mapFilterPreferences.storageKey,
       search,
       buildHref,
@@ -123,17 +123,32 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
       navigate(updates);
    }, 300);
 
+   function preloadHandlers(updates: Partial<MapsFilterSearch>) {
+      return {
+         onMouseEnter: () => preload(updates),
+         onFocus: () => preload(updates),
+         onMouseLeave: cancelPreload,
+         onBlur: cancelPreload
+      };
+   }
+
    useEffect(() => {
       setPendingStarRange(null);
    }, [currentMinStars, currentMaxStars]);
 
-   function handleStatusToggle(status: MapControllerGetMapListingsStatus) {
+   function getStatusUpdates(status: MapControllerGetMapListingsStatus) {
       const next = new Set(activeStatuses);
       if (next.has(status)) next.delete(status);
       else next.add(status);
       const value = next.size > 0 ? [...next].join(',') : undefined;
-      saveStorage({ status: value });
-      navigate({ status: value });
+
+      return { status: value };
+   }
+
+   function handleStatusToggle(status: MapControllerGetMapListingsStatus) {
+      const updates = getStatusUpdates(status);
+      saveStorage({ status: updates.status });
+      navigate(updates);
    }
 
    function handleStarSliderChange(values: number[]) {
@@ -142,37 +157,43 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
       debouncedStarNavigation.run(min, max);
    }
 
-   function handleSortChange(sortBy: MapControllerGetMapListingsSortBy) {
+   function getSortUpdates(sortBy: MapControllerGetMapListingsSortBy) {
       if (sortBy === currentSortBy) {
-         navigate({ sortDirection: currentSortDirection === 'desc' ? 'asc' : 'desc' });
-         return;
+         return { sortDirection: currentSortDirection === 'desc' ? 'asc' : 'desc' };
       }
       const enteringRankedSort = RANKED_SORTS.has(sortBy);
-      // save pre-ranked sort when first entering ranked mode
-      if (enteringRankedSort && !isRankedMode) {
-         saveStorage({ sortBy: currentSortBy });
-      }
       if (enteringRankedSort) {
-         navigate({ sortBy, sortDirection: 'desc', status: 'RANKED' });
-         return;
+         return { sortBy, sortDirection: 'desc', status: 'RANKED' };
       }
-      // switching to a non-ranked sort, exit ranked mode only if min stars is also 0
       if (isRankedMode && currentMinStars <= DEFAULT_MIN_STARS) {
-         navigate({ sortBy, sortDirection: 'desc', status: loadStorage().status });
-         return;
+         return { sortBy, sortDirection: 'desc', status: loadStorage().status };
       }
-      navigate({ sortBy, sortDirection: 'desc' });
+
+      return { sortBy, sortDirection: 'desc' };
    }
 
-   function handleRankedEscape() {
+   function handleSortChange(sortBy: MapControllerGetMapListingsSortBy) {
+      const enteringRankedSort = RANKED_SORTS.has(sortBy);
+      // save pre-ranked sort when first entering ranked mode
+      if (sortBy !== currentSortBy && enteringRankedSort && !isRankedMode) {
+         saveStorage({ sortBy: currentSortBy });
+      }
+      navigate(getSortUpdates(sortBy));
+   }
+
+   function getRankedEscapeUpdates() {
       const stored = loadStorage();
       const restoredSort = isMapSortBy(stored.sortBy) ? stored.sortBy : undefined;
-      navigate({
+      return {
          sortBy: restoredSort && restoredSort !== 'trending' ? restoredSort : undefined,
          sortDirection: undefined,
          minStars: undefined,
          status: stored.status
-      });
+      };
+   }
+
+   function handleRankedEscape() {
+      navigate(getRankedEscapeUpdates());
    }
 
    const activeFilterCount =
@@ -241,6 +262,7 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
                   {STATUS_OPTIONS.map(({ value, icon }) => {
                      const isRankedButton = value === 'RANKED';
                      const active = isRankedMode && isRankedButton ? true : activeStatuses.has(value);
+                     const preloadUpdates = isRankedMode ? (isRankedButton ? getRankedEscapeUpdates() : null) : getStatusUpdates(value);
                      return (
                         <FilterPill
                            className="cursor-pointer"
@@ -248,6 +270,7 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
                            active={active}
                            icon={icon}
                            disabled={isRankedMode && !isRankedButton}
+                           {...(preloadUpdates ? preloadHandlers(preloadUpdates) : {})}
                            onClick={() => {
                               if (isRankedMode && isRankedButton) handleRankedEscape();
                               else if (!isRankedMode) handleStatusToggle(value);
@@ -267,6 +290,7 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
                      className="cursor-pointer"
                      active={currentVerified === 'true'}
                      icon={FaCheckCircle}
+                     {...preloadHandlers({ verified: currentVerified === 'true' ? 'false' : undefined })}
                      onClick={() => navigate({ verified: currentVerified === 'true' ? 'false' : undefined })}
                   >
                      {t('map.statusVerified')}
@@ -279,7 +303,13 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
                      {SORT_OPTIONS.map(({ value }) => {
                         const isActive = currentSortBy === value;
                         return (
-                           <FilterPill className="cursor-pointer" key={value} active={isActive} onClick={() => handleSortChange(value)}>
+                           <FilterPill
+                              className="cursor-pointer"
+                              key={value}
+                              active={isActive}
+                              {...preloadHandlers(getSortUpdates(value))}
+                              onClick={() => handleSortChange(value)}
+                           >
                               {value === 'trending'
                                  ? t('map.sortTrending')
                                  : value === 'createdAt'
@@ -316,7 +346,15 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
 
                   {/* clear */}
                   {hasActiveFilters && (
-                     <FilterPill className="cursor-pointer" icon={FaTimes} onClick={() => clearAll()}>
+                     <FilterPill
+                        className="cursor-pointer"
+                        icon={FaTimes}
+                        onMouseEnter={preloadClearAll}
+                        onFocus={preloadClearAll}
+                        onMouseLeave={cancelPreload}
+                        onBlur={cancelPreload}
+                        onClick={() => clearAll()}
+                     >
                         {t('common.clear')}
                      </FilterPill>
                   )}

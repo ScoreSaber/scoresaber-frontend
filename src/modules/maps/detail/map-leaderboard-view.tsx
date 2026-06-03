@@ -10,6 +10,7 @@ import { isLeaderboardRanked } from '@/shared/format/styling';
 import Permissions from '@/shared/permissions';
 
 export function MapLeaderboardView({
+   routeName,
    mapInfo,
    leaderboardInfo,
    leaderboardScores,
@@ -63,6 +64,7 @@ export function MapLeaderboardView({
          <div className="flex flex-col gap-3">
             <MapLeaderboardContent
                mapInfo={mapInfo}
+               routeName={routeName}
                leaderboardInfo={leaderboardInfo}
                leaderboardScores={leaderboardScores}
                search={search}

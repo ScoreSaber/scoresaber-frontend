@@ -33,7 +33,7 @@ export function ScoreSaber2BadgeRedeemer({ compact = false }: { compact?: boolea
             writeStorageValue(scoreSaber2Badge.dismissedStorageKey, 'true');
             queryClient.invalidateQueries({ queryKey: ['score-saber-2-badge-player', user?.id] });
             if (user) {
-               void router.navigate({ to: playerRoute.id, params: { playerId: user.id }, search: { page: 1, sort: 'top' } });
+               void router.navigate({ to: playerRoute.id, params: { playerId: user.id }, search: { sort: 'top', page: 1 } });
             }
          }
       );

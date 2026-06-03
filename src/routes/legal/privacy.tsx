@@ -1,10 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, getRouteApi } from '@tanstack/react-router';
 import { useTranslations } from 'use-intl';
 
 import { Card } from '@/components/ui/card';
 
 import { cn } from '@/shared/format/helpers';
 import { buildSeoHead } from '@/shared/seo/metadata';
+
+const cookiesPolicyRoute = getRouteApi('/legal/cookies-policy');
 
 function PrivacyPolicyPage() {
    const t = useTranslations('legal.privacy');
@@ -185,8 +187,8 @@ function PrivacyPolicyPage() {
                <h2>Cookies, storage, and analytics</h2>
                <p>
                   We use cookies and local storage for sign-in, OAuth security, rate limiting, language, theme, saved filters, cloud.scoresaber.com
-                  file access, and similar functions. Our <a href="/legal/cookies-policy">Cookies Policy</a> explains the main browser storage used by
-                  ScoreSaber services.
+                  file access, and similar functions. Our <cookiesPolicyRoute.Link>Cookies Policy</cookiesPolicyRoute.Link> explains the main browser
+                  storage used by ScoreSaber services.
                </p>
                <p>
                   We use Cloudflare Web Analytics for aggregate traffic and performance metrics, including page load and Core Web Vitals reporting.

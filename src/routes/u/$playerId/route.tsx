@@ -31,14 +31,14 @@ const playerParamsSchema = z.object({
 });
 
 const playerSearchSchema = z.object({
-   page: isPageNumber,
    sort: ScoreEnum.default('top'),
+   page: isPageNumber,
    search: z.string().min(3).max(64).optional()
 });
 
 type PlayerProfileSearch = SearchParamsRecord & {
-   page: number;
    sort: PlayerControllerGetPlayerScoresSort;
+   page: number;
    search?: string;
 };
 
@@ -246,7 +246,7 @@ function PlayerScoresSection({
    parseSearch: ParsePlayerSearch;
 }) {
    const t = useTranslations();
-   const currentSearch: PlayerProfileSearch = { page, sort, search };
+   const currentSearch: PlayerProfileSearch = { sort, page, search };
    const buildHref = (nextSearch?: Partial<PlayerProfileSearch>) => buildPlayerHref(playerId, nextSearch);
    const getPageHref = (nextPage: number) => buildHref(updateSearchParams(currentSearch, { page: nextPage > 1 ? nextPage : undefined }));
 

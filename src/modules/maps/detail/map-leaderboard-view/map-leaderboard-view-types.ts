@@ -15,6 +15,7 @@ type LeaderboardScores = {
 } | null;
 
 type MapLeaderboardTab = 'leaderboard' | 'rank-request';
+type MapLeaderboardRouteName = 'map' | 'mapDifficulty';
 
 type LeaderboardSearchParams = SearchParamsRecord & {
    page?: number;
@@ -26,6 +27,7 @@ type LeaderboardSearchParams = SearchParamsRecord & {
 };
 
 interface MapLeaderboardViewProps {
+   routeName: MapLeaderboardRouteName;
    mapInfo: MapControllerGetMapByIdResponse;
    leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
    leaderboardScores: LeaderboardScores;
@@ -39,4 +41,4 @@ interface MapLeaderboardViewProps {
    parseSearch: (search: SearchParamsRecord) => LeaderboardSearchParams | null;
 }
 
-export type { LeaderboardScores, LeaderboardSearchParams, MapLeaderboardTab, MapLeaderboardViewProps, RankRequest };
+export type { LeaderboardScores, LeaderboardSearchParams, MapLeaderboardRouteName, MapLeaderboardTab, MapLeaderboardViewProps, RankRequest };

@@ -276,7 +276,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                      <div className="flex min-w-0 items-center gap-2">
                         <playerRoute.Link
                            params={{ playerId: user.id }}
-                           search={{ page: 1, sort: 'top' }}
+                           search={{ sort: 'top', page: 1 }}
                            onClick={onNavigateAction}
                            className="shrink-0 translate-y-1 self-center"
                         >
@@ -292,7 +292,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                         <div className="min-w-0 flex-1">
                            <playerRoute.Link
                               params={{ playerId: user.id }}
-                              search={{ page: 1, sort: 'top' }}
+                              search={{ sort: 'top', page: 1 }}
                               onClick={onNavigateAction}
                               className="text-foreground block min-w-0 overflow-hidden"
                            >

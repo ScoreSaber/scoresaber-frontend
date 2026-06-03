@@ -33,7 +33,7 @@ export function PlayerScoresToolbar({
 }) {
    const t = useTranslations();
    const tc = useTranslations();
-   const { navigate } = usePersistedParams({
+   const { navigate, preload, cancelPreload } = usePersistedParams({
       storageKey: 'player-scores-toolbar',
       search,
       buildHref,
@@ -62,6 +62,10 @@ export function PlayerScoresToolbar({
          <div className="flex gap-2">
             <Button
                disabled={loading}
+               onMouseEnter={() => preload({ sort: 'top' }, { scroll: false })}
+               onFocus={() => preload({ sort: 'top' }, { scroll: false })}
+               onMouseLeave={cancelPreload}
+               onBlur={cancelPreload}
                onClick={() => handleSort('top')}
                size="sm"
                variant={currentSort === 'top' ? 'default' : 'secondary'}
@@ -73,6 +77,10 @@ export function PlayerScoresToolbar({
 
             <Button
                disabled={loading}
+               onMouseEnter={() => preload({ sort: 'recent' }, { scroll: false })}
+               onFocus={() => preload({ sort: 'recent' }, { scroll: false })}
+               onMouseLeave={cancelPreload}
+               onBlur={cancelPreload}
                onClick={() => handleSort('recent')}
                size="sm"
                variant={currentSort === 'recent' ? 'default' : 'secondary'}
