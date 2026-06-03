@@ -52,13 +52,19 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
       staleTime: 5 * 60 * 1000
    });
 
-   function handlePointerEnter(e: PointerEvent<HTMLDivElement>) {
+   function dismissHoverCard() {
+      delayedOpen.cancel();
+      delayedClose.cancel();
+      setOpen(false);
+   }
+
+   function handlePointerEnter(e: PointerEvent<HTMLSpanElement>) {
       if (e.pointerType !== 'mouse') return;
       delayedClose.cancel();
       delayedOpen.run();
    }
 
-   function handlePointerLeave(e: PointerEvent<HTMLDivElement>) {
+   function handlePointerLeave(e: PointerEvent<HTMLSpanElement>) {
       if (e.pointerType !== 'mouse') return;
       delayedOpen.cancel();
       delayedClose.run();
@@ -75,9 +81,15 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
    return (
       <Popover open={open} onOpenChange={setOpen}>
          <PopoverAnchor asChild>
-            <div className="min-w-0" onPointerEnter={handlePointerEnter} onPointerLeave={handlePointerLeave}>
+            <span
+               className="inline-flex min-w-0 items-center overflow-hidden"
+               onPointerEnter={handlePointerEnter}
+               onPointerLeave={handlePointerLeave}
+               onPointerDown={dismissHoverCard}
+               onClick={dismissHoverCard}
+            >
                {children}
-            </div>
+            </span>
          </PopoverAnchor>
          <PopoverContent
             side="top"
@@ -96,14 +108,14 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
                   <div className="border-primary h-5 w-5 animate-spin rounded-full border-2 border-t-transparent" />
                </div>
             ) : player ? (
-               <HoverCardContent player={player} />
+               <HoverCardContent player={player} onClose={dismissHoverCard} />
             ) : null}
          </PopoverContent>
       </Popover>
    );
 }
 
-function HoverCardContent({ player }: { player: PlayerControllerGetPlayerResponse }) {
+function HoverCardContent({ player, onClose }: { player: PlayerControllerGetPlayerResponse; onClose: () => void }) {
    const t = useTranslations();
    const { stats, badges } = player;
    const playerSummary = buildPlayerSummary(player);
@@ -132,7 +144,12 @@ function HoverCardContent({ player }: { player: PlayerControllerGetPlayerRespons
    }, [badges]);
 
    const nameEl = (
-      <playerRoute.Link params={{ playerId: player.id }} search={{ page: 1, sort: 'top' }} className="group/hovername min-w-0 text-sm font-semibold">
+      <playerRoute.Link
+         params={{ playerId: player.id }}
+         search={{ page: 1, sort: 'top' }}
+         className="group/hovername min-w-0 text-sm font-semibold"
+         onClick={onClose}
+      >
          <span className={cn(playerSummary.roleClassName, 'block truncate')}>{player.name}</span>
       </playerRoute.Link>
    );
@@ -249,6 +266,7 @@ function HoverCardContent({ player }: { player: PlayerControllerGetPlayerRespons
                            params={{ playerId: player.id }}
                            search={{ page: 1, sort: 'top' }}
                            className="text-muted-foreground hover:text-foreground shrink-0 text-xs font-medium transition-colors"
+                           onClick={onClose}
                         >
                            ...
                         </playerRoute.Link>
