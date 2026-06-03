@@ -53,7 +53,7 @@ export function MapDifficultyChip({ mapId, leaderboard, isExpanded, onExpandActi
             {chipLabel}
          </span>
          <mapDifficultyRoute.Link
-            params={{ id: mapId, leaderboardId: String(leaderboard.id) }}
+            params={{ id: mapId, leaderboardId: leaderboard.id }}
             search={linkSearch}
             aria-label={chipLabel}
             onPointerDown={(event) => {

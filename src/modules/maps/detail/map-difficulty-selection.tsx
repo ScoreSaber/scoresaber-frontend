@@ -53,7 +53,7 @@ export function MapDifficultySelection({ mapInfo, activeLeaderboardId, activeGam
    function preloadLeaderboard(leaderboardId: number) {
       void router.preloadRoute({
          to: '/map/$id/difficulty/$leaderboardId',
-         params: { id: mapInfo.id, leaderboardId: String(leaderboardId) },
+         params: { id: mapInfo.id, leaderboardId },
          search: linkSearch
       });
    }
@@ -74,7 +74,7 @@ export function MapDifficultySelection({ mapInfo, activeLeaderboardId, activeGam
       startTransition(() => {
          void router.navigate({
             to: '/map/$id/difficulty/$leaderboardId',
-            params: { id: mapInfo.id, leaderboardId: String(result.data) },
+            params: { id: mapInfo.id, leaderboardId: result.data },
             search: linkSearch
          });
       });

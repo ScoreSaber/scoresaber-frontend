@@ -266,6 +266,7 @@ function DifficultyToolbar({
    search: LeaderboardSearchParams;
 }) {
    const switchSearch: LeaderboardSearchParams = {
+      page: search.page,
       search: search.search,
       scope: search.scope,
       pivot: search.pivot,

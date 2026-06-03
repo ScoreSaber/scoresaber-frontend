@@ -6,6 +6,7 @@
       "dev": "PORTLESS_TLD=local portless scoresaber vite dev --host 0.0.0.0",
       "build": "NODE_ENV=production vite build",
       "start": "HOST=0.0.0.0 PORT=4000 node --env-file-if-exists=.env --env-file-if-exists=.env.local .output/server/index.mjs",
+      "typecheck": "tsc --noEmit",
       "lint": "oxlint src/",
       "api:generate": "bun scripts/preprocess-openapi.ts && swagger-typescript-api generate -p ./orbis-openapi-processed.json -o ./src/shared/api/generated -r --module-name-first-tag --extract-request-params --extract-request-body --http-client fetch --custom-config generator.config.js && bun scripts/generate-api-params.ts",
       "api:regen": "curl https://api.scoresaber.local/api/openapi.json > orbis-openapi.json && bun run api:generate",

@@ -1,4 +1,4 @@
-import type { MetaDescriptor } from '@tanstack/react-router';
+import type { AnyRouteMatch } from '@tanstack/react-router';
 
 import { env } from '@/env';
 
@@ -18,6 +18,9 @@ type PageHeadOptions = {
    twitterCard?: 'summary' | 'summary_large_image';
    noindex?: boolean;
 };
+
+type HeadMeta = NonNullable<AnyRouteMatch['meta']>[number];
+type HeadLink = NonNullable<AnyRouteMatch['links']>[number];
 
 export function absoluteSiteUrl(path: string) {
    if (URL.canParse(path)) return path;
@@ -41,7 +44,7 @@ export function buildSeoHead({
    const imageUrl = absoluteSiteUrl(image);
    const robots = noindex ? 'noindex, nofollow' : 'index, follow';
 
-   const meta: MetaDescriptor[] = [
+   const meta: HeadMeta[] = [
       { title: pageTitle },
       { name: 'title', content: socialTitle },
       { name: 'description', content: description },
@@ -62,7 +65,7 @@ export function buildSeoHead({
 
    return {
       meta,
-      links: canonicalUrl ? [{ rel: 'canonical', href: canonicalUrl }] : []
+      links: canonicalUrl ? ([{ rel: 'canonical', href: canonicalUrl }] satisfies HeadLink[]) : []
    };
 }
 

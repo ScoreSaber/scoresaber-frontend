@@ -39,6 +39,7 @@ export function TranslationContextHighlighter({ messages }: { messages: Translat
       if (!target) return;
 
       target.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
+      const targetElement = target;
 
       const overlay = document.createElement('div');
       Object.assign(overlay.style, {
@@ -52,7 +53,7 @@ export function TranslationContextHighlighter({ messages }: { messages: Translat
       });
 
       function syncOverlay() {
-         const rect = target.getBoundingClientRect();
+         const rect = targetElement.getBoundingClientRect();
          overlay.style.left = `${Math.max(8, rect.left - 4)}px`;
          overlay.style.top = `${Math.max(8, rect.top - 4)}px`;
          overlay.style.width = `${rect.width + 8}px`;

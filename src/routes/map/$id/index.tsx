@@ -1,10 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { z } from 'zod';
 
 import { buildMapLeaderboardHead, getMapLeaderboardPageData, leaderboardSearchSchema, MapLeaderboardRouteContent } from './-leaderboard';
 
-import { validateRequest } from '@/shared/url-state/params';
+import { isNumber, validateRequest } from '@/shared/url-state/params';
+
+const mapParamsSchema = z.object({
+   id: isNumber
+});
 
 export const Route = createFileRoute('/map/$id/')({
+   params: {
+      parse: (params) => validateRequest(mapParamsSchema, params),
+      stringify: (params) => ({ id: String(params.id) })
+   },
    validateSearch: (search) => validateRequest(leaderboardSearchSchema, search),
    loaderDeps: ({ search }) => search,
    loader: ({ params, deps, location }) =>

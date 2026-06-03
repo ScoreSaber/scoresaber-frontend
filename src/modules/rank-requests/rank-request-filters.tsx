@@ -38,7 +38,7 @@ export function RankRequestFilters({ currentPage, totalPages, currentHideDownvot
    const showPagination = totalPages > 1;
    const hasActiveFilters = Boolean(currentHideDownvoted);
    const getPageHref = (page: number) => buildHref(updateSearchParams(search, { page: page > 1 ? page : undefined }));
-   const hideDownvotedUpdates = { hideDownvoted: currentHideDownvoted ? undefined : true };
+   const hideDownvotedUpdates: Partial<RankRequestsFilterSearch> = { hideDownvoted: currentHideDownvoted ? undefined : true };
 
    return (
       <div className="flex flex-col gap-3">

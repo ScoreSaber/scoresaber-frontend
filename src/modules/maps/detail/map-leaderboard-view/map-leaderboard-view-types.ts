@@ -15,7 +15,7 @@ type MapLeaderboardTab = 'leaderboard' | 'rank-request';
 type MapLeaderboardRouteName = 'map' | 'mapDifficulty';
 
 type LeaderboardSearchParams = SearchParamsRecord & {
-   page?: number;
+   page: number;
    search?: string;
    scope?: CountryRegionFilterValue;
    pivot?: LeaderboardControllerGetLeaderboardScoresByIdPivot;

@@ -12,7 +12,8 @@ const mapDifficultyParamsSchema = z.object({
 
 export const Route = createFileRoute('/map/$id/difficulty/$leaderboardId')({
    params: {
-      parse: (params) => validateRequest(mapDifficultyParamsSchema, params)
+      parse: (params) => validateRequest(mapDifficultyParamsSchema, params),
+      stringify: (params) => ({ id: String(params.id), leaderboardId: String(params.leaderboardId) })
    },
    validateSearch: (search) => validateRequest(leaderboardSearchSchema, search),
    loaderDeps: ({ search }) => search,

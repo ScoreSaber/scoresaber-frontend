@@ -51,15 +51,18 @@ export const Route = createRootRouteWithContext<RouterContext>()({
          { name: 'theme-color', content: '#facc15' },
          { name: 'application-name', content: SITE_NAME },
          { name: 'apple-mobile-web-app-title', content: SITE_NAME },
-         ...buildSeoHead().meta,
+         ...buildSeoHead().meta
+      ],
+      scripts: [
          {
-            'script:ld+json': {
+            type: 'application/ld+json',
+            children: JSON.stringify({
                '@context': 'https://schema.org',
                '@type': 'WebSite',
                name: SITE_NAME,
                url: absoluteSiteUrl('/'),
                description: SITE_DESCRIPTION
-            }
+            })
          }
       ],
       links: [

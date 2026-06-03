@@ -8,7 +8,6 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import type { Locale } from '@/i18n/config';
 import { AuthProvider } from '@/modules/auth';
 import { OmniSearchProvider } from '@/modules/search/search-provider';
-import { ScoreSaber2BadgePrompt } from '@/modules/settings/score-saber-2-badge-prompt';
 import type { UserControllerGetMeResponse } from '@/shared/api/generated/ApiParams';
 import { dynamic } from '@/shared/components/dynamic';
 import { TranslationContextHighlighter, type TranslationMessages } from '@/shared/i18n/translation-context-highlighter';
@@ -24,6 +23,7 @@ import { Sidebar } from '@/shell/sidebar';
 import { SidebarProvider } from '@/shell/sidebar-provider';
 
 const OmniSearch = dynamic(() => import('@/modules/search/omni-search').then((mod) => mod.OmniSearch));
+const ScoreSaber2BadgePrompt = dynamic(() => import('@/modules/settings/score-saber-2-badge-prompt').then((mod) => mod.ScoreSaber2BadgePrompt));
 
 export function AppShell({
    initialUser,

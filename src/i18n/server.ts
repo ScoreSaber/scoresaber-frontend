@@ -19,7 +19,9 @@ import zhTwMessages from '../../messages/zh-TW.json';
 
 import { defaultLocale, locales, parseLocale, type Locale } from '@/i18n/config';
 
-type Messages = Record<string, string | Messages>;
+interface Messages {
+   [key: string]: string | Messages;
+}
 type AcceptedLocale = {
    value: string;
    quality: number;

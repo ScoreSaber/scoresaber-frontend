@@ -70,6 +70,9 @@ export default defineConfig(({ mode }) => {
          alias: {
             tslib: 'tslib/tslib.es6.mjs'
          }
+      },
+      build: {
+         chunkSizeWarningLimit: 1600
       }
    };
 });

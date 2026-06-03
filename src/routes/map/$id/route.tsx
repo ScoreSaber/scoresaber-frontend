@@ -10,7 +10,8 @@ const mapParamsSchema = z.object({
 
 export const Route = createFileRoute('/map/$id')({
    params: {
-      parse: (params) => validateRequest(mapParamsSchema, params)
+      parse: (params) => validateRequest(mapParamsSchema, params),
+      stringify: (params) => ({ id: String(params.id) })
    },
    notFoundComponent: () => <NotFoundCard titleKey="mapNotFound" descriptionKey="mapNotFoundDesc" />,
    component: Outlet
