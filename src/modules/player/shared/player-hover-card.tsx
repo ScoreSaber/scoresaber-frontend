@@ -1,6 +1,6 @@
 'use client';
 
-import { type PointerEvent, type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import { getRouteApi } from '@tanstack/react-router';
@@ -9,11 +9,10 @@ import { useTranslations } from 'use-intl';
 
 import { PlayerAvatar, usePlayerAvatarSrc } from './player-avatar';
 
-import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import { PlayerFollowButton } from '@/modules/player/operations/member/player-follow-button';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { buildPlayerSummary } from '@/modules/player/player-summary';
@@ -38,12 +37,6 @@ interface PlayerHoverCardProps {
 
 export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
    const [open, setOpen] = useState(false);
-   const delayedOpen = useDebouncedCallback(() => setOpen(true), 700);
-   const delayedClose = useDebouncedCallback(() => {
-      // don't close if a child dropdown/select/dialog is open
-      if (document.querySelector('[data-slot="dropdown-menu-content"], [data-slot="select-content"], [data-slot="dialog-overlay"]')) return;
-      setOpen(false);
-   }, 150);
 
    const { data: player, isLoading: loading } = useQuery({
       queryKey: ['playerHoverCard', playerId],
@@ -52,56 +45,30 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
       staleTime: 5 * 60 * 1000
    });
 
-   function dismissHoverCard() {
-      delayedOpen.cancel();
-      delayedClose.cancel();
-      setOpen(false);
-   }
+   function handleOpenChange(nextOpen: boolean) {
+      if (!nextOpen && hasOpenChildOverlay()) return;
 
-   function handlePointerEnter(e: PointerEvent<HTMLSpanElement>) {
-      if (e.pointerType !== 'mouse') return;
-      if (!(e.target instanceof Node) || !e.currentTarget.contains(e.target)) return;
-      delayedClose.cancel();
-      delayedOpen.run();
-   }
-
-   function handlePointerLeave(e: PointerEvent<HTMLSpanElement>) {
-      if (e.pointerType !== 'mouse') return;
-      delayedOpen.cancel();
-      delayedClose.run();
+      setOpen(nextOpen);
    }
 
    function handleInteractOutside(e: Event) {
-      if (document.querySelector('[data-slot="dropdown-menu-content"], [data-slot="select-content"], [data-slot="dialog-overlay"]')) {
+      if (hasOpenChildOverlay()) {
          e.preventDefault();
-         return;
       }
-      setOpen(false);
    }
 
    return (
-      <Popover open={open} onOpenChange={setOpen}>
-         <PopoverAnchor asChild>
-            <span
-               className="inline-flex min-w-0 items-center overflow-hidden"
-               onPointerEnter={handlePointerEnter}
-               onPointerLeave={handlePointerLeave}
-               onPointerDown={dismissHoverCard}
-               onClick={dismissHoverCard}
-            >
+      <HoverCard open={open} onOpenChange={handleOpenChange} openDelay={700} closeDelay={150}>
+         <HoverCardTrigger asChild>
+            <span className="inline-flex min-w-0 items-center overflow-hidden" onPointerDown={() => setOpen(false)} onClick={() => setOpen(false)}>
                {children}
             </span>
-         </PopoverAnchor>
-         <PopoverContent
+         </HoverCardTrigger>
+         <HoverCardContent
             side="top"
             align="start"
             className="dark:bg-popover/80 w-80 overflow-hidden p-0 dark:backdrop-blur-xl"
-            onMouseEnter={delayedClose.cancel}
-            onMouseLeave={() => {
-               delayedOpen.cancel();
-               delayedClose.run();
-            }}
-            onOpenAutoFocus={(e) => e.preventDefault()}
+            onEscapeKeyDown={() => setOpen(false)}
             onInteractOutside={handleInteractOutside}
          >
             {loading && !player ? (
@@ -109,14 +76,18 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
                   <div className="border-primary h-5 w-5 animate-spin rounded-full border-2 border-t-transparent" />
                </div>
             ) : player ? (
-               <HoverCardContent player={player} onClose={dismissHoverCard} />
+               <HoverCardBody player={player} onClose={() => setOpen(false)} />
             ) : null}
-         </PopoverContent>
-      </Popover>
+         </HoverCardContent>
+      </HoverCard>
    );
 }
 
-function HoverCardContent({ player, onClose }: { player: PlayerControllerGetPlayerResponse; onClose: () => void }) {
+function hasOpenChildOverlay() {
+   return !!document.querySelector('[data-slot="dropdown-menu-content"], [data-slot="select-content"], [data-slot="dialog-overlay"]');
+}
+
+function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerResponse; onClose: () => void }) {
    const t = useTranslations();
    const { stats, badges } = player;
    const playerSummary = buildPlayerSummary(player);
