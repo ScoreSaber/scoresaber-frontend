@@ -25,7 +25,7 @@ type AcceptedLocale = {
    quality: number;
 };
 
-const MIN_AUTO_LOCALE_COMPLETION = 0.8;
+const MIN_AUTO_LOCALE_COMPLETION = 0.35;
 
 const localeMessages: Record<Locale, Messages> = {
    en: enMessages,
