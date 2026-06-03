@@ -181,6 +181,7 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
                replayTooltipSide="top"
                tooltipSide="bottom"
                mobileBottomRow
+               bottomRowDesktopBreakpoint="md"
                className={cn(
                   'md:top-1/2 md:right-3 md:bottom-auto md:left-auto md:translate-x-0 md:-translate-y-1/2',
                   score.hasReplay ? 'bottom-2 left-1/2 -translate-x-1/2' : 'hidden md:flex'

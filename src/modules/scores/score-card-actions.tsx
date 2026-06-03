@@ -21,6 +21,7 @@ interface ScoreCardActionsProps {
    detailsExpanded?: boolean;
    onToggleDetailsAction?: () => void;
    mobileBottomRow?: boolean;
+   bottomRowDesktopBreakpoint?: 'md' | 'lg';
    tooltipSide?: 'top' | 'right' | 'bottom' | 'left';
    replayTooltipSide?: 'top' | 'right' | 'bottom' | 'left';
 }
@@ -33,6 +34,7 @@ export function ScoreCardActions({
    detailsExpanded,
    onToggleDetailsAction,
    mobileBottomRow = false,
+   bottomRowDesktopBreakpoint = 'lg',
    tooltipSide = 'top',
    replayTooltipSide
 }: ScoreCardActionsProps) {
@@ -40,6 +42,9 @@ export function ScoreCardActions({
    const iconButtonClassName = 'h-auto w-auto cursor-default p-0 text-muted-foreground hover:bg-transparent hover:text-foreground';
    const disabledClassName = cn(iconButtonClassName, 'text-muted-foreground/30 hover:text-muted-foreground/30');
    const shouldCenterSingleAction = !score.hasReplay && !onToggleExpandedAction && !onToggleDetailsAction;
+   const bottomRowDesktopClassName =
+      bottomRowDesktopBreakpoint === 'md' ? 'flex-row gap-3 md:flex-col md:gap-1.5' : 'flex-row gap-3 lg:flex-col lg:gap-1.5';
+   const bottomRowDetailsClassName = bottomRowDesktopBreakpoint === 'md' ? 'gap-2 md:flex-col md:gap-1.5' : 'gap-2 lg:flex-col lg:gap-1.5';
    const replayButton = score.hasReplay ? (
       <ReplayDialog
          scoreId={score.id}
@@ -119,15 +124,15 @@ export function ScoreCardActions({
       <div
          className={cn(
             'absolute z-20 flex items-center',
-            mobileBottomRow ? 'flex-row gap-3 lg:flex-col lg:gap-1.5' : 'flex-col gap-1.5',
+            mobileBottomRow ? bottomRowDesktopClassName : 'flex-col gap-1.5',
             mobileBottomRow ? 'bottom-2' : shouldCenterSingleAction ? 'top-1/2 right-2 -translate-y-1/2' : 'top-1/2 right-3 -translate-y-1/2',
             className
          )}
       >
          {mobileBottomRow ? (
-            <div className="flex items-center gap-3 lg:flex-col lg:gap-1.5">
+            <div className={cn('flex items-center', bottomRowDesktopClassName)}>
                {replayButton}
-               <div className="flex gap-2 lg:flex-col lg:gap-1.5">
+               <div className={cn('flex', bottomRowDetailsClassName)}>
                   {detailsButton}
                   {expandButton}
                </div>
