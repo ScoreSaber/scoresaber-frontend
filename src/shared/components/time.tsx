@@ -109,9 +109,11 @@ function timeAgo(date: Date, isShort: boolean | undefined, formatters: TimeForma
 type TimeFormatters = ReturnType<typeof createTimeFormatters>;
 
 function createTimeFormatters(locale: string) {
+   const shortRelativeStyle: Intl.RelativeTimeFormatStyle = locale.toLowerCase().startsWith('ru') ? 'short' : 'narrow';
+
    return {
       relativeLong: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'long' }),
-      relativeShort: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'narrow' }),
+      relativeShort: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: shortRelativeStyle }),
       fullDate: new Intl.DateTimeFormat(locale, {
          weekday: 'long',
          year: 'numeric',
