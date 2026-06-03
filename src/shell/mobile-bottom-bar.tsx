@@ -6,7 +6,7 @@ import { useTranslations } from 'use-intl';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { useOmniSearch } from '@/modules/search';
+import { useOmniSearch } from '@/modules/search/search-provider';
 import { cn } from '@/shared/format/helpers';
 import { bottomBarItems, isNavActive } from '@/shell/nav-data';
 import { NavLink } from '@/shell/nav-link';

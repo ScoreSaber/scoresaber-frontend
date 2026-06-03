@@ -56,7 +56,7 @@ export default defineConfig(({ mode }) => {
             rsc: { enabled: true },
             router: {
                codeSplittingOptions: {
-                  splitBehavior: ({ routeId }) => (routeId === '/legal/cookies-policy' || routeId === '/maps' ? [] : undefined)
+                  splitBehavior: ({ routeId }) => (routeId === '/legal/cookies-policy' ? [] : undefined)
                }
             }
          }),

@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useActionMutation } from '@/hooks/use-action-mutation';
 import { PlayerBio } from '@/modules/player/profile/player-bio';
 import { updateBio } from '@/modules/settings/actions/account';
-import { BioEditorForm } from '@/shared/components/bio-editor-form';
+import { dynamic } from '@/shared/components/dynamic';
 import { sanitizeRichTextHtml } from '@/shared/rich-text';
 
 interface PlayerBioEditorProps {
@@ -19,6 +19,7 @@ interface PlayerBioEditorProps {
 }
 
 const bioMaxLength = 4096;
+const BioEditorForm = dynamic(() => import('@/shared/components/bio-editor-form').then((mod) => mod.BioEditorForm));
 
 export function PlayerBioEditor({ bio }: PlayerBioEditorProps) {
    const t = useTranslations();

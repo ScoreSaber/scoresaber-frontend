@@ -6,7 +6,7 @@ import { useTranslations } from 'use-intl';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
-import { LinkedNames } from '@/modules/search';
+import { LinkedNames } from '@/modules/search/search-link';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { Time } from '@/shared/components/time';
 import { cn } from '@/shared/format/helpers';

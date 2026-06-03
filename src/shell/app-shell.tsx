@@ -7,12 +7,12 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 
 import type { Locale } from '@/i18n/config';
 import { AuthProvider } from '@/modules/auth';
-import { OmniSearch } from '@/modules/search';
-import { OmniSearchProvider } from '@/modules/search';
+import { OmniSearchProvider } from '@/modules/search/search-provider';
 import { ScoreSaber2BadgePrompt } from '@/modules/settings/score-saber-2-badge-prompt';
 import type { UserControllerGetMeResponse } from '@/shared/api/generated/ApiParams';
+import { dynamic } from '@/shared/components/dynamic';
 import { TranslationContextHighlighter, type TranslationMessages } from '@/shared/i18n/translation-context-highlighter';
-import { ConsentManager } from '@/shared/privacy/consent-manager';
+import { ConsentManagerGate } from '@/shared/privacy/consent-manager-gate';
 import { QueryProvider } from '@/shared/query/query-provider';
 import { ThemeProvider } from '@/shared/ui-adjacent/theme-provider';
 import { Breakpoints } from '@/shell/debug-breakpoints';
@@ -22,6 +22,8 @@ import { MobileTopBar } from '@/shell/mobile-top-bar';
 import { RouteTopLoader } from '@/shell/route-top-loader';
 import { Sidebar } from '@/shell/sidebar';
 import { SidebarProvider } from '@/shell/sidebar-provider';
+
+const OmniSearch = dynamic(() => import('@/modules/search/omni-search').then((mod) => mod.OmniSearch));
 
 export function AppShell({
    initialUser,
@@ -42,28 +44,27 @@ export function AppShell({
 }) {
    return (
       <ThemeProvider>
-         <ConsentManager>
-            {debugBreakpoints && <Breakpoints />}
-            <QueryProvider queryClient={queryClient}>
-               <AuthProvider initialUser={initialUser}>
-                  <TooltipProvider>
-                     <OmniSearchProvider>
-                        <RouteTopLoader />
-                        <SidebarProvider visibleLocales={visibleLocales}>
-                           <Sidebar />
-                           <MobileTopBar />
-                           <TranslationContextHighlighter messages={messages} />
-                           <MainContent debugPageBackground={debugPageBackground}>{children}</MainContent>
-                           <MobileBottomBar />
-                        </SidebarProvider>
-                        <OmniSearch />
-                        <ScoreSaber2BadgePrompt />
-                        <Toaster />
-                     </OmniSearchProvider>
-                  </TooltipProvider>
-               </AuthProvider>
-            </QueryProvider>
-         </ConsentManager>
+         {debugBreakpoints && <Breakpoints />}
+         <QueryProvider queryClient={queryClient}>
+            <AuthProvider initialUser={initialUser}>
+               <TooltipProvider>
+                  <OmniSearchProvider>
+                     <RouteTopLoader />
+                     <SidebarProvider visibleLocales={visibleLocales}>
+                        <Sidebar />
+                        <MobileTopBar />
+                        <TranslationContextHighlighter messages={messages} />
+                        <MainContent debugPageBackground={debugPageBackground}>{children}</MainContent>
+                        <MobileBottomBar />
+                     </SidebarProvider>
+                     <OmniSearch />
+                     <ScoreSaber2BadgePrompt />
+                     <Toaster />
+                  </OmniSearchProvider>
+               </TooltipProvider>
+            </AuthProvider>
+         </QueryProvider>
+         <ConsentManagerGate />
       </ThemeProvider>
    );
 }

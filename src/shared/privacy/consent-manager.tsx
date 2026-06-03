@@ -1,11 +1,13 @@
 'use client';
 
+import '@c15t/react/styles.css';
+
 import { type ReactNode, useMemo } from 'react';
 
 import { ConsentBanner, ConsentButton, ConsentDialog, ConsentManagerProvider, type Theme, type Translations } from '@c15t/react';
 import { useLocale, useTranslations } from 'use-intl';
 
-const consentStorageKey = 'scoresaber-cookie-consent';
+import { consentStorageKey } from '@/shared/privacy/consent-storage';
 
 const consentColors = {
    primary: 'var(--primary)',
@@ -113,7 +115,7 @@ function ConsentDescription({ description, privacyPolicy, cookiePolicy }: { desc
    );
 }
 
-export function ConsentManager({ children }: { children: ReactNode }) {
+export function ConsentManager({ children }: { children?: ReactNode }) {
    const locale = useLocale();
    const t = useTranslations('legal.consent');
 

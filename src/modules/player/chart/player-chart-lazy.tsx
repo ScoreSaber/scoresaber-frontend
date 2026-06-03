@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
+
 import { Loader2 } from 'lucide-react';
 
 import type { PlayerChartStats } from '@/modules/player/chart/chart-types';
@@ -7,9 +9,36 @@ import type { PlayerControllerGetPlayerHistoryItem } from '@/shared/api/generate
 import { dynamic } from '@/shared/components/dynamic';
 
 export function PlayerChartLazy({ playerId, stats, history }: PlayerChartLazyProps) {
+   const containerRef = useRef<HTMLDivElement>(null);
+   const [shouldLoad, setShouldLoad] = useState(false);
+
+   useEffect(() => {
+      if (shouldLoad) return;
+
+      const container = containerRef.current;
+      if (!container || !('IntersectionObserver' in window)) {
+         setShouldLoad(true);
+         return;
+      }
+
+      const observer = new IntersectionObserver(
+         ([entry]) => {
+            if (entry?.isIntersecting) {
+               setShouldLoad(true);
+               observer.disconnect();
+            }
+         },
+         { rootMargin: '200px' }
+      );
+
+      observer.observe(container);
+
+      return () => observer.disconnect();
+   }, [shouldLoad]);
+
    return (
-      <div className="min-h-100">
-         <PlayerChart playerId={playerId} stats={stats} history={history} />
+      <div ref={containerRef} className="min-h-100">
+         {shouldLoad ? <PlayerChart playerId={playerId} stats={stats} history={history} /> : <ChartSkeleton />}
       </div>
    );
 }

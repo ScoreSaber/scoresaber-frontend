@@ -5,7 +5,7 @@ import { useTranslations } from 'use-intl';
 
 import { DifficultyPill } from './difficulty-pill';
 
-import { LinkedNames } from '@/modules/search';
+import { LinkedNames } from '@/modules/search/search-link';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { Time } from '@/shared/components/time';
 import { cn } from '@/shared/format/helpers';

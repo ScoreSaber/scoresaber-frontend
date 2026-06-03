@@ -18,9 +18,9 @@ import { useAuth } from '@/modules/auth';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { requestCountryReset, updateBio, updateName, uploadAvatar } from '@/modules/settings/actions/account';
 import type { UserControllerCanResetCountryResponse } from '@/shared/api/generated/ApiParams';
-import { BioEditorForm } from '@/shared/components/bio-editor-form';
 import { ConditionalOverlay } from '@/shared/components/conditional-overlay';
 import { ConfirmDialog } from '@/shared/components/confirm-dialog';
+import { dynamic } from '@/shared/components/dynamic';
 import { SupporterRequiredOverlay } from '@/shared/components/supporter-required-overlay';
 import { cn } from '@/shared/format/helpers';
 import Permissions from '@/shared/permissions';
@@ -36,6 +36,7 @@ const avatarMaxSize = 10 * 1024 * 1024;
 const iconClass = 'border-border/60 bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full border';
 const loginRoute = getRouteApi('/login');
 const settingsAccountRoute = getRouteApi('/settings/account');
+const BioEditorForm = dynamic(() => import('@/shared/components/bio-editor-form').then((mod) => mod.BioEditorForm));
 
 export function AccountSection({ countryReset, patreonConnected }: AccountSectionProps) {
    const locale = useLocale();
@@ -50,6 +51,7 @@ export function AccountSection({ countryReset, patreonConnected }: AccountSectio
    const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
    const [countryResetOpen, setCountryResetOpen] = useState(false);
    const [bioOpen, setBioOpen] = useState(false);
+   const [bioEditorMounted, setBioEditorMounted] = useState(false);
 
    useEffect(() => {
       if (!avatarFile) {
@@ -145,6 +147,12 @@ export function AccountSection({ countryReset, patreonConnected }: AccountSectio
          t('settings.account.countryResetFailed'),
          () => setCountryResetOpen(false)
       );
+   };
+   const changeBioOpen = (open: boolean) => {
+      setBioOpen(open);
+      if (open) {
+         setBioEditorMounted(true);
+      }
    };
 
    return (
@@ -269,7 +277,7 @@ export function AccountSection({ countryReset, patreonConnected }: AccountSectio
                      </div>
                   </div>
 
-                  <Collapsible open={bioOpen} onOpenChange={setBioOpen}>
+                  <Collapsible open={bioOpen} onOpenChange={changeBioOpen}>
                      <CollapsibleTrigger asChild>
                         <button
                            type="button"
@@ -290,30 +298,37 @@ export function AccountSection({ countryReset, patreonConnected }: AccountSectio
                         </button>
                      </CollapsibleTrigger>
                      <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden pt-2">
-                        <ConditionalOverlay
-                           shouldShow={() => !canEditBio}
-                           component={SupporterRequiredOverlay}
-                           componentProps={{ patreonConnected }}
-                           className="rounded-md"
-                           overlayClassName="min-h-36"
-                        >
-                           <BioEditorForm
-                              id="account-bio"
-                              value={bio}
-                              onValueChangeAction={setBio}
-                              placeholder={t('settings.account.writeBio')}
-                              countLabel={t('settings.account.bioCount', { count: bio.length, max: bioMaxLength })}
-                              saveLabel={t('common.save')}
-                              saveDisabled={bioSaveDisabled}
-                              savePending={bioSavePending}
-                              onSaveAction={() =>
-                                 mutation.runKeyed('bio', () => updateBio(bio), t('settings.account.bioSaved'), t('settings.account.bioSaveFailed'))
-                              }
-                              disabled={!canEditBio}
-                              invalid={bioInvalid}
-                              hideActions={!canEditBio}
-                           />
-                        </ConditionalOverlay>
+                        {bioEditorMounted && (
+                           <ConditionalOverlay
+                              shouldShow={() => !canEditBio}
+                              component={SupporterRequiredOverlay}
+                              componentProps={{ patreonConnected }}
+                              className="rounded-md"
+                              overlayClassName="min-h-36"
+                           >
+                              <BioEditorForm
+                                 id="account-bio"
+                                 value={bio}
+                                 onValueChangeAction={setBio}
+                                 placeholder={t('settings.account.writeBio')}
+                                 countLabel={t('settings.account.bioCount', { count: bio.length, max: bioMaxLength })}
+                                 saveLabel={t('common.save')}
+                                 saveDisabled={bioSaveDisabled}
+                                 savePending={bioSavePending}
+                                 onSaveAction={() =>
+                                    mutation.runKeyed(
+                                       'bio',
+                                       () => updateBio(bio),
+                                       t('settings.account.bioSaved'),
+                                       t('settings.account.bioSaveFailed')
+                                    )
+                                 }
+                                 disabled={!canEditBio}
+                                 invalid={bioInvalid}
+                                 hideActions={!canEditBio}
+                              />
+                           </ConditionalOverlay>
+                        )}
                      </CollapsibleContent>
                   </Collapsible>
                </CardContent>

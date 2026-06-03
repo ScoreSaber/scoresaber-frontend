@@ -8,8 +8,6 @@ import { Bomb, Grid3X3, Loader2, Scissors, Target, Zap } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 import { z } from 'zod';
 
-import { ScoreAccuracyChart } from './chart/score-accuracy-chart';
-import { ScoreAccuracyDistributionChart, ScoreAccuracyTimelineChart } from './chart/score-replay-analysis-charts';
 import { HandAccuracyRing } from './hand-accuracy-ring';
 import { HitScoreValue } from './hit-score-value';
 
@@ -17,6 +15,7 @@ import { Button } from '@/components/ui/button';
 
 import { api } from '@/shared/api/ApiInstance';
 import type { ScoreControllerGetScoreStatsResponse } from '@/shared/api/generated/ApiParams';
+import { dynamic } from '@/shared/components/dynamic';
 import { Stat } from '@/shared/components/stat';
 import { cn, formatNumber } from '@/shared/format/helpers';
 import { queryApiData } from '@/shared/result/api';
@@ -207,9 +206,29 @@ type ChartView = 'basic' | 'advanced' | 'distribution';
 const SWIPE_THRESHOLD = 40;
 const SWIPE_LOCK_THRESHOLD = 8;
 const CHART_VIEWS: ChartView[] = ['basic', 'advanced', 'distribution'];
+const ScoreAccuracyChart = dynamic(() => import('./chart/score-accuracy-chart').then((mod) => mod.ScoreAccuracyChart), {
+   loading: () => <ChartSkeleton />
+});
+const ScoreAccuracyTimelineChart = dynamic(() => import('./chart/score-replay-analysis-charts').then((mod) => mod.ScoreAccuracyTimelineChart), {
+   loading: () => <ChartSkeleton />
+});
+const ScoreAccuracyDistributionChart = dynamic(
+   () => import('./chart/score-replay-analysis-charts').then((mod) => mod.ScoreAccuracyDistributionChart),
+   {
+      loading: () => <ChartSkeleton />
+   }
+);
 
 function chartPage(view: ChartView, chart: ReactNode) {
    return { view, chart };
+}
+
+function ChartSkeleton() {
+   return (
+      <div className="bg-card flex h-56 items-center justify-center rounded-lg border sm:h-64">
+         <Loader2 className="text-muted-foreground/40 size-6 animate-spin" />
+      </div>
+   );
 }
 
 function formatHandPair(left: number, right: number, leftLabel: string, rightLabel: string) {

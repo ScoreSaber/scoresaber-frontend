@@ -14,7 +14,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 import { useAuth } from '@/modules/auth';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
-import { useOmniSearch } from '@/modules/search';
+import { useOmniSearch } from '@/modules/search/search-provider';
 import { Image } from '@/shared/components/image';
 import { cn } from '@/shared/format/helpers';
 import { isNavActive, navItems, secondaryItems } from '@/shell/nav-data';

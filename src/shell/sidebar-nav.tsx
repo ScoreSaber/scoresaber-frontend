@@ -16,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 import { useAuth } from '@/modules/auth';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
-import { useOmniSearch } from '@/modules/search';
+import { useOmniSearch } from '@/modules/search/search-provider';
 import { CountryImage } from '@/shared/components/country-image';
 import { Image } from '@/shared/components/image';
 import { parseCountryRegionParam } from '@/shared/country-region';
