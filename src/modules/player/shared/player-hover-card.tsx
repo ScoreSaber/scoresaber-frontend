@@ -37,6 +37,7 @@ interface PlayerHoverCardProps {
 
 export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
    const [open, setOpen] = useState(false);
+   const suppressHoverOpenRef = useRef(false);
 
    const { data: player, isLoading: loading } = useQuery({
       queryKey: ['playerHoverCard', playerId],
@@ -46,9 +47,19 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
    });
 
    function handleOpenChange(nextOpen: boolean) {
+      if (nextOpen && suppressHoverOpenRef.current) return;
       if (!nextOpen && hasOpenChildOverlay()) return;
 
       setOpen(nextOpen);
+   }
+
+   function cancelPendingOpen() {
+      suppressHoverOpenRef.current = true;
+      setOpen(false);
+   }
+
+   function resetPendingOpenCancel() {
+      suppressHoverOpenRef.current = false;
    }
 
    function handleInteractOutside(e: Event) {
@@ -60,7 +71,12 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
    return (
       <HoverCard open={open} onOpenChange={handleOpenChange} openDelay={700} closeDelay={150}>
          <HoverCardTrigger asChild>
-            <span className="inline-flex min-w-0 items-center overflow-hidden" onPointerDown={() => setOpen(false)} onClick={() => setOpen(false)}>
+            <span
+               className="inline-flex min-w-0 items-center overflow-hidden"
+               onPointerDown={cancelPendingOpen}
+               onClick={cancelPendingOpen}
+               onPointerLeave={resetPendingOpenCancel}
+            >
                {children}
             </span>
          </HoverCardTrigger>
