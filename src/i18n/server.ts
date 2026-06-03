@@ -138,6 +138,9 @@ function matchLocale(value: string): Locale | null {
    const exact = locales.find((locale) => locale.toLowerCase() === requested);
    if (exact) return exact;
 
+   if (requested.startsWith('zh-hans')) return 'zh-CN';
+   if (requested.startsWith('zh-hant')) return 'zh-TW';
+
    const language = requested.split('-')[0];
    return locales.find((locale) => locale.toLowerCase() === language || locale.toLowerCase().startsWith(`${language}-`)) ?? null;
 }
