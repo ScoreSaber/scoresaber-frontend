@@ -79,12 +79,12 @@
             "startScreenAlt": "",
             "addMods": "",
             "modsScreenAlt": "",
-            "upload": "",
-            "finish": ""
+            "upload": "Use o botão <b>Enviar Arquivos</b> para enviar o .qmod do ScoreSaber que você acabou de baixar",
+            "finish": "Assim que terminar a instalação, você estará pronto!"
          }
       },
       "footer": {
-         "patreon": "",
+         "patreon": "Por favor, considere apoiar o ScoreSaber no Patreon ❤️",
          "patreonPerks": "",
          "sourceCode": ""
       }
@@ -219,6 +219,8 @@
       "goToPage": "",
       "by": "",
       "mappedBy": "",
+      "unknownDate": "",
+      "justNow": "",
       "performancePoints": "",
       "totalPlays": "",
       "actions": "",
@@ -755,6 +757,11 @@
             "title": "",
             "description": "",
             "promptTitle": "",
+            "promoTitle": "",
+            "promoDescription": "",
+            "alreadySupporting": "",
+            "countdownLabel": "",
+            "supportAction": "",
             "redeemAction": "",
             "redeemingAction": "",
             "redeemedToast": "",

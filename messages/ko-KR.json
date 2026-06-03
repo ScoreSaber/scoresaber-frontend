@@ -30,7 +30,7 @@
       },
       "error": {
          "releasesUnavailableTitle": "버전을 불러올 수 없음",
-         "releasesUnavailableDescription": "GitHub 연결할 수 없어 ScoreSaber Quest 버전 정보를 불러올 수 없습니다. 몇 분 후 다시 시도해 주세요"
+         "releasesUnavailableDescription": "GitHub에 연결할 수 없어 Quest용 ScoreSaber의 버전 정보를 불러올 수 없습니다. 몇 분 후 다시 시도해 주세요"
       },
       "step": {
          "1": {
@@ -219,8 +219,10 @@
       "goToPage": "페이지로 이동",
       "by": "by",
       "mappedBy": "mapped by",
+      "unknownDate": "알 수 없는 날짜",
+      "justNow": "방금",
       "performancePoints": "Performance Points",
-      "totalPlays": "Total Plays",
+      "totalPlays": "총 플레이 수",
       "actions": "Actions",
       "rankRequestActions": "랭크 요청 작업",
       "adminActions": "관리자 작업",
@@ -304,7 +306,7 @@
       "basicPage": "기본",
       "advancedPage": "고급",
       "distributionPage": "분포",
-      "showStatsPage": "{page} 통계 폐이지 보기",
+      "showStatsPage": "{page} 통계 페이지 보기",
       "predicted": "예측",
       "scoreLine": "점수",
       "leftAccuracy": "정확도 (왼쪽)",
@@ -713,7 +715,7 @@
          },
          "gate": {
             "title": "후원자 전용 혜택",
-            "connectDescription": "훙원자 상태를 확인하고 혜택을 잠금 해제하려면 Patreon을 연결하세요",
+            "connectDescription": "후원자 상태를 확인하고 혜택을 잠금 해제하려면 Patreon을 연결하세요",
             "subscribeDescription": "ScoreSaber 혜택을 이용하려면 Patreon을 구독하세요",
             "connect": "Patreon 연결",
             "subscribe": "Patreon에서 구독"
@@ -755,6 +757,11 @@
             "title": "ScoreSaber 2 출시 배지",
             "description": "ScoreSaber 2 출시일부터 6월 3일 사이에 후원해 주신 덕분에 한정판 배지가 잠금 해제되었습니다!",
             "promptTitle": "한정판 배지가 잠금 해제되었습니다!",
+            "promoTitle": "한정 ScoreSaber 2 배지",
+            "promoDescription": "ScoreSaber 2 출시를 기념하여 모든 신규 및 기존 후원자는 6월 3일 오후 11시 59분(ET)까지 웹사이트에서 배지를 받을 수 있습니다",
+            "alreadySupporting": "이미 ScoreSaber를 후원 중이신가요?",
+            "countdownLabel": "종료까지",
+            "supportAction": "지원",
             "redeemAction": "수령하기",
             "redeemingAction": "수령 중",
             "redeemedToast": "배지를 수령했습니다",
