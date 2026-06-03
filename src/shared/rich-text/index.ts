@@ -4,23 +4,9 @@ type RichTextAttrs = Record<string, string | undefined>;
 
 const richTextPolicy = {
    tags: ['p', 'br', 'hr', 'h1', 'h2', 'h3', 'h4', 'strong', 'em', 'u', 's', 'code', 'blockquote', 'ul', 'ol', 'li', 'a', 'img', 'iframe'],
-   imagePrefixes: [
-      'https://i.imgur.com/',
-      'https://cdn.discordapp.com/attachments/',
-      'https://cdn.scoresaber.com/',
-      'https://media.discordapp.net/attachments/',
-      'https://files.catbox.moe/',
-      'https://i.ibb.co/'
-   ],
+   imagePrefixes: ['https://i.imgur.com/', 'https://cdn.scoresaber.com/', 'https://files.catbox.moe/', 'https://i.ibb.co/'],
    iframeHosts: ['www.youtube.com', 'youtube.com', 'player.vimeo.com', 'player.twitch.tv', 'clips.twitch.tv', 'w.soundcloud.com', 'open.spotify.com'],
-   imageHosts: [
-      'i.imgur.com',
-      'cdn.discordapp.com/attachments',
-      'media.discordapp.net/attachments',
-      'cdn.scoresaber.com',
-      'files.catbox.moe',
-      'i.ibb.co'
-   ],
+   imageHosts: ['i.imgur.com', 'cdn.scoresaber.com', 'files.catbox.moe', 'i.ibb.co'],
    embedPlatforms: ['YouTube', 'Vimeo', 'Twitch', 'SoundCloud', 'Spotify'],
    twitchEmbedParents: ['scoresaber.com', 'www.scoresaber.com', 'new.scoresaber.com', 'localhost'],
    styles: {
