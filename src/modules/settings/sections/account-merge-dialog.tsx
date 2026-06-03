@@ -395,10 +395,10 @@ function MergePlayerCard({ title, player }: { title: string; player: MergeChalle
    );
 }
 
-function toFeedback(error: unknown, title: string, fallback: string): FeedbackMessage {
+function toFeedback(error: Error, title: string, fallback: string): FeedbackMessage {
    return {
       variant: 'destructive',
       title,
-      description: error instanceof Error && error.message ? error.message : fallback
+      description: error.message || fallback
    };
 }

@@ -5,7 +5,7 @@ import { LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT } from '@/sha
 import { parseCountryRegionParam, type CountryRegionFilterValue } from '@/shared/country-region';
 import { leaderboardFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { usePersistedSearch } from '@/shared/url-state/persisted/use-persisted-search';
-import type { SearchParamsRecord } from '@/shared/url-state/search-params';
+import type { SearchParamsRecord, SearchParamValue } from '@/shared/url-state/search-params';
 
 type LeaderboardSearchParams = SearchParamsRecord & {
    page: number;
@@ -42,7 +42,7 @@ function parsePersistedLeaderboardSearch(search: SearchParamsRecord): Leaderboar
    };
 }
 
-function isLeaderboardPivot(value: unknown): value is LeaderboardSearchParams['pivot'] {
+function isLeaderboardPivot(value: SearchParamValue): value is LeaderboardSearchParams['pivot'] {
    return typeof value === 'string' && (LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT as readonly string[]).includes(value);
 }
 

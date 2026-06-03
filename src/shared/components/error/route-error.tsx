@@ -16,7 +16,7 @@ const homeRoute = getRouteApi('/');
 
 export function RouteError({ error, reset }: ErrorComponentProps) {
    const router = useRouter();
-   const digest = error instanceof Error && 'digest' in error && typeof error.digest === 'string' ? error.digest : null;
+   const digest = 'digest' in error && typeof error.digest === 'string' ? error.digest : null;
 
    function handleRetry() {
       reset();

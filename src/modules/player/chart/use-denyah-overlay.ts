@@ -43,11 +43,8 @@ export function useDenyahOverlay(
       const backgroundPositions: string[] = [];
       const backgroundWidth = 100 / nums.length;
       for (let i = 0; i < nums.length; i++) {
-         if (i === 0) {
-            denyahs.push(nums[i] < trueAverage ? 'url(/images/denyah-good.png)' : 'url(/images/denyah-bad.png)');
-         } else {
-            denyahs.push(nums[i - 1] > nums[i] ? 'url(/images/denyah-good.png)' : 'url(/images/denyah-bad.png)');
-         }
+         const isGood = i === 0 ? nums[i] < trueAverage : nums[i - 1] > nums[i];
+         denyahs.push(isGood ? 'url(/images/denyah-good.png)' : 'url(/images/denyah-bad.png)');
          backgroundPositions.push(`${(i / (nums.length - 1)) * 100}%`);
       }
       overlay.style.backgroundImage = denyahs.join(', ');

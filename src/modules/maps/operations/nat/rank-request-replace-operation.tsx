@@ -53,7 +53,7 @@ export function RankRequestReplaceOperation({ open, mapInfo, requestId, action, 
    const [description, setDescription] = useState('');
    const [replacementInput, setReplacementInput] = useState('');
    const [debouncedReplacementInput, setDebouncedReplacementInput] = useState('');
-   const [replacementMap, setReplacementMap] = useState<ReplacementMap | null>(null);
+   const [replacementMap, setReplacementMap] = useState<MapControllerGetMapByIdResponse | null>(null);
    const [replacementLeaderboardIds, setReplacementLeaderboardIds] = useState<number[]>([]);
    const [replacementLookupError, setReplacementLookupError] = useState<string | null>(null);
    const [replacementLookupLoading, setReplacementLookupLoading] = useState(false);
@@ -130,26 +130,24 @@ export function RankRequestReplaceOperation({ open, mapInfo, requestId, action, 
       );
    }
 
-   async function selectReplacementMap(map: ReplacementMap, leaderboardIds?: number[]) {
+   async function selectReplacementSearchResult(map: MapControllerGetMapListingsDataItem) {
       if (!isEligibleReplacementMap(map)) {
          setReplacementLookupError(tRR('rankRequest.replacementLookupFailed'));
          return;
       }
 
-      let detail: MapControllerGetMapByIdResponse;
-      if ('rankRequest' in map) {
-         detail = map;
-      } else {
-         setReplacementLookupLoading(true);
-         const detailResult = await apiResult(api.map.mapControllerGetMapById({ id: map.id }));
-         setReplacementLookupLoading(false);
-         if (Result.isError(detailResult)) {
-            setReplacementLookupError(tRR('rankRequest.replacementLookupFailed'));
-            return;
-         }
-         detail = detailResult.value.data;
+      setReplacementLookupLoading(true);
+      const detailResult = await fetchReplacementMapDetail(map.id);
+      setReplacementLookupLoading(false);
+      if (Result.isError(detailResult)) {
+         setReplacementLookupError(tRR('rankRequest.replacementLookupFailed'));
+         return;
       }
 
+      selectReplacementMapDetail(detailResult.value);
+   }
+
+   function selectReplacementMapDetail(detail: MapControllerGetMapByIdResponse, leaderboardIds?: number[]) {
       if (detail.rankRequest != null || !isEligibleReplacementMap(detail)) {
          setReplacementLookupError(tRR('rankRequest.replacementLookupFailed'));
          return;
@@ -179,31 +177,14 @@ export function RankRequestReplaceOperation({ open, mapInfo, requestId, action, 
       setReplacementLookupLoading(true);
       setReplacementLookupError(null);
 
-      if (source.kind === 'map') {
-         const mapResult = await apiResult(api.map.mapControllerGetMapById({ id: source.id }));
-         setReplacementLookupLoading(false);
-         if (Result.isError(mapResult)) {
-            setReplacementLookupError(tRR('rankRequest.replacementLookupFailed'));
-            return;
-         }
-         await selectReplacementMap(mapResult.value.data);
-         return;
-      }
-
-      const leaderboardResult = await apiResult(api.leaderboard.leaderboardControllerGetLeaderboardById({ id: source.id }));
-      if (Result.isError(leaderboardResult)) {
-         setReplacementLookupLoading(false);
-         setReplacementLookupError(tRR('rankRequest.replacementLookupFailed'));
-         return;
-      }
-
-      const mapResult = await apiResult(api.map.mapControllerGetMapById({ id: leaderboardResult.value.data.map.id }));
+      const mapResult = await fetchReplacementMapFromSource(source);
       setReplacementLookupLoading(false);
       if (Result.isError(mapResult)) {
          setReplacementLookupError(tRR('rankRequest.replacementLookupFailed'));
          return;
       }
-      await selectReplacementMap(mapResult.value.data, [leaderboardResult.value.data.id]);
+
+      selectReplacementMapDetail(mapResult.value.detail, mapResult.value.leaderboardIds);
    }
 
    return (
@@ -266,11 +247,11 @@ export function RankRequestReplaceOperation({ open, mapInfo, requestId, action, 
                         {!replacementSearchPending &&
                            replacementSearchEnabled &&
                            replacementSearchResults.map((map) => (
-                              <ReplacementMapResult key={map.id} map={map} onSelect={() => void selectReplacementMap(map)} />
+                              <ReplacementMapResult key={map.id} map={map} onSelect={() => void selectReplacementSearchResult(map)} />
                            ))}
                         {replacementSearchPending &&
                            replacementSearchResults.map((map) => (
-                              <ReplacementMapResult key={map.id} map={map} onSelect={() => void selectReplacementMap(map)} />
+                              <ReplacementMapResult key={map.id} map={map} onSelect={() => void selectReplacementSearchResult(map)} />
                            ))}
                         {!replacementSearchPending && replacementSearchEnabled && replacementSearchResults.length === 0 && (
                            <p className="text-muted-foreground py-8 text-center text-sm">{tRR('rankRequest.noReplacementMaps')}</p>
@@ -377,6 +358,28 @@ function parseReplacementSource(value: string): ReplacementSource | null {
    if (mapMatch) return { kind: 'map', id: Number(mapMatch[1]) };
 
    return null;
+}
+
+async function fetchReplacementMapDetail(id: number) {
+   const result = await apiResult(api.map.mapControllerGetMapById({ id }));
+   return Result.map(result, (response) => response.data);
+}
+
+async function fetchReplacementMapFromSource(source: ReplacementSource) {
+   return Result.gen(async function* () {
+      if (source.kind === 'map') {
+         const detail = yield* Result.await(fetchReplacementMapDetail(source.id));
+         return Result.ok({ detail, leaderboardIds: undefined });
+      }
+
+      const leaderboard = yield* Result.await(apiResult(api.leaderboard.leaderboardControllerGetLeaderboardById({ id: source.id })));
+      const detail = yield* Result.await(fetchReplacementMapDetail(leaderboard.data.map.id));
+
+      return Result.ok({
+         detail,
+         leaderboardIds: [leaderboard.data.id]
+      });
+   });
 }
 
 function getReplacementLeaderboards(map: ReplacementMap) {

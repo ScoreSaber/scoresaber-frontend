@@ -11,6 +11,13 @@ class NoticeTemplateCopyError extends TaggedError('NoticeTemplateCopyError')<{
    cause: unknown;
 }>() {}
 
+function noticeTemplateCopyError(cause: unknown) {
+   return new NoticeTemplateCopyError({
+      message: 'failed to copy copyright notice template',
+      cause
+   });
+}
+
 const noticeTemplateFields = [
    {
       label: 'Subject',
@@ -60,36 +67,36 @@ ${noticeTemplateFields.map((field) => `<li><strong>${field.label}:</strong> ${fi
 
 const noticeTemplateText = noticeTemplateFields.map((field) => `- ${field.label}:\n  ${field.placeholder}`).join('\n');
 
-async function writeNoticeTemplate() {
+function getNoticeTemplateWriter() {
    if (typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
       const html = new Blob([noticeTemplateHtml], { type: 'text/html' });
       const text = new Blob([noticeTemplateText], { type: 'text/plain' });
 
-      return navigator.clipboard.write([
-         new ClipboardItem({
-            'text/html': html,
-            'text/plain': text
-         })
-      ]);
+      return () =>
+         navigator.clipboard.write([
+            new ClipboardItem({
+               'text/html': html,
+               'text/plain': text
+            })
+         ]);
    }
 
-   if (!navigator.clipboard?.writeText) {
-      return Promise.reject(new Error('clipboard unavailable'));
-   }
+   return navigator.clipboard?.writeText ? () => navigator.clipboard.writeText(noticeTemplateText) : null;
+}
 
-   return navigator.clipboard.writeText(noticeTemplateText);
+async function writeNoticeTemplate() {
+   const write = getNoticeTemplateWriter();
+   if (!write) return Result.err(noticeTemplateCopyError(new Error('clipboard unavailable')));
+
+   return Result.tryPromise({
+      try: write,
+      catch: noticeTemplateCopyError
+   });
 }
 
 export function CopyrightNoticeTemplate() {
    async function handleCopy() {
-      const result = await Result.tryPromise({
-         try: writeNoticeTemplate,
-         catch: (cause) =>
-            new NoticeTemplateCopyError({
-               message: 'failed to copy copyright notice template',
-               cause
-            })
-      });
+      const result = await writeNoticeTemplate();
 
       Result.match(result, {
          ok: () => toast.success('Copied'),

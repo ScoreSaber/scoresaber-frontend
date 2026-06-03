@@ -56,7 +56,7 @@ const legacyLocaleAliases: Record<string, Locale> = {
    sv: 'sv-SE'
 };
 
-export function parseLocale(value: unknown): Locale {
-   if (typeof value === 'string' && value in legacyLocaleAliases) return legacyLocaleAliases[value];
+export function parseLocale(value: string): Locale {
+   if (value in legacyLocaleAliases) return legacyLocaleAliases[value];
    return localeSchema.catch(defaultLocale).parse(value);
 }

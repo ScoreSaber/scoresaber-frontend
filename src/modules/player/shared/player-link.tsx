@@ -9,14 +9,14 @@ import { PlayerHoverCard } from './player-hover-card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { buildPlayerSummary } from '@/modules/player/player-summary';
-import type { LeaderboardControllerGetLeaderboardScoresByIdDataItem, PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
 import { CountryImage } from '@/shared/components/country-image';
 import { cn } from '@/shared/format/helpers';
+import type { PlayerRoleSource } from '@/shared/format/styling';
 
 const playerRoute = getRouteApi('/u/$playerId');
 
 type PlayerLinkProps = {
-   player: PlayerControllerGetPlayerResponse | LeaderboardControllerGetLeaderboardScoresByIdDataItem['player'];
+   player: PlayerRoleSource;
    outLink?: boolean;
    className?: string;
    withPFP?: boolean;
@@ -91,14 +91,6 @@ export function PlayerLink({ player, outLink, className, withPFP, variant = 'lin
    );
 }
 
-function PlayerName({
-   player,
-   className,
-   playerStyle
-}: {
-   player: PlayerControllerGetPlayerResponse | LeaderboardControllerGetLeaderboardScoresByIdDataItem['player'];
-   className?: string;
-   playerStyle: string;
-}) {
+function PlayerName({ player, className, playerStyle }: { player: PlayerRoleSource; className?: string; playerStyle: string }) {
    return <span className={cn(playerStyle, className)}>{player.name}</span>;
 }

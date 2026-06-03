@@ -95,22 +95,12 @@ export function RankingsTable({
 
    const getSortHref = useCallback(
       (field: PlayerControllerGetPlayersSort) => {
-         const updates: Partial<RankingsTableSearch> = {};
-
          const isCurrentField = currentSort === field || (!currentSort && field === 'totalPP');
-         if (isCurrentField) {
-            const currentDir = currentSortDirection ?? DEFAULT_DIRECTIONS[field];
-            updates.sort = field;
-            updates.sortDirection = currentDir === 'desc' ? 'asc' : 'desc';
-         } else {
-            updates.sort = field;
-            updates.sortDirection = DEFAULT_DIRECTIONS[field];
-         }
+         const currentDir = currentSortDirection ?? DEFAULT_DIRECTIONS[field];
+         const sortDirection = isCurrentField && currentDir === 'desc' ? 'asc' : DEFAULT_DIRECTIONS[field];
 
-         if (updates.sort === 'totalPP' && updates.sortDirection === 'desc') {
-            updates.sort = undefined;
-            updates.sortDirection = undefined;
-         }
+         const updates: Partial<RankingsTableSearch> =
+            field === 'totalPP' && sortDirection === 'desc' ? { sort: undefined, sortDirection: undefined } : { sort: field, sortDirection };
 
          return buildHref(updateSearchParams(search, updates, ['page']));
       },
@@ -232,17 +222,6 @@ interface RankingItemProps {
    highlight?: string;
 }
 
-function buildPlayerForLink(player: PlayerControllerGetPlayersDataItem) {
-   return {
-      id: player.id,
-      name: player.name,
-      avatar: player.avatar,
-      country: player.country,
-      permissions: player.permissions,
-      role: player.role
-   };
-}
-
 function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, highlight }: RankingItemProps) {
    const router = useRouter();
    const stats = player.stats;
@@ -278,7 +257,7 @@ function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, hig
                />
             </span>
             <div className="min-w-0 flex-1">
-               <PlayerLink withPFP player={buildPlayerForLink(player)} isInactive={player.inactive} />
+               <PlayerLink withPFP player={player} isInactive={player.inactive} />
             </div>
          </div>
 
@@ -331,7 +310,7 @@ function RankingRow({ player, countryFiltered, isDefaultSort, listPosition, high
          </TableCell>
          <TableCell className="max-w-50 border-y py-2.5 text-left font-semibold">
             <div className="truncate">
-               <PlayerLink withPFP player={buildPlayerForLink(player)} isInactive={player.inactive} />
+               <PlayerLink withPFP player={player} isInactive={player.inactive} />
             </div>
          </TableCell>
          {[

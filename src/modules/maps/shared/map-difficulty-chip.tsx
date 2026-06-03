@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
 
-import type { MapControllerGetMapListingsDataItem } from '@/shared/api/generated/ApiParams';
+import type { MapControllerGetMapByIdResponse, MapControllerGetMapListingsDataItem } from '@/shared/api/generated/ApiParams';
 import { cn } from '@/shared/format/helpers';
 import { getDifficultyLabel } from '@/shared/format/strings';
 import { getDifficultyBgClass } from '@/shared/format/styling';
@@ -12,7 +12,9 @@ import { usePersistedLeaderboardSearch } from '@/shared/url-state/persisted/use-
 
 const mapDifficultyRoute = getRouteApi('/map/$id/difficulty/$leaderboardId');
 
-export type MapCardLeaderboard = MapControllerGetMapListingsDataItem['leaderboards'][number];
+export type MapCardLeaderboard =
+   | MapControllerGetMapListingsDataItem['leaderboards'][number]
+   | MapControllerGetMapByIdResponse['leaderboards'][number];
 
 interface MapDifficultyChipProps {
    mapId: number;
@@ -51,7 +53,7 @@ export function MapDifficultyChip({ mapId, leaderboard, isExpanded, onExpandActi
             {chipLabel}
          </span>
          <mapDifficultyRoute.Link
-            params={{ id: mapId, leaderboardId: leaderboard.id }}
+            params={{ id: mapId, leaderboardId: String(leaderboard.id) }}
             search={linkSearch}
             aria-label={chipLabel}
             onPointerDown={(event) => {

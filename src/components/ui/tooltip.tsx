@@ -41,9 +41,9 @@ function Tooltip({
          }
          if (isControlled) {
             controlledOnOpenChange?.(nextOpen);
-         } else {
-            setUncontrolledOpen(nextOpen);
+            return;
          }
+         setUncontrolledOpen(nextOpen);
       },
       [isControlled, controlledOnOpenChange, suppressFocusOpen]
    );

@@ -1,10 +1,7 @@
-import type { LeaderboardControllerGetLeaderboardScoresByIdDataItem, PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
 import { isSteamPlayer } from '@/shared/format/helpers';
-import { getPlayerRoleStyleAndTitle } from '@/shared/format/styling';
+import { getPlayerRoleStyleAndTitle, type PlayerRoleSource } from '@/shared/format/styling';
 
-type PlayerSummarySource = PlayerControllerGetPlayerResponse | LeaderboardControllerGetLeaderboardScoresByIdDataItem['player'];
-
-export function buildPlayerSummary(player: PlayerSummarySource, roleVariant?: 'text') {
+export function buildPlayerSummary(player: PlayerRoleSource, roleVariant?: 'text') {
    const [roleClassName, roleTitle] = getPlayerRoleStyleAndTitle(player, roleVariant);
    const isSteam = isSteamPlayer(player.id);
 
@@ -13,8 +10,6 @@ export function buildPlayerSummary(player: PlayerSummarySource, roleVariant?: 't
       roleClassName,
       roleTitle,
       hasSpecialRole: roleTitle !== null && roleTitle !== player.name,
-      isSteam,
-      isInactive: 'inactive' in player ? player.inactive : false,
-      isBanned: 'banned' in player ? player.banned : false
+      isSteam
    };
 }

@@ -144,7 +144,7 @@ function TeamRoute() {
                   return (
                      <TeamSection
                         key={section.key}
-                        title={t(`sections.${teamSectionTitleKey(section.key)}`)}
+                        title={getTeamSectionTitle(t, section.key)}
                         tone={section.tone}
                         members={members}
                         socialLabels={{
@@ -279,21 +279,29 @@ function TeamMemberCard({ member, tone, socialLabels }: { member: TeamMember; to
    );
 }
 
-function teamSectionTitleKey(key: TeamKey) {
-   return (
-      {
-         Backend: 'backend',
-         Admin: 'admin',
-         NAT: 'nat',
-         RT: 'rt',
-         QAT: 'qat',
-         CAT: 'cat',
-         CCT: 'cct',
-         Frontend: 'frontend',
-         Mod: 'mod',
-         PPv3: 'ppv3'
-      } as const
-   )[key];
+function getTeamSectionTitle(t: ReturnType<typeof useTranslations<'team'>>, key: TeamKey) {
+   switch (key) {
+      case 'Backend':
+         return t('sections.backend');
+      case 'Admin':
+         return t('sections.admin');
+      case 'NAT':
+         return t('sections.nat');
+      case 'RT':
+         return t('sections.rt');
+      case 'QAT':
+         return t('sections.qat');
+      case 'CAT':
+         return t('sections.cat');
+      case 'CCT':
+         return t('sections.cct');
+      case 'Frontend':
+         return t('sections.frontend');
+      case 'Mod':
+         return t('sections.mod');
+      case 'PPv3':
+         return t('sections.ppv3');
+   }
 }
 
 function socialLink(key: SocialKey, href: string) {

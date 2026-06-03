@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from 'react';
 
+import { Result } from 'better-result';
+
 import { dynamic } from '@/shared/components/dynamic';
 import { consentStorageKey } from '@/shared/privacy/consent-storage';
+import { readStorageValue } from '@/shared/result/storage';
 
 const ConsentManager = dynamic(() => import('@/shared/privacy/consent-manager').then((mod) => mod.ConsentManager));
 
@@ -11,11 +14,7 @@ export function ConsentManagerGate() {
    const [shouldRender, setShouldRender] = useState(false);
 
    useEffect(() => {
-      try {
-         setShouldRender(window.localStorage.getItem(consentStorageKey) === null);
-      } catch {
-         setShouldRender(true);
-      }
+      setShouldRender(Result.unwrapOr(readStorageValue(consentStorageKey), null) === null);
    }, []);
 
    return shouldRender ? <ConsentManager /> : null;

@@ -1,7 +1,16 @@
-import type { LeaderboardControllerGetLeaderboardByIdResponse } from '@/shared/api/generated/ApiParams';
+import type {
+   LeaderboardControllerGetLeaderboardByIdResponse,
+   LeaderboardControllerGetLeaderboardScoresByIdDataItem,
+   MapControllerGetMapByIdResponse,
+   MapControllerGetMapListingsDataItem,
+   PlayerControllerGetPlayerResponse,
+   PlayerControllerGetPlayersDataItem,
+   UserControllerGetMeResponse
+} from '@/shared/api/generated/ApiParams';
 import Permissions from '@/shared/permissions';
 
-type LeaderboardStatus = 'UNRANKED' | 'RANKED' | 'QUALIFIED' | 'LOVED';
+type MapLeaderboard = MapControllerGetMapListingsDataItem['leaderboards'][number] | MapControllerGetMapByIdResponse['leaderboards'][number];
+type LeaderboardStatus = MapLeaderboard['realm']['leaderboardStatus'];
 
 export const CARD_GRADIENT_CLASSES =
    'relative overflow-hidden rounded border bg-card dark:bg-linear-to-br dark:from-card dark:via-card/95 dark:to-card/90';
@@ -68,7 +77,7 @@ export function isLeaderboardRanked(leaderboard: LeaderboardControllerGetLeaderb
 }
 
 // highest status across a collection of leaderboards
-export function getHighestStatus(leaderboards: { realm: { leaderboardStatus: string } }[]): LeaderboardStatus {
+export function getHighestStatus(leaderboards: MapLeaderboard[]): LeaderboardStatus {
    const priority: LeaderboardStatus[] = ['RANKED', 'QUALIFIED', 'LOVED', 'UNRANKED'];
    for (const status of priority) {
       if (leaderboards.some((lb) => lb.realm.leaderboardStatus === status)) {
@@ -134,13 +143,13 @@ export function normalizePlayerRoleText(role: string) {
    return role.replaceAll('supporter', 'Supporter').replaceAll('pp-farmer', 'Supporter');
 }
 
-interface PlayerRoleSummary {
-   name: string;
-   role: string | null;
-   permissions: number;
-}
+export type PlayerRoleSource =
+   | PlayerControllerGetPlayerResponse
+   | PlayerControllerGetPlayersDataItem
+   | LeaderboardControllerGetLeaderboardScoresByIdDataItem['player']
+   | UserControllerGetMeResponse;
 
-function resolvePlayerRole(player: PlayerRoleSummary): [RoleKey, string | null] {
+function resolvePlayerRole(player: PlayerRoleSource): [RoleKey, string | null] {
    if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PANDA)) {
       return ['owner', 'Owner of ScoreSaber'];
    }
@@ -193,7 +202,7 @@ function resolvePlayerRole(player: PlayerRoleSummary): [RoleKey, string | null] 
    return ['default', player.name];
 }
 
-export function getPlayerRoleStyleAndTitle(player: PlayerRoleSummary | null, prefix: RolePrefix = 'text'): [string, string | null] {
+export function getPlayerRoleStyleAndTitle(player: PlayerRoleSource | null, prefix: RolePrefix = 'text'): [string, string | null] {
    if (!player) {
       return [ROLE_CLASS_MAP[prefix].default, null];
    }

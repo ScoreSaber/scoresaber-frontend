@@ -17,7 +17,7 @@ import type {
 } from '@/shared/api/generated/ApiParams';
 import { DeviceDisplay } from '@/shared/components/device-display';
 import { Time } from '@/shared/components/time';
-import { cn, formatAccuracy, formatNumber, getHmdName, isLegacyAccuracyScore } from '@/shared/format/helpers';
+import { cn, formatNumber, getHmdName, isLegacyAccuracyScore } from '@/shared/format/helpers';
 import { isLeaderboardRanked } from '@/shared/format/styling';
 
 interface LeaderboardScoresTableProps {
@@ -59,8 +59,6 @@ interface LeaderboardScoreCardProps {
 
 function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, relativeRank }: LeaderboardScoreCardProps) {
    const [detailsExpanded, setDetailsExpanded] = useState(false);
-   const missedTotal = score.missedNotes + score.badCuts;
-   const accuracy = formatAccuracy(score.accuracy * 100);
    const legacyAccuracy = isLegacyAccuracyScore(score.createdAt);
 
    const hmdName = getHmdName(score.device, score.legacyHmdId);
@@ -74,15 +72,6 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
          className="-ml-0.5"
       />
    ) : null;
-
-   const scoreProps = {
-      modifiedScore: score.modifiedScore,
-      pp: score.pp,
-      accuracy,
-      mods: score.mods,
-      fullCombo: score.fullCombo,
-      missedTotal
-   };
 
    const rankDisplay =
       relativeRank != null ? (
@@ -128,7 +117,7 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
 
                {/* stats */}
                <ScoreStats
-                  score={scoreProps}
+                  score={score}
                   showAccuracy={showAccuracy}
                   showPP={isRanked}
                   legacyAccuracy={legacyAccuracy}
@@ -169,13 +158,7 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
                   </div>
                </div>
 
-               <ScoreStats
-                  score={scoreProps}
-                  showAccuracy={showAccuracy}
-                  showPP={isRanked}
-                  legacyAccuracy={legacyAccuracy}
-                  className="mt-0 items-end"
-               />
+               <ScoreStats score={score} showAccuracy={showAccuracy} showPP={isRanked} legacyAccuracy={legacyAccuracy} className="mt-0 items-end" />
             </div>
 
             {/* actions */}

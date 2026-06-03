@@ -41,10 +41,6 @@ function isActiveRankRequest(rankRequest?: RankRequest | null): rankRequest is R
    return rankRequest != null && isActiveRankRequestStatus(rankRequest.approvalStatus);
 }
 
-function isReplacedRankRequest(rankRequest: RankRequest) {
-   return rankRequest.approvalStatus === 'REPLACED';
-}
-
 function getActiveRankRequestLeaderboardIds(rankRequest?: RankRequest | null) {
    if (!isActiveRankRequest(rankRequest)) return new Set<number>();
 
@@ -105,6 +101,5 @@ export {
    getRankRequestDisplayStatus,
    getRankRequestStatusLabel,
    getRankRequestQualifyGate,
-   isActiveRankRequest,
-   isReplacedRankRequest
+   isActiveRankRequest
 };

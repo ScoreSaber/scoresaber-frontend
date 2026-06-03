@@ -2,6 +2,8 @@
 
 import { type ComponentProps, useState } from 'react';
 
+import { Result } from 'better-result';
+
 import { useAuth } from '@/modules/auth';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { cn } from '@/shared/format/helpers';
@@ -14,8 +16,7 @@ export function PlayerAvatar({ className, alt, src, playerId, ...props }: Player
    const [hasError, setHasError] = useState(false);
    const { style, width, height, ...imageProps } = props;
    const boxStyle = { width: width ?? undefined, height: height ?? undefined, ...style };
-   const cacheBustedSrc = usePlayerAvatarSrc(typeof src === 'string' ? src : undefined, playerId);
-   const imageSrc = typeof src === 'string' ? cacheBustedSrc : src;
+   const imageSrc = usePlayerAvatarSrc(src, playerId);
 
    if (hasError) {
       return <div className={cn('bg-muted shrink-0 overflow-hidden rounded-full', className)} style={boxStyle} />;
@@ -42,13 +43,14 @@ function getCacheBustedPlayerAvatarSrc(src: string | undefined, cacheBust: strin
       return src;
    }
 
-   try {
-      const url = new URL(src);
-      url.searchParams.set('v', cacheBust);
-      return url.toString();
-   } catch {
-      return src;
-   }
+   const url = Result.unwrapOr(
+      Result.try(() => new URL(src)),
+      null
+   );
+   if (!url) return src;
+
+   url.searchParams.set('v', cacheBust);
+   return url.toString();
 }
 
 function usePlayerAvatarSrc(src: string | undefined, playerId?: string) {

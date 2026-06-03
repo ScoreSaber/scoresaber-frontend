@@ -2,7 +2,11 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 import { getLeaderboardsForGameMode, sortLeaderboardsByDifficulty } from '@/modules/maps/map-leaderboards';
-import type { LeaderboardControllerGetLeaderboardByIdResponse } from '@/shared/api/generated/ApiParams';
+import type {
+   LeaderboardControllerGetLeaderboardByIdResponse,
+   LeaderboardControllerGetLeaderboardScoresByIdDataItem,
+   PlayerControllerGetPlayerScoresDataItem
+} from '@/shared/api/generated/ApiParams';
 import { getDifficultyLabel } from '@/shared/format/strings';
 import { isLeaderboardRanked } from '@/shared/format/styling';
 
@@ -77,7 +81,9 @@ const LEGACY_HMDS: Record<number, string> = {
    128: 'Vive Cosmos'
 };
 
-export function getHmdName(device: { hmd?: string | null } | null, legacyHmdId: number | null): string | null {
+type ScoreDevice = PlayerControllerGetPlayerScoresDataItem['score']['device'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem['device'];
+
+export function getHmdName(device: ScoreDevice, legacyHmdId: number | null): string | null {
    if (device?.hmd) return device.hmd;
    if (legacyHmdId != null && legacyHmdId in LEGACY_HMDS) return LEGACY_HMDS[legacyHmdId];
    return null;

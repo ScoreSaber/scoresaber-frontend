@@ -111,14 +111,11 @@ function isAllowedRichTextImage(value: string) {
 
 function hasRichTextContent(value: string): boolean {
    if (typeof DOMParser === 'undefined') {
-      if (
-         value
-            .replace(/<[^>]*>/g, '')
-            .replace(/\u00a0/g, ' ')
-            .trim().length > 0
-      )
-         return true;
-      return /<(hr|img|iframe)(\s|>|\/)/i.test(value);
+      const textContent = value
+         .replace(/<[^>]*>/g, '')
+         .replace(/\u00a0/g, ' ')
+         .trim();
+      return textContent.length > 0 || /<(hr|img|iframe)(\s|>|\/)/i.test(value);
    }
 
    const doc = new DOMParser().parseFromString(`<div>${value}</div>`, 'text/html');

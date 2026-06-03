@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { Result } from 'better-result';
 import { Check, ChevronDown, ChevronUp, Copy, Image as ImageIcon, Pin } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Separator } from '@/components/ui/separator';
 
 import { cn } from '@/shared/format/helpers';
+import { readStorageValue, writeStorageValue } from '@/shared/result/storage';
 import type { ScoredImage } from '@/shell/background/analyze-background';
 
 const MINIMIZED_STORAGE_KEY = 'page-background-debug:minimized';
@@ -22,13 +24,13 @@ interface BackgroundDebugPanelProps {
 export function BackgroundDebugPanel({ results, onSwap }: BackgroundDebugPanelProps) {
    const [minimized, setMinimized] = useState<boolean>(() => {
       if (typeof window === 'undefined') return false;
-      return window.localStorage.getItem(MINIMIZED_STORAGE_KEY) === 'true';
+      return Result.unwrapOr(readStorageValue(MINIMIZED_STORAGE_KEY), null) === 'true';
    });
    const [openIds, setOpenIds] = useState<Set<string>>(new Set());
    const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
 
    useEffect(() => {
-      window.localStorage.setItem(MINIMIZED_STORAGE_KEY, String(minimized));
+      writeStorageValue(MINIMIZED_STORAGE_KEY, String(minimized));
    }, [minimized]);
 
    if (results.length === 0) return null;

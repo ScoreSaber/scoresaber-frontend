@@ -3,8 +3,10 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { useRouter } from '@tanstack/react-router';
+import { Result } from 'better-result';
 
 import type { UserControllerGetMeResponse } from '@/shared/api/generated/ApiParams';
+import { readStorageValue, removeStorageValue, writeStorageValue } from '@/shared/result/storage';
 
 type AuthContextValue = {
    user: UserControllerGetMeResponse | null;
@@ -22,10 +24,10 @@ function readStoredAvatarCacheBust() {
       return null;
    }
 
-   const raw = window.localStorage.getItem(ownAvatarCacheBustKey);
+   const raw = Result.unwrapOr(readStorageValue(ownAvatarCacheBustKey), null);
    const value = raw ? Number(raw) : NaN;
    if (!Number.isFinite(value) || Date.now() - value > ownAvatarCacheBustTtlMs) {
-      window.localStorage.removeItem(ownAvatarCacheBustKey);
+      removeStorageValue(ownAvatarCacheBustKey);
       return null;
    }
 
@@ -50,7 +52,7 @@ export function AuthProvider({ initialUser, children }: { initialUser: UserContr
 
    const bustOwnAvatar = useCallback(() => {
       const value = Date.now().toString();
-      window.localStorage.setItem(ownAvatarCacheBustKey, value);
+      writeStorageValue(ownAvatarCacheBustKey, value);
       setAvatarCacheBust(value);
    }, []);
 

@@ -5,21 +5,18 @@ import { useTranslations } from 'use-intl';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import type {
+   LeaderboardControllerGetLeaderboardScoresByIdDataItem,
+   PlayerControllerGetPlayerScoresDataItem
+} from '@/shared/api/generated/ApiParams';
 import { Stat } from '@/shared/components/stat';
 import { Time } from '@/shared/components/time';
-import { cn, formatNumber, formatPP } from '@/shared/format/helpers';
+import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
 
-interface ScoreData {
-   modifiedScore: number;
-   pp: number;
-   accuracy: string;
-   mods: string[];
-   fullCombo: boolean;
-   missedTotal: number;
-}
+type ScoreStatsScore = PlayerControllerGetPlayerScoresDataItem['score'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem;
 
 interface ScoreStatsProps {
-   score: ScoreData;
+   score: ScoreStatsScore;
    weightedPP?: string;
    weightedPercent?: string;
    showAccuracy?: boolean;
@@ -41,6 +38,9 @@ export function ScoreStats({
 }: ScoreStatsProps) {
    const t = useTranslations();
    const tc = useTranslations();
+   const accuracy = formatAccuracy(score.accuracy * 100);
+   const missedTotal = score.missedNotes + score.badCuts;
+
    return (
       <div className={cn('text-foreground flex cursor-default flex-col flex-wrap items-center justify-center gap-1 text-sm lg:items-end', className)}>
          {showAccuracy && (
@@ -56,7 +56,7 @@ export function ScoreStats({
                         valueClassName={legacyAccuracy ? 'text-muted-foreground' : 'text-score-accuracy-good'}
                      >
                         <span className="inline-flex items-center gap-1">
-                           {score.accuracy}
+                           {accuracy}
                            {legacyAccuracy && <Info className="size-3 opacity-70" />}
                         </span>
                      </Stat>
@@ -114,7 +114,7 @@ export function ScoreStats({
                valueClassName={score.fullCombo ? 'text-score-combo-full' : 'text-score-combo-broken'}
                iconClassName={score.fullCombo ? 'text-score-combo-full' : 'text-score-combo-broken'}
             >
-               {score.fullCombo ? 'FC' : score.missedTotal === 0 ? 'FC' : score.missedTotal}
+               {score.fullCombo ? 'FC' : missedTotal === 0 ? 'FC' : missedTotal}
             </Stat>
          </div>
 

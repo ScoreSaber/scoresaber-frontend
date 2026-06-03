@@ -1,7 +1,7 @@
 import type {
    LeaderboardControllerGetLeaderboardByIdResponse,
-   LeaderboardControllerGetLeaderboardScoresByIdDataItem,
    LeaderboardControllerGetLeaderboardScoresByIdPivot,
+   LeaderboardControllerGetLeaderboardScoresByIdResponse,
    MapControllerGetMapByIdResponse
 } from '@/shared/api/generated/ApiParams';
 import type { CountryRegionFilterValue } from '@/shared/country-region';
@@ -9,10 +9,7 @@ import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 
 type RankRequest = NonNullable<MapControllerGetMapByIdResponse['rankRequest']>;
 
-type LeaderboardScores = {
-   data: LeaderboardControllerGetLeaderboardScoresByIdDataItem[];
-   metadata: { totalItems: number; itemsPerPage: number };
-} | null;
+type LeaderboardScores = LeaderboardControllerGetLeaderboardScoresByIdResponse | null;
 
 type MapLeaderboardTab = 'leaderboard' | 'rank-request';
 type MapLeaderboardRouteName = 'map' | 'mapDifficulty';

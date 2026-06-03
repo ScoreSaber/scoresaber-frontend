@@ -13,7 +13,7 @@ import {
 import { parseCountryRegionParam, type CountryRegionFilterValue } from '@/shared/country-region';
 import { mapFilterPreferences, rankingFilterPreferences, rankRequestFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { usePersistedSearch } from '@/shared/url-state/persisted/use-persisted-search';
-import type { SearchParamsRecord } from '@/shared/url-state/search-params';
+import type { SearchParamsRecord, SearchParamValue } from '@/shared/url-state/search-params';
 import type { AppNavRoute } from '@/shell/nav-data';
 
 type MapsRouteSearch = SearchParamsRecord & {
@@ -107,14 +107,14 @@ function parseRankRequestsSearch(search: SearchParamsRecord): RankRequestsRouteS
    };
 }
 
-function isMapSortBy(value: unknown): value is MapsRouteSearch['sortBy'] {
+function isMapSortBy(value: SearchParamValue): value is MapsRouteSearch['sortBy'] {
    return typeof value === 'string' && (MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY as readonly string[]).includes(value);
 }
 
-function isMapSortDirection(value: unknown): value is MapsRouteSearch['sortDirection'] {
+function isMapSortDirection(value: SearchParamValue): value is MapsRouteSearch['sortDirection'] {
    return typeof value === 'string' && (MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION as readonly string[]).includes(value);
 }
 
-function isRankingsPivot(value: unknown): value is RankingsRouteSearch['pivot'] {
+function isRankingsPivot(value: SearchParamValue): value is RankingsRouteSearch['pivot'] {
    return typeof value === 'string' && (PLAYER_CONTROLLER_GET_PLAYERS_PIVOT as readonly string[]).includes(value);
 }

@@ -30,10 +30,17 @@ async function streamReleaseAsset(releases: QuestRelease[], tag: string) {
       return Response.json({ error: 'unknown release tag' }, { status: 404 });
    }
 
-   const assetResponse = await fetch(release.qmodAssetUrl, {
-      cache: 'no-store',
-      redirect: 'follow'
-   });
+   const assetResult = await Result.tryPromise(() =>
+      fetch(release.qmodAssetUrl, {
+         cache: 'no-store',
+         redirect: 'follow'
+      })
+   );
+   if (Result.isError(assetResult)) {
+      return Response.json({ error: 'failed to fetch release asset' }, { status: 502 });
+   }
+
+   const assetResponse = assetResult.value;
    if (!assetResponse.ok || !assetResponse.body) {
       return Response.json({ error: 'failed to fetch release asset' }, { status: 502 });
    }

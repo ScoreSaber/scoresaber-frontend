@@ -3,6 +3,8 @@ import '@tanstack/react-start/server-only';
 import { Result, TaggedError } from 'better-result';
 import * as z from 'zod';
 
+import { fetchGithubJson, type GithubJsonErrorInput } from '@/shared/result/github';
+
 const GITHUB_REPO = 'ScoreSaber/scoresaber-team';
 const TEAM_FILE_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents/team.json?ref=main`;
 const IMAGE_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/images`;
@@ -54,40 +56,26 @@ export function getTeamImageUrl(profilePicture: string) {
    return `${IMAGE_BASE_URL}/${profilePicture}`;
 }
 
-export function fetchTeam() {
-   return Result.tryPromise({
-      try: async () => {
-         const headers: Record<string, string> = {
-            Accept: 'application/vnd.github+json',
-            'X-GitHub-Api-Version': '2022-11-28'
-         };
-         if (process.env.GITHUB_TOKEN) {
-            headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-         }
+function teamFetchError({ message, status, cause }: GithubJsonErrorInput) {
+   return new TeamFetchError({ message, status, cause });
+}
 
-         const response = await fetch(TEAM_FILE_URL, {
-            headers
-         });
-
-         if (!response.ok) {
-            throw new TeamFetchError({
-               message: `github team fetch failed: ${response.status}`,
-               status: response.status,
-               cause: null
-            });
-         }
-
-         const file = githubContentSchema.parse(await response.json());
-         const json = Buffer.from(file.content, 'base64').toString('utf8');
-         return teamSchema.parse(JSON.parse(json));
-      },
+function parseTeamJson(json: string) {
+   return Result.try({
+      try: () => teamSchema.parse(JSON.parse(json)),
       catch: (cause) =>
-         cause instanceof TeamFetchError
-            ? cause
-            : new TeamFetchError({
-                 message: cause instanceof Error ? cause.message : 'failed to load team',
-                 status: null,
-                 cause
-              })
+         teamFetchError({
+            message: 'failed to parse team data',
+            status: null,
+            cause
+         })
+   });
+}
+
+export function fetchTeam() {
+   return Result.gen(async function* () {
+      const file = yield* Result.await(fetchGithubJson(TEAM_FILE_URL, githubContentSchema, teamFetchError, 'github team fetch'));
+      const team = yield* parseTeamJson(Buffer.from(file.content, 'base64').toString('utf8'));
+      return Result.ok(team);
    });
 }

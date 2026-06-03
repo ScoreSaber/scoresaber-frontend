@@ -3,10 +3,8 @@
 import { type ReactNode, type TouchEvent as ReactTouchEvent, useEffect, useRef, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { Result } from 'better-result';
 import { Bomb, Grid3X3, Loader2, Scissors, Target, Zap } from 'lucide-react';
 import { useTranslations } from 'use-intl';
-import { z } from 'zod';
 
 import { HandAccuracyRing } from './hand-accuracy-ring';
 import { HitScoreValue } from './hit-score-value';
@@ -20,8 +18,6 @@ import { Stat } from '@/shared/components/stat';
 import { cn, formatNumber } from '@/shared/format/helpers';
 import { queryApiData } from '@/shared/result/api';
 
-const numberArraySchema = z.array(z.number());
-
 export function ScoreStatsDetail({ scoreId, fullCombo, onLoadedAction }: ScoreStatsDetailProps) {
    const t = useTranslations();
    const [chartView, setChartView] = useState<ChartView>('basic');
@@ -33,7 +29,7 @@ export function ScoreStatsDetail({ scoreId, fullCombo, onLoadedAction }: ScoreSt
       isError
    } = useQuery({
       queryKey: ['scoreStats', scoreId],
-      queryFn: async () => normalizeStats(await queryApiData(api.score.scoreControllerGetScoreStats({ id: scoreId })))
+      queryFn: () => queryApiData(api.score.scoreControllerGetScoreStats({ id: scoreId }))
    });
 
    useEffect(() => {
@@ -166,28 +162,6 @@ export function ScoreStatsDetail({ scoreId, fullCombo, onLoadedAction }: ScoreSt
    );
 }
 
-function ensureArray(val: number[] | string): number[] {
-   if (Array.isArray(val)) return val;
-   if (typeof val === 'string') {
-      const parsed = Result.unwrapOr(
-         Result.try(() => JSON.parse(val)),
-         null
-      );
-      const result = numberArraySchema.safeParse(parsed);
-      if (result.success) return result.data;
-   }
-   return [];
-}
-
-function normalizeStats(raw: ScoreControllerGetScoreStatsResponse) {
-   return {
-      ...raw,
-      scoreGraph: ensureArray(raw.scoreGraph),
-      leftAverageCut: ensureArray(raw.leftAverageCut),
-      rightAverageCut: ensureArray(raw.rightAverageCut)
-   };
-}
-
 interface ScoreStatsDetailProps {
    scoreId: number;
    fullCombo: boolean;
@@ -200,7 +174,6 @@ const GRID_ROWS = [
    [8, 9, 10, 11]
 ];
 
-type NormalizedScoreStats = ReturnType<typeof normalizeStats>;
 type ChartView = 'basic' | 'advanced' | 'distribution';
 
 const SWIPE_THRESHOLD = 40;
@@ -289,7 +262,7 @@ function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gr
    );
 }
 
-function ScoreAccuracyOverview({ stats, fullCombo }: { stats: NormalizedScoreStats; fullCombo: boolean }) {
+function ScoreAccuracyOverview({ stats, fullCombo }: { stats: ScoreControllerGetScoreStatsResponse; fullCombo: boolean }) {
    const t = useTranslations();
    const leftLabel = t('score.leftShort');
    const rightLabel = t('score.rightShort');

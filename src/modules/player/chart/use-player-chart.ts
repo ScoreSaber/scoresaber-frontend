@@ -150,19 +150,20 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
    }, [activeMetrics, isShowingEstimated, timeRange]);
 
    const handleMetricClick = useCallback((key: MetricKey, isMultiSelect: boolean) => {
-      if (isMultiSelect) {
-         setActiveMetrics((prev) => {
-            const next = new Set(prev);
-            if (next.has(key)) {
-               if (next.size > 1) next.delete(key);
-               return next;
-            }
-            next.add(key);
-            return next;
-         });
-      } else {
+      if (!isMultiSelect) {
          setActiveMetrics(new Set([key]));
+         return;
       }
+
+      setActiveMetrics((prev) => {
+         const next = new Set(prev);
+         if (next.has(key)) {
+            if (next.size > 1) next.delete(key);
+            return next;
+         }
+         next.add(key);
+         return next;
+      });
    }, []);
 
    const { handlePointerDown, handlePointerUp, handlePointerCancel } = useLongPress<MetricKey>(handleMetricClick);

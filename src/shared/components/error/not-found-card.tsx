@@ -14,7 +14,15 @@ interface NotFoundCardProps {
 export function NotFoundCard({ titleKey = 'pageNotFound', descriptionKey = 'pageNotFoundDesc' }: NotFoundCardProps) {
    const t = useTranslations('error');
 
-   return <ErrorCard icon={AlertCircle} title={t(titleKey)} description={t(descriptionKey)} />;
+   const title = titleKey === 'mapNotFound' ? t('mapNotFound') : titleKey === 'playerNotFound' ? t('playerNotFound') : t('pageNotFound');
+   const description =
+      descriptionKey === 'mapNotFoundDesc'
+         ? t('mapNotFoundDesc')
+         : descriptionKey === 'playerNotFoundDesc'
+           ? t('playerNotFoundDesc')
+           : t('pageNotFoundDesc');
+
+   return <ErrorCard icon={AlertCircle} title={title} description={description} />;
 }
 
 export function RouteNotFound(_props: NotFoundRouteProps) {

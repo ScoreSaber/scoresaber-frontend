@@ -34,8 +34,6 @@ export function ScoreCard({ playerScore, className }: ScoreCardProps) {
    const isRanked = isLeaderboardRanked(leaderboard);
    const weightedPP = formatPP(score.pp * score.weight);
    const weightedPercent = formatAccuracy(score.weight * 100);
-   const missedTotal = score.missedNotes + score.badCuts;
-   const accuracy = formatAccuracy(score.accuracy * 100);
 
    const [activePanel, setActivePanel] = useState<Panel>(null);
    const [transitioning, setTransitioning] = useState(false);
@@ -93,14 +91,7 @@ export function ScoreCard({ playerScore, className }: ScoreCardProps) {
                   </div>
 
                   <ScoreStats
-                     score={{
-                        modifiedScore: score.modifiedScore,
-                        pp: score.pp,
-                        accuracy,
-                        mods: score.mods,
-                        fullCombo: score.fullCombo,
-                        missedTotal
-                     }}
+                     score={score}
                      weightedPP={weightedPP}
                      weightedPercent={weightedPercent}
                      showAccuracy={leaderboard.maxScore > 0}

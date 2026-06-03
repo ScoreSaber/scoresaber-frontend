@@ -48,7 +48,7 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
    const t = useTranslations();
    const { stats } = player;
    const playerSummary = buildPlayerSummary(player, 'text');
-   const isActive = !playerSummary.isInactive && !playerSummary.isBanned;
+   const isActive = !player.inactive && !player.banned;
 
    return (
       <div className="relative z-10">
@@ -112,14 +112,14 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                         {aliases && <PlayerAliases aliases={aliases} playerId={player.id} />}
                      </div>
 
-                     {!playerSummary.isBanned && (
+                     {!player.banned && (
                         <StatusBadge tooltip={t('common.performancePoints')} className={ppBadgeClass}>
                            {formatPP(stats.totalPP)}
                            <span className={ppUnitClass}>pp</span>
                         </StatusBadge>
                      )}
 
-                     {playerSummary.isInactive && !playerSummary.isBanned && (
+                     {player.inactive && !player.banned && (
                         <StatusBadge
                            tooltip={t('player.inactiveTooltip')}
                            className="border-border/40 bg-muted/40 text-muted-foreground rounded-md border px-2 py-0.5 text-xs font-medium"
@@ -129,7 +129,7 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                         </StatusBadge>
                      )}
 
-                     {playerSummary.isBanned && (
+                     {player.banned && (
                         <StatusBadge
                            tooltip={t('player.bannedTooltip')}
                            className="border-destructive/30 bg-destructive/15 text-destructive rounded-md border px-2 py-0.5 text-xs font-semibold"

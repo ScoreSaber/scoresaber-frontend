@@ -1,3 +1,4 @@
+import type { PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
 import Permissions from '@/shared/permissions';
 
 export const scoreSaber2Badge = {
@@ -10,7 +11,7 @@ export const scoreSaber2Badge = {
    promoDismissedStorageKey: 'scoresaber-score-saber-2-badge-promo-dismissed'
 };
 
-export function hasScoreSaber2Badge(player: { badges?: readonly { id: number }[] | null } | null | undefined) {
+export function hasScoreSaber2Badge(player: PlayerControllerGetPlayerResponse | null | undefined) {
    return player?.badges?.some((badge) => badge.id === scoreSaber2Badge.id) ?? false;
 }
 

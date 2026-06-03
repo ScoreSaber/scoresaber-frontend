@@ -51,11 +51,11 @@ export function LeaderboardAdminOperations({ activeOperation, leaderboardId, act
          closeDialog();
       };
 
-      if (mode === 'rank') {
-         action.run(() => rankLeaderboard(leaderboardId, maxPP), tLB('leaderboard.leaderboardRanked'), tLB('leaderboard.failedToRank'), clearPP);
-      } else {
-         action.run(() => setManualPP(leaderboardId, maxPP), tLB('leaderboard.starsUpdated'), tLB('leaderboard.failedToSetStars'), clearPP);
-      }
+      const run = mode === 'rank' ? () => rankLeaderboard(leaderboardId, maxPP) : () => setManualPP(leaderboardId, maxPP);
+      const successMessage = mode === 'rank' ? tLB('leaderboard.leaderboardRanked') : tLB('leaderboard.starsUpdated');
+      const errorMessage = mode === 'rank' ? tLB('leaderboard.failedToRank') : tLB('leaderboard.failedToSetStars');
+
+      action.run(run, successMessage, errorMessage, clearPP);
    }
 
    return (

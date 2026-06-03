@@ -165,9 +165,9 @@ function OmniSearchBody() {
       const max = flatItems().length;
       if (max === 0) {
          setFocusIndex(0);
-      } else if (focusIndex >= max) {
-         setFocusIndex(max - 1);
+         return;
       }
+      if (focusIndex >= max) setFocusIndex(max - 1);
    }, [flatItems, focusIndex]);
 
    // reset on close, seed from initialQuery on open
@@ -179,12 +179,14 @@ function OmniSearchBody() {
          setFocusIndex(0);
          setPlayersCollapsed(false);
          setMapsCollapsed(false);
-      } else if (initialQuery) {
-         setQuery(initialQuery);
-         debouncedQueryUpdate.cancel();
-         setDebouncedQuery(initialQuery);
-         clearInitialQuery();
+         return;
       }
+      if (!initialQuery) return;
+
+      setQuery(initialQuery);
+      debouncedQueryUpdate.cancel();
+      setDebouncedQuery(initialQuery);
+      clearInitialQuery();
    }, [open, initialQuery, clearInitialQuery, debouncedQueryUpdate]);
 
    // autofocus on open
@@ -250,9 +252,9 @@ function OmniSearchBody() {
 
       if (item.type === 'player') {
          navigateToPlayer(results.players[item.index].id);
-      } else {
-         navigateToMap(results.maps[item.index].id);
+         return;
       }
+      navigateToMap(results.maps[item.index].id);
    }
 
    function scrollToFocused(index: number, max: number) {

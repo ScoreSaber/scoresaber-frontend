@@ -125,10 +125,10 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
       const fitAll = Math.floor((containerW + BADGE_GAP) / (BADGE_W + BADGE_GAP));
       if (fitAll >= badges.length) {
          setVisibleBadgeCount(badges.length);
-      } else {
-         const fitWithEllipsis = Math.floor((containerW - ELLIPSIS_W - BADGE_GAP + BADGE_GAP) / (BADGE_W + BADGE_GAP));
-         setVisibleBadgeCount(Math.max(1, fitWithEllipsis));
+         return;
       }
+      const fitWithEllipsis = Math.floor((containerW - ELLIPSIS_W - BADGE_GAP + BADGE_GAP) / (BADGE_W + BADGE_GAP));
+      setVisibleBadgeCount(Math.max(1, fitWithEllipsis));
    }, [badges]);
 
    const nameEl = (

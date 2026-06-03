@@ -49,7 +49,7 @@ export function useEmailChallenge<TChallenge extends EmailChallenge, TVerifyResu
          setCode('');
          onStarted?.(value);
       },
-      onError: (error) => onStartError?.(toError(error))
+      onError: (error) => onStartError?.(error)
    });
 
    const verifyMutation = useMutation({
@@ -59,7 +59,7 @@ export function useEmailChallenge<TChallenge extends EmailChallenge, TVerifyResu
       },
       onMutate: onVerifyMutate,
       onSuccess: (value) => onVerified?.(value),
-      onError: (error) => onVerifyError?.(toError(error))
+      onError: (error) => onVerifyError?.(error)
    });
 
    function clearChallenge() {
@@ -79,8 +79,4 @@ export function useEmailChallenge<TChallenge extends EmailChallenge, TVerifyResu
       startMutation,
       verifyMutation
    };
-}
-
-function toError(error: unknown) {
-   return error instanceof Error ? error : new Error(String(error));
 }

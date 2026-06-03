@@ -4,10 +4,11 @@ import { useState } from 'react';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import type { PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 
 interface PlayerBadgesProps {
-   badges: { id: number; image: string; description: string }[];
+   badges: PlayerControllerGetPlayerResponse['badges'];
 }
 
 export function PlayerBadges({ badges }: PlayerBadgesProps) {

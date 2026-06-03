@@ -48,17 +48,15 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
 
    function handleClick() {
       if (isPlatformFriend) return;
-      if (isFollowing) {
-         action.mutate(() => unfollowPlayer(playerId), {
-            onSuccess: () => setState('none'),
-            onError: () => toast.error(t('player.failedToUnfollow'))
-         });
-      } else {
-         action.mutate(() => followPlayer(playerId), {
-            onSuccess: () => setState('following'),
-            onError: () => toast.error(t('player.failedToFollow'))
-         });
-      }
+
+      const mutate = isFollowing ? () => unfollowPlayer(playerId) : () => followPlayer(playerId);
+      const nextState = isFollowing ? 'none' : 'following';
+      const errorMessage = isFollowing ? t('player.failedToUnfollow') : t('player.failedToFollow');
+
+      action.mutate(mutate, {
+         onSuccess: () => setState(nextState),
+         onError: () => toast.error(errorMessage)
+      });
    }
 
    const label = showUnfollow

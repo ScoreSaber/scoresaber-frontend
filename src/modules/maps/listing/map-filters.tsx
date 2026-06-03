@@ -48,12 +48,12 @@ const DEFAULT_MAX_STARS = 16;
 // sorts that imply ranked-only results
 const RANKED_SORTS = new Set<MapControllerGetMapListingsSortBy>(['highestStars', 'latestRankedAt']);
 
-function isMapSortBy(value: unknown): value is MapControllerGetMapListingsSortBy {
-   return typeof value === 'string' && (MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY as readonly string[]).includes(value);
+function isMapSortBy(value: string | undefined): value is MapControllerGetMapListingsSortBy {
+   return value != null && (MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY as readonly string[]).includes(value);
 }
 
 function parseMapListingStatuses(status?: string) {
-   return (typeof status === 'string' ? status.split(',') : []).filter(isMapStatus);
+   return (status?.split(',') ?? []).filter(isMapStatus);
 }
 
 function isMapStatus(value: string): value is MapControllerGetMapListingsStatus {
@@ -157,7 +157,7 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
       debouncedStarNavigation.run(min, max);
    }
 
-   function getSortUpdates(sortBy: MapControllerGetMapListingsSortBy) {
+   function getSortUpdates(sortBy: MapControllerGetMapListingsSortBy): Partial<MapsFilterSearch> {
       if (sortBy === currentSortBy) {
          return { sortDirection: currentSortDirection === 'desc' ? 'asc' : 'desc' };
       }

@@ -21,16 +21,7 @@ import { getDifficultyTextClass, getDifficultyTintClass } from '@/shared/format/
 
 const selectLeaderboardId = z.coerce.number().int().gt(0);
 
-interface DifficultyItem {
-   id: number;
-   difficulty: number;
-   totalScores?: number;
-   dailyScores?: number;
-   realm?: {
-      leaderboardStatus: string;
-      stars: number;
-   };
-}
+type MapDifficultyItem = MapControllerGetMapByIdResponse['leaderboards'][number];
 
 interface MapDifficultySelectionProps {
    mapInfo: MapControllerGetMapByIdResponse;
@@ -48,7 +39,7 @@ export function MapDifficultySelection({ mapInfo, activeLeaderboardId, activeGam
    const [pendingId, setPendingId] = useState<number>(activeLeaderboardId);
    const [, startTransition] = useTransition();
 
-   const sortedItems: DifficultyItem[] = getDisplayLeaderboards(mapInfo.leaderboards, activeGameMode);
+   const sortedItems = getDisplayLeaderboards(mapInfo.leaderboards, activeGameMode);
    const activeItem = sortedItems.find((item) => item.id === activeLeaderboardId) ?? sortedItems[0];
    const activeRankRequestLeaderboardIds = getActiveRankRequestLeaderboardIds(mapInfo.rankRequest);
 
@@ -62,7 +53,7 @@ export function MapDifficultySelection({ mapInfo, activeLeaderboardId, activeGam
    function preloadLeaderboard(leaderboardId: number) {
       void router.preloadRoute({
          to: '/map/$id/difficulty/$leaderboardId',
-         params: { id: mapInfo.id, leaderboardId },
+         params: { id: mapInfo.id, leaderboardId: String(leaderboardId) },
          search: linkSearch
       });
    }
@@ -83,7 +74,7 @@ export function MapDifficultySelection({ mapInfo, activeLeaderboardId, activeGam
       startTransition(() => {
          void router.navigate({
             to: '/map/$id/difficulty/$leaderboardId',
-            params: { id: mapInfo.id, leaderboardId: result.data },
+            params: { id: mapInfo.id, leaderboardId: String(result.data) },
             search: linkSearch
          });
       });
@@ -155,7 +146,7 @@ function DifficultyItemContent({
    scoreStatsClassName,
    showStats = true
 }: {
-   item: DifficultyItem;
+   item: MapDifficultyItem;
    isActive: boolean;
    hasActiveRankRequest: boolean;
    t: MapTranslator;
@@ -164,8 +155,8 @@ function DifficultyItemContent({
    scoreStatsClassName?: string;
    showStats?: boolean;
 }) {
-   const isRanked = item.realm?.leaderboardStatus === 'RANKED';
-   const hasStars = isRanked && (item.realm?.stars ?? 0) > 0;
+   const isRanked = item.realm.leaderboardStatus === 'RANKED';
+   const hasStars = isRanked && item.realm.stars > 0;
 
    return (
       <>
@@ -182,12 +173,12 @@ function DifficultyItemContent({
             </Tooltip>
          )}
 
-         {showStats && item.totalScores != null && (
+         {showStats && (
             <span className={cn('ml-auto flex items-center gap-2', isActive ? 'text-foreground/70' : 'text-muted-foreground/60')}>
                {hasStars && (
                   <span className={cn('flex items-center gap-0.5', starsClassName)}>
                      <FaStar className="size-2" />
-                     <span className="text-[10px]">{item.realm!.stars.toFixed(2)}</span>
+                     <span className="text-[10px]">{item.realm.stars.toFixed(2)}</span>
                   </span>
                )}
                <Tooltip delayDuration={1200}>
@@ -199,12 +190,12 @@ function DifficultyItemContent({
                   </TooltipTrigger>
                   <TooltipContent>{t('totalScores')}</TooltipContent>
                </Tooltip>
-               {(item.dailyScores ?? 0) > 0 && (
+               {item.dailyScores > 0 && (
                   <Tooltip delayDuration={1200}>
                      <TooltipTrigger asChild>
                         <span className={cn('flex items-center gap-0.5', scoreStatsClassName, tooltipCursorClass)}>
                            <FaChartLine className="size-2" />
-                           <span className="text-[10px]">+{formatNumber(item.dailyScores!)}</span>
+                           <span className="text-[10px]">+{formatNumber(item.dailyScores)}</span>
                         </span>
                      </TooltipTrigger>
                      <TooltipContent>{t('scoresToday')}</TooltipContent>
