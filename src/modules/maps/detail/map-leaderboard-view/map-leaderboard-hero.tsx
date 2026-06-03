@@ -15,7 +15,7 @@ import { FadeInImage } from '@/shared/components/fade-in-image';
 import { Stat } from '@/shared/components/stat';
 import { Time } from '@/shared/components/time';
 import { cn, formatNumber } from '@/shared/format/helpers';
-import { getStatusAccentClass, getStatusLabel } from '@/shared/format/styling';
+import { getStatusAccentClass } from '@/shared/format/styling';
 import { isLeaderboardPersonalizationParam } from '@/shared/url-state/persisted-filter-preferences';
 
 class ShareLinkCopyError extends TaggedError('ShareLinkCopyError')<{
@@ -47,7 +47,13 @@ export function MapLeaderboardHero({ mapInfo, leaderboardInfo }: MapLeaderboardH
                         'text-foreground'
                      )}
                   >
-                     {getStatusLabel(status)}
+                     {status === 'RANKED'
+                        ? tc('map.statusRanked')
+                        : status === 'QUALIFIED'
+                          ? tc('map.statusQualified')
+                          : status === 'LOVED'
+                            ? tc('map.statusLoved')
+                            : tc('map.statusUnranked')}
                   </span>
                   <ShareMapButton />
                </div>
