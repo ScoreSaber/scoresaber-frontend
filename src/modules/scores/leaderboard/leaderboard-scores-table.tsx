@@ -146,7 +146,13 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
                         {rankDisplay}
                      </span>
                      <span className="text-muted-foreground text-[11px]">
-                        <Time short date={score.createdAt} longRelativeClassName="text-[10.5px]" />
+                        <Time
+                           short
+                           date={score.createdAt}
+                           longRelativeClassName="[font-size:var(--short-time-font-size)]"
+                           shortFitTargetLength={12}
+                           minShortFitScale={0.85}
+                        />
                      </span>
                   </div>
                   <PlayerAvatar

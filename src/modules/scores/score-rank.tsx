@@ -34,7 +34,7 @@ export function ScoreRank({ rank, scoreId, mapId, leaderboardId, timeSet, hmdNam
             </mapDifficultyRoute.Link>
          </span>
          <span className="absolute top-0 left-1/2 -translate-x-1/2 text-center whitespace-nowrap lg:static lg:translate-x-0">
-            <Time short={true} date={timeSet} longRelativeClassName="lg:text-[10px]" />
+            <Time short={true} date={timeSet} longRelativeClassName="lg:[font-size:var(--short-time-font-size)]" />
          </span>
          <DeviceDisplay
             hmd={hmdName}

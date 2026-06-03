@@ -1,5 +1,6 @@
 'use client';
 
+import type { CSSProperties } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useLocale, useTranslations } from 'use-intl';
@@ -14,6 +15,8 @@ type TimeProps = {
    dateOnly?: boolean;
    className?: string;
    longRelativeClassName?: string;
+   shortFitTargetLength?: number;
+   minShortFitScale?: number;
 };
 
 const RELATIVE_UNITS: { seconds: number; unit: Intl.RelativeTimeFormatUnit }[] = [
@@ -24,9 +27,10 @@ const RELATIVE_UNITS: { seconds: number; unit: Intl.RelativeTimeFormatUnit }[] =
    { seconds: 60, unit: 'minute' }
 ];
 
-const LONG_SHORT_TIME_LENGTH = 12;
+const LONG_SHORT_TIME_LENGTH = 11;
+const MIN_SHORT_TIME_SCALE = 0.65;
 
-export function Time({ date, short, dateOnly, className, longRelativeClassName }: TimeProps) {
+export function Time({ date, short, dateOnly, className, longRelativeClassName, shortFitTargetLength, minShortFitScale }: TimeProps) {
    const dateObj = date == null ? null : new Date(date);
    const [mounted, setMounted] = useState(false);
    const locale = useLocale();
@@ -57,6 +61,7 @@ export function Time({ date, short, dateOnly, className, longRelativeClassName }
    }
 
    const displayText = mounted ? timeAgo(dateObj, short, formatters, t('justNow')) : formatters.shortDate.format(dateObj);
+   const shortTimeStyle = getShortTimeStyle(displayText, !!(short && longRelativeClassName), shortFitTargetLength, minShortFitScale);
 
    return (
       <Tooltip>
@@ -68,6 +73,7 @@ export function Time({ date, short, dateOnly, className, longRelativeClassName }
                   short && 'whitespace-nowrap',
                   short && displayText.length > LONG_SHORT_TIME_LENGTH && longRelativeClassName
                )}
+               style={shortTimeStyle}
                suppressHydrationWarning
             >
                {displayText}
@@ -78,6 +84,13 @@ export function Time({ date, short, dateOnly, className, longRelativeClassName }
          </TooltipContent>
       </Tooltip>
    );
+}
+
+function getShortTimeStyle(text: string, enabled: boolean, targetLength = LONG_SHORT_TIME_LENGTH, minScale = MIN_SHORT_TIME_SCALE) {
+   if (!enabled || text.length <= targetLength) return undefined;
+
+   const scale = Math.max(minScale, targetLength / text.length);
+   return { '--short-time-font-size': `${scale}em` } as CSSProperties;
 }
 
 function timeAgo(date: Date, isShort: boolean | undefined, formatters: TimeFormatters, justNow: string) {
