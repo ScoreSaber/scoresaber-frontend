@@ -60,6 +60,7 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
 
    function handlePointerEnter(e: PointerEvent<HTMLSpanElement>) {
       if (e.pointerType !== 'mouse') return;
+      if (!(e.target instanceof Node) || !e.currentTarget.contains(e.target)) return;
       delayedClose.cancel();
       delayedOpen.run();
    }

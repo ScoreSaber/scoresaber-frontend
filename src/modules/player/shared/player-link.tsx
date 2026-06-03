@@ -51,8 +51,8 @@ export function PlayerLink({ player, outLink, className, withPFP, variant = 'lin
          params={{ playerId: player.id }}
          search={{ page: 1, sort: 'top' }}
       >
+         <CountryImage country={player.country} className="shrink-0" />
          <PlayerHoverCard playerId={player.id}>
-            <CountryImage country={player.country} className="shrink-0" />
             <PlayerName
                player={player}
                className={cn('ml-2 truncate', isInactive && 'opacity-50', className)}
