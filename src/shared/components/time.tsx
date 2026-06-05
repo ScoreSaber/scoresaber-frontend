@@ -29,6 +29,7 @@ const RELATIVE_UNITS: { seconds: number; unit: Intl.RelativeTimeFormatUnit }[] =
 
 const LONG_SHORT_TIME_LENGTH = 11;
 const MIN_SHORT_TIME_SCALE = 0.65;
+const SHORT_RELATIVE_TIME_LOCALES = ['fr', 'ru'];
 
 export function Time({ date, short, dateOnly, className, longRelativeClassName, shortFitTargetLength, minShortFitScale }: TimeProps) {
    const dateObj = date == null ? null : new Date(date);
@@ -109,7 +110,7 @@ function timeAgo(date: Date, isShort: boolean | undefined, formatters: TimeForma
 type TimeFormatters = ReturnType<typeof createTimeFormatters>;
 
 function createTimeFormatters(locale: string) {
-   const shortRelativeStyle: Intl.RelativeTimeFormatStyle = locale.toLowerCase().startsWith('ru') ? 'short' : 'narrow';
+   const shortRelativeStyle: Intl.RelativeTimeFormatStyle = usesShortRelativeTime(locale) ? 'short' : 'narrow';
 
    return {
       relativeLong: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'long' }),
@@ -133,4 +134,9 @@ function createTimeFormatters(locale: string) {
          year: '2-digit'
       })
    };
+}
+
+function usesShortRelativeTime(locale: string) {
+   const normalizedLocale = locale.toLowerCase();
+   return SHORT_RELATIVE_TIME_LOCALES.some((shortLocale) => normalizedLocale === shortLocale || normalizedLocale.startsWith(`${shortLocale}-`));
 }
