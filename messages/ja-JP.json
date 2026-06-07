@@ -382,10 +382,10 @@
       "noScoresYet": "まだスコアがありません",
       "adjustSearch": "検索内容を調整してみてください",
       "noScoresYetDesc": "このプレイヤーはスコアを記録していません",
-      "noBioSet": "プロフィールが設定されていません",
-      "expandBio": "プロフィールを展開",
-      "collapseBio": "プロフィールを折りたたむ",
-      "writeBio": "プロフィールを書いてください...",
+      "noBioSet": "自己紹介が設定されていません",
+      "expandBio": "自己紹介を展開",
+      "collapseBio": "自己紹介を折りたたむ",
+      "writeBio": "自己紹介を書いてください...",
       "bioUpdated": "プロフィールを更新しました",
       "follow": "フォロー",
       "unfollow": "フォロー解除",
@@ -616,7 +616,7 @@
          "avatarTooLarge": "",
          "displayName": "表示名",
          "resetName": "名前をリセット",
-         "bio": "プロフィール",
+         "bio": "自己紹介",
          "writeBio": "",
          "bioCount": "",
          "nameSaved": "",
@@ -634,7 +634,7 @@
          "resetCountryConfirmText": "リセット"
       },
       "connections": {
-         "primaryHelper": "",
+         "primaryHelper": "これはメインでサインインしているアカウントで、こちらでは切断できません",
          "legacyUpgradeHelper": "",
          "connect": "",
          "upgrade": "アップグレード",
@@ -646,16 +646,16 @@
          "removeFailed": "",
          "providers": {
             "STEAM": {
-               "label": ""
+               "label": "Steam"
             },
             "OCULUS": {
-               "label": ""
+               "label": "Meta"
             },
             "PATREON": {
-               "label": ""
+               "label": "Pateron"
             },
             "DISCORD": {
-               "label": ""
+               "label": "Discord"
             }
          },
          "oauth": {
@@ -735,9 +735,9 @@
             "emptyClaimable": "",
             "timeRemainingColumn": "",
             "songColumn": "",
-            "difficultyColumn": "",
-            "ppColumn": "",
-            "rankColumn": "",
+            "difficultyColumn": "難易度",
+            "ppColumn": "PP",
+            "rankColumn": "ランク",
             "actionColumn": "",
             "claimAction": "",
             "claimingAction": "",
@@ -814,11 +814,11 @@
    },
    "legal": {
       "privacy": {
-         "pageTitle": "",
+         "pageTitle": "プライバシーポリシー",
          "lastUpdated": ""
       },
       "cookies": {
-         "pageTitle": "",
+         "pageTitle": "Cookieポリシー",
          "lastUpdated": ""
       },
       "copyright": {
@@ -826,21 +826,21 @@
          "lastUpdated": ""
       },
       "consent": {
-         "bannerTitle": "",
+         "bannerTitle": "Cookieに関する通知",
          "bannerDescription": "",
-         "dialogTitle": "",
+         "dialogTitle": "Cookieに関する通知",
          "dialogDescription": "",
-         "acceptAll": "",
+         "acceptAll": "すべて受け入れる",
          "rejectAll": "",
          "customize": "詳細",
          "details": "詳細",
-         "gotIt": "",
+         "gotIt": "了解",
          "save": "",
          "close": "閉じる",
          "necessaryTitle": "",
          "necessaryDescription": "",
-         "privacyPolicy": "",
-         "cookiePolicy": ""
+         "privacyPolicy": "プライバシーポリシー",
+         "cookiePolicy": "Cookieポリシー"
       }
    }
 }
