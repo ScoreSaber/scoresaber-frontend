@@ -815,15 +815,15 @@
    "legal": {
       "privacy": {
          "pageTitle": "Política de Privacidade",
-         "lastUpdated": "Última atualização: 30 de maio de 2026"
+         "lastUpdated": "Última atualização: {date}"
       },
       "cookies": {
          "pageTitle": "Política de cookies",
-         "lastUpdated": "Última atualização: 30 de maio de 2026"
+         "lastUpdated": "Última atualização: {date}"
       },
       "copyright": {
          "pageTitle": "Direitos autorais e remoções",
-         "lastUpdated": "Última atualização: 30 de maio de 2026"
+         "lastUpdated": "Última atualização: {date}"
       },
       "consent": {
          "bannerTitle": "Aviso de cookies",

@@ -815,15 +815,15 @@
    "legal": {
       "privacy": {
          "pageTitle": "Политика конфиденциальности",
-         "lastUpdated": "Последнее обновление: 30 мая, 2026"
+         "lastUpdated": "Последнее обновление: {date}"
       },
       "cookies": {
          "pageTitle": "Политика cookie-файлов",
-         "lastUpdated": "Последнее обновление: 30 мая, 2026"
+         "lastUpdated": "Последнее обновление: {date}"
       },
       "copyright": {
          "pageTitle": "Политика авторского права",
-         "lastUpdated": "Последнее обновление: 30 мая, 2026"
+         "lastUpdated": "Последнее обновление: {date}"
       },
       "consent": {
          "bannerTitle": "Уведомление о cookie-файлах",

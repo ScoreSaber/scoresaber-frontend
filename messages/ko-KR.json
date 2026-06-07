@@ -815,15 +815,15 @@
    "legal": {
       "privacy": {
          "pageTitle": "개인정보 처리방침",
-         "lastUpdated": "마지막 업데이트: 2026년 5월 30일"
+         "lastUpdated": "마지막 업데이트: {date}"
       },
       "cookies": {
          "pageTitle": "쿠키 정책",
-         "lastUpdated": "마지막 업데이트: 2026년 5월 30일"
+         "lastUpdated": "마지막 업데이트: {date}"
       },
       "copyright": {
          "pageTitle": "저작권 삭제 요청 정책",
-         "lastUpdated": "마지막 업데이트: 2026년 5월 30일"
+         "lastUpdated": "마지막 업데이트: {date}"
       },
       "consent": {
          "bannerTitle": "쿠키 안내",
