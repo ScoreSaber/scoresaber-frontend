@@ -1,13 +1,13 @@
 {
    "team": {
       "errorTitle": "Team konnte nicht geladen werden",
-      "errorDescription": "",
+      "errorDescription": "Wir konnten GitHub nicht erreichen, um das ScoreSaber Team zu laden. Bitte versuchen Sie es in ein paar Minuten erneut",
       "sections": {
-         "backend": "",
+         "backend": "Autor & Projektleiter",
          "admin": "Admin",
-         "nat": "",
-         "rt": "",
-         "qat": "",
+         "nat": "Nominierung-Prüfungsteam",
+         "rt": "Rang Team",
+         "qat": "Qualitätskontrolle Team",
          "cat": "",
          "cct": "",
          "frontend": "",
