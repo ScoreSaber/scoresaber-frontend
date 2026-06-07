@@ -42,8 +42,8 @@ const SORT_OPTIONS: { value: MapControllerGetMapListingsSortBy }[] = [
    { value: 'totalScores' }
 ];
 
-const DEFAULT_MIN_STARS = 0;
-const DEFAULT_MAX_STARS = 16;
+export const DEFAULT_MIN_STARS = 0;
+export const DEFAULT_MAX_STARS = 16;
 
 // sorts that imply ranked-only results
 const RANKED_SORTS = new Set<MapControllerGetMapListingsSortBy>(['highestStars', 'latestRankedAt']);

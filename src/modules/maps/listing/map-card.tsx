@@ -15,11 +15,15 @@ interface MapCardProps {
    map: MapControllerGetMapListingsDataItem | MapControllerGetMapByIdResponse;
    className?: string;
    expandLowest?: boolean;
+   starRange?: {
+      min: number;
+      max: number;
+   };
    showChips?: boolean;
    compact?: boolean;
 }
 
-export function MapCard({ map, className, expandLowest, showChips = true, compact = false }: MapCardProps) {
+export function MapCard({ map, className, expandLowest, starRange, showChips = true, compact = false }: MapCardProps) {
    const t = useTranslations();
    const linkSearch = usePersistedLeaderboardSearch();
    const displayLeaderboards = getDisplayLeaderboards(map.leaderboards);
@@ -47,7 +51,11 @@ export function MapCard({ map, className, expandLowest, showChips = true, compac
          linkSearch={linkSearch}
          className={className}
          compact={compact}
-         pills={showChips ? <MapDifficultyChips mapId={map.id} leaderboards={displayLeaderboards} expandLowest={expandLowest} /> : undefined}
+         pills={
+            showChips ? (
+               <MapDifficultyChips mapId={map.id} leaderboards={displayLeaderboards} expandLowest={expandLowest} starRange={starRange} />
+            ) : undefined
+         }
          mobileMetadata={
             <>
                {map.bsid && (

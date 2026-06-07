@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 
 import { MapCard } from '@/modules/maps/listing/map-card';
-import { MapFilters } from '@/modules/maps/listing/map-filters';
+import { DEFAULT_MAX_STARS, DEFAULT_MIN_STARS, MapFilters } from '@/modules/maps/listing/map-filters';
 import {
    MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY,
    MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION,
@@ -100,6 +100,15 @@ function MapsRoute() {
    const maps = response.data;
    const meta = response.metadata;
    const expandLowest = searchParams.sortBy === 'highestStars' && (searchParams.sortDirection ?? 'desc') === 'asc';
+   const minStars = searchParams.minStars ?? DEFAULT_MIN_STARS;
+   const maxStars = searchParams.maxStars ?? DEFAULT_MAX_STARS;
+   const starRange =
+      minStars !== DEFAULT_MIN_STARS || maxStars !== DEFAULT_MAX_STARS
+         ? {
+              min: minStars,
+              max: maxStars
+           }
+         : undefined;
    const bgCandidates = maps.filter((m) => m.coverUrl).map((m) => m.coverUrl);
    const getPageHref = (page: number) => buildMapsHref(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
 
@@ -119,7 +128,7 @@ function MapsRoute() {
 
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                {maps.map((map) => (
-                  <MapCard key={map.id} map={map} expandLowest={expandLowest} />
+                  <MapCard key={map.id} map={map} expandLowest={expandLowest} starRange={starRange} />
                ))}
             </div>
 

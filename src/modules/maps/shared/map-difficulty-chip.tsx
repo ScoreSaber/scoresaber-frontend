@@ -20,10 +20,11 @@ interface MapDifficultyChipProps {
    mapId: number;
    leaderboard: MapCardLeaderboard;
    isExpanded: boolean;
+   isDimmed?: boolean;
    onExpandAction: () => void;
 }
 
-export function MapDifficultyChip({ mapId, leaderboard, isExpanded, onExpandAction }: MapDifficultyChipProps) {
+export function MapDifficultyChip({ mapId, leaderboard, isExpanded, isDimmed, onExpandAction }: MapDifficultyChipProps) {
    const [expandedWidth, setExpandedWidth] = useState(0);
    const linkSearch = usePersistedLeaderboardSearch();
    const [measureElement, setMeasureElement] = useState<HTMLSpanElement | null>(null);
@@ -78,10 +79,11 @@ export function MapDifficultyChip({ mapId, leaderboard, isExpanded, onExpandActi
             }}
             className={cn(
                'text-badge-foreground absolute inset-0 flex h-full w-full items-center overflow-hidden rounded-md shadow-sm ring-1 ring-black/10',
-               transitionsEnabled && 'transition-[box-shadow,padding] duration-200 ease-out',
+               transitionsEnabled && 'transition-[box-shadow,filter,opacity,padding] duration-200 ease-out',
                'hover:shadow-md focus-visible:shadow-md focus-visible:outline-hidden',
                'justify-center',
                isExpanded && 'px-1',
+               isDimmed && 'opacity-35 saturate-50 hover:opacity-90 focus-visible:opacity-100',
                getDifficultyBgClass(leaderboard.difficulty)
             )}
          >
