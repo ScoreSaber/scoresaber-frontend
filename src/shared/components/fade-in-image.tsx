@@ -12,6 +12,7 @@ import { cn } from '@/shared/format/helpers';
 // we render a plain <img> here. callers can still pass `fill`/`sizes` for api
 // compatibility -- sizes is ignored, fill maps to absolute positioning.
 type FadeInImageProps = Omit<ComponentProps<'img'>, 'ref'> & {
+   alt: string;
    fill?: boolean;
    sizes?: string;
    unoptimized?: boolean;
@@ -20,7 +21,7 @@ type FadeInImageProps = Omit<ComponentProps<'img'>, 'ref'> & {
 
 const FILL_STYLE: CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%' };
 
-function FadeInImageImpl({ className, onLoad, fill, sizes: _sizes, unoptimized: _unoptimized, priority, style, ...props }: FadeInImageProps) {
+function FadeInImageImpl({ className, onLoad, fill, sizes: _sizes, unoptimized: _unoptimized, priority, style, alt, ...props }: FadeInImageProps) {
    const [isLoaded, setIsLoaded] = useState(false);
    const imgRef = useRef<HTMLImageElement>(null);
 
@@ -49,6 +50,7 @@ function FadeInImageImpl({ className, onLoad, fill, sizes: _sizes, unoptimized: 
          {/* oxlint-disable-next-line nextjs/no-img-element */}
          <img
             {...props}
+            alt={alt}
             ref={imgRef}
             loading={priority ? 'eager' : undefined}
             style={mergedStyle}

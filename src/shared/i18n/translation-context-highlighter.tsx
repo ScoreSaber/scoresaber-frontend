@@ -78,6 +78,7 @@ export function TranslationContextHighlighter({ messages }: { messages: Translat
             title="Translation context preview"
             className="border-border bg-background h-[844px] max-h-[calc(100vh-2rem)] w-[390px] max-w-full border shadow-xl"
             src={mobilePreviewUrl}
+            sandbox="allow-scripts"
          />
       </div>
    ) : null;

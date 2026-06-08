@@ -51,11 +51,11 @@ export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll =
 
    return (
       <div className="flex flex-row items-center gap-1">
-         {options.map((option, index) => {
+         {options.map((option) => {
             if (option.type === 'symbol' && option.symbol === 'ELLIPSIS') {
                return (
                   <EllipsisPageJump
-                     key={`ellipsis-${index}`}
+                     key={`ellipsis-${option.value}`}
                      totalPages={totalPages}
                      onNavigate={(page) => {
                         setPendingPage({ value: page, type: 'number' });

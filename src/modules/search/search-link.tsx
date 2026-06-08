@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useOmniSearch } from '@/modules/search/search-provider';
 import { cn } from '@/shared/format/helpers';
 
-type NameSegment = { type: 'name' | 'separator'; text: string };
+type NameSegment = { type: 'name' | 'separator'; text: string; offset: number };
 
 // splits a credit string like "A & B (feat. C)" into name/separator segments.
 // splitCommas controls whether ", " is treated as a separator (safe for mappers,
@@ -13,8 +13,14 @@ type NameSegment = { type: 'name' | 'separator'; text: string };
 function parseNames(input: string, splitCommas: boolean) {
    const pattern = splitCommas ? /(,\s+|\s+&\s+|\s+vs\.\s+|\s+feat\.\s+|\s+[xX]\s+)/ : /(\s+&\s+|\s+vs\.\s+|\s+feat\.\s+|\s+[xX]\s+)/;
 
-   const toSegments = (text: string): NameSegment[] =>
-      text.split(pattern).flatMap((part, i): NameSegment[] => (part ? [{ type: i % 2 === 0 ? 'name' : 'separator', text: part }] : []));
+   const toSegments = (text: string, offset = 0): NameSegment[] => {
+      let cursor = 0;
+      return text.split(pattern).flatMap((part, i): NameSegment[] => {
+         const partOffset = cursor;
+         cursor += part.length;
+         return part ? [{ type: i % 2 === 0 ? 'name' : 'separator', text: part, offset: offset + partOffset }] : [];
+      });
+   };
 
    // pull off a trailing "(feat. ...)" if present
    const featMatch = input.match(/\s*\(feat\.\s+(.+?)\)\s*$/i);
@@ -22,7 +28,12 @@ function parseNames(input: string, splitCommas: boolean) {
    const segments = toSegments(main);
 
    if (featMatch) {
-      segments.push({ type: 'separator', text: ' (feat. ' }, ...toSegments(featMatch[1]), { type: 'separator', text: ')' });
+      const featOffset = featMatch.index ?? main.length;
+      segments.push({ type: 'separator', text: ' (feat. ', offset: featOffset }, ...toSegments(featMatch[1], featOffset + ' (feat. '.length), {
+         type: 'separator',
+         text: ')',
+         offset: input.length - 1
+      });
    }
 
    return segments;
@@ -75,13 +86,13 @@ export function LinkedNames({
 
    return (
       <span className={className}>
-         {segments.map((seg, i) =>
+         {segments.map((seg) =>
             seg.type === 'name' ? (
-               <SearchLink key={i} query={seg.text} className={linkClassName}>
+               <SearchLink key={`${seg.type}-${seg.offset}-${seg.text}`} query={seg.text} className={linkClassName}>
                   {seg.text}
                </SearchLink>
             ) : (
-               <span key={i}>{seg.text}</span>
+               <span key={`${seg.type}-${seg.offset}-${seg.text}`}>{seg.text}</span>
             )
          )}
       </span>

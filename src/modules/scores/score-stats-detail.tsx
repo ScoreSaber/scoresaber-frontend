@@ -230,11 +230,11 @@ function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gr
          </div>
          <div className="grid grid-cols-4 gap-1 rounded-md sm:gap-0.5">
             {GRID_ROWS.map((row) =>
-               row.map((idx) => {
-                  const cell = grid[idx];
+               row.map((gridIndex) => {
+                  const cell = grid[gridIndex];
                   if (cell.count === 0) {
                      return (
-                        <div key={idx} className="flex h-8 w-11 items-center justify-center rounded-sm text-[10px] opacity-30 sm:h-7 sm:w-9">
+                        <div key={gridIndex} className="flex h-8 w-11 items-center justify-center rounded-sm text-[10px] opacity-30 sm:h-7 sm:w-9">
                            --
                         </div>
                      );
@@ -245,7 +245,7 @@ function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gr
                   const b = Math.round(80 - t * 30);
                   return (
                      <div
-                        key={idx}
+                        key={gridIndex}
                         className="flex h-8 w-11 items-center justify-center rounded-sm text-[10px] font-semibold sm:h-7 sm:w-9"
                         style={{
                            backgroundColor: `rgba(${r}, ${g}, ${b}, 0.15)`,

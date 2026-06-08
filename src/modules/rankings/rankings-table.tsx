@@ -263,12 +263,12 @@ function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, hig
 
          <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-0.5 pl-1 text-xs">
             {[
-               { Icon: FaStar, value: `${formatPP(stats.totalPP)}pp`, extra: 'font-semibold text-score-pp' },
-               { Icon: FaBullseye, value: formatAccuracy(stats.averageAccuracy) },
-               { Icon: FaPlay, value: formatNumber(stats.totalSubmittedPlays) },
-               { Icon: FaTrophy, value: formatNumber(stats.totalPlayedRankedLeaderboards) }
-            ].map(({ Icon, value, extra }, i) => (
-               <span key={i} className={cn('inline-flex items-center gap-1', extra)}>
+               { key: 'pp', Icon: FaStar, value: `${formatPP(stats.totalPP)}pp`, extra: 'font-semibold text-score-pp' },
+               { key: 'accuracy', Icon: FaBullseye, value: formatAccuracy(stats.averageAccuracy) },
+               { key: 'plays', Icon: FaPlay, value: formatNumber(stats.totalSubmittedPlays) },
+               { key: 'ranked-plays', Icon: FaTrophy, value: formatNumber(stats.totalPlayedRankedLeaderboards) }
+            ].map(({ key, Icon, value, extra }) => (
+               <span key={key} className={cn('inline-flex items-center gap-1', extra)}>
                   <Icon className="size-2.5" />
                   {value}
                </span>
@@ -314,12 +314,12 @@ function RankingRow({ player, countryFiltered, isDefaultSort, listPosition, high
             </div>
          </TableCell>
          {[
-            { value: `${formatPP(stats.totalPP)}pp`, extra: 'text-score-pp' },
-            { value: formatNumber(stats.totalSubmittedPlays) },
-            { value: formatNumber(stats.totalPlayedRankedLeaderboards) },
-            { value: formatAccuracy(stats.averageAccuracy), extra: 'rounded-r-lg border-r' }
-         ].map(({ value, extra }, i) => (
-            <TableCell key={i} className={cn('border-y px-4 py-2.5', extra)}>
+            { key: 'pp', value: `${formatPP(stats.totalPP)}pp`, extra: 'text-score-pp' },
+            { key: 'plays', value: formatNumber(stats.totalSubmittedPlays) },
+            { key: 'ranked-plays', value: formatNumber(stats.totalPlayedRankedLeaderboards) },
+            { key: 'accuracy', value: formatAccuracy(stats.averageAccuracy), extra: 'rounded-r-lg border-r' }
+         ].map(({ key, value, extra }) => (
+            <TableCell key={key} className={cn('border-y px-4 py-2.5', extra)}>
                {value}
             </TableCell>
          ))}
