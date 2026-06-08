@@ -22,8 +22,8 @@ import { Image } from '@/shared/components/image';
 import { parseCountryRegionParam } from '@/shared/country-region';
 import { cn, formatNumber, rankToPage } from '@/shared/format/helpers';
 import { getPlayerRoleStyleAndTitle } from '@/shared/format/styling';
-import { isNavActive, navItems, secondaryItems, socialLinks, type AppNavRoute } from '@/shell/nav-data';
-import { NavLink as PersistedNavLink } from '@/shell/nav-link';
+import { isNavActive, navItems, secondaryItems, socialLinks } from '@/shell/nav-data';
+import { SidebarNavLink } from '@/shell/sidebar-nav-link';
 import { SidebarMoreMenu } from '@/shell/sidebar/sidebar-more-menu';
 
 const homeRoute = getRouteApi('/');
@@ -36,8 +36,6 @@ const navLinkClass =
 const activeClass = 'bg-primary text-primary-foreground dark:bg-accent dark:text-primary';
 const inactiveClass = 'text-muted-foreground hover:bg-accent/50 hover:text-primary';
 const disabledClass = 'cursor-not-allowed text-muted-foreground/45';
-
-export { navLinkClass, activeClass, inactiveClass, disabledClass };
 
 const SidebarBrand = memo(function SidebarBrand({ alt, onNavigateAction }: { alt: string; onNavigateAction?: () => void }) {
    const router = useRouter();
@@ -108,34 +106,6 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
       setMounted(true);
       setIsMac(/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent));
    }, []);
-
-   function NavLink({
-      route,
-      children,
-      className,
-      external,
-      href
-   }: {
-      route?: AppNavRoute;
-      children: React.ReactNode;
-      className: string;
-      external?: boolean;
-      href?: string;
-   }) {
-      if (external) {
-         return (
-            <a href={href ?? '#'} target="_blank" rel="noreferrer" className={className} onClick={onNavigateAction}>
-               {children}
-            </a>
-         );
-      }
-
-      return (
-         <PersistedNavLink route={route ?? 'home'} className={className} onClick={onNavigateAction}>
-            {children}
-         </PersistedNavLink>
-      );
-   }
 
    return (
       <div
@@ -238,31 +208,33 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                }
 
                return (
-                  <NavLink
+                  <SidebarNavLink
                      key={item.key}
                      route={item.route}
                      className={cn(navLinkClass, isNavActive(pathname, item.route) ? activeClass : inactiveClass)}
+                     onNavigateAction={onNavigateAction}
                   >
                      {item.icon}
                      {navLabel(item.key)}
-                  </NavLink>
+                  </SidebarNavLink>
                );
             })}
 
             <Separator className="my-2" />
 
             {secondaryItems.map((item) => (
-               <NavLink
+               <SidebarNavLink
                   key={item.key}
                   route={item.external ? undefined : item.route}
                   href={item.external ? item.href : undefined}
                   className={cn(navLinkClass, !item.external && isNavActive(pathname, item.route) ? activeClass : inactiveClass)}
                   external={item.external}
+                  onNavigateAction={onNavigateAction}
                >
                   {item.icon}
                   <span className="flex-1">{navLabel(item.key)}</span>
                   {item.external && <ExternalLink data-icon className="ml-auto size-3" aria-hidden="true" />}
-               </NavLink>
+               </SidebarNavLink>
             ))}
          </nav>
 

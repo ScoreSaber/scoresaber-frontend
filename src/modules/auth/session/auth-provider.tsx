@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useRouter } from '@tanstack/react-router';
 import { Result } from 'better-result';
@@ -55,8 +55,9 @@ export function AuthProvider({ initialUser, children }: { initialUser: UserContr
       writeStorageValue(ownAvatarCacheBustKey, value);
       setAvatarCacheBust(value);
    }, []);
+   const value = useMemo(() => ({ user: initialUser, avatarCacheBust, bustOwnAvatar }), [avatarCacheBust, bustOwnAvatar, initialUser]);
 
-   return <AuthContext value={{ user: initialUser, avatarCacheBust, bustOwnAvatar }}>{children}</AuthContext>;
+   return <AuthContext value={value}>{children}</AuthContext>;
 }
 
 export function useAuth() {

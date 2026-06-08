@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import type { Locale } from '@/i18n/config';
 
@@ -25,7 +25,9 @@ export function SidebarProvider({ visibleLocales, children }: { visibleLocales: 
       return () => document.removeEventListener('keydown', handleKeyDown);
    }, [toggle]);
 
-   return <SidebarContext.Provider value={{ collapsed, toggle, visibleLocales }}>{children}</SidebarContext.Provider>;
+   const value = useMemo(() => ({ collapsed, toggle, visibleLocales }), [collapsed, toggle, visibleLocales]);
+
+   return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>;
 }
 
 export function useSidebar() {
