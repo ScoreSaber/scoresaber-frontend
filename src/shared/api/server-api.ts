@@ -105,8 +105,7 @@ export const api = new Api({
    baseUrl: env.API_URL,
    baseApiParams: { secure: true, credentials: 'include' },
    securityWorker: async () => {
-      const token = await readSessionToken();
-      const visitorId = await readOrCreateVisitorId();
+      const [token, visitorId] = await Promise.all([readSessionToken(), readOrCreateVisitorId()]);
       const headers: Record<string, string> = {};
       const hasCloudflareAccessHeaders = addCloudflareAccessHeaders(headers);
       const hasVisitorRateLimitHeaders = addVisitorRateLimitHeaders(headers, visitorId);

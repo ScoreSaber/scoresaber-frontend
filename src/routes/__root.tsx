@@ -44,6 +44,7 @@ const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
 });
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+   loader: () => getRootData(),
    head: () => ({
       meta: [
          { charSet: 'utf-8' },
@@ -78,7 +79,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
          { rel: 'preconnect', href: 'https://cdn.scoresaber.com' }
       ]
    }),
-   loader: () => getRootData(),
    component: RootComponent
 });
 
@@ -126,7 +126,7 @@ function RootDocument({
             <script id="theme-init" dangerouslySetInnerHTML={{ __html: themeInitScript }} suppressHydrationWarning />
             <style id="critical-paint" dangerouslySetInnerHTML={{ __html: criticalPaintStyles }} />
             <HeadContent />
-            {debugReactScan && <script src="https://unpkg.com/react-scan/dist/auto.global.js" crossOrigin="anonymous" />}
+            {debugReactScan && <script src="https://unpkg.com/react-scan/dist/auto.global.js" crossOrigin="anonymous" async />}
          </head>
          <body className={cn('bg-background relative min-h-screen font-sans antialiased')}>
             {children}

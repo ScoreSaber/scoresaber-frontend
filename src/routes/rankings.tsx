@@ -47,14 +47,16 @@ const getRankingsPageData = createServerFn({ method: 'GET' })
    .handler(async ({ data }) => {
       const token = getCookie('token');
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
-      const effectiveSearchParams = await applyPersistedSearchParams<RankingsSearchParams>({
-         searchParams: rawSearchParams,
-         parseSearch: parseRankingsSearch,
-         storageKey: rankingFilterPreferences.storageKey,
-         persistedKeys: token && token !== 'null' ? rankingFilterPreferences.authPersistedKeys : rankingFilterPreferences.persistedKeys
-      });
+      const [effectiveSearchParams, persistedStorage] = await Promise.all([
+         applyPersistedSearchParams<RankingsSearchParams>({
+            searchParams: rawSearchParams,
+            parseSearch: parseRankingsSearch,
+            storageKey: rankingFilterPreferences.storageKey,
+            persistedKeys: token && token !== 'null' ? rankingFilterPreferences.authPersistedKeys : rankingFilterPreferences.persistedKeys
+         }),
+         readPersistedSearchStorage(rankingFilterPreferences.storageKey)
+      ]);
       const searchParams = rankingsSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
-      const persistedStorage = await readPersistedSearchStorage(rankingFilterPreferences.storageKey);
       const result = await pageApiData(
          api.player.playerControllerGetPlayers({
             page: searchParams.page,
