@@ -58,4 +58,4 @@ function usePlayerAvatarSrc(src: string | undefined, playerId?: string) {
    return playerId && playerId === user?.id ? getCacheBustedPlayerAvatarSrc(src, avatarCacheBust) : src;
 }
 
-export { getCacheBustedPlayerAvatarSrc, usePlayerAvatarSrc };
+export { usePlayerAvatarSrc };

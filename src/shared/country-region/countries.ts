@@ -249,7 +249,7 @@ export const countryCodeSchema = z.enum([
    'ZW'
 ]);
 
-export const COUNTRY_CODES = countryCodeSchema.options;
+const COUNTRY_CODES = countryCodeSchema.options;
 export type CountryCode = z.infer<typeof countryCodeSchema>;
 
 // readable country name from code

@@ -12,11 +12,11 @@ type IdentifiedLeaderboard = {
    id: number;
 };
 
-export function getLeaderboardsForGameMode<T extends GameModeLeaderboard>(leaderboards: T[], gameMode: string) {
+function getLeaderboardsForGameMode<T extends GameModeLeaderboard>(leaderboards: T[], gameMode: string) {
    return leaderboards.filter((leaderboard) => getGameModeFromRawDifficulty(leaderboard.rawDifficulty) === gameMode);
 }
 
-export function sortLeaderboardsByDifficulty<T extends DifficultyLeaderboard>(leaderboards: T[], ascending = true) {
+function sortLeaderboardsByDifficulty<T extends DifficultyLeaderboard>(leaderboards: T[], ascending = true) {
    return [...leaderboards].sort((a, b) => (ascending ? a.difficulty - b.difficulty : b.difficulty - a.difficulty));
 }
 

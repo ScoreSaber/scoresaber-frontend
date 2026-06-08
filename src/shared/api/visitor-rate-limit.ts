@@ -4,11 +4,11 @@ import { env } from '@/env';
 
 import { createHmac } from 'node:crypto';
 
-export function getVisitorRateLimitSecret() {
+function getVisitorRateLimitSecret() {
    return env.VISITOR_RATE_LIMIT_SECRET ?? null;
 }
 
-export function signVisitorId(visitorId: string) {
+function signVisitorId(visitorId: string) {
    const secret = getVisitorRateLimitSecret();
    if (!secret) return null;
 

@@ -75,7 +75,7 @@ const navRouteIds = {
    team: '/team'
 } satisfies Record<AppNavRoute, AppRouteId>;
 
-export function getNavPath(route: AppNavRoute) {
+function getNavPath(route: AppNavRoute) {
    return navRouteIds[route];
 }
 

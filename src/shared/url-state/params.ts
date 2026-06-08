@@ -43,10 +43,3 @@ export function validateRequest<Output>(schema: z.ZodType<Output>, request: unkn
    }
    throw notFound();
 }
-
-export type RequestParams = Record<string, string | string[] | undefined>;
-
-export async function resolveRequestProps(props: { params?: Promise<RequestParams>; searchParams?: Promise<RequestParams> }) {
-   const [params, searchParams] = await Promise.all([props.params ?? Promise.resolve({}), props.searchParams ?? Promise.resolve({})]);
-   return { params, searchParams };
-}

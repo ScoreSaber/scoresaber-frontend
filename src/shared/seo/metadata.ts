@@ -3,8 +3,8 @@ import type { AnyRouteMatch } from '@tanstack/react-router';
 import { env } from '@/env';
 
 export const SITE_NAME = 'ScoreSaber';
-export const SITE_TITLE = 'ScoreSaber!';
-export const SITE_SOCIAL_TITLE = 'ScoreSaber';
+const SITE_TITLE = 'ScoreSaber!';
+const SITE_SOCIAL_TITLE = 'ScoreSaber';
 export const SITE_DESCRIPTION = "Beat Saber's largest leaderboard system for custom songs, earn PP from ranked maps, and compare scores with others";
 
 const DEFAULT_IMAGE_PATH = '/icon-512.png';

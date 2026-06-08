@@ -24,10 +24,6 @@ export function apiResult<T>(promise: Promise<T>): Promise<ApiResult<T>> {
    });
 }
 
-export async function requiredApiData<T>(promise: Promise<ApiResponse<T>>) {
-   return (await requiredApi(promise)).data;
-}
-
 export async function pageApiData<T>(promise: Promise<ApiResponse<T>>): Promise<PageDataResult<T>> {
    const result = await pageApi(promise);
 
@@ -63,23 +59,6 @@ export async function queryApiData<T>(promise: Promise<ApiResponse<T>>) {
    }
 
    throw result.error;
-}
-
-async function requiredApi<T>(promise: Promise<T>): Promise<T> {
-   const result = await apiResult(promise);
-
-   if (Result.isOk(result)) {
-      return result.value;
-   }
-
-   return matchError(result.error, {
-      ApiNotFoundError: () => {
-         throw notFound();
-      },
-      ApiRequestError: (error) => {
-         throw error;
-      }
-   });
 }
 
 export function pageDataOk<T>(data: T): PageDataResult<T> {

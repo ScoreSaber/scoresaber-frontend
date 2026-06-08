@@ -7,15 +7,6 @@ export type ActionResult<T = void> = { ok: true; value: T } | { ok: false; error
 
 type ApiResponse<T, E = unknown> = { data: T; error: E };
 
-export async function actionResult<T>(promise: Promise<T>): Promise<ActionResult<T>> {
-   const result = await apiResult(promise);
-
-   if (Result.isOk(result)) {
-      return { ok: true, value: result.value };
-   }
-   return actionError(result.error);
-}
-
 export async function actionApiData<T, E = unknown>(promise: Promise<ApiResponse<T, E>>): Promise<ActionResult<T>> {
    const result = await apiResult(promise);
 

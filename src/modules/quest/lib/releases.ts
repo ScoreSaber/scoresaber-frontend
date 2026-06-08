@@ -45,7 +45,7 @@ export type QuestRelease = {
 
 const BS_MARKER = /<!--\s*bs:\s*([^\s>][^>]*?)\s*-->/i;
 
-export class QuestReleasesError extends TaggedError('QuestReleasesError')<{
+class QuestReleasesError extends TaggedError('QuestReleasesError')<{
    message: string;
    status: number | null;
    cause: unknown;

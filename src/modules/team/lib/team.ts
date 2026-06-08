@@ -7,7 +7,6 @@ import { fetchGithubJson, type GithubJsonErrorInput } from '@/shared/result/gith
 
 const GITHUB_REPO = 'ScoreSaber/scoresaber-team';
 const TEAM_FILE_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents/team.json?ref=main`;
-const IMAGE_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/images`;
 
 const nullableString = z.string().nullable().optional();
 
@@ -43,18 +42,11 @@ const githubContentSchema = z.object({
    encoding: z.literal('base64')
 });
 
-export type TeamMember = z.infer<typeof teamMemberSchema>;
-export type TeamData = z.infer<typeof teamSchema>;
-
-export class TeamFetchError extends TaggedError('TeamFetchError')<{
+class TeamFetchError extends TaggedError('TeamFetchError')<{
    message: string;
    status: number | null;
    cause: unknown;
 }>() {}
-
-export function getTeamImageUrl(profilePicture: string) {
-   return `${IMAGE_BASE_URL}/${profilePicture}`;
-}
 
 function teamFetchError({ message, status, cause }: GithubJsonErrorInput) {
    return new TeamFetchError({ message, status, cause });
