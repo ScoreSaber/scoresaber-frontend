@@ -8,6 +8,7 @@ import { actionApiData, actionSuccess, type ActionResult } from '@/shared/result
 import { apiResult } from '@/shared/result/api';
 
 const CLIENT_IP_HEADER = 'x-scoresaber-client-ip';
+const CLIENT_COUNTRY_HEADER = 'x-scoresaber-client-country';
 const CLIENT_USER_AGENT_HEADER = 'x-scoresaber-client-user-agent';
 
 type EmailLoginVerificationActionValue =
@@ -86,10 +87,15 @@ function getEmailLoginHeaders() {
    const requestHeaders = getRequestHeaders();
    const headers: Record<string, string> = {};
    const clientIp = getClientIp(requestHeaders);
+   const clientCountry = getClientCountry(requestHeaders);
    const userAgent = requestHeaders.get('user-agent');
 
    if (clientIp) {
       headers[CLIENT_IP_HEADER] = clientIp;
+   }
+
+   if (clientCountry) {
+      headers[CLIENT_COUNTRY_HEADER] = clientCountry;
    }
 
    if (userAgent) {
@@ -102,6 +108,11 @@ function getEmailLoginHeaders() {
 function getClientIp(requestHeaders: Headers) {
    const forwardedFor = requestHeaders.get('x-forwarded-for')?.split(',')[0]?.trim();
    return requestHeaders.get('cf-connecting-ip') ?? requestHeaders.get('x-real-ip') ?? forwardedFor ?? null;
+}
+
+function getClientCountry(requestHeaders: Headers) {
+   const country = requestHeaders.get('cf-ipcountry')?.trim().toUpperCase();
+   return country && /^[A-Z]{2}$/.test(country) && country !== 'XX' ? country : null;
 }
 
 function getAuthCookieOptions(): AuthCookieOptions {
