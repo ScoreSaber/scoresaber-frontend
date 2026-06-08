@@ -5,7 +5,7 @@ import { useTranslations } from 'use-intl';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-import { getSiteOriginUrl, getSiteUrl, safeSitePath } from '@/modules/auth/lib/redirect';
+import { getApiOriginUrl, getSiteUrl, safeSitePath } from '@/modules/auth/lib/redirect';
 import { LoginFlow } from '@/modules/auth/login/login-flow';
 import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
 
@@ -54,7 +54,7 @@ export function LoginScreen({ params }: { params: LoginSearchParams }) {
             )}
 
             <LoginFlow
-               steamHref={`/auth/steam${stringifyUrlSearch({ returnUrl: getSiteOriginUrl(), redirectTo: absoluteRedirectTo })}`}
+               steamHref={`/auth/steam${stringifyUrlSearch({ returnUrl: getApiOriginUrl(), redirectTo: absoluteRedirectTo })}`}
                patreonHref={`/auth/patreon${stringifyUrlSearch({ intent: 'login', redirectTo: absoluteRedirectTo })}`}
                discordHref={`/auth/discord${stringifyUrlSearch({ intent: 'login', redirectTo: absoluteRedirectTo })}`}
                redirectTo={redirectTo}
