@@ -34,6 +34,7 @@ import {
    Unlink,
    Video
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
@@ -146,6 +147,12 @@ export function RichTextEditor({ id, value, onChangeAction, placeholder, disable
                '[&_img]:mx-auto [&_img]:my-3 [&_img]:max-h-80 [&_img]:max-w-full [&_img]:rounded-md [&_img]:object-contain',
                '[&_li]:my-1 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-2 [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5'
             )
+         },
+         handlePaste: (_view, event) => {
+            if (!hasImageClipboardData(event.clipboardData)) return false;
+
+            toast.error(t('richTextEditor.imageDialogDescription'));
+            return true;
          }
       },
       onSelectionUpdate: () => {
@@ -426,6 +433,15 @@ export function RichTextEditor({ id, value, onChangeAction, placeholder, disable
             {dialogConfig.hosts.length > 0 && <AllowedHosts title={dialogConfig.listTitle} hosts={dialogConfig.hosts} />}
          </ConfirmDialog>
       </>
+   );
+}
+
+function hasImageClipboardData(data: DataTransfer | null) {
+   if (!data) return false;
+
+   return (
+      [...data.items].some((item) => item.kind === 'file' && item.type.startsWith('image/')) ||
+      [...data.files].some((file) => file.type.startsWith('image/'))
    );
 }
 
