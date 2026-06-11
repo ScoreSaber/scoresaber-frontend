@@ -119,18 +119,17 @@ function MapStats({ mapInfo }: { mapInfo: MapControllerGetMapByIdResponse }) {
 
 function ShareMapButton() {
    const location = useLocation();
-   const pathname = location.pathname;
-   const searchParams = new URLSearchParams(location.searchStr);
    const t = useTranslations();
 
    async function handleCopyShareLink() {
       const result = await Result.tryPromise({
          try: () => {
-            const url = new URL(pathname, window.location.origin);
+            const url = new URL(location.href, window.location.origin);
 
-            for (const [key, value] of searchParams.entries()) {
-               if (isLeaderboardPersonalizationParam(key)) continue;
-               url.searchParams.set(key, value);
+            const personalizationKeys = Array.from(url.searchParams.keys()).filter(isLeaderboardPersonalizationParam);
+
+            for (const key of personalizationKeys) {
+               url.searchParams.delete(key);
             }
 
             return navigator.clipboard.writeText(url.toString());

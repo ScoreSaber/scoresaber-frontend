@@ -117,21 +117,21 @@
       "hideOtherMethods": "Masquer les autres méthodes",
       "secondaryDescription": "Il est possible d'utiliser les connexions secondaires comme Discord et Patreon seulement après les avoir associées depuis les paramètres du compte",
       "providers": {
+         "SCORESABER": {
+            "label": ""
+         },
          "STEAM": {
-            "label": "Steam",
-            "tooltip": "Se connecter avec Steam"
+            "label": "Steam"
          },
          "OCULUS": {
             "label": "Meta",
-            "tooltip": "Se connecter avec Meta"
+            "tooltip": ""
          },
          "PATREON": {
-            "label": "Patreon",
-            "tooltip": "Se connecter avec Patreon"
+            "label": "Patreon"
          },
          "DISCORD": {
-            "label": "Discord",
-            "tooltip": "Se connecter avec Discord"
+            "label": "Discord"
          }
       },
       "oauth": {
@@ -139,9 +139,8 @@
          "failedDescription": "Le fournisseur n'a pas terminé la connexion. Réessayez à partir de cette page"
       },
       "email": {
-         "title": "Identifiant Meta",
-         "emailDescription": "Entrez l'adresse e-mail que vous utilisez pour votre compte Meta",
-         "emailLabel": "Adresse e-mail du compte Meta",
+         "title": "",
+         "emailLabel": "",
          "emailPlaceholder": "vous@exemple.com",
          "sendCode": "Envoyer un code",
          "resendCode": "Renvoyer",
@@ -160,8 +159,42 @@
          "pendingTitle": "E-mail vérifié",
          "pendingDescription": "Lancez la version Meta pour PC de Beat Saber avec le mod ScoreSaber installé, regardez n'importe quel classement puis réessayez de vous connecter via e-mail",
          "supportTitle": "Revue de l'assistance nécessaire",
-         "supportDescription": "Cette adresse e-mail est associée à plusieurs comptes ou à un compte protégé"
-      }
+         "supportDescription": "Cette adresse e-mail est associée à plusieurs comptes ou à un compte protégé",
+         "metaInfo": {
+            "title": "",
+            "pcOnly": "",
+            "newPc": "",
+            "quest": ""
+         }
+      },
+      "password": {
+         "method": "",
+         "title": "",
+         "description": "",
+         "passwordLabel": "",
+         "submit": "",
+         "forgot": "",
+         "newPasswordLabel": "",
+         "passwordHelp": "",
+         "resetDescription": "",
+         "resetSubmit": "",
+         "backToLogin": "",
+         "failedToast": "",
+         "resetFailedToast": ""
+      },
+      "passkey": {
+         "method": "",
+         "failedToast": ""
+      },
+      "signup": {
+         "title": "",
+         "displayNameLabel": "",
+         "displayNameHelp": "",
+         "submit": "",
+         "failedToast": "",
+         "emailCallToAction": ""
+      },
+      "subtitle": ""
    },
    "sidebar": {
       "scoreSaberLogoAlt": "Logo ScoreSaber",
@@ -227,7 +260,10 @@
       "rankRequestActions": "Actions sur la demande de classement",
       "adminActions": "Actions admin",
       "scoreSaberLogo": "Logo ScoreSaber",
-      "underConstruction": "en construction"
+      "underConstruction": "en construction",
+      "edit": "",
+      "copy": "",
+      "copied": ""
    },
    "error": {
       "somethingWentWrong": "Une erreur s’est produite",
@@ -602,7 +638,8 @@
       "tabs": {
          "account": "Compte",
          "connections": "Connexions",
-         "perks": "Avantages"
+         "perks": "Avantages",
+         "developer": ""
       },
       "account": {
          "detailsTitle": "Détails du compte",
@@ -630,11 +667,11 @@
          "countryResetFailed": "Échec de la réinitialisation du pays",
          "resetCountryDialogDesc": "Cela recalcule le pays de votre profil à partir de votre emplacement actuel. Une fois effectuée, la réinitialisation du pays est verrouillée pendant {days} jours",
          "resetCountryHelper": "Utilisez ceci uniquement lorsque vous êtes dans le pays que vous souhaitez afficher sur ScoreSaber et assurez-vous de ne pas utiliser de VPN ni de proxy",
-         "resetCountryAvailableAt": "Vous avez déjà réinitialisé votre pays récemment. Vous pourrez le réinitialiser à nouveau le {date}",
+         "resetCountryAvailableAt": "Vous avez déjà réinitialisé votre pays récemment. Vous pourrez le réinitialiser à nouveau le <date></date>",
          "resetCountryConfirmText": "RÉINITIALISER"
       },
       "connections": {
-         "primaryHelper": "Ceci est le compte principal servant à la connexion et il ne peut pas être déconnecté",
+         "primaryHelper": "",
          "legacyUpgradeHelper": "Le compte est vérifié via un système ancien. Cliquez sur \"Mettre à niveau\" pour améliorer la connexion de ce compte",
          "connect": "Connecter",
          "upgrade": "Mettre à niveau",
@@ -656,6 +693,9 @@
             },
             "DISCORD": {
                "label": "Discord"
+            },
+            "SCORESABER": {
+               "label": ""
             }
          },
          "oauth": {
@@ -705,13 +745,13 @@
             "mergeFailedTitle": "Échec de la fusion",
             "mergeFailedDescription": "La demande de fusion peut être expirée, invalide ou pour un autre compte",
             "retry": "Essayer à nouveau"
-         }
+         },
+         "setup": ""
       },
       "perks": {
          "tabs": {
             "overview": "Aperçu",
-            "replays": "Replays",
-            "scoreSaber2Badge": "Réclamer le badge ScoreSaber 2"
+            "replays": "Replays"
          },
          "gate": {
             "title": "Les avantages sont réservés aux supporters",
@@ -753,21 +793,97 @@
             "unknownValue": "-",
             "loadFailed": "Les emplacements de replay n'ont pas pu être chargés"
          },
-         "scoreSaber2Badge": {
-            "title": "Badge du lancement de ScoreSaber 2",
-            "description": "Pour avoir été un supporter entre le lancement de ScoreSaber 2 et le 3 juin, vous avez débloqué un badge en édition limitée !",
-            "promptTitle": "Vous avez débloqué un badge en édition limitée !",
-            "promoTitle": "Badge limité ScoreSaber 2",
-            "promoDescription": "Pour célébrer ScoreSaber 2, tous les supporters actuels et nouveaux peuvent le réclamer sur le site Web jusqu'au 3 juin à 23h59 HE",
-            "alreadySupporting": "Déjà supporter de ScoreSaber ?",
-            "countdownLabel": "Se termine dans",
-            "supportAction": "Soutenir",
-            "redeemAction": "Réclamer",
-            "redeemingAction": "Réclamation",
-            "redeemedToast": "Badge obtenu",
-            "redeemFailedToast": "Échec de l'obtention du badge",
-            "dismiss": "Ignorer"
+         "vanity": {
+            "title": "",
+            "description": "",
+            "loadFailed": "",
+            "current": "",
+            "changeLabel": "",
+            "claimLabel": "",
+            "placeholder": "",
+            "change": "",
+            "claim": "",
+            "claimed": "",
+            "claimFailed": "",
+            "cooldown": "",
+            "rules": ""
          }
+      },
+      "security": {
+         "title": "",
+         "changePassword": "",
+         "changePasswordHelper": "",
+         "currentPassword": "",
+         "newPassword": "",
+         "passwordSaved": "",
+         "passwordSaveFailed": "",
+         "passkeys": "",
+         "passkeysHelper": "",
+         "addPasskey": "",
+         "passkeyAdded": "",
+         "passkeyAddFailed": "",
+         "passkeyRenamed": "",
+         "passkeyRenameFailed": "",
+         "passkeyDeleted": "",
+         "passkeyDeleteFailed": "",
+         "renamePasskey": "",
+         "renamePasskeyDesc": "",
+         "passkeyLabel": "",
+         "deletePasskey": "",
+         "deletePasskeyDesc": "",
+         "passkeyLastUsed": "",
+         "passkeyCreated": "",
+         "deviceLogin": "",
+         "deviceLoginComingSoon": "",
+         "deviceLoginHelper": "",
+         "deviceLoginAction": "",
+         "deviceLoginInstructions": "",
+         "deviceLoginClaimed": "",
+         "deviceCodeExpired": "",
+         "deviceCodeNew": "",
+         "deviceCodeExpiresIn": "",
+         "deviceCodeFailed": "",
+         "setPassword": "",
+         "setPasswordHelper": "",
+         "setPasswordSubmit": "",
+         "passwordSetupSaved": "",
+         "passwordSetupFailed": "",
+         "forgotPassword": ""
+      },
+      "developer": {
+         "title": "",
+         "description": "",
+         "noAccess": "",
+         "loadFailed": "",
+         "empty": "",
+         "create": "",
+         "createTitle": "",
+         "editTitle": "",
+         "formDescription": "",
+         "nameLabel": "",
+         "descriptionLabel": "",
+         "redirectUrisLabel": "",
+         "redirectUrisHelp": "",
+         "scopesLabel": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "created": "",
+         "createFailed": "",
+         "saved": "",
+         "saveFailed": "",
+         "rotate": "",
+         "rotated": "",
+         "rotateFailed": "",
+         "revoke": "",
+         "revokeDesc": "",
+         "revoked": "",
+         "revokeFailed": "",
+         "clientId": "",
+         "clientSecret": "",
+         "secretTitle": "",
+         "secretDescription": "",
+         "createdAt": "",
+         "redirectUris": ""
       }
    },
    "richTextEditor": {
@@ -841,6 +957,21 @@
          "necessaryDescription": "Nécessaires pour la connexion, la sécurité, la limitation des débits, la langue, le thème, la sauvegarde des filtres et les fonctionnalités principales du site. Ils sont toujours activés.",
          "privacyPolicy": "Politique de Confidentialité",
          "cookiePolicy": "Politique relative aux cookies"
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "",
+         "invalidDescription": "",
+         "loginTitle": "",
+         "loginDescription": "",
+         "title": "",
+         "scopesIntro": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "approveFailed": "",
+         "deny": "",
+         "approve": ""
       }
    }
 }

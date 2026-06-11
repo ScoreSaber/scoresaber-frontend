@@ -13,6 +13,7 @@ const patreonLoginSearchSchema = z.object({
 });
 
 export const Route = createFileRoute('/auth/patreon')({
+   validateSearch: (search) => patreonLoginSearchSchema.parse(search),
    server: {
       handlers: {
          GET: ({ request }) => handlePatreonLogin(patreonLoginSearchSchema.parse(Object.fromEntries(new URL(request.url).searchParams)))

@@ -1,9 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Result } from 'better-result';
+import { z } from 'zod';
 
 import { fetchQuestReleases, type QuestRelease } from '@/modules/quest/lib/releases';
 
+const questDownloadSearchSchema = z.object({
+   tag: z.string().optional()
+});
+
 export const Route = createFileRoute('/quest/download')({
+   validateSearch: (search) => questDownloadSearchSchema.parse(search),
    server: {
       handlers: {
          GET: ({ request }) => downloadQuestRelease(request)

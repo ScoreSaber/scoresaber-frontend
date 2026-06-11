@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 
@@ -17,7 +17,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { mapFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams, readPersistedSearchStorage } from '@/shared/url-state/persisted-search';
-import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
@@ -110,7 +110,7 @@ function MapsRoute() {
            }
          : undefined;
    const bgCandidates = maps.filter((m) => m.coverUrl).map((m) => m.coverUrl);
-   const getPageHref = (page: number) => buildMapsHref(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
+   const getPageLocation = (page: number) => buildMapsLocation(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
 
    return (
       <div className="relative flex-1 overflow-hidden">
@@ -121,7 +121,7 @@ function MapsRoute() {
                currentPage={searchParams.page}
                totalPages={meta.totalPages}
                search={searchParams}
-               buildHref={buildMapsHref}
+               buildLocation={buildMapsLocation}
                parseSearch={parseMapsSearch}
                initialFiltersOpen={persistedStorage.filtersOpen === 'true'}
             />
@@ -138,7 +138,7 @@ function MapsRoute() {
                      currentPage={searchParams.page}
                      totalItems={meta.totalItems}
                      pageSize={meta.itemsPerPage}
-                     getPageHref={getPageHref}
+                     getPageLocation={getPageLocation}
                      scroll={false}
                   />
                </div>
@@ -148,8 +148,13 @@ function MapsRoute() {
    );
 }
 
-function buildMapsHref(search?: MapsSearchParams) {
-   return `/maps${stringifyUrlSearch(search ?? {})}`;
+function buildMapsLocation(search?: MapsSearchParams) {
+   return linkOptions({ to: '/maps', search: normalizeMapsLocationSearch(search) });
+}
+
+function normalizeMapsLocationSearch(search?: MapsSearchParams) {
+   const { page = 1, verified = 'true', ...rest } = search ?? {};
+   return { page, verified, ...rest };
 }
 
 function parseMapsSearch(search: Record<string, unknown>) {

@@ -3,7 +3,7 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { getRouteApi, useRouter } from '@tanstack/react-router';
+import { useRouter } from '@tanstack/react-router';
 import { Result } from 'better-result';
 import { ChevronRight, ExternalLink, Loader2, Search, Users, X } from 'lucide-react';
 import { FaMap } from 'react-icons/fa';
@@ -32,11 +32,6 @@ import { apiResult } from '@/shared/result/api';
 const MIN_SEARCH_LENGTH = 3;
 const DEBOUNCE_MS = 300;
 const RESULTS_LIMIT = 6;
-const mapRoute = getRouteApi('/map/$id');
-const mapsRoute = getRouteApi('/maps');
-const playerRoute = getRouteApi('/u/$playerId');
-const rankingsRoute = getRouteApi('/rankings');
-
 type SearchResults = {
    players: PlayerControllerGetPlayersDataItem[];
    maps: MapControllerGetMapListingsDataItem[];
@@ -200,28 +195,28 @@ function OmniSearchBody() {
    const navigateToPlayer = useCallback(
       (playerId: string) => {
          setOpen(false);
-         void router.navigate({ to: playerRoute.id, params: { playerId }, search: { sort: 'top', page: 1 } });
+         void router.navigate({ to: '/u/$playerId', params: { playerId }, search: { sort: 'top', page: 1 } });
       },
       [setOpen, router]
    );
    const navigateToMap = useCallback(
       (mapId: number) => {
          setOpen(false);
-         void router.navigate({ to: mapRoute.id, params: { id: mapId }, search: { page: 1 } });
+         void router.navigate({ to: '/map/$id', params: { id: mapId }, search: { page: 1 } });
       },
       [setOpen, router]
    );
    const navigateToRankings = useCallback(
       (search: string) => {
          setOpen(false);
-         void router.navigate({ to: rankingsRoute.id, search: { page: 1, search } });
+         void router.navigate({ to: '/rankings', search: { page: 1, search } });
       },
       [setOpen, router]
    );
    const navigateToMaps = useCallback(
       (search: string) => {
          setOpen(false);
-         void router.navigate({ to: mapsRoute.id, search: { page: 1, verified: 'true', search } });
+         void router.navigate({ to: '/maps', search: { page: 1, verified: 'true', search } });
       },
       [setOpen, router]
    );

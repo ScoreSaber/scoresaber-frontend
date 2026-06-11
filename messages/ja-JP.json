@@ -117,21 +117,21 @@
       "hideOtherMethods": "他の方法を非表示",
       "secondaryDescription": "Discord や Patreon などの二次連携は、アカウント設定から連携した後でのみ使用できます",
       "providers": {
+         "SCORESABER": {
+            "label": ""
+         },
          "STEAM": {
-            "label": "Steam",
-            "tooltip": "Steamでサインイン"
+            "label": "Steam"
          },
          "OCULUS": {
             "label": "Meta",
-            "tooltip": "Metaでサインイン"
+            "tooltip": ""
          },
          "PATREON": {
-            "label": "Patreon",
-            "tooltip": "Patreonでサインイン"
+            "label": "Patreon"
          },
          "DISCORD": {
-            "label": "Discord",
-            "tooltip": "Discordでサインイン"
+            "label": "Discord"
          }
       },
       "oauth": {
@@ -139,9 +139,8 @@
          "failedDescription": "プロバイダー側でサインインが完了しませんでした。このページからもう一度お試しください"
       },
       "email": {
-         "title": "Meta ログイン",
-         "emailDescription": "Meta アカウントで使用しているメールアドレスを入力してください",
-         "emailLabel": "Meta アカウントのメールアドレス",
+         "title": "",
+         "emailLabel": "",
          "emailPlaceholder": "mail@example.com",
          "sendCode": "コードを送信",
          "resendCode": "再送信",
@@ -160,8 +159,42 @@
          "pendingTitle": "メール認証済み",
          "pendingDescription": "ScoreSaber がインストールされた Meta PC 版の Beat Saber を起動し、いずれかのリーダーボードを表示してから、メールログインを再度お試しください",
          "supportTitle": "サポートレビューが必要",
-         "supportDescription": "このメールアドレスは複数のアカウント、または保護されたアカウントに一致します"
-      }
+         "supportDescription": "このメールアドレスは複数のアカウント、または保護されたアカウントに一致します",
+         "metaInfo": {
+            "title": "",
+            "pcOnly": "",
+            "newPc": "",
+            "quest": ""
+         }
+      },
+      "password": {
+         "method": "",
+         "title": "",
+         "description": "",
+         "passwordLabel": "",
+         "submit": "",
+         "forgot": "",
+         "newPasswordLabel": "",
+         "passwordHelp": "",
+         "resetDescription": "",
+         "resetSubmit": "",
+         "backToLogin": "",
+         "failedToast": "",
+         "resetFailedToast": ""
+      },
+      "passkey": {
+         "method": "",
+         "failedToast": ""
+      },
+      "signup": {
+         "title": "",
+         "displayNameLabel": "",
+         "displayNameHelp": "",
+         "submit": "",
+         "failedToast": "",
+         "emailCallToAction": ""
+      },
+      "subtitle": ""
    },
    "sidebar": {
       "scoreSaberLogoAlt": "ScoreSaber ロゴ",
@@ -227,7 +260,10 @@
       "rankRequestActions": "ランク申請の操作",
       "adminActions": "管理者アクション",
       "scoreSaberLogo": "ScoreSaberロゴ",
-      "underConstruction": "準備中"
+      "underConstruction": "準備中",
+      "edit": "",
+      "copy": "",
+      "copied": ""
    },
    "error": {
       "somethingWentWrong": "エラーが発生しました",
@@ -602,7 +638,8 @@
       "tabs": {
          "account": "アカウント",
          "connections": "接続",
-         "perks": "特典"
+         "perks": "特典",
+         "developer": ""
       },
       "account": {
          "detailsTitle": "アカウント詳細",
@@ -634,7 +671,7 @@
          "resetCountryConfirmText": "リセット"
       },
       "connections": {
-         "primaryHelper": "これはメインでサインインしているアカウントで、こちらでは切断できません",
+         "primaryHelper": "",
          "legacyUpgradeHelper": "",
          "connect": "",
          "upgrade": "アップグレード",
@@ -656,6 +693,9 @@
             },
             "DISCORD": {
                "label": "Discord"
+            },
+            "SCORESABER": {
+               "label": ""
             }
          },
          "oauth": {
@@ -705,13 +745,13 @@
             "mergeFailedTitle": "",
             "mergeFailedDescription": "",
             "retry": ""
-         }
+         },
+         "setup": ""
       },
       "perks": {
          "tabs": {
             "overview": "",
-            "replays": "",
-            "scoreSaber2Badge": ""
+            "replays": ""
          },
          "gate": {
             "title": "",
@@ -753,21 +793,97 @@
             "unknownValue": "",
             "loadFailed": ""
          },
-         "scoreSaber2Badge": {
+         "vanity": {
             "title": "",
             "description": "",
-            "promptTitle": "",
-            "promoTitle": "",
-            "promoDescription": "",
-            "alreadySupporting": "",
-            "countdownLabel": "",
-            "supportAction": "",
-            "redeemAction": "",
-            "redeemingAction": "",
-            "redeemedToast": "",
-            "redeemFailedToast": "",
-            "dismiss": ""
+            "loadFailed": "",
+            "current": "",
+            "changeLabel": "",
+            "claimLabel": "",
+            "placeholder": "",
+            "change": "",
+            "claim": "",
+            "claimed": "",
+            "claimFailed": "",
+            "cooldown": "",
+            "rules": ""
          }
+      },
+      "security": {
+         "title": "",
+         "changePassword": "",
+         "changePasswordHelper": "",
+         "currentPassword": "",
+         "newPassword": "",
+         "passwordSaved": "",
+         "passwordSaveFailed": "",
+         "passkeys": "",
+         "passkeysHelper": "",
+         "addPasskey": "",
+         "passkeyAdded": "",
+         "passkeyAddFailed": "",
+         "passkeyRenamed": "",
+         "passkeyRenameFailed": "",
+         "passkeyDeleted": "",
+         "passkeyDeleteFailed": "",
+         "renamePasskey": "",
+         "renamePasskeyDesc": "",
+         "passkeyLabel": "",
+         "deletePasskey": "",
+         "deletePasskeyDesc": "",
+         "passkeyLastUsed": "",
+         "passkeyCreated": "",
+         "deviceLogin": "",
+         "deviceLoginComingSoon": "",
+         "deviceLoginHelper": "",
+         "deviceLoginAction": "",
+         "deviceLoginInstructions": "",
+         "deviceLoginClaimed": "",
+         "deviceCodeExpired": "",
+         "deviceCodeNew": "",
+         "deviceCodeExpiresIn": "",
+         "deviceCodeFailed": "",
+         "setPassword": "",
+         "setPasswordHelper": "",
+         "setPasswordSubmit": "",
+         "passwordSetupSaved": "",
+         "passwordSetupFailed": "",
+         "forgotPassword": ""
+      },
+      "developer": {
+         "title": "",
+         "description": "",
+         "noAccess": "",
+         "loadFailed": "",
+         "empty": "",
+         "create": "",
+         "createTitle": "",
+         "editTitle": "",
+         "formDescription": "",
+         "nameLabel": "",
+         "descriptionLabel": "",
+         "redirectUrisLabel": "",
+         "redirectUrisHelp": "",
+         "scopesLabel": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "created": "",
+         "createFailed": "",
+         "saved": "",
+         "saveFailed": "",
+         "rotate": "",
+         "rotated": "",
+         "rotateFailed": "",
+         "revoke": "",
+         "revokeDesc": "",
+         "revoked": "",
+         "revokeFailed": "",
+         "clientId": "",
+         "clientSecret": "",
+         "secretTitle": "",
+         "secretDescription": "",
+         "createdAt": "",
+         "redirectUris": ""
       }
    },
    "richTextEditor": {
@@ -841,6 +957,21 @@
          "necessaryDescription": "",
          "privacyPolicy": "プライバシーポリシー",
          "cookiePolicy": "Cookieポリシー"
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "",
+         "invalidDescription": "",
+         "loginTitle": "",
+         "loginDescription": "",
+         "title": "",
+         "scopesIntro": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "approveFailed": "",
+         "deny": "",
+         "approve": ""
       }
    }
 }

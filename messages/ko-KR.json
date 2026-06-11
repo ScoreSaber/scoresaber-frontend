@@ -117,21 +117,21 @@
       "hideOtherMethods": "다른 방법 숨기기",
       "secondaryDescription": "Discord 및 Patreon 같은 보조 연결은 계정 설정에서 연결한 후에만 사용할 수 있습니다",
       "providers": {
+         "SCORESABER": {
+            "label": ""
+         },
          "STEAM": {
-            "label": "Steam",
-            "tooltip": "Steam으로 로그인"
+            "label": "Steam"
          },
          "OCULUS": {
             "label": "Meta",
-            "tooltip": "Meta로 로그인"
+            "tooltip": ""
          },
          "PATREON": {
-            "label": "Patreon",
-            "tooltip": "Patreon으로 로그인"
+            "label": "Patreon"
          },
          "DISCORD": {
-            "label": "Discord",
-            "tooltip": "Discord로 로그인"
+            "label": "Discord"
          }
       },
       "oauth": {
@@ -139,9 +139,8 @@
          "failedDescription": "로그인이 완료되지 않았습니다. 이 페이지에서 다시 시도하세요"
       },
       "email": {
-         "title": "Meta 로그인",
-         "emailDescription": "Meta 계정에 사용하는 이메일 주소를 입력하세요",
-         "emailLabel": "Meta 계정 이메일",
+         "title": "",
+         "emailLabel": "",
          "emailPlaceholder": "you@example.com",
          "sendCode": "코드 전송",
          "resendCode": "재전송",
@@ -160,8 +159,42 @@
          "pendingTitle": "이메일 인증됨",
          "pendingDescription": "ScoreSaber가 설치된 Beat Saber의 Meta PC 버전을 열고 아무 리더보드나 확인한 뒤 이메일 로그인을 다시 시도하세요",
          "supportTitle": "지원팀 확인이 필요합니다",
-         "supportDescription": "이 이메일은 여러 계정 또는 보호된 계정과 일치합니다"
-      }
+         "supportDescription": "이 이메일은 여러 계정 또는 보호된 계정과 일치합니다",
+         "metaInfo": {
+            "title": "",
+            "pcOnly": "",
+            "newPc": "",
+            "quest": ""
+         }
+      },
+      "password": {
+         "method": "",
+         "title": "",
+         "description": "",
+         "passwordLabel": "",
+         "submit": "",
+         "forgot": "",
+         "newPasswordLabel": "",
+         "passwordHelp": "",
+         "resetDescription": "",
+         "resetSubmit": "",
+         "backToLogin": "",
+         "failedToast": "",
+         "resetFailedToast": ""
+      },
+      "passkey": {
+         "method": "",
+         "failedToast": ""
+      },
+      "signup": {
+         "title": "",
+         "displayNameLabel": "",
+         "displayNameHelp": "",
+         "submit": "",
+         "failedToast": "",
+         "emailCallToAction": ""
+      },
+      "subtitle": ""
    },
    "sidebar": {
       "scoreSaberLogoAlt": "ScoreSaber 로고",
@@ -227,7 +260,10 @@
       "rankRequestActions": "랭크 요청 작업",
       "adminActions": "관리자 작업",
       "scoreSaberLogo": "ScoreSaber 로고",
-      "underConstruction": "준비 중"
+      "underConstruction": "준비 중",
+      "edit": "",
+      "copy": "",
+      "copied": ""
    },
    "error": {
       "somethingWentWrong": "문제가 발생했습니다",
@@ -602,7 +638,8 @@
       "tabs": {
          "account": "계정",
          "connections": "연동",
-         "perks": "혜택"
+         "perks": "혜택",
+         "developer": ""
       },
       "account": {
          "detailsTitle": "계정 정보",
@@ -630,11 +667,11 @@
          "countryResetFailed": "국가 초기화를 사용할 수 없습니다",
          "resetCountryDialogDesc": "현재 위치를 기준으로 프로필 국가를 다시 계산합니다. 성공하면 {days}일 동안 국가 초기화를 사용할 수 없습니다",
          "resetCountryHelper": "ScoreSaber에 표시하려는 국가에 있을 때만 사용하세요. VPN이나 프록시를 사용 중이 아닌지도 확인하세요",
-         "resetCountryAvailableAt": "최근에 이미 국가를 초기화했습니다. {date}에 다시 초기화할 수 있습니다",
+         "resetCountryAvailableAt": "최근에 이미 국가를 초기화했습니다. <date></date>에 다시 초기화할 수 있습니다",
          "resetCountryConfirmText": "초기화"
       },
       "connections": {
-         "primaryHelper": "이 계정은 기본 로그인 계정이므로 여기에서 연결 해제할 수 없습니다",
+         "primaryHelper": "",
          "legacyUpgradeHelper": "이 계정은 이전 레거시 시스템을 통해 인증되었습니다. 계정 연결을 개선하려면 ‘업그레이드’를 클릭하세요",
          "connect": "연결",
          "upgrade": "업그레이드",
@@ -656,6 +693,9 @@
             },
             "DISCORD": {
                "label": "Discord"
+            },
+            "SCORESABER": {
+               "label": ""
             }
          },
          "oauth": {
@@ -705,13 +745,13 @@
             "mergeFailedTitle": "병합에 실패했습니다",
             "mergeFailedDescription": "이 병합 인증은 만료되었거나 유효하지 않거나 다른 계정용일 수 있습니다",
             "retry": "다시 시도"
-         }
+         },
+         "setup": ""
       },
       "perks": {
          "tabs": {
             "overview": "개요",
-            "replays": "리플레이",
-            "scoreSaber2Badge": "ScoreSaber 2 배지 수령"
+            "replays": "리플레이"
          },
          "gate": {
             "title": "후원자 전용 혜택",
@@ -753,21 +793,97 @@
             "unknownValue": "-",
             "loadFailed": "리플레이 슬롯을 불러올 수 없습니다"
          },
-         "scoreSaber2Badge": {
-            "title": "ScoreSaber 2 출시 배지",
-            "description": "ScoreSaber 2 출시일부터 6월 3일 사이에 후원해 주신 덕분에 한정판 배지가 잠금 해제되었습니다!",
-            "promptTitle": "한정판 배지가 잠금 해제되었습니다!",
-            "promoTitle": "한정 ScoreSaber 2 배지",
-            "promoDescription": "ScoreSaber 2 출시를 기념하여 모든 신규 및 기존 후원자는 6월 3일 오후 11시 59분(ET)까지 웹사이트에서 배지를 받을 수 있습니다",
-            "alreadySupporting": "이미 ScoreSaber를 후원 중이신가요?",
-            "countdownLabel": "종료까지",
-            "supportAction": "지원",
-            "redeemAction": "수령하기",
-            "redeemingAction": "수령 중",
-            "redeemedToast": "배지를 수령했습니다",
-            "redeemFailedToast": "배지 수령에 실패했습니다",
-            "dismiss": "닫기"
+         "vanity": {
+            "title": "",
+            "description": "",
+            "loadFailed": "",
+            "current": "",
+            "changeLabel": "",
+            "claimLabel": "",
+            "placeholder": "",
+            "change": "",
+            "claim": "",
+            "claimed": "",
+            "claimFailed": "",
+            "cooldown": "",
+            "rules": ""
          }
+      },
+      "security": {
+         "title": "",
+         "changePassword": "",
+         "changePasswordHelper": "",
+         "currentPassword": "",
+         "newPassword": "",
+         "passwordSaved": "",
+         "passwordSaveFailed": "",
+         "passkeys": "",
+         "passkeysHelper": "",
+         "addPasskey": "",
+         "passkeyAdded": "",
+         "passkeyAddFailed": "",
+         "passkeyRenamed": "",
+         "passkeyRenameFailed": "",
+         "passkeyDeleted": "",
+         "passkeyDeleteFailed": "",
+         "renamePasskey": "",
+         "renamePasskeyDesc": "",
+         "passkeyLabel": "",
+         "deletePasskey": "",
+         "deletePasskeyDesc": "",
+         "passkeyLastUsed": "",
+         "passkeyCreated": "",
+         "deviceLogin": "",
+         "deviceLoginComingSoon": "",
+         "deviceLoginHelper": "",
+         "deviceLoginAction": "",
+         "deviceLoginInstructions": "",
+         "deviceLoginClaimed": "",
+         "deviceCodeExpired": "",
+         "deviceCodeNew": "",
+         "deviceCodeExpiresIn": "",
+         "deviceCodeFailed": "",
+         "setPassword": "",
+         "setPasswordHelper": "",
+         "setPasswordSubmit": "",
+         "passwordSetupSaved": "",
+         "passwordSetupFailed": "",
+         "forgotPassword": ""
+      },
+      "developer": {
+         "title": "",
+         "description": "",
+         "noAccess": "",
+         "loadFailed": "",
+         "empty": "",
+         "create": "",
+         "createTitle": "",
+         "editTitle": "",
+         "formDescription": "",
+         "nameLabel": "",
+         "descriptionLabel": "",
+         "redirectUrisLabel": "",
+         "redirectUrisHelp": "",
+         "scopesLabel": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "created": "",
+         "createFailed": "",
+         "saved": "",
+         "saveFailed": "",
+         "rotate": "",
+         "rotated": "",
+         "rotateFailed": "",
+         "revoke": "",
+         "revokeDesc": "",
+         "revoked": "",
+         "revokeFailed": "",
+         "clientId": "",
+         "clientSecret": "",
+         "secretTitle": "",
+         "secretDescription": "",
+         "createdAt": "",
+         "redirectUris": ""
       }
    },
    "richTextEditor": {
@@ -841,6 +957,21 @@
          "necessaryDescription": "로그인, 보안, 요청 제한, 언어, 테마, 저장된 필터 및 핵심 사이트 기능에 필요합니다. 이 항목은 항상 활성화되어 있습니다.",
          "privacyPolicy": "개인정보 처리방침",
          "cookiePolicy": "쿠키 정책"
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "",
+         "invalidDescription": "",
+         "loginTitle": "",
+         "loginDescription": "",
+         "title": "",
+         "scopesIntro": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "approveFailed": "",
+         "deny": "",
+         "approve": ""
       }
    }
 }

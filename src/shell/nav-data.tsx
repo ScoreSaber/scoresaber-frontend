@@ -81,5 +81,5 @@ function getNavPath(route: AppNavRoute) {
 
 export function isNavActive(pathname: string, route: AppNavRoute) {
    const href = getNavPath(route);
-   return href === '/' ? pathname === '/' : pathname.startsWith(href);
+   return href === navRouteIds.home ? pathname === navRouteIds.home : pathname.startsWith(href);
 }

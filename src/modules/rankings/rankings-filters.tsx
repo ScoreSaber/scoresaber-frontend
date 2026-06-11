@@ -27,6 +27,7 @@ import { cn } from '@/shared/format/helpers';
 import { removeStorageValue } from '@/shared/result/storage';
 import { rankingFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { usePersistedParams } from '@/shared/url-state/persisted/use-persisted-params';
+import type { RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 
@@ -43,32 +44,32 @@ type RankingsFiltersSearch = SearchParamsRecord & {
    highlight?: string;
 };
 
-interface RankingsFiltersProps {
+interface RankingsFiltersProps<TLocation> {
    currentPage: number;
    totalPages: number;
    includeInactive: boolean;
    search: RankingsFiltersSearch;
-   buildHref: (search?: RankingsFiltersSearch) => string;
+   buildLocation: RouteLocationBuilder<RankingsFiltersSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => RankingsFiltersSearch | null;
    initialFiltersOpen: boolean;
 }
 
-export function RankingsFilters({
+export function RankingsFilters<TLocation>({
    currentPage,
    totalPages,
    includeInactive,
    search,
-   buildHref,
+   buildLocation,
    parseSearch,
    initialFiltersOpen
-}: RankingsFiltersProps) {
+}: RankingsFiltersProps<TLocation>) {
    const { user } = useAuth();
    const t = useTranslations();
    const tc = useTranslations();
    const { navigate, preload, preloadClearAll, cancelPreload, loadStorage, saveStorage } = usePersistedParams({
       storageKey: rankingFilterPreferences.storageKey,
       search,
-      buildHref,
+      buildLocation,
       parseSearch,
       persistedKeys: user ? rankingFilterPreferences.authPersistedKeys : rankingFilterPreferences.persistedKeys,
       legacyStorageKeys: rankingFilterPreferences.legacyStorageKeys
@@ -129,7 +130,7 @@ export function RankingsFilters({
    const activeFilterCount =
       (currentPivot ? 1 : 0) + (currentCountries ? 1 : 0) + (includeInactive ? 1 : 0) + (currentSearch && currentSearch.length >= 3 ? 1 : 0);
    const hasActiveFilters = activeFilterCount > 0;
-   const getPageHref = (page: number) => buildHref(updateSearchParams(search, { page: page > 1 ? page : undefined }));
+   const getPageLocation = (page: number) => buildLocation(updateSearchParams(search, { page: page > 1 ? page : undefined }));
 
    function handleClearAll() {
       removeStorageValue(rankingFilterPreferences.pivotStorageKey);
@@ -155,7 +156,7 @@ export function RankingsFilters({
             {!isPlayerPivot && (
                <div className="flex items-center gap-2 md:gap-3">
                   {showPagination && (
-                     <PaginationArrow direction="left" page={currentPage - 1} disabled={currentPage <= 1} getPageHref={getPageHref} />
+                     <PaginationArrow direction="left" page={currentPage - 1} disabled={currentPage <= 1} getPageLocation={getPageLocation} />
                   )}
 
                   <div className="relative min-w-0 flex-1">
@@ -193,7 +194,12 @@ export function RankingsFilters({
                   </div>
 
                   {showPagination && (
-                     <PaginationArrow direction="right" page={currentPage + 1} disabled={currentPage >= totalPages} getPageHref={getPageHref} />
+                     <PaginationArrow
+                        direction="right"
+                        page={currentPage + 1}
+                        disabled={currentPage >= totalPages}
+                        getPageLocation={getPageLocation}
+                     />
                   )}
                </div>
             )}

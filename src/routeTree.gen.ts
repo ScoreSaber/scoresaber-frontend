@@ -20,11 +20,13 @@ import { Route as HealthRouteImport } from './routes/health'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as SettingsPerksRouteImport } from './routes/settings/perks'
+import { Route as SettingsDeveloperRouteImport } from './routes/settings/developer'
 import { Route as SettingsConnectionsRouteImport } from './routes/settings/connections'
 import { Route as SettingsAccountRouteImport } from './routes/settings/account'
 import { Route as RankingRequestsRouteImport } from './routes/ranking/requests'
 import { Route as QuestVersionsRouteImport } from './routes/quest/versions'
 import { Route as QuestDownloadRouteImport } from './routes/quest/download'
+import { Route as OauthAuthorizeRouteImport } from './routes/oauth/authorize'
 import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
 import { Route as LegalCopyrightRouteImport } from './routes/legal/copyright'
 import { Route as LegalCookiesPolicyRouteImport } from './routes/legal/cookies-policy'
@@ -36,7 +38,6 @@ import { Route as UPlayerIdRouteRouteImport } from './routes/u/$playerId/route'
 import { Route as MapIdRouteRouteImport } from './routes/map/$id/route'
 import { Route as SettingsPerksIndexRouteImport } from './routes/settings/perks/index'
 import { Route as MapIdIndexRouteImport } from './routes/map/$id/index'
-import { Route as SettingsPerksScoreSaber2BadgeRouteImport } from './routes/settings/perks/score-saber-2-badge'
 import { Route as SettingsPerksReplaysRouteImport } from './routes/settings/perks/replays'
 import { Route as RankingRequestRequestIdRouteImport } from './routes/ranking/request/$requestId'
 import { Route as AuthPatreonCallbackRouteImport } from './routes/auth/patreon/callback'
@@ -99,6 +100,11 @@ const SettingsPerksRoute = SettingsPerksRouteImport.update({
   path: '/settings/perks',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsDeveloperRoute = SettingsDeveloperRouteImport.update({
+  id: '/settings/developer',
+  path: '/settings/developer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsConnectionsRoute = SettingsConnectionsRouteImport.update({
   id: '/settings/connections',
   path: '/settings/connections',
@@ -123,6 +129,11 @@ const QuestDownloadRoute = QuestDownloadRouteImport.update({
   id: '/download',
   path: '/download',
   getParentRoute: () => QuestRoute,
+} as any)
+const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
+  id: '/oauth/authorize',
+  path: '/oauth/authorize',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
   id: '/legal/privacy',
@@ -179,12 +190,6 @@ const MapIdIndexRoute = MapIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MapIdRouteRoute,
 } as any)
-const SettingsPerksScoreSaber2BadgeRoute =
-  SettingsPerksScoreSaber2BadgeRouteImport.update({
-    id: '/score-saber-2-badge',
-    path: '/score-saber-2-badge',
-    getParentRoute: () => SettingsPerksRoute,
-  } as any)
 const SettingsPerksReplaysRoute = SettingsPerksReplaysRouteImport.update({
   id: '/replays',
   path: '/replays',
@@ -237,11 +242,13 @@ export interface FileRoutesByFullPath {
   '/legal/cookies-policy': typeof LegalCookiesPolicyRoute
   '/legal/copyright': typeof LegalCopyrightRoute
   '/legal/privacy': typeof LegalPrivacyRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
   '/ranking/requests': typeof RankingRequestsRoute
   '/settings/account': typeof SettingsAccountRoute
   '/settings/connections': typeof SettingsConnectionsRoute
+  '/settings/developer': typeof SettingsDeveloperRoute
   '/settings/perks': typeof SettingsPerksRouteWithChildren
   '/settings/': typeof SettingsIndexRoute
   '/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
@@ -249,7 +256,6 @@ export interface FileRoutesByFullPath {
   '/auth/patreon/callback': typeof AuthPatreonCallbackRoute
   '/ranking/request/$requestId': typeof RankingRequestRequestIdRoute
   '/settings/perks/replays': typeof SettingsPerksReplaysRoute
-  '/settings/perks/score-saber-2-badge': typeof SettingsPerksScoreSaber2BadgeRoute
   '/map/$id/': typeof MapIdIndexRoute
   '/settings/perks/': typeof SettingsPerksIndexRoute
   '/map/$id/difficulty/$leaderboardId': typeof MapIdDifficultyLeaderboardIdRouteRoute
@@ -272,18 +278,19 @@ export interface FileRoutesByTo {
   '/legal/cookies-policy': typeof LegalCookiesPolicyRoute
   '/legal/copyright': typeof LegalCopyrightRoute
   '/legal/privacy': typeof LegalPrivacyRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
   '/ranking/requests': typeof RankingRequestsRoute
   '/settings/account': typeof SettingsAccountRoute
   '/settings/connections': typeof SettingsConnectionsRoute
+  '/settings/developer': typeof SettingsDeveloperRoute
   '/settings': typeof SettingsIndexRoute
   '/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
   '/auth/discord/callback': typeof AuthDiscordCallbackRoute
   '/auth/patreon/callback': typeof AuthPatreonCallbackRoute
   '/ranking/request/$requestId': typeof RankingRequestRequestIdRoute
   '/settings/perks/replays': typeof SettingsPerksReplaysRoute
-  '/settings/perks/score-saber-2-badge': typeof SettingsPerksScoreSaber2BadgeRoute
   '/map/$id': typeof MapIdIndexRoute
   '/settings/perks': typeof SettingsPerksIndexRoute
   '/map/$id/difficulty/$leaderboardId': typeof MapIdDifficultyLeaderboardIdRouteRoute
@@ -308,11 +315,13 @@ export interface FileRoutesById {
   '/legal/cookies-policy': typeof LegalCookiesPolicyRoute
   '/legal/copyright': typeof LegalCopyrightRoute
   '/legal/privacy': typeof LegalPrivacyRoute
+  '/oauth/authorize': typeof OauthAuthorizeRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
   '/ranking/requests': typeof RankingRequestsRoute
   '/settings/account': typeof SettingsAccountRoute
   '/settings/connections': typeof SettingsConnectionsRoute
+  '/settings/developer': typeof SettingsDeveloperRoute
   '/settings/perks': typeof SettingsPerksRouteWithChildren
   '/settings/': typeof SettingsIndexRoute
   '/(legacy)/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
@@ -320,7 +329,6 @@ export interface FileRoutesById {
   '/auth/patreon/callback': typeof AuthPatreonCallbackRoute
   '/ranking/request/$requestId': typeof RankingRequestRequestIdRoute
   '/settings/perks/replays': typeof SettingsPerksReplaysRoute
-  '/settings/perks/score-saber-2-badge': typeof SettingsPerksScoreSaber2BadgeRoute
   '/map/$id/': typeof MapIdIndexRoute
   '/settings/perks/': typeof SettingsPerksIndexRoute
   '/map/$id/difficulty/$leaderboardId': typeof MapIdDifficultyLeaderboardIdRouteRoute
@@ -346,11 +354,13 @@ export interface FileRouteTypes {
     | '/legal/cookies-policy'
     | '/legal/copyright'
     | '/legal/privacy'
+    | '/oauth/authorize'
     | '/quest/download'
     | '/quest/versions'
     | '/ranking/requests'
     | '/settings/account'
     | '/settings/connections'
+    | '/settings/developer'
     | '/settings/perks'
     | '/settings/'
     | '/leaderboard/$leaderboardId'
@@ -358,7 +368,6 @@ export interface FileRouteTypes {
     | '/auth/patreon/callback'
     | '/ranking/request/$requestId'
     | '/settings/perks/replays'
-    | '/settings/perks/score-saber-2-badge'
     | '/map/$id/'
     | '/settings/perks/'
     | '/map/$id/difficulty/$leaderboardId'
@@ -381,18 +390,19 @@ export interface FileRouteTypes {
     | '/legal/cookies-policy'
     | '/legal/copyright'
     | '/legal/privacy'
+    | '/oauth/authorize'
     | '/quest/download'
     | '/quest/versions'
     | '/ranking/requests'
     | '/settings/account'
     | '/settings/connections'
+    | '/settings/developer'
     | '/settings'
     | '/leaderboard/$leaderboardId'
     | '/auth/discord/callback'
     | '/auth/patreon/callback'
     | '/ranking/request/$requestId'
     | '/settings/perks/replays'
-    | '/settings/perks/score-saber-2-badge'
     | '/map/$id'
     | '/settings/perks'
     | '/map/$id/difficulty/$leaderboardId'
@@ -416,11 +426,13 @@ export interface FileRouteTypes {
     | '/legal/cookies-policy'
     | '/legal/copyright'
     | '/legal/privacy'
+    | '/oauth/authorize'
     | '/quest/download'
     | '/quest/versions'
     | '/ranking/requests'
     | '/settings/account'
     | '/settings/connections'
+    | '/settings/developer'
     | '/settings/perks'
     | '/settings/'
     | '/(legacy)/leaderboard/$leaderboardId'
@@ -428,7 +440,6 @@ export interface FileRouteTypes {
     | '/auth/patreon/callback'
     | '/ranking/request/$requestId'
     | '/settings/perks/replays'
-    | '/settings/perks/score-saber-2-badge'
     | '/map/$id/'
     | '/settings/perks/'
     | '/map/$id/difficulty/$leaderboardId'
@@ -453,9 +464,11 @@ export interface RootRouteChildren {
   LegalCookiesPolicyRoute: typeof LegalCookiesPolicyRoute
   LegalCopyrightRoute: typeof LegalCopyrightRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
+  OauthAuthorizeRoute: typeof OauthAuthorizeRoute
   RankingRequestsRoute: typeof RankingRequestsRoute
   SettingsAccountRoute: typeof SettingsAccountRoute
   SettingsConnectionsRoute: typeof SettingsConnectionsRoute
+  SettingsDeveloperRoute: typeof SettingsDeveloperRoute
   SettingsPerksRoute: typeof SettingsPerksRouteWithChildren
   SettingsIndexRoute: typeof SettingsIndexRoute
   legacyLeaderboardLeaderboardIdRoute: typeof legacyLeaderboardLeaderboardIdRoute
@@ -541,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsPerksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/developer': {
+      id: '/settings/developer'
+      path: '/settings/developer'
+      fullPath: '/settings/developer'
+      preLoaderRoute: typeof SettingsDeveloperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/connections': {
       id: '/settings/connections'
       path: '/settings/connections'
@@ -575,6 +595,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/quest/download'
       preLoaderRoute: typeof QuestDownloadRouteImport
       parentRoute: typeof QuestRoute
+    }
+    '/oauth/authorize': {
+      id: '/oauth/authorize'
+      path: '/oauth/authorize'
+      fullPath: '/oauth/authorize'
+      preLoaderRoute: typeof OauthAuthorizeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/legal/privacy': {
       id: '/legal/privacy'
@@ -652,13 +679,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/map/$id/'
       preLoaderRoute: typeof MapIdIndexRouteImport
       parentRoute: typeof MapIdRouteRoute
-    }
-    '/settings/perks/score-saber-2-badge': {
-      id: '/settings/perks/score-saber-2-badge'
-      path: '/score-saber-2-badge'
-      fullPath: '/settings/perks/score-saber-2-badge'
-      preLoaderRoute: typeof SettingsPerksScoreSaber2BadgeRouteImport
-      parentRoute: typeof SettingsPerksRoute
     }
     '/settings/perks/replays': {
       id: '/settings/perks/replays'
@@ -758,13 +778,11 @@ const AuthPatreonRouteWithChildren = AuthPatreonRoute._addFileChildren(
 
 interface SettingsPerksRouteChildren {
   SettingsPerksReplaysRoute: typeof SettingsPerksReplaysRoute
-  SettingsPerksScoreSaber2BadgeRoute: typeof SettingsPerksScoreSaber2BadgeRoute
   SettingsPerksIndexRoute: typeof SettingsPerksIndexRoute
 }
 
 const SettingsPerksRouteChildren: SettingsPerksRouteChildren = {
   SettingsPerksReplaysRoute: SettingsPerksReplaysRoute,
-  SettingsPerksScoreSaber2BadgeRoute: SettingsPerksScoreSaber2BadgeRoute,
   SettingsPerksIndexRoute: SettingsPerksIndexRoute,
 }
 
@@ -791,9 +809,11 @@ const rootRouteChildren: RootRouteChildren = {
   LegalCookiesPolicyRoute: LegalCookiesPolicyRoute,
   LegalCopyrightRoute: LegalCopyrightRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
+  OauthAuthorizeRoute: OauthAuthorizeRoute,
   RankingRequestsRoute: RankingRequestsRoute,
   SettingsAccountRoute: SettingsAccountRoute,
   SettingsConnectionsRoute: SettingsConnectionsRoute,
+  SettingsDeveloperRoute: SettingsDeveloperRoute,
   SettingsPerksRoute: SettingsPerksRouteWithChildren,
   SettingsIndexRoute: SettingsIndexRoute,
   legacyLeaderboardLeaderboardIdRoute: legacyLeaderboardLeaderboardIdRoute,

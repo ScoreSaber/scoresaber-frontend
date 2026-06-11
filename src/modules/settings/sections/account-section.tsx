@@ -1,11 +1,12 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
 import { ChevronRight, FileText, ImageUp, Loader2, LogIn, RotateCcw, Save, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
-import { useLocale, useTranslations } from 'use-intl';
+import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,12 +23,14 @@ import { ConditionalOverlay } from '@/shared/components/conditional-overlay';
 import { ConfirmDialog } from '@/shared/components/confirm-dialog';
 import { dynamic } from '@/shared/components/dynamic';
 import { SupporterRequiredOverlay } from '@/shared/components/supporter-required-overlay';
+import { Time } from '@/shared/components/time';
 import { cn } from '@/shared/format/helpers';
 import Permissions from '@/shared/permissions';
 
 interface AccountSectionProps {
    countryReset: UserControllerCanResetCountryResponse | null;
    patreonConnected: boolean;
+   beforeActions?: ReactNode;
 }
 
 const bioMaxLength = 4096;
@@ -38,8 +41,7 @@ const loginRoute = getRouteApi('/login');
 const settingsAccountRoute = getRouteApi('/settings/account');
 const BioEditorForm = dynamic(() => import('@/shared/components/bio-editor-form').then((mod) => mod.BioEditorForm));
 
-export function AccountSection({ countryReset, patreonConnected }: AccountSectionProps) {
-   const locale = useLocale();
+export function AccountSection({ countryReset, patreonConnected, beforeActions }: AccountSectionProps) {
    const t = useTranslations();
    const tSidebar = useTranslations();
    const { user, bustOwnAvatar } = useAuth();
@@ -89,7 +91,7 @@ export function AccountSection({ countryReset, patreonConnected }: AccountSectio
    const avatarSavePending = mutation.isPendingKey('avatar');
    const avatarSaveDisabled = mutation.isPending || !avatarFile;
    const countryResetPending = mutation.isPendingKey('country-reset');
-   const countryResetAvailableAt = getCountryResetAvailableAt(countryReset?.lastReset, locale);
+   const countryResetAvailableAt = getCountryResetAvailableAt(countryReset?.lastReset);
    const canEditBio =
       Permissions.checkPermissionNumber(user.permissions, Permissions.security.SUPPORTER) ||
       Permissions.checkPermissionNumber(user.permissions, Permissions.security.PPFARMER) ||
@@ -334,6 +336,8 @@ export function AccountSection({ countryReset, patreonConnected }: AccountSectio
                </CardContent>
             </Card>
 
+            {beforeActions}
+
             <Card className="bg-background/35 gap-4 rounded-lg py-5 shadow-none">
                <CardHeader className="px-5">
                   <CardTitle className="text-base">{t('settings.account.actionsTitle')}</CardTitle>
@@ -383,7 +387,9 @@ export function AccountSection({ countryReset, patreonConnected }: AccountSectio
          >
             <p className="text-muted-foreground text-sm text-pretty">
                {countryResetAvailableAt
-                  ? t('settings.account.resetCountryAvailableAt', { date: countryResetAvailableAt })
+                  ? t.rich('settings.account.resetCountryAvailableAt', {
+                       date: () => <Time date={countryResetAvailableAt} dateStyle="medium" />
+                    })
                   : t('settings.account.resetCountryHelper', { days: countryResetCooldownDays })}
             </p>
          </ConfirmDialog>
@@ -391,7 +397,7 @@ export function AccountSection({ countryReset, patreonConnected }: AccountSectio
    );
 }
 
-function getCountryResetAvailableAt(lastReset: string | null | undefined, locale: string) {
+function getCountryResetAvailableAt(lastReset: string | null | undefined) {
    if (!lastReset) {
       return null;
    }
@@ -402,5 +408,5 @@ function getCountryResetAvailableAt(lastReset: string | null | undefined, locale
    }
 
    resetDate.setDate(resetDate.getDate() + countryResetCooldownDays);
-   return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(resetDate);
+   return resetDate;
 }

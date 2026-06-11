@@ -5,6 +5,7 @@ import type {
    MapControllerGetMapByIdResponse
 } from '@/shared/api/generated/ApiParams';
 import type { CountryRegionFilterValue } from '@/shared/country-region';
+import type { RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 
 type RankRequest = NonNullable<MapControllerGetMapByIdResponse['rankRequest']>;
@@ -23,7 +24,7 @@ type LeaderboardSearchParams = SearchParamsRecord & {
    tab?: MapLeaderboardTab;
 };
 
-interface MapLeaderboardViewProps {
+interface MapLeaderboardViewProps<TLocation> {
    routeName: MapLeaderboardRouteName;
    mapInfo: MapControllerGetMapByIdResponse;
    leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
@@ -34,7 +35,7 @@ interface MapLeaderboardViewProps {
    highlight?: number;
    rankRequest?: RankRequest | null;
    defaultTab?: MapLeaderboardTab;
-   buildHref: (search?: LeaderboardSearchParams) => string;
+   buildLocation: RouteLocationBuilder<LeaderboardSearchParams, TLocation>;
    parseSearch: (search: SearchParamsRecord) => LeaderboardSearchParams | null;
 }
 

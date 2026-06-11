@@ -1,11 +1,11 @@
 'use client';
 
-import type { SubmitEvent } from 'react';
+import type { ReactNode, SubmitEvent } from 'react';
 import { useState } from 'react';
 
 import { useRouter } from '@tanstack/react-router';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { CircleCheck, Loader2, Mail, ShieldCheck, TriangleAlert } from 'lucide-react';
+import { CircleCheck, Info, Loader2, Mail, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -33,8 +33,9 @@ type FeedbackState = {
 type EmailLoginVerification = Extract<Awaited<ReturnType<typeof verifyEmailLogin>>, { ok: true }>['value'];
 
 const DELIVERY_HELP_MINUTES = 10;
+const metaInfoStrong = (chunks: ReactNode) => <strong className="font-semibold">{chunks}</strong>;
 
-export function EmailLoginForm({ redirectTo }: { redirectTo: string }) {
+export function EmailLoginForm({ redirectTo, onSignupSelect }: { redirectTo: string; onSignupSelect: () => void }) {
    const t = useTranslations();
    const router = useRouter();
    const [notice, setNotice] = useState<NoticeState>(null);
@@ -64,15 +65,15 @@ export function EmailLoginForm({ redirectTo }: { redirectTo: string }) {
             description: error.message || t('login.email.sendFailedToast')
          }),
       onVerifyMutate: () => setFeedback(null),
-      onVerified: (value) => {
+      onVerified: async (value) => {
          if (value.status === 'authenticated') {
             setFeedback({
                variant: 'default',
                title: t('login.email.authenticatedToast'),
                description: t('login.email.authenticatedDescription')
             });
-            void router.navigate({ href: redirectTo, replace: true });
-            void router.invalidate();
+            await router.invalidate();
+            await router.navigate({ href: redirectTo, replace: true });
             return;
          }
 
@@ -98,7 +99,30 @@ export function EmailLoginForm({ redirectTo }: { redirectTo: string }) {
 
    return (
       <div className="flex w-full max-w-sm flex-col gap-4 text-left">
-         <p className="text-muted-foreground text-sm text-pretty">{t('login.email.emailDescription')}</p>
+         <Alert variant="info">
+            <Info aria-hidden />
+            <AlertTitle>{t('login.email.metaInfo.title')}</AlertTitle>
+            <AlertDescription className="text-xs">
+               <ul className="list-disc pl-4 leading-relaxed">
+                  <li>{t.rich('login.email.metaInfo.pcOnly', { strong: metaInfoStrong })}</li>
+                  <li>{t.rich('login.email.metaInfo.newPc', { strong: metaInfoStrong })}</li>
+                  <li>
+                     {t.rich('login.email.metaInfo.quest', {
+                        strong: metaInfoStrong,
+                        signupLink: (chunks) => (
+                           <button
+                              type="button"
+                              onClick={onSignupSelect}
+                              className="hover:text-foreground cursor-pointer font-medium underline underline-offset-2"
+                           >
+                              {chunks}
+                           </button>
+                        )
+                     })}
+                  </li>
+               </ul>
+            </AlertDescription>
+         </Alert>
 
          <form className="flex flex-col gap-2" onSubmit={submitEmail}>
             <Label htmlFor="email-login">{t('login.email.emailLabel')}</Label>

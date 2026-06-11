@@ -44,7 +44,7 @@ const SidebarBrand = memo(function SidebarBrand({ alt, onNavigateAction }: { alt
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
       event.preventDefault();
       onNavigateAction?.();
-      void router.navigate({ href: '/' });
+      void router.navigate({ to: '/' });
    }
 
    return (
@@ -62,15 +62,13 @@ const SidebarBrand = memo(function SidebarBrand({ alt, onNavigateAction }: { alt
 export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void }) {
    const location = useLocation();
    const pathname = location.pathname;
-   const searchParams = new URLSearchParams(location.searchStr);
    const { user } = useAuth();
    const { setOpen: setSearchOpen } = useOmniSearch();
    const [mounted, setMounted] = useState(false);
    const [isMac, setIsMac] = useState(false);
    const t = useTranslations();
    const [playerNameClass] = getPlayerRoleStyleAndTitle(user);
-   const search = searchParams.toString();
-   const currentPath = search ? `${pathname}?${search}` : pathname;
+   const currentPath = location.href;
 
    function navLabel(key: string) {
       return key === 'home'
@@ -313,7 +311,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                </div>
             ) : (
                <Button asChild variant="ghost" className={cn(navLinkClass, inactiveClass, 'w-full cursor-pointer justify-start')}>
-                  <loginRoute.Link search={pathname === '/login' ? {} : { redirectTo: currentPath }} onClick={onNavigateAction}>
+                  <loginRoute.Link search={pathname === loginRoute.id ? {} : { redirectTo: currentPath }} onClick={onNavigateAction}>
                      <LogIn data-icon />
                      {t('sidebar.logIn')}
                   </loginRoute.Link>

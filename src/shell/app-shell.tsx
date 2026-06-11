@@ -23,7 +23,6 @@ import { Sidebar } from '@/shell/sidebar';
 import { SidebarProvider } from '@/shell/sidebar-provider';
 
 const OmniSearch = dynamic(() => import('@/modules/search/omni-search').then((mod) => mod.OmniSearch));
-const ScoreSaber2BadgePrompt = dynamic(() => import('@/modules/settings/score-saber-2-badge-prompt').then((mod) => mod.ScoreSaber2BadgePrompt));
 
 export function AppShell({
    initialUser,
@@ -58,7 +57,6 @@ export function AppShell({
                         <MobileBottomBar />
                      </SidebarProvider>
                      <OmniSearch />
-                     <ScoreSaber2BadgePrompt />
                      <Toaster />
                   </OmniSearchProvider>
                </TooltipProvider>

@@ -1,4 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
+
+import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
@@ -20,14 +22,13 @@ import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers'
 import { optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
 import { buildSeoHead } from '@/shared/seo/metadata';
-import { isPageNumber, isPlayerId, ScoreEnum, toInt64PathParam, validateRequest } from '@/shared/url-state/params';
+import { isPageNumber, isPlayerId, isVanitySlug, ScoreEnum, validateRequest } from '@/shared/url-state/params';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
-import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const playerParamsSchema = z.object({
-   playerId: z.string().refine((value) => isPlayerId.safeParse(value).success)
+   playerId: z.string().refine((value) => isPlayerId.safeParse(value).success || isVanitySlug.safeParse(value.toLowerCase()).success)
 });
 
 const playerSearchSchema = z.object({
@@ -52,8 +53,10 @@ type ParsePlayerSearch = (search: Record<string, unknown>) => PlayerProfileSearc
 const getPlayerProfilePageData = createServerFn({ method: 'GET' })
    .inputValidator((data: PlayerProfileRouteInput) => data)
    .handler(async ({ data }) => {
-      const apiPlayerId = toInt64PathParam(data.playerId);
-      const playerResult = await pageApiData(api.player.playerControllerGetPlayer({ id: apiPlayerId }));
+      const numericId = isPlayerId.safeParse(data.playerId);
+      const playerResult = numericId.success
+         ? await pageApiData(api.player.playerControllerGetPlayer({ id: numericId.data.toString() }))
+         : await pageApiData(api.player.playerControllerGetPlayerByVanity({ slug: data.playerId.toLowerCase() }));
 
       if (!playerResult.ok) {
          return {
@@ -66,6 +69,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
          };
       }
 
+      const apiPlayerId = playerResult.data.id;
       const bio = playerResult.data.bio ?? '';
       const sanitizedBio = sanitizeRichTextHtml(bio);
 
@@ -142,6 +146,8 @@ function PlayerProfileRouteContent({
    data: Awaited<ReturnType<typeof getPlayerProfilePageData>>;
 }) {
    const { result, scores, history, aliases, sanitizedBio, hasBioContent } = data;
+
+   useVanityBrowserUrl(result.ok ? result.data.vanity : null);
 
    if (!result.ok) return <PageError status={result.status} />;
 
@@ -226,6 +232,17 @@ export function buildPlayerProfileHead(loaderData: Awaited<ReturnType<typeof get
    });
 }
 
+function useVanityBrowserUrl(vanity: string | null) {
+   useEffect(() => {
+      if (!vanity) return;
+
+      const nextPathname = `/u/${vanity}`;
+      if (window.location.pathname === nextPathname) return;
+
+      window.history.replaceState(window.history.state, '', `${nextPathname}${window.location.search}${window.location.hash}`);
+   }, [vanity]);
+}
+
 function PlayerScoresSection({
    playerId,
    scores,
@@ -247,8 +264,8 @@ function PlayerScoresSection({
 }) {
    const t = useTranslations();
    const currentSearch: PlayerProfileSearch = { sort, page, search };
-   const buildHref = (nextSearch?: Partial<PlayerProfileSearch>) => buildPlayerHref(playerId, nextSearch);
-   const getPageHref = (nextPage: number) => buildHref(updateSearchParams(currentSearch, { page: nextPage > 1 ? nextPage : undefined }));
+   const buildLocation = (nextSearch?: Partial<PlayerProfileSearch>) => buildPlayerLocation(playerId, nextSearch);
+   const getPageLocation = (nextPage: number) => buildLocation(updateSearchParams(currentSearch, { page: nextPage > 1 ? nextPage : undefined }));
 
    const hasNoScoresAtAll = !hasScores;
 
@@ -257,7 +274,7 @@ function PlayerScoresSection({
          {hasContentAbove && <Separator variant="gradient" className="mb-4" />}
          {!hasNoScoresAtAll && (
             <div className="mb-4 flex justify-center">
-               <PlayerScoresToolbar search={currentSearch} buildHref={buildHref} parseSearch={parseSearch} />
+               <PlayerScoresToolbar search={currentSearch} buildLocation={buildLocation} parseSearch={parseSearch} />
             </div>
          )}
          {scores.data.length > 0 ? (
@@ -266,7 +283,7 @@ function PlayerScoresSection({
                totalItems={scores.metadata.totalItems}
                pageSize={scores.metadata.itemsPerPage}
                currentPage={page}
-               getPageHref={getPageHref}
+               getPageLocation={getPageLocation}
             />
          ) : (
             <div className="text-muted-foreground flex flex-col items-center gap-2 py-16">
@@ -279,8 +296,13 @@ function PlayerScoresSection({
    );
 }
 
-function buildPlayerHref(playerId: string, search?: Partial<PlayerProfileSearch>) {
-   return `/u/${playerId}${stringifyUrlSearch(search ?? {})}`;
+function buildPlayerLocation(playerId: string, search?: Partial<PlayerProfileSearch>) {
+   return linkOptions({ to: '/u/$playerId', params: { playerId }, search: normalizePlayerLocationSearch(search) });
+}
+
+function normalizePlayerLocationSearch(search?: Partial<PlayerProfileSearch>) {
+   const { sort = 'top', page = 1, ...rest } = search ?? {};
+   return { sort, page, ...rest };
 }
 
 function playerProfileHead(

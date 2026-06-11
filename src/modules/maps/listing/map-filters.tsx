@@ -24,6 +24,7 @@ import { PaginationArrow } from '@/shared/components/pagination';
 import { cn } from '@/shared/format/helpers';
 import { mapFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { usePersistedParams } from '@/shared/url-state/persisted/use-persisted-params';
+import type { RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 
@@ -60,11 +61,11 @@ function isMapStatus(value: string): value is MapControllerGetMapListingsStatus 
    return (MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS as readonly string[]).includes(value);
 }
 
-interface MapFiltersProps {
+interface MapFiltersProps<TLocation> {
    currentPage: number;
    totalPages: number;
    search: MapsFilterSearch;
-   buildHref: (search?: MapsFilterSearch) => string;
+   buildLocation: RouteLocationBuilder<MapsFilterSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => MapsFilterSearch | null;
    initialFiltersOpen: boolean;
 }
@@ -80,12 +81,19 @@ type MapsFilterSearch = SearchParamsRecord & {
    sortDirection?: MapControllerGetMapListingsSortDirection;
 };
 
-export function MapFilters({ currentPage, totalPages, search, buildHref, parseSearch, initialFiltersOpen }: MapFiltersProps) {
+export function MapFilters<TLocation>({
+   currentPage,
+   totalPages,
+   search,
+   buildLocation,
+   parseSearch,
+   initialFiltersOpen
+}: MapFiltersProps<TLocation>) {
    const t = useTranslations();
    const { navigate, preload, preloadClearAll, cancelPreload, clearAll, loadStorage, saveStorage } = usePersistedParams({
       storageKey: mapFilterPreferences.storageKey,
       search,
-      buildHref,
+      buildLocation,
       parseSearch,
       persistedKeys: mapFilterPreferences.persistedKeys
    });
@@ -202,7 +210,7 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
       (currentMinStars !== DEFAULT_MIN_STARS || currentMaxStars !== DEFAULT_MAX_STARS ? 1 : 0) +
       (currentSearch && currentSearch.length >= 3 ? 1 : 0);
    const hasActiveFilters = activeFilterCount > 0;
-   const getPageHref = (page: number) => buildHref(updateSearchParams(search, { page: page > 1 ? page : undefined }));
+   const getPageLocation = (page: number) => buildLocation(updateSearchParams(search, { page: page > 1 ? page : undefined }));
 
    return (
       <Collapsible
@@ -215,7 +223,9 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
          <div className="flex flex-col gap-3">
             {/* search */}
             <div className="flex items-center gap-2 md:gap-3">
-               {showPagination && <PaginationArrow direction="left" page={currentPage - 1} disabled={currentPage <= 1} getPageHref={getPageHref} />}
+               {showPagination && (
+                  <PaginationArrow direction="left" page={currentPage - 1} disabled={currentPage <= 1} getPageLocation={getPageLocation} />
+               )}
 
                <div className="relative min-w-0 flex-1">
                   <DebouncedSearchInput
@@ -252,7 +262,7 @@ export function MapFilters({ currentPage, totalPages, search, buildHref, parseSe
                </div>
 
                {showPagination && (
-                  <PaginationArrow direction="right" page={currentPage + 1} disabled={currentPage >= totalPages} getPageHref={getPageHref} />
+                  <PaginationArrow direction="right" page={currentPage + 1} disabled={currentPage >= totalPages} getPageLocation={getPageLocation} />
                )}
             </div>
 

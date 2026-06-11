@@ -117,21 +117,21 @@
       "hideOtherMethods": "隐藏其他方法",
       "secondaryDescription": "",
       "providers": {
+         "SCORESABER": {
+            "label": ""
+         },
          "STEAM": {
-            "label": "Steam",
-            "tooltip": "从 Steam 登入"
+            "label": "Steam"
          },
          "OCULUS": {
             "label": "Meta",
-            "tooltip": "从 Meta 登录"
+            "tooltip": ""
          },
          "PATREON": {
-            "label": "Patreon",
-            "tooltip": "从 Patreon 登录"
+            "label": "Patreon"
          },
          "DISCORD": {
-            "label": "Discord",
-            "tooltip": "从 Discord 登录"
+            "label": "Discord"
          }
       },
       "oauth": {
@@ -139,9 +139,8 @@
          "failedDescription": ""
       },
       "email": {
-         "title": "Meta 登录",
-         "emailDescription": "输入您使用的 Meta 帐户的电子邮件地址",
-         "emailLabel": "Meta 帐户电子邮件",
+         "title": "",
+         "emailLabel": "",
          "emailPlaceholder": "you@example.com",
          "sendCode": "获取验证码",
          "resendCode": "重新发送验证码",
@@ -160,8 +159,42 @@
          "pendingTitle": "电子邮件已验证",
          "pendingDescription": "打开Meta PC 版本的 Beat Saber，并安装了ScoreSaber，查看任何排行榜，然后再次尝试登录邮件",
          "supportTitle": "",
-         "supportDescription": "此电子邮件匹配多个账户或受保护账户"
-      }
+         "supportDescription": "此电子邮件匹配多个账户或受保护账户",
+         "metaInfo": {
+            "title": "",
+            "pcOnly": "",
+            "newPc": "",
+            "quest": ""
+         }
+      },
+      "password": {
+         "method": "",
+         "title": "",
+         "description": "",
+         "passwordLabel": "",
+         "submit": "",
+         "forgot": "",
+         "newPasswordLabel": "",
+         "passwordHelp": "",
+         "resetDescription": "",
+         "resetSubmit": "",
+         "backToLogin": "",
+         "failedToast": "",
+         "resetFailedToast": ""
+      },
+      "passkey": {
+         "method": "",
+         "failedToast": ""
+      },
+      "signup": {
+         "title": "",
+         "displayNameLabel": "",
+         "displayNameHelp": "",
+         "submit": "",
+         "failedToast": "",
+         "emailCallToAction": ""
+      },
+      "subtitle": ""
    },
    "sidebar": {
       "scoreSaberLogoAlt": "ScreSaber标志",
@@ -227,7 +260,10 @@
       "rankRequestActions": "排名申请操作",
       "adminActions": "管理员操作",
       "scoreSaberLogo": "ScreSaber标志",
-      "underConstruction": "正在建造中"
+      "underConstruction": "正在建造中",
+      "edit": "",
+      "copy": "",
+      "copied": ""
    },
    "error": {
       "somethingWentWrong": "出现了一些错误",
@@ -602,7 +638,8 @@
       "tabs": {
          "account": "",
          "connections": "",
-         "perks": ""
+         "perks": "",
+         "developer": ""
       },
       "account": {
          "detailsTitle": "",
@@ -656,6 +693,9 @@
             },
             "DISCORD": {
                "label": ""
+            },
+            "SCORESABER": {
+               "label": ""
             }
          },
          "oauth": {
@@ -705,13 +745,13 @@
             "mergeFailedTitle": "",
             "mergeFailedDescription": "",
             "retry": ""
-         }
+         },
+         "setup": ""
       },
       "perks": {
          "tabs": {
             "overview": "",
-            "replays": "",
-            "scoreSaber2Badge": ""
+            "replays": ""
          },
          "gate": {
             "title": "",
@@ -753,21 +793,97 @@
             "unknownValue": "",
             "loadFailed": ""
          },
-         "scoreSaber2Badge": {
+         "vanity": {
             "title": "",
             "description": "",
-            "promptTitle": "",
-            "promoTitle": "",
-            "promoDescription": "",
-            "alreadySupporting": "",
-            "countdownLabel": "",
-            "supportAction": "",
-            "redeemAction": "",
-            "redeemingAction": "",
-            "redeemedToast": "",
-            "redeemFailedToast": "",
-            "dismiss": ""
+            "loadFailed": "",
+            "current": "",
+            "changeLabel": "",
+            "claimLabel": "",
+            "placeholder": "",
+            "change": "",
+            "claim": "",
+            "claimed": "",
+            "claimFailed": "",
+            "cooldown": "",
+            "rules": ""
          }
+      },
+      "security": {
+         "title": "",
+         "changePassword": "",
+         "changePasswordHelper": "",
+         "currentPassword": "",
+         "newPassword": "",
+         "passwordSaved": "",
+         "passwordSaveFailed": "",
+         "passkeys": "",
+         "passkeysHelper": "",
+         "addPasskey": "",
+         "passkeyAdded": "",
+         "passkeyAddFailed": "",
+         "passkeyRenamed": "",
+         "passkeyRenameFailed": "",
+         "passkeyDeleted": "",
+         "passkeyDeleteFailed": "",
+         "renamePasskey": "",
+         "renamePasskeyDesc": "",
+         "passkeyLabel": "",
+         "deletePasskey": "",
+         "deletePasskeyDesc": "",
+         "passkeyLastUsed": "",
+         "passkeyCreated": "",
+         "deviceLogin": "",
+         "deviceLoginComingSoon": "",
+         "deviceLoginHelper": "",
+         "deviceLoginAction": "",
+         "deviceLoginInstructions": "",
+         "deviceLoginClaimed": "",
+         "deviceCodeExpired": "",
+         "deviceCodeNew": "",
+         "deviceCodeExpiresIn": "",
+         "deviceCodeFailed": "",
+         "setPassword": "",
+         "setPasswordHelper": "",
+         "setPasswordSubmit": "",
+         "passwordSetupSaved": "",
+         "passwordSetupFailed": "",
+         "forgotPassword": ""
+      },
+      "developer": {
+         "title": "",
+         "description": "",
+         "noAccess": "",
+         "loadFailed": "",
+         "empty": "",
+         "create": "",
+         "createTitle": "",
+         "editTitle": "",
+         "formDescription": "",
+         "nameLabel": "",
+         "descriptionLabel": "",
+         "redirectUrisLabel": "",
+         "redirectUrisHelp": "",
+         "scopesLabel": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "created": "",
+         "createFailed": "",
+         "saved": "",
+         "saveFailed": "",
+         "rotate": "",
+         "rotated": "",
+         "rotateFailed": "",
+         "revoke": "",
+         "revokeDesc": "",
+         "revoked": "",
+         "revokeFailed": "",
+         "clientId": "",
+         "clientSecret": "",
+         "secretTitle": "",
+         "secretDescription": "",
+         "createdAt": "",
+         "redirectUris": ""
       }
    },
    "richTextEditor": {
@@ -841,6 +957,21 @@
          "necessaryDescription": "",
          "privacyPolicy": "",
          "cookiePolicy": ""
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "",
+         "invalidDescription": "",
+         "loginTitle": "",
+         "loginDescription": "",
+         "title": "",
+         "scopesIntro": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "approveFailed": "",
+         "deny": "",
+         "approve": ""
       }
    }
 }

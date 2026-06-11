@@ -29,8 +29,10 @@ export interface PlayerControllerGetPlayersParams {
     * @default 50
     */
    limit?: number;
-   /** Comma separated country codes */
+   /** Comma-separated country codes. Takes precedence over scope when both are provided */
    countries?: string;
+   /** Authenticated viewer country or region filter for game clients */
+   scope?: 'country' | 'region';
    /**
     * Search by player name (min 3 chars)
     * @minLength 3
@@ -66,7 +68,7 @@ export interface PlayerControllerGetPlayersParams {
       | 'completionAccuracy';
    /** Sort direction (defaults vary by field) */
    sortDirection?: 'asc' | 'desc';
-   /** Player listing pivot mode */
+   /** Player listing pivot mode. player centers results around the authenticated viewer; friends limits to friends */
    pivot?: 'player' | 'friends';
 }
 
@@ -81,6 +83,19 @@ export interface PlayerControllerGetPlayerCountParams {
     * @default false
     */
    includeInactive?: string;
+}
+
+export interface PlayerControllerGetPlayerByVanityParams {
+   /**
+    * Realm ID (defaults to the active realm)
+    * @min 0
+    */
+   realmId?: number;
+   /**
+    * @minLength 3
+    * @maxLength 32
+    */
+   slug: string;
 }
 
 export interface PlayerControllerGetPlayerParams {
@@ -302,13 +317,15 @@ export interface LeaderboardControllerGetLeaderboardScoresByIdParams {
     * @default 12
     */
    limit?: number;
-   /** Score pivot mode */
+   /** Score pivot mode. player centers results around the authenticated viewer; friends limits to friends */
    pivot?: 'player' | 'friends';
    /**
-    * Country code for regional scores
+    * Score country scope. Use country for the authenticated viewer country, region for the authenticated viewer region, or comma-separated country codes such as US,CA
     * @maxLength 128
     */
    scope?: string;
+   /** Exclude scores submitted with the NA modifier */
+   hideNA?: string;
    /**
     * Search by player name (min 3 chars)
     * @minLength 3
@@ -381,13 +398,15 @@ export interface LeaderboardControllerGetLeaderboardScoresByHashParams {
     * @default 12
     */
    limit?: number;
-   /** Score pivot mode */
+   /** Score pivot mode. player centers results around the authenticated viewer; friends limits to friends */
    pivot?: 'player' | 'friends';
    /**
-    * Country code for regional scores
+    * Score country scope. Use country for the authenticated viewer country, region for the authenticated viewer region, or comma-separated country codes such as US,CA
     * @maxLength 128
     */
    scope?: string;
+   /** Exclude scores submitted with the NA modifier */
+   hideNA?: string;
    /**
     * Search by player name (min 3 chars)
     * @minLength 3
@@ -409,6 +428,11 @@ export interface LeaderboardControllerGetLeaderboardScoresByHashParams {
     * @min 0
     */
    realmId?: number;
+   /**
+    * Include the authenticated player's score in playerScore
+    * @default false
+    */
+   includePlayerScore?: string;
    /**
     * @minLength 1
     * @maxLength 40
@@ -561,12 +585,432 @@ export interface AuthControllerVerifyEmailLoginPayload {
    code: string;
 }
 
+export interface PasswordAuthControllerStartSignupPayload {
+   /**
+    * Email address to send the one-time code to
+    * @format email
+    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+    */
+   email: string;
+}
+
+export interface PasswordAuthControllerCompleteSignupPayload {
+   /**
+    * @format email
+    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+    */
+   email: string;
+   /** @minLength 1 */
+   challengeId: string;
+   /**
+    * Six digit one-time code
+    * @pattern ^\d{6}$
+    */
+   code: string;
+   /**
+    * Account password
+    * @minLength 10
+    * @maxLength 128
+    */
+   password: string;
+   /**
+    * Public display name; never a login identifier
+    * @minLength 1
+    * @maxLength 128
+    */
+   displayName: string;
+}
+
+export interface PasswordAuthControllerLoginWithPasswordPayload {
+   /**
+    * @format email
+    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+    */
+   email: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   password: string;
+}
+
+export interface PasswordAuthControllerStartPasswordResetPayload {
+   /**
+    * Email address to send the one-time code to
+    * @format email
+    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+    */
+   email: string;
+}
+
+export interface PasswordAuthControllerCompletePasswordResetPayload {
+   /**
+    * @format email
+    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+    */
+   email: string;
+   /** @minLength 1 */
+   challengeId: string;
+   /**
+    * Six digit one-time code
+    * @pattern ^\d{6}$
+    */
+   code: string;
+   /**
+    * Account password
+    * @minLength 10
+    * @maxLength 128
+    */
+   password: string;
+}
+
+export interface PasswordAuthControllerStartPasswordSetupPayload {
+   /**
+    * Email address to send the one-time code to
+    * @format email
+    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+    */
+   email: string;
+}
+
+export interface PasswordAuthControllerCompletePasswordSetupPayload {
+   /**
+    * @format email
+    * @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+    */
+   email: string;
+   /** @minLength 1 */
+   challengeId: string;
+   /**
+    * Six digit one-time code
+    * @pattern ^\d{6}$
+    */
+   code: string;
+   /**
+    * Account password
+    * @minLength 10
+    * @maxLength 128
+    */
+   password: string;
+}
+
+export interface PasswordAuthControllerChangePasswordPayload {
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   currentPassword: string;
+   /**
+    * Account password
+    * @minLength 10
+    * @maxLength 128
+    */
+   newPassword: string;
+}
+
+export interface PasskeyControllerVerifyRegistrationPayload {
+   /** WebAuthn registration response from the browser */
+   response: Record<string, any>;
+   /**
+    * Friendly name for this passkey
+    * @minLength 1
+    * @maxLength 128
+    */
+   label?: string;
+}
+
+export interface PasskeyControllerVerifyAuthenticationPayload {
+   /** @minLength 1 */
+   sessionId: string;
+   /** WebAuthn authentication response from the browser */
+   response: Record<string, any>;
+}
+
+export interface PasskeyControllerRenamePasskeyPayload {
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   label: string;
+}
+
+export interface PasskeyControllerRenamePasskeyParams {
+   /** @exclusiveMin true */
+   id: number;
+}
+
+export interface PasskeyControllerDeletePasskeyParams {
+   /** @exclusiveMin true */
+   id: number;
+}
+
+export interface OAuthControllerGetAuthorizeInfoParams {
+   /**
+    * OAuth client id
+    * @minLength 1
+    */
+   client_id: string;
+   /**
+    * Exact registered redirect URI
+    * @minLength 1
+    */
+   redirect_uri: string;
+   /**
+    * Space-separated scopes
+    * @minLength 1
+    * @default "identity"
+    */
+   scope?: string;
+   /**
+    * PKCE S256 code challenge
+    * @minLength 43
+    * @maxLength 128
+    */
+   code_challenge: string;
+   code_challenge_method: 'S256';
+}
+
+export interface OAuthControllerApproveAuthorizationPayload {
+   /**
+    * OAuth client id
+    * @minLength 1
+    */
+   client_id: string;
+   /**
+    * Exact registered redirect URI
+    * @minLength 1
+    */
+   redirect_uri: string;
+   /**
+    * Space-separated scopes
+    * @minLength 1
+    * @default "identity"
+    */
+   scope?: string;
+   /**
+    * PKCE S256 code challenge
+    * @minLength 43
+    * @maxLength 128
+    */
+   code_challenge: string;
+   code_challenge_method: 'S256';
+   /** @maxLength 512 */
+   state?: string;
+}
+
+export interface OAuthControllerTokenPayload {
+   /** authorization_code or refresh_token */
+   grant_type: string;
+   /** @minLength 1 */
+   client_id: string;
+   /** Required for confidential clients */
+   client_secret?: string;
+   code?: string;
+   redirect_uri?: string;
+   /** PKCE code verifier */
+   code_verifier?: string;
+   refresh_token?: string;
+}
+
+export interface OAuthClientControllerCreateClientPayload {
+   /**
+    * @minLength 3
+    * @maxLength 128
+    */
+   name: string;
+   /** @maxLength 512 */
+   description?: string;
+   /**
+    * @maxItems 10
+    * @minItems 1
+    */
+   redirectUris: string[];
+   allowedScopes?: ('identity' | 'identity.providers')[];
+}
+
+export interface OAuthClientControllerUpdateClientPayload {
+   /**
+    * @minLength 3
+    * @maxLength 128
+    */
+   name?: string;
+   /** @maxLength 512 */
+   description?: string | null;
+   /**
+    * @maxItems 10
+    * @minItems 1
+    */
+   redirectUris?: string[];
+   allowedScopes?: ('identity' | 'identity.providers')[];
+}
+
+export interface OAuthClientControllerUpdateClientParams {
+   /** @exclusiveMin true */
+   id: number;
+}
+
+export interface OAuthClientControllerRevokeClientParams {
+   /** @exclusiveMin true */
+   id: number;
+}
+
+export interface OAuthClientControllerRotateSecretParams {
+   /** @exclusiveMin true */
+   id: number;
+}
+
+export interface GameControllerAuthenticatePayload {
+   /**
+    * Auth type (0=Steam, 1=Oculus, 2=Quest key, 3=Dev, 4=Device code)
+    * @min 0
+    * @max 4
+    */
+   at: number;
+   /**
+    * Player platform ID
+    * @pattern ^\d+$
+    * @example "76561199471863419"
+    */
+   playerId: string;
+   /**
+    * Auth nonce
+    * @minLength 1
+    */
+   nonce: string;
+   /**
+    * Comma-separated friend IDs
+    * @default ""
+    */
+   friends?: string;
+   /**
+    * Player display name
+    * @default ""
+    */
+   name?: string;
+   /**
+    * Official client build ID
+    * @maxLength 128
+    */
+   clientBuildId?: string;
+   /**
+    * Upload protocol version
+    * @exclusiveMin true
+    */
+   uploadProtocolVersion?: number;
+   /**
+    * Client plugin version
+    * @maxLength 32
+    */
+   pluginVersion?: string;
+   /**
+    * Beat Saber game version
+    * @maxLength 32
+    */
+   gameVersion?: string;
+   /**
+    * Upload version hash / infoHash
+    * @maxLength 36
+    */
+   uploadVersionHash?: string;
+   /** Client trust path */
+   clientKind?: 'official' | 'development' | 'legacy';
+   /**
+    * Optional client telemetry/proof blob
+    * @maxLength 4096
+    */
+   clientProof?: string;
+   /**
+    * Development upload credential
+    * @maxLength 256
+    */
+   devUploadToken?: string;
+   /**
+    * Self-reported client artifact SHA-256
+    * @maxLength 64
+    */
+   artifactSha256?: string;
+}
+
+/** Multipart score upload. */
+export interface GameControllerUploadScorePayload {
+   /** Encrypted score payload string. */
+   data: string;
+   /**
+    * Replay binary file data.
+    * @format binary
+    */
+   zr: File;
+}
+
 export interface GameControllerSetActiveRealmsPayload {
    /**
     * Realm IDs to upload scores to
     * @minItems 1
     */
    activeRealmIds: number[];
+}
+
+export interface GameBuildControllerRegisterOfficialBuildPayload {
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   buildId: string;
+   /**
+    * @minLength 1
+    * @maxLength 32
+    */
+   pluginVersion: string;
+   /**
+    * @minLength 1
+    * @maxLength 32
+    */
+   gameVersion: string;
+   /**
+    * @minLength 1
+    * @maxLength 36
+    */
+   uploadVersionHash: string;
+   /** @maxItems 32 */
+   supportedVersions?: {
+      /**
+       * @minLength 1
+       * @maxLength 32
+       */
+      gameVersion: string;
+      /**
+       * @minLength 1
+       * @maxLength 36
+       */
+      uploadVersionHash: string;
+   }[];
+   protocolVersion: 2;
+   /** @pattern ^[a-f0-9]{40}$ */
+   commitSha: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   sourceRepository: string;
+   /**
+    * @minLength 1
+    * @maxLength 256
+    */
+   sourceRef: string;
+   /**
+    * @minLength 1
+    * @maxLength 512
+    */
+   sourceWorkflowRef: string;
+   /** @maxLength 128 */
+   sourceEnvironment?: string | null;
+   /** @pattern ^[a-f0-9]{64}$ */
+   artifactSha256?: string | null;
+   /**
+    * @format uri
+    * @maxLength 1024
+    */
+   artifactUrl?: string | null;
 }
 
 export interface RankingControllerGetRequestsParams {
@@ -904,6 +1348,7 @@ export interface ScoreControllerGetScoreHistoryParams {
 }
 
 export interface ScoreControllerDownloadReplayParams {
+   /** @exclusiveMin true */
    id: number;
 }
 
@@ -1056,6 +1501,40 @@ export interface AdminScoreControllerDeleteScoreParams {
    id: number;
 }
 
+export interface AdminUploadTrustControllerCreateDevelopmentCredentialPayload {
+   /**
+    * Developer public player ID
+    * @pattern ^\d+$
+    * @example "76561199471863419"
+    */
+   playerId: string;
+   /**
+    * Credential label
+    * @minLength 1
+    * @maxLength 128
+    */
+   label: string;
+   /**
+    * Optional expiry timestamp
+    * @format date-time
+    * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
+    */
+   expiresAt?: Date | null;
+}
+
+export interface AdminUploadTrustControllerRevokeDevelopmentCredentialParams {
+   /** @exclusiveMin true */
+   id: number;
+}
+
+export interface AdminUploadTrustControllerRevokeOfficialBuildParams {
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   buildId: string;
+}
+
 export interface AdminUserControllerBanPlayerPayload {
    /**
     * Ban reason
@@ -1178,7 +1657,7 @@ export interface AdminUserControllerUpdatePermissionsParams {
 
 export interface AdminUserControllerMergePlayerPayload {
    /**
-    * Internal source player id to merge into this player
+    * Public source player id to merge into this player
     * @pattern ^\d+$
     * @example "76561199471863419"
     */
@@ -1215,8 +1694,18 @@ export interface AdminVersionControllerCreateVersionPayload {
     * @maxLength 16
     */
    platform: string;
+   /**
+    * Beat Saber game version
+    * @maxLength 16
+    */
+   beatSaberVersion?: string | null;
    /** Whether this version is whitelisted */
    whitelisted: boolean;
+   /**
+    * Minimum upload protocol version
+    * @exclusiveMin true
+    */
+   requiredUploadProtocolVersion?: number | null;
 }
 
 export interface AdminVersionControllerUpdateWhitelistPayload {
@@ -1232,6 +1721,15 @@ export interface AdminVersionControllerUpdateWhitelistParams {
 export interface AdminVersionControllerDeleteVersionParams {
    /** @exclusiveMin true */
    id: number;
+}
+
+export interface UserControllerClaimVanityPayload {
+   /**
+    * Desired vanity URL slug
+    * @minLength 3
+    * @maxLength 32
+    */
+   slug: string;
 }
 
 export interface UserControllerUpdateBioPayload {
@@ -1268,7 +1766,7 @@ export interface UserControllerReleaseReplaySlotParams {
 
 export interface UserControllerSwitchPrimaryConnectionPayload {
    /** Primary provider to expose publicly */
-   provider: 'STEAM' | 'OCULUS';
+   provider: 'STEAM' | 'OCULUS' | 'SCORESABER';
 }
 
 export interface UserControllerStartOculusEmailMergePayload {
@@ -1525,22 +2023,6 @@ export class HttpClient<SecurityDataType = unknown> {
  * ScoreSaber API v2 Documentation
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
-   app = {
-      /**
-       * No description
-       *
-       * @tags App
-       * @name RootControllerGetData
-       * @request GET:/api/v2
-       * @response `200` `void`
-       */
-      rootControllerGetData: (params: RequestParams = {}) =>
-         this.request<void, any>({
-            path: `/api/v2`,
-            method: 'GET',
-            ...params
-         })
-   };
    health = {
       /**
        * No description
@@ -1771,6 +2253,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     data: ({
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -1877,6 +2360,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                data: {
                   id: string;
                   name: string;
+                  playerNameInGame: string;
                   country: string;
                   role: string | null;
                   avatar: string;
@@ -2109,11 +2593,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * No description
  *
  * @tags Player
- * @name PlayerControllerGetPlayer
- * @request GET:/api/v2/players/{id}
+ * @name PlayerControllerGetPlayerByVanity
+ * @request GET:/api/v2/players/vanity/{slug}
  * @response `200` `{
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -2145,6 +2630,225 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 
 },
     bio: string | null,
+    vanity: string | null,
+    createdAt: string,
+    lastSeenAt: string,
+    badges: ({
+    id: number,
+    image: string,
+    description: string,
+
+})[],
+    followers: number,
+    following: number,
+
+}` Player profile resolved by vanity slug
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      playerControllerGetPlayerByVanity: ({ slug, ...query }: PlayerControllerGetPlayerByVanityParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               id: string;
+               name: string;
+               playerNameInGame: string;
+               country: string;
+               role: string | null;
+               avatar: string;
+               permissions: number;
+               banned: boolean;
+               silenced: boolean;
+               inactive: boolean;
+               stats: {
+                  realmId: number;
+                  realmName: string;
+                  rank: number;
+                  countryRank: number;
+                  totalPP: number;
+                  totalScore: string;
+                  totalRankedScore: string;
+                  totalPlayedLeaderboards: number;
+                  totalPlayedRankedLeaderboards: number;
+                  totalSubmittedPlays: number;
+                  totalReplayViews: number;
+                  averageAccuracy: number;
+                  weightedAverageAccuracy: number;
+                  completionAccuracy: number;
+                  device: {
+                     hmd: string | null;
+                     controllerLeft: string | null;
+                     controllerRight: string | null;
+                  } | null;
+               };
+               bio: string | null;
+               vanity: string | null;
+               createdAt: string;
+               lastSeenAt: string;
+               badges: {
+                  id: number;
+                  image: string;
+                  description: string;
+               }[];
+               followers: number;
+               following: number;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/players/vanity/${slug}`,
+            method: 'GET',
+            query: query,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Player
+ * @name PlayerControllerGetPlayer
+ * @request GET:/api/v2/players/{id}
+ * @response `200` `{
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    permissions: number,
+    banned: boolean,
+    silenced: boolean,
+    inactive: boolean,
+    stats: {
+    realmId: number,
+    realmName: string,
+    rank: number,
+    countryRank: number,
+    totalPP: number,
+    totalScore: string,
+    totalRankedScore: string,
+    totalPlayedLeaderboards: number,
+    totalPlayedRankedLeaderboards: number,
+    totalSubmittedPlays: number,
+    totalReplayViews: number,
+    averageAccuracy: number,
+    weightedAverageAccuracy: number,
+    completionAccuracy: number,
+    device: {
+    hmd: string | null,
+    controllerLeft: string | null,
+    controllerRight: string | null,
+
+} | null,
+
+},
+    bio: string | null,
+    vanity: string | null,
     createdAt: string,
     lastSeenAt: string,
     badges: ({
@@ -2221,6 +2925,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             {
                id: string;
                name: string;
+               playerNameInGame: string;
                country: string;
                role: string | null;
                avatar: string;
@@ -2250,6 +2955,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   } | null;
                };
                bio: string | null;
+               vanity: string | null;
                createdAt: string;
                lastSeenAt: string;
                badges: {
@@ -2328,6 +3034,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * @response `200` `{
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -2424,6 +3131,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             {
                id: string;
                name: string;
+               playerNameInGame: string;
                country: string;
                role: string | null;
                avatar: string;
@@ -2828,10 +3536,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
     createdAt: string,
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -2976,10 +3687,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      personalBest: boolean;
                      legacyHmdId: number | null;
                      version: string | null;
+                     playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                     playOutcomeTime: number | null;
                      createdAt: string;
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -4199,10 +4913,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
     createdAt: string,
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -4308,10 +5025,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   personalBest: boolean;
                   legacyHmdId: number | null;
                   version: string | null;
+                  playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                  playOutcomeTime: number | null;
                   createdAt: string;
                   player: {
                      id: string;
                      name: string;
+                     playerNameInGame: string;
                      country: string;
                      role: string | null;
                      avatar: string;
@@ -4758,10 +5478,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
     createdAt: string,
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -4783,6 +5506,44 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     totalPages: number,
 
 },
+    playerScore: {
+    id: number,
+    rank: number,
+    unmodifiedScore: number,
+    modifiedScore: number,
+    accuracy: number,
+    pp: number,
+    weight: number,
+    mods: (string)[],
+    badCuts: number,
+    missedNotes: number,
+    maxCombo: number,
+    fullCombo: boolean,
+    hasReplay: boolean,
+    personalBest: boolean,
+    legacyHmdId: number | null,
+    version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
+    createdAt: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    permissions: number,
+
+},
+    device: {
+    hmd: string | null,
+    controllerLeft: string | null,
+    controllerRight: string | null,
+
+} | null,
+
+} | null,
 
 }` Scores by hash and difficulty
  * @response `400` `({
@@ -4867,10 +5628,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   personalBest: boolean;
                   legacyHmdId: number | null;
                   version: string | null;
+                  playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                  playOutcomeTime: number | null;
                   createdAt: string;
                   player: {
                      id: string;
                      name: string;
+                     playerNameInGame: string;
                      country: string;
                      role: string | null;
                      avatar: string;
@@ -4888,6 +5652,41 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   totalItems: number;
                   totalPages: number;
                };
+               playerScore: {
+                  id: number;
+                  rank: number;
+                  unmodifiedScore: number;
+                  modifiedScore: number;
+                  accuracy: number;
+                  pp: number;
+                  weight: number;
+                  mods: string[];
+                  badCuts: number;
+                  missedNotes: number;
+                  maxCombo: number;
+                  fullCombo: boolean;
+                  hasReplay: boolean;
+                  personalBest: boolean;
+                  legacyHmdId: number | null;
+                  version: string | null;
+                  playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                  playOutcomeTime: number | null;
+                  createdAt: string;
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     permissions: number;
+                  };
+                  device: {
+                     hmd: string | null;
+                     controllerLeft: string | null;
+                     controllerRight: string | null;
+                  } | null;
+               } | null;
             },
             | (
                  | {
@@ -5310,6 +6109,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -5326,6 +6126,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -5531,6 +6332,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         player: {
                            id: string;
                            name: string;
+                           playerNameInGame: string;
                            country: string;
                            role: string | null;
                            avatar: string;
@@ -5545,6 +6347,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         player: {
                            id: string;
                            name: string;
+                           playerNameInGame: string;
                            country: string;
                            role: string | null;
                            avatar: string;
@@ -6619,6 +7422,3443 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             method: 'POST',
             format: 'json',
             ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerStartSignup
+ * @request POST:/api/v2/auth/signup/start
+ * @response `200` `{
+    challengeId: string,
+    expiresAt: string,
+    resendAvailableAt: string,
+
+}` Start an email signup challenge
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passwordAuthControllerStartSignup: (data: PasswordAuthControllerStartSignupPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               challengeId: string;
+               expiresAt: string;
+               resendAvailableAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/signup/start`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerCompleteSignup
+ * @request POST:/api/v2/auth/signup/complete
+ * @response `200` `({
+    status: "authenticated",
+    token: string,
+  /** @pattern ^\d+$ *\/
+    playerId: string,
+
+} | {
+    status: "support-required",
+
+})` Complete signup with a verified email code, password and display name
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passwordAuthControllerCompleteSignup: (data: PasswordAuthControllerCompleteSignupPayload, params: RequestParams = {}) =>
+         this.request<
+            | {
+                 status: 'authenticated';
+                 token: string;
+                 /** @pattern ^\d+$ */
+                 playerId: string;
+              }
+            | {
+                 status: 'support-required';
+              },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/signup/complete`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerLoginWithPassword
+ * @request POST:/api/v2/auth/password/login
+ * @response `200` `({
+    status: "authenticated",
+    token: string,
+  /** @pattern ^\d+$ *\/
+    playerId: string,
+
+} | {
+    status: "support-required",
+
+})` Log in with email and password
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      passwordAuthControllerLoginWithPassword: (data: PasswordAuthControllerLoginWithPasswordPayload, params: RequestParams = {}) =>
+         this.request<
+            | {
+                 status: 'authenticated';
+                 token: string;
+                 /** @pattern ^\d+$ */
+                 playerId: string;
+              }
+            | {
+                 status: 'support-required';
+              },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/auth/password/login`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerStartPasswordReset
+ * @request POST:/api/v2/auth/password/reset/start
+ * @response `200` `{
+    challengeId: string,
+    expiresAt: string,
+    resendAvailableAt: string,
+
+}` Start a password reset challenge
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passwordAuthControllerStartPasswordReset: (data: PasswordAuthControllerStartPasswordResetPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               challengeId: string;
+               expiresAt: string;
+               resendAvailableAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/password/reset/start`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerCompletePasswordReset
+ * @request POST:/api/v2/auth/password/reset/complete
+ * @response `200` `({
+    status: "authenticated",
+    token: string,
+  /** @pattern ^\d+$ *\/
+    playerId: string,
+
+} | {
+    status: "support-required",
+
+})` Complete a password reset with a verified email code
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passwordAuthControllerCompletePasswordReset: (data: PasswordAuthControllerCompletePasswordResetPayload, params: RequestParams = {}) =>
+         this.request<
+            | {
+                 status: 'authenticated';
+                 token: string;
+                 /** @pattern ^\d+$ */
+                 playerId: string;
+              }
+            | {
+                 status: 'support-required';
+              },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/password/reset/complete`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerGetPasswordCredential
+ * @request GET:/api/v2/auth/password/credential
+ * @response `200` `{
+    hasPassword: boolean,
+    email: string | null,
+    updatedAt: string | null,
+    lastUsedAt: string | null,
+
+}` Current account email/password credential state
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      passwordAuthControllerGetPasswordCredential: (params: RequestParams = {}) =>
+         this.request<
+            {
+               hasPassword: boolean;
+               email: string | null;
+               updatedAt: string | null;
+               lastUsedAt: string | null;
+            },
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/auth/password/credential`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerStartPasswordSetup
+ * @request POST:/api/v2/auth/password/setup/start
+ * @response `200` `{
+    challengeId: string,
+    expiresAt: string,
+    resendAvailableAt: string,
+
+}` Start an email challenge to add password login to the current account
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passwordAuthControllerStartPasswordSetup: (data: PasswordAuthControllerStartPasswordSetupPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               challengeId: string;
+               expiresAt: string;
+               resendAvailableAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/password/setup/start`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerCompletePasswordSetup
+ * @request POST:/api/v2/auth/password/setup/complete
+ * @response `200` `{
+    success: true,
+    token: string,
+
+}` Set email/password login for the current account; invalidates all other sessions
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passwordAuthControllerCompletePasswordSetup: (data: PasswordAuthControllerCompletePasswordSetupPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: true;
+               token: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/password/setup/complete`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasswordAuthControllerChangePassword
+ * @request POST:/api/v2/auth/password/change
+ * @response `200` `{
+    success: true,
+    token: string,
+
+}` Change the account password; invalidates all other sessions
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passwordAuthControllerChangePassword: (data: PasswordAuthControllerChangePasswordPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: true;
+               token: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/password/change`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasskeyControllerStartRegistration
+ * @request POST:/api/v2/auth/passkey/register/options
+ * @response `200` `Record<string,any>` Begin passkey registration for the current account
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passkeyControllerStartRegistration: (params: RequestParams = {}) =>
+         this.request<
+            Record<string, any>,
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/passkey/register/options`,
+            method: 'POST',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasskeyControllerVerifyRegistration
+ * @request POST:/api/v2/auth/passkey/register/verify
+ * @response `200` `{
+    id: number,
+    label: string,
+    deviceType: string,
+    backedUp: boolean,
+    createdAt: string,
+    lastUsedAt: string | null,
+
+}` Verify the browser response and store the new passkey
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passkeyControllerVerifyRegistration: (data: PasskeyControllerVerifyRegistrationPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               id: number;
+               label: string;
+               deviceType: string;
+               backedUp: boolean;
+               createdAt: string;
+               lastUsedAt: string | null;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/passkey/register/verify`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasskeyControllerStartAuthentication
+ * @request POST:/api/v2/auth/passkey/login/options
+ * @response `200` `{
+    sessionId: string,
+  /** WebAuthn credential request options *\/
+    options: Record<string,any>,
+
+}` Begin a usernameless passkey login
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passkeyControllerStartAuthentication: (params: RequestParams = {}) =>
+         this.request<
+            {
+               sessionId: string;
+               /** WebAuthn credential request options */
+               options: Record<string, any>;
+            },
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/passkey/login/options`,
+            method: 'POST',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasskeyControllerVerifyAuthentication
+ * @request POST:/api/v2/auth/passkey/login/verify
+ * @response `200` `({
+    status: "authenticated",
+    token: string,
+  /** @pattern ^\d+$ *\/
+    playerId: string,
+
+} | {
+    status: "support-required",
+
+})` Verify the browser assertion and create a session
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      passkeyControllerVerifyAuthentication: (data: PasskeyControllerVerifyAuthenticationPayload, params: RequestParams = {}) =>
+         this.request<
+            | {
+                 status: 'authenticated';
+                 token: string;
+                 /** @pattern ^\d+$ */
+                 playerId: string;
+              }
+            | {
+                 status: 'support-required';
+              },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/passkey/login/verify`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasskeyControllerListPasskeys
+ * @request GET:/api/v2/auth/passkeys
+ * @response `200` `{
+    passkeys: ({
+    id: number,
+    label: string,
+    deviceType: string,
+    backedUp: boolean,
+    createdAt: string,
+    lastUsedAt: string | null,
+
+})[],
+
+}` List passkeys registered to the current account
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      passkeyControllerListPasskeys: (params: RequestParams = {}) =>
+         this.request<
+            {
+               passkeys: {
+                  id: number;
+                  label: string;
+                  deviceType: string;
+                  backedUp: boolean;
+                  createdAt: string;
+                  lastUsedAt: string | null;
+               }[];
+            },
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/auth/passkeys`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasskeyControllerRenamePasskey
+ * @request PATCH:/api/v2/auth/passkeys/{id}
+ * @response `200` `{
+    success: true,
+
+}` Rename a passkey
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      passkeyControllerRenamePasskey: (
+         { id }: PasskeyControllerRenamePasskeyParams,
+         data: PasskeyControllerRenamePasskeyPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: true;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/auth/passkeys/${id}`,
+            method: 'PATCH',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name PasskeyControllerDeletePasskey
+ * @request DELETE:/api/v2/auth/passkeys/{id}
+ * @response `200` `{
+    success: true,
+
+}` Delete a passkey
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      passkeyControllerDeletePasskey: ({ id }: PasskeyControllerDeletePasskeyParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: true;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/auth/passkeys/${id}`,
+            method: 'DELETE',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name DeviceCodeControllerStartDeviceLogin
+ * @request POST:/api/v2/auth/device/start
+ * @response `200` `{
+  /** @pattern ^\d{6}$ *\/
+    code: string,
+    expiresAt: string,
+
+}` Generate a one-time code to sign in on Beat Saber
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      deviceCodeControllerStartDeviceLogin: (params: RequestParams = {}) =>
+         this.request<
+            {
+               /** @pattern ^\d{6}$ */
+               code: string;
+               expiresAt: string;
+            },
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/auth/device/start`,
+            method: 'POST',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Auth
+ * @name DeviceCodeControllerGetDeviceLoginStatus
+ * @request GET:/api/v2/auth/device/status
+ * @response `200` `{
+    status: "pending" | "claimed" | "expired",
+
+}` Check whether the current device code has been claimed in-game
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      deviceCodeControllerGetDeviceLoginStatus: (params: RequestParams = {}) =>
+         this.request<
+            {
+               status: 'pending' | 'claimed' | 'expired';
+            },
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/auth/device/status`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         })
+   };
+   oAuth = {
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthControllerGetAuthorizeInfo
+ * @request GET:/api/v2/oauth/authorize/info
+ * @response `200` `{
+    clientId: string,
+    name: string,
+    description: string | null,
+    scopes: (string)[],
+
+}` Validate an authorization request and return consent info
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      oAuthControllerGetAuthorizeInfo: (query: OAuthControllerGetAuthorizeInfoParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               clientId: string;
+               name: string;
+               description: string | null;
+               scopes: string[];
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/oauth/authorize/info`,
+            method: 'GET',
+            query: query,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthControllerApproveAuthorization
+ * @request POST:/api/v2/oauth/authorize/approve
+ * @response `200` `{
+    redirectUrl: string,
+
+}` Approve an authorization request and mint a single-use code
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      oAuthControllerApproveAuthorization: (data: OAuthControllerApproveAuthorizationPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               redirectUrl: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/oauth/authorize/approve`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthControllerToken
+ * @request POST:/api/v2/oauth/token
+ * @response `200` `{
+    access_token: string,
+    token_type: "Bearer",
+    expires_in: number,
+    refresh_token: string,
+    scope: string,
+
+}` Exchange an authorization code or refresh token for tokens
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      oAuthControllerToken: (data: OAuthControllerTokenPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               access_token: string;
+               token_type: 'Bearer';
+               expires_in: number;
+               refresh_token: string;
+               scope: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/oauth/token`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthControllerUserinfo
+ * @request GET:/api/v2/oauth/userinfo
+ * @response `200` `{
+  /** Primary public player id *\/
+    id: string,
+    scoresaberId: string | null,
+    name: string,
+    avatar: string,
+    country: string,
+    role: string | null,
+    vanity: string | null,
+  /** Present with the identity.providers scope *\/
+    providers?: ({
+    provider: string,
+    id: string,
+    isPrimary: boolean,
+
+})[],
+
+}` Profile of the player who granted the token
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      oAuthControllerUserinfo: (params: RequestParams = {}) =>
+         this.request<
+            {
+               /** Primary public player id */
+               id: string;
+               scoresaberId: string | null;
+               name: string;
+               avatar: string;
+               country: string;
+               role: string | null;
+               vanity: string | null;
+               /** Present with the identity.providers scope */
+               providers?: {
+                  provider: string;
+                  id: string;
+                  isPrimary: boolean;
+               }[];
+            },
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/oauth/userinfo`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthClientControllerListClients
+ * @request GET:/api/v2/oauth/clients
+ * @response `200` `{
+    clients: ({
+    id: number,
+    clientId: string,
+    name: string,
+    description: string | null,
+    redirectUris: (string)[],
+    allowedScopes: string,
+    createdAt: string,
+
+})[],
+
+}` List your OAuth applications
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      oAuthClientControllerListClients: (params: RequestParams = {}) =>
+         this.request<
+            {
+               clients: {
+                  id: number;
+                  clientId: string;
+                  name: string;
+                  description: string | null;
+                  redirectUris: string[];
+                  allowedScopes: string;
+                  createdAt: string;
+               }[];
+            },
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/oauth/clients`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthClientControllerCreateClient
+ * @request POST:/api/v2/oauth/clients
+ * @response `200` `{
+    client: {
+    id: number,
+    clientId: string,
+    name: string,
+    description: string | null,
+    redirectUris: (string)[],
+    allowedScopes: string,
+    createdAt: string,
+
+},
+  /** Shown once; store it now *\/
+    clientSecret: string,
+
+}` Register an OAuth application; the secret is only returned here
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      oAuthClientControllerCreateClient: (data: OAuthClientControllerCreateClientPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               client: {
+                  id: number;
+                  clientId: string;
+                  name: string;
+                  description: string | null;
+                  redirectUris: string[];
+                  allowedScopes: string;
+                  createdAt: string;
+               };
+               /** Shown once; store it now */
+               clientSecret: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/oauth/clients`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthClientControllerUpdateClient
+ * @request PATCH:/api/v2/oauth/clients/{id}
+ * @response `200` `{
+    id: number,
+    clientId: string,
+    name: string,
+    description: string | null,
+    redirectUris: (string)[],
+    allowedScopes: string,
+    createdAt: string,
+
+}` Update an OAuth application you own
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      oAuthClientControllerUpdateClient: (
+         { id }: OAuthClientControllerUpdateClientParams,
+         data: OAuthClientControllerUpdateClientPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               id: number;
+               clientId: string;
+               name: string;
+               description: string | null;
+               redirectUris: string[];
+               allowedScopes: string;
+               createdAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/oauth/clients/${id}`,
+            method: 'PATCH',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthClientControllerRevokeClient
+ * @request DELETE:/api/v2/oauth/clients/{id}
+ * @response `200` `{
+    success: boolean,
+
+}` Revoke an OAuth application; all of its tokens stop working
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      oAuthClientControllerRevokeClient: ({ id }: OAuthClientControllerRevokeClientParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/oauth/clients/${id}`,
+            method: 'DELETE',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags OAuth
+ * @name OAuthClientControllerRotateSecret
+ * @request POST:/api/v2/oauth/clients/{id}/rotate-secret
+ * @response `200` `{
+  /** Shown once; store it now *\/
+    clientSecret: string,
+
+}` Rotate the client secret; the new secret is only returned here
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      oAuthClientControllerRotateSecret: ({ id }: OAuthClientControllerRotateSecretParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               /** Shown once; store it now */
+               clientSecret: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/oauth/clients/${id}/rotate-secret`,
+            method: 'POST',
+            format: 'json',
+            ...params
          })
    };
    game = {
@@ -6629,162 +10869,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * @name GameControllerAuthenticate
  * @request POST:/api/v2/game/auth
  * @response `200` `{
-    id: string,
-    name: string,
-    country: string,
-    role: string | null,
-    avatar: string,
-    permissions: number,
-    banned: boolean,
-    silenced: boolean,
-    inactive: boolean,
-    stats: {
-    realmId: number,
-    realmName: string,
-    rank: number,
-    countryRank: number,
-    totalPP: number,
-    totalScore: string,
-    totalRankedScore: string,
-    totalPlayedLeaderboards: number,
-    totalPlayedRankedLeaderboards: number,
-    totalSubmittedPlays: number,
-    totalReplayViews: number,
-    averageAccuracy: number,
-    weightedAverageAccuracy: number,
-    completionAccuracy: number,
-    device: {
-    hmd: string | null,
-    controllerLeft: string | null,
-    controllerRight: string | null,
+    key: string,
+    sessionId: string,
+    uploadProtocolVersion?: number,
+    clientTrust?: "official" | "development" | "legacy" | "untrusted",
+    buildId?: string,
+    uploadVersionHash?: string,
 
-} | null,
+}` Authenticated game session
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
 
 },
-    bio: string | null,
-    createdAt: string,
-    lastSeenAt: string,
-    badges: ({
-    id: number,
-    image: string,
-    description: string,
 
-})[],
-    followers: number,
-    following: number,
-    relationships: {
-    followers: ({
-    id: string,
-    name: string,
-    country: string,
-    role: string | null,
-    avatar: string,
-    permissions: number,
-    banned: boolean,
-    silenced: boolean,
-    inactive: boolean,
-    stats: {
-    realmId: number,
-    realmName: string,
-    rank: number,
-    countryRank: number,
-    totalPP: number,
-    totalScore: string,
-    totalRankedScore: string,
-    totalPlayedLeaderboards: number,
-    totalPlayedRankedLeaderboards: number,
-    totalSubmittedPlays: number,
-    totalReplayViews: number,
-    averageAccuracy: number,
-    weightedAverageAccuracy: number,
-    completionAccuracy: number,
-    device: {
-    hmd: string | null,
-    controllerLeft: string | null,
-    controllerRight: string | null,
-
-} | null,
-
-},
-    relation: "platform-friend" | "follow",
-
-})[],
-    following: ({
-    id: string,
-    name: string,
-    country: string,
-    role: string | null,
-    avatar: string,
-    permissions: number,
-    banned: boolean,
-    silenced: boolean,
-    inactive: boolean,
-    stats: {
-    realmId: number,
-    realmName: string,
-    rank: number,
-    countryRank: number,
-    totalPP: number,
-    totalScore: string,
-    totalRankedScore: string,
-    totalPlayedLeaderboards: number,
-    totalPlayedRankedLeaderboards: number,
-    totalSubmittedPlays: number,
-    totalReplayViews: number,
-    averageAccuracy: number,
-    weightedAverageAccuracy: number,
-    completionAccuracy: number,
-    device: {
-    hmd: string | null,
-    controllerLeft: string | null,
-    controllerRight: string | null,
-
-} | null,
-
-},
-    relation: "platform-friend" | "follow",
-
-})[],
-    mutuals: ({
-    id: string,
-    name: string,
-    country: string,
-    role: string | null,
-    avatar: string,
-    permissions: number,
-    banned: boolean,
-    silenced: boolean,
-    inactive: boolean,
-    stats: {
-    realmId: number,
-    realmName: string,
-    rank: number,
-    countryRank: number,
-    totalPP: number,
-    totalScore: string,
-    totalRankedScore: string,
-    totalPlayedLeaderboards: number,
-    totalPlayedRankedLeaderboards: number,
-    totalSubmittedPlays: number,
-    totalReplayViews: number,
-    averageAccuracy: number,
-    weightedAverageAccuracy: number,
-    completionAccuracy: number,
-    device: {
-    hmd: string | null,
-    controllerLeft: string | null,
-    controllerRight: string | null,
-
-} | null,
-
-},
-    relation: "platform-friend" | "follow",
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
 
 })[],
 
 },
 
-}` Authenticated player profile
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
  * @response `401` `{
     statusCode: 401,
     error: "Unauthorized",
@@ -6843,151 +10974,51 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 
 })` Internal Server Error
  */
-      gameControllerAuthenticate: (params: RequestParams = {}) =>
+      gameControllerAuthenticate: (data: GameControllerAuthenticatePayload, params: RequestParams = {}) =>
          this.request<
             {
-               id: string;
-               name: string;
-               country: string;
-               role: string | null;
-               avatar: string;
-               permissions: number;
-               banned: boolean;
-               silenced: boolean;
-               inactive: boolean;
-               stats: {
-                  realmId: number;
-                  realmName: string;
-                  rank: number;
-                  countryRank: number;
-                  totalPP: number;
-                  totalScore: string;
-                  totalRankedScore: string;
-                  totalPlayedLeaderboards: number;
-                  totalPlayedRankedLeaderboards: number;
-                  totalSubmittedPlays: number;
-                  totalReplayViews: number;
-                  averageAccuracy: number;
-                  weightedAverageAccuracy: number;
-                  completionAccuracy: number;
-                  device: {
-                     hmd: string | null;
-                     controllerLeft: string | null;
-                     controllerRight: string | null;
-                  } | null;
-               };
-               bio: string | null;
-               createdAt: string;
-               lastSeenAt: string;
-               badges: {
-                  id: number;
-                  image: string;
-                  description: string;
-               }[];
-               followers: number;
-               following: number;
-               relationships: {
-                  followers: {
-                     id: string;
-                     name: string;
-                     country: string;
-                     role: string | null;
-                     avatar: string;
-                     permissions: number;
-                     banned: boolean;
-                     silenced: boolean;
-                     inactive: boolean;
-                     stats: {
-                        realmId: number;
-                        realmName: string;
-                        rank: number;
-                        countryRank: number;
-                        totalPP: number;
-                        totalScore: string;
-                        totalRankedScore: string;
-                        totalPlayedLeaderboards: number;
-                        totalPlayedRankedLeaderboards: number;
-                        totalSubmittedPlays: number;
-                        totalReplayViews: number;
-                        averageAccuracy: number;
-                        weightedAverageAccuracy: number;
-                        completionAccuracy: number;
-                        device: {
-                           hmd: string | null;
-                           controllerLeft: string | null;
-                           controllerRight: string | null;
-                        } | null;
-                     };
-                     relation: 'platform-friend' | 'follow';
-                  }[];
-                  following: {
-                     id: string;
-                     name: string;
-                     country: string;
-                     role: string | null;
-                     avatar: string;
-                     permissions: number;
-                     banned: boolean;
-                     silenced: boolean;
-                     inactive: boolean;
-                     stats: {
-                        realmId: number;
-                        realmName: string;
-                        rank: number;
-                        countryRank: number;
-                        totalPP: number;
-                        totalScore: string;
-                        totalRankedScore: string;
-                        totalPlayedLeaderboards: number;
-                        totalPlayedRankedLeaderboards: number;
-                        totalSubmittedPlays: number;
-                        totalReplayViews: number;
-                        averageAccuracy: number;
-                        weightedAverageAccuracy: number;
-                        completionAccuracy: number;
-                        device: {
-                           hmd: string | null;
-                           controllerLeft: string | null;
-                           controllerRight: string | null;
-                        } | null;
-                     };
-                     relation: 'platform-friend' | 'follow';
-                  }[];
-                  mutuals: {
-                     id: string;
-                     name: string;
-                     country: string;
-                     role: string | null;
-                     avatar: string;
-                     permissions: number;
-                     banned: boolean;
-                     silenced: boolean;
-                     inactive: boolean;
-                     stats: {
-                        realmId: number;
-                        realmName: string;
-                        rank: number;
-                        countryRank: number;
-                        totalPP: number;
-                        totalScore: string;
-                        totalRankedScore: string;
-                        totalPlayedLeaderboards: number;
-                        totalPlayedRankedLeaderboards: number;
-                        totalSubmittedPlays: number;
-                        totalReplayViews: number;
-                        averageAccuracy: number;
-                        weightedAverageAccuracy: number;
-                        completionAccuracy: number;
-                        device: {
-                           hmd: string | null;
-                           controllerLeft: string | null;
-                           controllerRight: string | null;
-                        } | null;
-                     };
-                     relation: 'platform-friend' | 'follow';
-                  }[];
-               };
+               key: string;
+               sessionId: string;
+               uploadProtocolVersion?: number;
+               clientTrust?: 'official' | 'development' | 'legacy' | 'untrusted';
+               buildId?: string;
+               uploadVersionHash?: string;
             },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
             | {
                  statusCode: 401;
                  error: 'Unauthorized';
@@ -7042,15 +11073,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          >({
             path: `/api/v2/game/auth`,
             method: 'POST',
+            body: data,
+            type: ContentType.Json,
             format: 'json',
             ...params
          }),
 
       /**
- * No description
+ * @description Requires a game session. Lower or duplicate scores are accepted when otherwise valid.
  *
  * @tags Game
  * @name GameControllerUploadScore
+ * @summary Upload a game score
  * @request POST:/api/v2/game/upload
  * @response `200` `{
     success: true,
@@ -7153,7 +11187,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 
 })` Internal Server Error
  */
-      gameControllerUploadScore: (params: RequestParams = {}) =>
+      gameControllerUploadScore: (data: GameControllerUploadScorePayload, params: RequestParams = {}) =>
          this.request<
             {
                success: true;
@@ -7247,6 +11281,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          >({
             path: `/api/v2/game/upload`,
             method: 'POST',
+            body: data,
+            type: ContentType.FormData,
             format: 'json',
             ...params
          }),
@@ -7410,6 +11446,229 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          >({
             path: `/api/v2/game/realms`,
             method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         })
+   };
+   gameUploadBuilds = {
+      /**
+ * No description
+ *
+ * @tags Game: Upload Builds
+ * @name GameBuildControllerRegisterOfficialBuild
+ * @request POST:/api/v2/game/official-builds
+ * @response `200` `{
+    build: {
+    buildId: string,
+    pluginVersion: string,
+    gameVersion: string,
+    uploadVersionHash: string,
+    protocolVersion: number,
+    status: "ACTIVE" | "REVOKED",
+    commitSha: string | null,
+    sourceRepository: string | null,
+    sourceRef: string | null,
+    sourceWorkflowRef: string | null,
+    sourceEnvironment: string | null,
+    "artifactSha256": string | null,
+    artifactUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+    revokedAt: string | null,
+
+},
+    credential: string,
+
+}` Registered official upload build and one-time build credential.
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      gameBuildControllerRegisterOfficialBuild: (data: GameBuildControllerRegisterOfficialBuildPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               build: {
+                  buildId: string;
+                  pluginVersion: string;
+                  gameVersion: string;
+                  uploadVersionHash: string;
+                  protocolVersion: number;
+                  status: 'ACTIVE' | 'REVOKED';
+                  commitSha: string | null;
+                  sourceRepository: string | null;
+                  sourceRef: string | null;
+                  sourceWorkflowRef: string | null;
+                  sourceEnvironment: string | null;
+                  artifactSha256: string | null;
+                  artifactUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+                  revokedAt: string | null;
+               };
+               credential: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/game/official-builds`,
+            method: 'POST',
             body: data,
             type: ContentType.Json,
             format: 'json',
@@ -7750,6 +12009,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -7766,6 +12026,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -7974,6 +12235,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -7988,6 +12250,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -8207,6 +12470,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -8223,6 +12487,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -8404,6 +12669,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -8418,6 +12684,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -8610,6 +12877,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -8626,6 +12894,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -8838,6 +13107,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -8852,6 +13122,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -9071,6 +13342,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -9087,6 +13359,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -9295,6 +13568,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -9309,6 +13583,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -10996,10 +15271,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
     createdAt: string,
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -11261,10 +15539,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   personalBest: boolean;
                   legacyHmdId: number | null;
                   version: string | null;
+                  playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                  playOutcomeTime: number | null;
                   createdAt: string;
                   player: {
                      id: string;
                      name: string;
+                     playerNameInGame: string;
                      country: string;
                      role: string | null;
                      avatar: string;
@@ -11507,10 +15788,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
     createdAt: string,
     player: {
     id: string,
     name: string,
+    playerNameInGame: string,
     country: string,
     role: string | null,
     avatar: string,
@@ -11655,10 +15939,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      personalBest: boolean;
                      legacyHmdId: number | null;
                      version: string | null;
+                     playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                     playOutcomeTime: number | null;
                      createdAt: string;
                      player: {
                         id: string;
                         name: string;
+                        playerNameInGame: string;
                         country: string;
                         role: string | null;
                         avatar: string;
@@ -11773,15 +16060,192 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          }),
 
       /**
-       * No description
-       *
-       * @tags Score
-       * @name ScoreControllerDownloadReplay
-       * @request GET:/api/v2/scores/{id}/replay
-       * @response `200` `void`
-       */
+ * No description
+ *
+ * @tags Score
+ * @name ScoreControllerDownloadReplay
+ * @request GET:/api/v2/scores/{id}/replay
+ * @response `200` `File` Replay file
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `429` `{
+    statusCode: 429,
+    error: "Too Many Requests",
+    code: "TOO_MANY_REQUESTS",
+    message: string,
+
+}` Too Many Requests
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
       scoreControllerDownloadReplay: ({ id }: ScoreControllerDownloadReplayParams, params: RequestParams = {}) =>
-         this.request<void, any>({
+         this.request<
+            Blob,
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | {
+                 statusCode: 429;
+                 error: 'Too Many Requests';
+                 code: 'TOO_MANY_REQUESTS';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
             path: `/api/v2/scores/${id}/replay`,
             method: 'GET',
             ...params
@@ -14320,6 +18784,554 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             ...params
          })
    };
+   adminUploadTrust = {
+      /**
+ * No description
+ *
+ * @tags Admin: Upload Trust
+ * @name AdminUploadTrustControllerCreateDevelopmentCredential
+ * @request POST:/api/v2/admin/upload-trust/development-credentials
+ * @response `200` `{
+    id: number,
+    playerId: string,
+    label: string,
+    token: string,
+    expiresAt: string | null,
+    createdAt: string,
+
+}` Created development upload credential. The token is returned once.
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      adminUploadTrustControllerCreateDevelopmentCredential: (
+         data: AdminUploadTrustControllerCreateDevelopmentCredentialPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               id: number;
+               playerId: string;
+               label: string;
+               token: string;
+               expiresAt: string | null;
+               createdAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/admin/upload-trust/development-credentials`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Admin: Upload Trust
+ * @name AdminUploadTrustControllerRevokeDevelopmentCredential
+ * @request POST:/api/v2/admin/upload-trust/development-credentials/{id}/revoke
+ * @response `200` `{
+    success: boolean,
+
+}` Revoked development upload credential
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      adminUploadTrustControllerRevokeDevelopmentCredential: (
+         { id }: AdminUploadTrustControllerRevokeDevelopmentCredentialParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/admin/upload-trust/development-credentials/${id}/revoke`,
+            method: 'POST',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Admin: Upload Trust
+ * @name AdminUploadTrustControllerRevokeOfficialBuild
+ * @request POST:/api/v2/admin/upload-trust/official-builds/{buildId}/revoke
+ * @response `200` `{
+    success: boolean,
+
+}` Revoked official upload build
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      adminUploadTrustControllerRevokeOfficialBuild: ({ buildId }: AdminUploadTrustControllerRevokeOfficialBuildParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/admin/upload-trust/official-builds/${buildId}/revoke`,
+            method: 'POST',
+            format: 'json',
+            ...params
+         })
+   };
    adminUser = {
       /**
  * No description
@@ -15506,7 +20518,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     hash: string,
     version: string,
     platform: string,
+    beatSaberVersion: string | null,
     whitelisted: boolean,
+    requiredUploadProtocolVersion: number | null,
     createdAt: string,
 
 })[]` All mod versions
@@ -15525,7 +20539,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                hash: string;
                version: string;
                platform: string;
+               beatSaberVersion: string | null;
                whitelisted: boolean;
+               requiredUploadProtocolVersion: number | null;
                createdAt: string;
             }[],
             {
@@ -15552,7 +20568,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     hash: string,
     version: string,
     platform: string,
+    beatSaberVersion: string | null,
     whitelisted: boolean,
+    requiredUploadProtocolVersion: number | null,
     createdAt: string,
 
 }` Created version
@@ -15637,7 +20655,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                hash: string;
                version: string;
                platform: string;
+               beatSaberVersion: string | null;
                whitelisted: boolean;
+               requiredUploadProtocolVersion: number | null;
                createdAt: string;
             },
             | (
@@ -15998,6 +21018,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * @response `200` `{
     id: string,
     name: string,
+    playerNameInGame: string,
     role: string | null,
     avatar: string,
     bio: string | null,
@@ -16005,6 +21026,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     permissions: number,
     banned: boolean,
     inactive: boolean,
+    vanity: string | null,
     stats: {
     rank: number,
     countryRank: number,
@@ -16050,6 +21072,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             {
                id: string;
                name: string;
+               playerNameInGame: string;
                role: string | null;
                avatar: string;
                bio: string | null;
@@ -16057,6 +21080,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                permissions: number;
                banned: boolean;
                inactive: boolean;
+               vanity: string | null;
                stats: {
                   rank: number;
                   countryRank: number;
@@ -16091,6 +21115,253 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          >({
             path: `/api/v2/user/@me`,
             method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags User
+ * @name UserControllerGetVanity
+ * @request GET:/api/v2/user/@me/vanity
+ * @response `200` `{
+    slug: string | null,
+    canChangeAt: string | null,
+
+}` Current vanity URL and when it can next be changed
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      userControllerGetVanity: (params: RequestParams = {}) =>
+         this.request<
+            {
+               slug: string | null;
+               canChangeAt: string | null;
+            },
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/user/@me/vanity`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags User
+ * @name UserControllerClaimVanity
+ * @request PUT:/api/v2/user/@me/vanity
+ * @response `200` `{
+    slug: string | null,
+    canChangeAt: string | null,
+
+}` Claim or change the vanity URL for the current account
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      userControllerClaimVanity: (data: UserControllerClaimVanityPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               slug: string | null;
+               canChangeAt: string | null;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/user/@me/vanity`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
             format: 'json',
             ...params
          }),
@@ -17023,117 +22294,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * No description
  *
  * @tags User
- * @name UserControllerRedeemScoreSaber2Badge
- * @request POST:/api/v2/user/perks/score-saber-2-badge
- * @response `200` `{
-    success: boolean,
-
-}` Redeem the ScoreSaber 2 launch supporter badge
- * @response `401` `{
-    statusCode: 401,
-    error: "Unauthorized",
-    code: "UNAUTHORIZED",
-    message: string,
-
-}` Unauthorized
- * @response `404` `{
-    statusCode: 404,
-    error: "Not Found",
-    code: "NOT_FOUND",
-    message: string,
-    details?: {
-    resource: string,
-    id?: (string | number),
-
-},
-
-}` Not Found
- * @response `500` `({
-    statusCode: 500,
-    error: "Internal Server Error",
-    code: "EXTERNAL_SERVICE_ERROR",
-    message: string,
-    details: {
-    service: string,
-
-},
-
-} | {
-    statusCode: 500,
-    error: "Internal Server Error",
-    code: "DATABASE_WRITE_ERROR",
-    message: string,
-    details: {
-    operation: string,
-
-},
-
-} | {
-    statusCode: 500,
-    error: "Internal Server Error",
-    code: "INTERNAL_SERVER_ERROR",
-    message: string,
-
-})` Internal Server Error
- */
-      userControllerRedeemScoreSaber2Badge: (params: RequestParams = {}) =>
-         this.request<
-            {
-               success: boolean;
-            },
-            | {
-                 statusCode: 401;
-                 error: 'Unauthorized';
-                 code: 'UNAUTHORIZED';
-                 message: string;
-              }
-            | {
-                 statusCode: 404;
-                 error: 'Not Found';
-                 code: 'NOT_FOUND';
-                 message: string;
-                 details?: {
-                    resource: string;
-                    id?: string | number;
-                 };
-              }
-            | (
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'EXTERNAL_SERVICE_ERROR';
-                      message: string;
-                      details: {
-                         service: string;
-                      };
-                   }
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'DATABASE_WRITE_ERROR';
-                      message: string;
-                      details: {
-                         operation: string;
-                      };
-                   }
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'INTERNAL_SERVER_ERROR';
-                      message: string;
-                   }
-              )
-         >({
-            path: `/api/v2/user/perks/score-saber-2-badge`,
-            method: 'POST',
-            format: 'json',
-            ...params
-         }),
-
-      /**
- * No description
- *
- * @tags User
  * @name UserControllerClaimReplaySlot
  * @request POST:/api/v2/user/replay-slots/{scoreId}
  * @response `200` `{
@@ -17418,10 +22578,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * @request GET:/api/v2/user/connections
  * @response `200` `({
     id: number,
-    provider: "STEAM" | "OCULUS" | "PATREON" | "DISCORD",
+    provider: "STEAM" | "OCULUS" | "PATREON" | "DISCORD" | "SCORESABER",
     providerAccountId: string,
     state: "VERIFIED" | "CONNECTED",
-    source: "LEGACY_IMPORT" | "GAME_AUTH" | "STEAM_OPENID" | "PATREON_OAUTH" | "DISCORD_OAUTH" | "DISCORD_BOT",
+    source: "LEGACY_IMPORT" | "GAME_AUTH" | "STEAM_OPENID" | "PATREON_OAUTH" | "DISCORD_OAUTH" | "DISCORD_BOT" | "SCORESABER_SIGNUP" | "SCORESABER_SYSTEM",
     isPrimary: boolean,
   /**
    * @format date-time
@@ -17443,10 +22603,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          this.request<
             {
                id: number;
-               provider: 'STEAM' | 'OCULUS' | 'PATREON' | 'DISCORD';
+               provider: 'STEAM' | 'OCULUS' | 'PATREON' | 'DISCORD' | 'SCORESABER';
                providerAccountId: string;
                state: 'VERIFIED' | 'CONNECTED';
-               source: 'LEGACY_IMPORT' | 'GAME_AUTH' | 'STEAM_OPENID' | 'PATREON_OAUTH' | 'DISCORD_OAUTH' | 'DISCORD_BOT';
+               source:
+                  | 'LEGACY_IMPORT'
+                  | 'GAME_AUTH'
+                  | 'STEAM_OPENID'
+                  | 'PATREON_OAUTH'
+                  | 'DISCORD_OAUTH'
+                  | 'DISCORD_BOT'
+                  | 'SCORESABER_SIGNUP'
+                  | 'SCORESABER_SYSTEM';
                isPrimary: boolean;
                /**
                 * @format date-time
@@ -17477,7 +22645,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * @response `200` `{
     success: true,
     publicPlayerId: string,
-    provider: "STEAM" | "OCULUS",
+    provider: "STEAM" | "OCULUS" | "SCORESABER",
 
 }` Primary public account id switch result
  * @response `400` `({
@@ -17571,7 +22739,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             {
                success: true;
                publicPlayerId: string;
-               provider: 'STEAM' | 'OCULUS';
+               provider: 'STEAM' | 'OCULUS' | 'SCORESABER';
             },
             | (
                  | {
@@ -17845,7 +23013,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     id: string,
     name: string,
     country: string,
-    provider: "STEAM" | "OCULUS",
+    provider: "STEAM" | "OCULUS" | "SCORESABER",
     providerAccountId: string,
     publicPlayerId: string,
 
@@ -17854,7 +23022,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     id: string,
     name: string,
     country: string,
-    provider: "STEAM" | "OCULUS",
+    provider: "STEAM" | "OCULUS" | "SCORESABER",
     providerAccountId: string,
     publicPlayerId: string,
 
@@ -17971,7 +23139,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   id: string;
                   name: string;
                   country: string;
-                  provider: 'STEAM' | 'OCULUS';
+                  provider: 'STEAM' | 'OCULUS' | 'SCORESABER';
                   providerAccountId: string;
                   publicPlayerId: string;
                };
@@ -17979,7 +23147,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   id: string;
                   name: string;
                   country: string;
-                  provider: 'STEAM' | 'OCULUS';
+                  provider: 'STEAM' | 'OCULUS' | 'SCORESABER';
                   providerAccountId: string;
                   publicPlayerId: string;
                };
@@ -18096,7 +23264,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     id: string,
     name: string,
     country: string,
-    provider: "STEAM" | "OCULUS",
+    provider: "STEAM" | "OCULUS" | "SCORESABER",
     providerAccountId: string,
     publicPlayerId: string,
 
@@ -18105,7 +23273,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     id: string,
     name: string,
     country: string,
-    provider: "STEAM" | "OCULUS",
+    provider: "STEAM" | "OCULUS" | "SCORESABER",
     providerAccountId: string,
     publicPlayerId: string,
 
@@ -18222,7 +23390,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   id: string;
                   name: string;
                   country: string;
-                  provider: 'STEAM' | 'OCULUS';
+                  provider: 'STEAM' | 'OCULUS' | 'SCORESABER';
                   providerAccountId: string;
                   publicPlayerId: string;
                };
@@ -18230,7 +23398,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   id: string;
                   name: string;
                   country: string;
-                  provider: 'STEAM' | 'OCULUS';
+                  provider: 'STEAM' | 'OCULUS' | 'SCORESABER';
                   providerAccountId: string;
                   publicPlayerId: string;
                };

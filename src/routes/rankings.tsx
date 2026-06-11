@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getCookie } from '@tanstack/react-start/server';
 import { z } from 'zod';
@@ -20,7 +20,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankingFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams, readPersistedSearchStorage } from '@/shared/url-state/persisted-search';
-import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
@@ -95,7 +95,7 @@ function RankingsRoute() {
    const players = response.data;
    const meta = response.metadata;
    const bgCandidates = players.filter((p) => isSteamPlayer(p.id)).map((p) => p.avatar);
-   const getPageHref = (page: number) => buildRankingsHref(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
+   const getPageLocation = (page: number) => buildRankingsLocation(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
 
    return (
       <div className="relative flex-1 overflow-hidden">
@@ -107,7 +107,7 @@ function RankingsRoute() {
                totalPages={meta.totalPages}
                includeInactive={searchParams.includeInactive === 'true'}
                search={searchParams}
-               buildHref={buildRankingsHref}
+               buildLocation={buildRankingsLocation}
                parseSearch={parseRankingsSearch}
                initialFiltersOpen={persistedStorage.filtersOpen === 'true'}
             />
@@ -121,19 +121,24 @@ function RankingsRoute() {
                currentPivot={searchParams.pivot}
                highlight={searchParams.highlight}
                search={searchParams}
-               buildHref={buildRankingsHref}
+               buildLocation={buildRankingsLocation}
             />
 
             {meta.totalPages > 1 && searchParams.pivot !== 'player' && (
-               <PaginationArrows currentPage={searchParams.page} totalPages={meta.totalPages} getPageHref={getPageHref} />
+               <PaginationArrows currentPage={searchParams.page} totalPages={meta.totalPages} getPageLocation={getPageLocation} />
             )}
          </div>
       </div>
    );
 }
 
-function buildRankingsHref(search?: RankingsSearchParams) {
-   return `/rankings${stringifyUrlSearch(search ?? {})}`;
+function buildRankingsLocation(search?: RankingsSearchParams) {
+   return linkOptions({ to: '/rankings', search: normalizeRankingsLocationSearch(search) });
+}
+
+function normalizeRankingsLocationSearch(search?: RankingsSearchParams) {
+   const { page = 1, ...rest } = search ?? {};
+   return { page, ...rest };
 }
 
 function parseRankingsSearch(search: Record<string, unknown>) {

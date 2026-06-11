@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useTransition } from 'react';
 
-import { getRouteApi, useRouter } from '@tanstack/react-router';
+import { useRouter } from '@tanstack/react-router';
 import type { IconType } from 'react-icons';
 import { FaBullseye, FaGlobe, FaPlay, FaSortAmountDown, FaSortAmountUp, FaStar, FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
@@ -20,12 +20,12 @@ import { CountryImage } from '@/shared/components/country-image';
 import { FilterPill } from '@/shared/components/filter-pill';
 import type { CountryRegionFilterValue } from '@/shared/country-region';
 import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
+import { navigateToRoute, type RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { useRouteHrefPreload } from '@/shared/url-state/use-route-href-preload';
 
 const PAGE_SIZE = 50;
-const playerRoute = getRouteApi('/u/$playerId');
 
 const DEFAULT_DIRECTIONS: Record<PlayerControllerGetPlayersSort, PlayerControllerGetPlayersSortDirection> = {
    rank: 'asc',
@@ -54,7 +54,7 @@ const SORTABLE_COLUMNS: SortableColumn[] = [
    { sortField: 'averageAccuracy', icon: FaBullseye }
 ];
 
-interface RankingsTableProps {
+interface RankingsTableProps<TLocation> {
    players: PlayerControllerGetPlayersDataItem[];
    countryFiltered: boolean;
    currentSort?: PlayerControllerGetPlayersSort;
@@ -63,7 +63,7 @@ interface RankingsTableProps {
    currentPivot?: PlayerControllerGetPlayersPivot;
    highlight?: string;
    search: RankingsTableSearch;
-   buildHref: (search?: RankingsTableSearch) => string;
+   buildLocation: RouteLocationBuilder<RankingsTableSearch, TLocation>;
 }
 
 type RankingsTableSearch = SearchParamsRecord & {
@@ -77,7 +77,7 @@ type RankingsTableSearch = SearchParamsRecord & {
    highlight?: string;
 };
 
-export function RankingsTable({
+export function RankingsTable<TLocation>({
    players,
    countryFiltered,
    currentSort,
@@ -86,14 +86,14 @@ export function RankingsTable({
    currentPivot,
    highlight,
    search,
-   buildHref
-}: RankingsTableProps) {
+   buildLocation
+}: RankingsTableProps<TLocation>) {
    const router = useRouter();
    const t = useTranslations();
    const { schedulePreload, cancelPreload } = useRouteHrefPreload();
    const [isPending, startTransition] = useTransition();
 
-   const getSortHref = useCallback(
+   const getSortLocation = useCallback(
       (field: PlayerControllerGetPlayersSort) => {
          const isCurrentField = currentSort === field || (!currentSort && field === 'totalPP');
          const currentDir = currentSortDirection ?? DEFAULT_DIRECTIONS[field];
@@ -102,16 +102,16 @@ export function RankingsTable({
          const updates: Partial<RankingsTableSearch> =
             field === 'totalPP' && sortDirection === 'desc' ? { sort: undefined, sortDirection: undefined } : { sort: field, sortDirection };
 
-         return buildHref(updateSearchParams(search, updates, ['page']));
+         return buildLocation(updateSearchParams(search, updates, ['page']));
       },
-      [buildHref, search, currentSort, currentSortDirection]
+      [buildLocation, search, currentSort, currentSortDirection]
    );
 
    const handleSort = useCallback(
       (field: PlayerControllerGetPlayersSort) => {
-         startTransition(() => router.navigate({ href: getSortHref(field) }));
+         startTransition(() => navigateToRoute(router, getSortLocation(field)));
       },
-      [getSortHref, router]
+      [getSortLocation, router]
    );
 
    const isPlayerPivot = currentPivot === 'player';
@@ -135,8 +135,8 @@ export function RankingsTable({
                            key={col.sortField}
                            active={isActive}
                            icon={col.icon}
-                           onMouseEnter={() => schedulePreload(getSortHref(col.sortField))}
-                           onFocus={() => schedulePreload(getSortHref(col.sortField))}
+                           onMouseEnter={() => schedulePreload(getSortLocation(col.sortField))}
+                           onFocus={() => schedulePreload(getSortLocation(col.sortField))}
                            onMouseLeave={cancelPreload}
                            onBlur={cancelPreload}
                            onClick={() => handleSort(col.sortField)}
@@ -182,8 +182,8 @@ export function RankingsTable({
                                  isPending && !isPlayerPivot && 'pointer-events-none opacity-50'
                               )}
                               onClick={isPlayerPivot ? undefined : () => handleSort(col.sortField)}
-                              onMouseEnter={isPlayerPivot ? undefined : () => schedulePreload(getSortHref(col.sortField))}
-                              onFocus={isPlayerPivot ? undefined : () => schedulePreload(getSortHref(col.sortField))}
+                              onMouseEnter={isPlayerPivot ? undefined : () => schedulePreload(getSortLocation(col.sortField))}
+                              onFocus={isPlayerPivot ? undefined : () => schedulePreload(getSortLocation(col.sortField))}
                               onMouseLeave={isPlayerPivot ? undefined : cancelPreload}
                               onBlur={isPlayerPivot ? undefined : cancelPreload}
                            >
@@ -242,8 +242,8 @@ function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, hig
             player.inactive && 'opacity-60',
             isHighlighted && 'border-primary ring-primary/40 ring-1'
          )}
-         onClick={() => router.navigate({ to: playerRoute.id, params: { playerId: player.id }, search: { sort: 'top', page: 1 } })}
-         onMouseEnter={() => router.preloadRoute({ to: playerRoute.id, params: { playerId: player.id }, search: { sort: 'top', page: 1 } })}
+         onClick={() => router.navigate({ to: '/u/$playerId', params: { playerId: player.id }, search: { sort: 'top', page: 1 } })}
+         onMouseEnter={() => router.preloadRoute({ to: '/u/$playerId', params: { playerId: player.id }, search: { sort: 'top', page: 1 } })}
       >
          <div className="flex items-center gap-2">
             <span className="text-muted-foreground shrink-0 text-sm tabular-nums">

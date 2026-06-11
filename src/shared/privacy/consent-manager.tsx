@@ -175,11 +175,11 @@ export function ConsentManager({ children }: { children?: ReactNode }) {
             },
             legalLinks: {
                privacyPolicy: {
-                  href: '/legal/privacy',
+                  href: privacyRoute.id,
                   target: '_self'
                },
                cookiePolicy: {
-                  href: '/legal/cookies-policy',
+                  href: cookiesPolicyRoute.id,
                   target: '_self'
                }
             },

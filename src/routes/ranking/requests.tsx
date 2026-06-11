@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { useTranslations } from 'use-intl';
 import { z } from 'zod';
@@ -15,7 +15,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankRequestFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
-import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
@@ -96,7 +96,7 @@ function RankRequestsRoute() {
    const topRequests = isFirstPage ? requests.slice(0, QUEUE_TOP_COUNT) : [];
    const restRequests = isFirstPage ? requests.slice(QUEUE_TOP_COUNT) : requests;
    const queueOffset = isFirstPage ? 0 : (searchParams.page - 1) * meta.itemsPerPage;
-   const getPageHref = (page: number) => buildRankRequestsHref(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
+   const getPageLocation = (page: number) => buildRankRequestsLocation(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
 
    return (
       <div className="relative flex-1 overflow-hidden">
@@ -108,7 +108,7 @@ function RankRequestsRoute() {
                totalPages={meta.totalPages}
                currentHideDownvoted={searchParams.hideDownvoted}
                search={searchParams}
-               buildHref={buildRankRequestsHref}
+               buildLocation={buildRankRequestsLocation}
                parseSearch={parseRankRequestsSearch}
             />
 
@@ -154,7 +154,7 @@ function RankRequestsRoute() {
                      currentPage={searchParams.page}
                      totalItems={meta.totalItems}
                      pageSize={meta.itemsPerPage}
-                     getPageHref={getPageHref}
+                     getPageLocation={getPageLocation}
                      scroll={false}
                   />
                </div>
@@ -164,8 +164,13 @@ function RankRequestsRoute() {
    );
 }
 
-function buildRankRequestsHref(search?: RankRequestsSearchParams) {
-   return `/ranking/requests${stringifyUrlSearch(search ?? {})}`;
+function buildRankRequestsLocation(search?: RankRequestsSearchParams) {
+   return linkOptions({ to: '/ranking/requests', search: normalizeRankRequestsLocationSearch(search) });
+}
+
+function normalizeRankRequestsLocationSearch(search?: RankRequestsSearchParams) {
+   const { page = 1, ...rest } = search ?? {};
+   return { page, ...rest };
 }
 
 function parseRankRequestsSearch(search: Record<string, unknown>) {

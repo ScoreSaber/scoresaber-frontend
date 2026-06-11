@@ -117,21 +117,21 @@
       "hideOtherMethods": "Скрыть другие способы",
       "secondaryDescription": "Дополнительные аккаунты, такие как Discord и Patreon, могут быть использованы только после того, как вы подключите их в настройках аккаунта",
       "providers": {
+         "SCORESABER": {
+            "label": ""
+         },
          "STEAM": {
-            "label": "Steam",
-            "tooltip": "Войти через Steam"
+            "label": "Steam"
          },
          "OCULUS": {
             "label": "Meta",
-            "tooltip": "Войти через Meta"
+            "tooltip": ""
          },
          "PATREON": {
-            "label": "Patreon",
-            "tooltip": "Войти через Patreon"
+            "label": "Patreon"
          },
          "DISCORD": {
-            "label": "Discord",
-            "tooltip": "Войти через Discord"
+            "label": "Discord"
          }
       },
       "oauth": {
@@ -139,9 +139,8 @@
          "failedDescription": "Сервис авторизации не завершил вход. Попробуйте снова с этой страницы"
       },
       "email": {
-         "title": "Логин от аккаунта Meta",
-         "emailDescription": "Введите email адрес, который вы используете для своего аккаунта Meta",
-         "emailLabel": "Email от аккаунта Meta",
+         "title": "",
+         "emailLabel": "",
          "emailPlaceholder": "you@example.com",
          "sendCode": "Отправить код",
          "resendCode": "Отправить повторно",
@@ -160,8 +159,42 @@
          "pendingTitle": "Email подтвержден",
          "pendingDescription": "Откройте Meta PC версию Bear Saber с установленным ScoreSaber, просмотрите любую таблицу рекордов, а затем повторите вход по электронной почте",
          "supportTitle": "Требуется рассмотрение службой поддержки",
-         "supportDescription": "Этот адрес электронной почты уже связан с несколькими аккаунтами или с защищенным аккаунтом"
-      }
+         "supportDescription": "Этот адрес электронной почты уже связан с несколькими аккаунтами или с защищенным аккаунтом",
+         "metaInfo": {
+            "title": "",
+            "pcOnly": "",
+            "newPc": "",
+            "quest": ""
+         }
+      },
+      "password": {
+         "method": "",
+         "title": "",
+         "description": "",
+         "passwordLabel": "",
+         "submit": "",
+         "forgot": "",
+         "newPasswordLabel": "",
+         "passwordHelp": "",
+         "resetDescription": "",
+         "resetSubmit": "",
+         "backToLogin": "",
+         "failedToast": "",
+         "resetFailedToast": ""
+      },
+      "passkey": {
+         "method": "",
+         "failedToast": ""
+      },
+      "signup": {
+         "title": "",
+         "displayNameLabel": "",
+         "displayNameHelp": "",
+         "submit": "",
+         "failedToast": "",
+         "emailCallToAction": ""
+      },
+      "subtitle": ""
    },
    "sidebar": {
       "scoreSaberLogoAlt": "Лого ScoreSaber",
@@ -227,7 +260,10 @@
       "rankRequestActions": "Действия по ранк реквесту",
       "adminActions": "Действия админов",
       "scoreSaberLogo": "Лого ScoreSaber",
-      "underConstruction": "в разработке"
+      "underConstruction": "в разработке",
+      "edit": "",
+      "copy": "",
+      "copied": ""
    },
    "error": {
       "somethingWentWrong": "Что-то пошло не так",
@@ -602,7 +638,8 @@
       "tabs": {
          "account": "Аккаунт",
          "connections": "Подключенные аккаунты",
-         "perks": "Бонусы"
+         "perks": "Бонусы",
+         "developer": ""
       },
       "account": {
          "detailsTitle": "Детали аккаунта",
@@ -630,11 +667,11 @@
          "countryResetFailed": "Не удалось сбросить страну",
          "resetCountryDialogDesc": "Это изменяет страну вашего профиля на основе текущего местоположения. После этого сброс страны будет доступен через {days} дней",
          "resetCountryHelper": "Используйте это только тогда, когда вы находитесь в той стране, которую хотите отображать на ScoreSaber, и убедитесь, что вы не используете VPN или прокси",
-         "resetCountryAvailableAt": "Вы уже недавно сбросили вашу страну. Вы сможете сбросить её снова {date}",
+         "resetCountryAvailableAt": "Вы уже недавно сбросили вашу страну. Вы сможете сбросить её снова <date></date>",
          "resetCountryConfirmText": "СБРОСИТЬ"
       },
       "connections": {
-         "primaryHelper": "Это аккаунт используется как основной и не может быть отвязан здесь",
+         "primaryHelper": "",
          "legacyUpgradeHelper": "Аккаунт верифицирован через старую систему. Нажмите \"Обновить\" для улучшения подключения",
          "connect": "Привязать",
          "upgrade": "Улучшить",
@@ -656,6 +693,9 @@
             },
             "DISCORD": {
                "label": "Discord"
+            },
+            "SCORESABER": {
+               "label": ""
             }
          },
          "oauth": {
@@ -705,13 +745,13 @@
             "mergeFailedTitle": "Не удалось объединить",
             "mergeFailedDescription": "Данный запрос на объединение может быть истекшим, неверным или используется для другого аккаунта",
             "retry": "Попробуйте снова"
-         }
+         },
+         "setup": ""
       },
       "perks": {
          "tabs": {
             "overview": "Обзор",
-            "replays": "Повторы",
-            "scoreSaber2Badge": "Получить бейджик ScoreSaber 2"
+            "replays": "Повторы"
          },
          "gate": {
             "title": "Для доступа к бонусам вам требуется роль \"Supporter\"",
@@ -753,21 +793,97 @@
             "unknownValue": "-",
             "loadFailed": "Не удалось загрузить слоты для повторов"
          },
-         "scoreSaber2Badge": {
-            "title": "Бейджик запуска ScoreSaber 2",
-            "description": "За поддержку проекта между выходом ScoreSaber 2 и 3 июля, вы получили лимитированный бейджик!",
-            "promptTitle": "Вы получили лимитированный бейджик!",
-            "promoTitle": "Лимитированный бейджик ScoreSaber 2",
-            "promoDescription": "Чтобы отпраздновать выход ScoreSaber 2, все новые и текущие пользователи поддержавшие проект на Patreon смогут получить его на веб-сайте до 3-го июня, 23:59 по ET",
-            "alreadySupporting": "Уже поддерживаете ScoreSaber?",
-            "countdownLabel": "Завершится через",
-            "supportAction": "Поддержка",
-            "redeemAction": "Получить",
-            "redeemingAction": "Получение...",
-            "redeemedToast": "Бейджик получен",
-            "redeemFailedToast": "Не удалось получить бейджик",
-            "dismiss": "Скрыть"
+         "vanity": {
+            "title": "",
+            "description": "",
+            "loadFailed": "",
+            "current": "",
+            "changeLabel": "",
+            "claimLabel": "",
+            "placeholder": "",
+            "change": "",
+            "claim": "",
+            "claimed": "",
+            "claimFailed": "",
+            "cooldown": "",
+            "rules": ""
          }
+      },
+      "security": {
+         "title": "",
+         "changePassword": "",
+         "changePasswordHelper": "",
+         "currentPassword": "",
+         "newPassword": "",
+         "passwordSaved": "",
+         "passwordSaveFailed": "",
+         "passkeys": "",
+         "passkeysHelper": "",
+         "addPasskey": "",
+         "passkeyAdded": "",
+         "passkeyAddFailed": "",
+         "passkeyRenamed": "",
+         "passkeyRenameFailed": "",
+         "passkeyDeleted": "",
+         "passkeyDeleteFailed": "",
+         "renamePasskey": "",
+         "renamePasskeyDesc": "",
+         "passkeyLabel": "",
+         "deletePasskey": "",
+         "deletePasskeyDesc": "",
+         "passkeyLastUsed": "",
+         "passkeyCreated": "",
+         "deviceLogin": "",
+         "deviceLoginComingSoon": "",
+         "deviceLoginHelper": "",
+         "deviceLoginAction": "",
+         "deviceLoginInstructions": "",
+         "deviceLoginClaimed": "",
+         "deviceCodeExpired": "",
+         "deviceCodeNew": "",
+         "deviceCodeExpiresIn": "",
+         "deviceCodeFailed": "",
+         "setPassword": "",
+         "setPasswordHelper": "",
+         "setPasswordSubmit": "",
+         "passwordSetupSaved": "",
+         "passwordSetupFailed": "",
+         "forgotPassword": ""
+      },
+      "developer": {
+         "title": "",
+         "description": "",
+         "noAccess": "",
+         "loadFailed": "",
+         "empty": "",
+         "create": "",
+         "createTitle": "",
+         "editTitle": "",
+         "formDescription": "",
+         "nameLabel": "",
+         "descriptionLabel": "",
+         "redirectUrisLabel": "",
+         "redirectUrisHelp": "",
+         "scopesLabel": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "created": "",
+         "createFailed": "",
+         "saved": "",
+         "saveFailed": "",
+         "rotate": "",
+         "rotated": "",
+         "rotateFailed": "",
+         "revoke": "",
+         "revokeDesc": "",
+         "revoked": "",
+         "revokeFailed": "",
+         "clientId": "",
+         "clientSecret": "",
+         "secretTitle": "",
+         "secretDescription": "",
+         "createdAt": "",
+         "redirectUris": ""
       }
    },
    "richTextEditor": {
@@ -841,6 +957,21 @@
          "necessaryDescription": "Необходимо для входа, безопасности, ограничений по запросам, языка, темы, сохраненных фильтров и основных функций сайта. Это всегда включено.",
          "privacyPolicy": "Политика конфиденциальности",
          "cookiePolicy": "Политика cookie-файлов"
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "",
+         "invalidDescription": "",
+         "loginTitle": "",
+         "loginDescription": "",
+         "title": "",
+         "scopesIntro": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "approveFailed": "",
+         "deny": "",
+         "approve": ""
       }
    }
 }

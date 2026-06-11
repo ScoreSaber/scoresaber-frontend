@@ -27,6 +27,7 @@ type PlayerLinkProps = {
 export function PlayerLink({ player, outLink, className, withPFP, variant = 'link', isInactive }: PlayerLinkProps) {
    const t = useTranslations();
    const playerSummary = buildPlayerSummary(player);
+
    if (variant === 'inline') {
       return <PlayerName player={player} className={className} playerStyle={playerSummary.roleClassName} />;
    }

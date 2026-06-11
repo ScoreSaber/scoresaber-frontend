@@ -9,7 +9,7 @@ import { getGameModeFromRawDifficulty } from '@/shared/format/strings';
 import { isLeaderboardRanked } from '@/shared/format/styling';
 import Permissions from '@/shared/permissions';
 
-export function MapLeaderboardView({
+export function MapLeaderboardView<TLocation>({
    routeName,
    mapInfo,
    leaderboardInfo,
@@ -20,9 +20,9 @@ export function MapLeaderboardView({
    highlight,
    rankRequest,
    defaultTab,
-   buildHref,
+   buildLocation,
    parseSearch
-}: MapLeaderboardViewProps) {
+}: MapLeaderboardViewProps<TLocation>) {
    const { user } = useAuth();
    const userPermissions = user?.permissions ?? 0;
    const activeGameMode = getGameModeFromRawDifficulty(leaderboardInfo.difficulty.rawDifficulty);
@@ -77,7 +77,7 @@ export function MapLeaderboardView({
                hasMultipleGameModes={hasMultipleGameModes}
                userPermissions={userPermissions}
                renderHeaderActions={renderHeaderActions}
-               buildHref={buildHref}
+               buildLocation={buildLocation}
                parseSearch={parseSearch}
             />
          </div>

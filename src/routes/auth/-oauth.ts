@@ -1,3 +1,4 @@
+import { getRouteApi } from '@tanstack/react-router';
 import { Result } from 'better-result';
 
 import { env } from '@/env';
@@ -14,6 +15,17 @@ import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
 
 type OAuthProvider = 'discord' | 'patreon';
 
+const discordAuthRoute = getRouteApi('/auth/discord');
+const homeRoute = getRouteApi('/');
+const loginRoute = getRouteApi('/login');
+const patreonAuthRoute = getRouteApi('/auth/patreon');
+const settingsConnectionsRoute = getRouteApi('/settings/connections');
+
+const oauthProviderRoutes = {
+   discord: discordAuthRoute,
+   patreon: patreonAuthRoute
+};
+
 export async function handleSteamLogin(
    request: Request,
    {
@@ -27,7 +39,7 @@ export async function handleSteamLogin(
    }
 ): Promise<Response> {
    const referer = request.headers.get('referer');
-   const defaultRedirectTo = getSiteUrl(intent === 'merge' ? '/settings/connections' : '/');
+   const defaultRedirectTo = getSiteUrl(intent === 'merge' ? settingsConnectionsRoute.id : homeRoute.id);
    const redirectTo = requestedRedirectTo
       ? safeSiteRedirect(requestedRedirectTo, defaultRedirectTo)
       : referer
@@ -35,8 +47,8 @@ export async function handleSteamLogin(
         : defaultRedirectTo;
    const failedRedirect =
       intent === 'merge'
-         ? `${env.NEXT_PUBLIC_SITE_URL}/settings/connections${stringifyUrlSearch({ steam: 'failed' })}`
-         : getSiteUrl(`/login${stringifyUrlSearch({ steam: 'failed', redirectTo })}`);
+         ? getSiteUrl(`${settingsConnectionsRoute.id}${stringifyUrlSearch({ steam: 'failed' })}`)
+         : getSiteUrl(`${loginRoute.id}${stringifyUrlSearch({ steam: 'failed', redirectTo })}`);
    const result = await apiResult(
       api.auth.authControllerSteamLogin(
          {
@@ -136,11 +148,11 @@ async function handleOAuthLogin({
    requestedRedirectTo?: string;
    requestAuth: (redirectTo: string) => Promise<{ data: { redirectUrl: string }; headers: Headers }>;
 }) {
-   const redirectTo = intent === 'login' ? safeSiteRedirect(requestedRedirectTo, getSiteUrl('/')) : getSiteUrl('/settings/connections');
+   const redirectTo = intent === 'login' ? safeSiteRedirect(requestedRedirectTo, getSiteUrl(homeRoute.id)) : getSiteUrl(settingsConnectionsRoute.id);
    const failedRedirect =
       intent === 'login'
-         ? getSiteUrl(`/login${stringifyUrlSearch({ [provider]: 'failed', redirectTo })}`)
-         : getSiteUrl(`/settings/connections${stringifyUrlSearch({ [provider]: 'failed' })}`);
+         ? getSiteUrl(`${loginRoute.id}${stringifyUrlSearch({ [provider]: 'failed', redirectTo })}`)
+         : getSiteUrl(`${settingsConnectionsRoute.id}${stringifyUrlSearch({ [provider]: 'failed' })}`);
 
    const result = await apiResult(requestAuth(redirectTo));
 
@@ -162,14 +174,14 @@ async function handleOAuthLogin({
             httpOnly: true,
             sameSite: 'lax',
             secure: env.NODE_ENV === 'production',
-            path: `/auth/${provider}`,
+            path: oauthProviderRoutes[provider].id,
             maxAge: authCookieMaxAge
          });
          setCookie(redirect, oauthRedirectCookieName, redirectTo, {
             httpOnly: true,
             sameSite: 'lax',
             secure: env.NODE_ENV === 'production',
-            path: `/auth/${provider}`,
+            path: oauthProviderRoutes[provider].id,
             maxAge: authCookieMaxAge
          });
          return redirect;
@@ -192,12 +204,13 @@ async function handleOAuthCallback({
    const code = url.searchParams.get('code');
    const state = url.searchParams.get('state');
    const intent = cookies[oauthIntentCookieName];
-   const redirectTo = safeSiteRedirect(cookies[oauthRedirectCookieName], getSiteUrl('/'));
-   const successRedirect = intent === 'login' ? redirectTo : getSiteUrl(`/settings/connections${stringifyUrlSearch({ [provider]: 'connected' })}`);
+   const redirectTo = safeSiteRedirect(cookies[oauthRedirectCookieName], getSiteUrl(homeRoute.id));
+   const successRedirect =
+      intent === 'login' ? redirectTo : getSiteUrl(`${settingsConnectionsRoute.id}${stringifyUrlSearch({ [provider]: 'connected' })}`);
    const failedRedirect =
       intent === 'login'
-         ? getSiteUrl(`/login${stringifyUrlSearch({ [provider]: 'failed', redirectTo })}`)
-         : getSiteUrl(`/settings/connections${stringifyUrlSearch({ [provider]: 'failed' })}`);
+         ? getSiteUrl(`${loginRoute.id}${stringifyUrlSearch({ [provider]: 'failed', redirectTo })}`)
+         : getSiteUrl(`${settingsConnectionsRoute.id}${stringifyUrlSearch({ [provider]: 'failed' })}`);
 
    if (!code || !state) {
       return redirectResponse(failedRedirect);
@@ -209,8 +222,8 @@ async function handleOAuthCallback({
       ok: (response) => {
          const redirect = redirectResponse(successRedirect);
          appendApiCookies(redirect, response.headers);
-         setCookie(redirect, oauthIntentCookieName, '', { path: `/auth/${provider}`, maxAge: 0 });
-         setCookie(redirect, oauthRedirectCookieName, '', { path: `/auth/${provider}`, maxAge: 0 });
+         setCookie(redirect, oauthIntentCookieName, '', { path: oauthProviderRoutes[provider].id, maxAge: 0 });
+         setCookie(redirect, oauthRedirectCookieName, '', { path: oauthProviderRoutes[provider].id, maxAge: 0 });
          return redirect;
       },
       err: () => redirectResponse(failedRedirect)

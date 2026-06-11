@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { Icons } from '@/shared/components/icons';
+import { Image } from '@/shared/components/image';
 import { cn } from '@/shared/format/helpers';
 
 type ProviderIcon = ComponentType<HTMLAttributes<SVGElement>>;
@@ -18,23 +19,22 @@ interface LoginProviderPickerProps {
    patreonHref: string;
    discordHref: string;
    labels: {
+      scoresaber: string;
       steam: string;
       meta: string;
       patreon: string;
       discord: string;
    };
-   steamTooltip: string;
    metaTooltip: string;
-   patreonTooltip: string;
-   discordTooltip: string;
    showOtherMethodsLabel: string;
    hideOtherMethodsLabel: string;
    secondaryDescription: string;
+   onPasswordSelect: () => void;
    onMetaSelect: () => void;
 }
 
 interface ProviderIconButtonProps {
-   icon: ProviderIcon;
+   icon?: ProviderIcon;
    label: string;
    href?: string;
    active?: boolean;
@@ -44,6 +44,7 @@ interface ProviderIconButtonProps {
    usePointerCursor?: boolean;
    className?: string;
    tabIndex?: number;
+   children?: ReactNode;
 }
 
 export function LoginProviderPicker({
@@ -51,13 +52,11 @@ export function LoginProviderPicker({
    patreonHref,
    discordHref,
    labels,
-   steamTooltip,
    metaTooltip,
-   patreonTooltip,
-   discordTooltip,
    showOtherMethodsLabel,
    hideOtherMethodsLabel,
    secondaryDescription,
+   onPasswordSelect,
    onMetaSelect
 }: LoginProviderPickerProps) {
    const [isExpanded, setIsExpanded] = useState(false);
@@ -68,17 +67,14 @@ export function LoginProviderPicker({
             <div
                aria-hidden={isExpanded}
                className={cn(
-                  'absolute inset-0 flex translate-x-6 items-center justify-center gap-3 transition-opacity duration-200 ease-out',
+                  'absolute inset-0 flex translate-x-5 items-center justify-center gap-1.5 transition-opacity duration-200 ease-out sm:gap-3',
                   isExpanded ? 'pointer-events-none opacity-0' : 'opacity-100'
                )}
             >
-               <ProviderIconButton
-                  icon={Icons.steam}
-                  label={labels.steam}
-                  href={steamHref}
-                  tooltip={steamTooltip}
-                  tabIndex={isExpanded ? -1 : undefined}
-               />
+               <ProviderIconButton label={labels.scoresaber} onClick={onPasswordSelect} tabIndex={isExpanded ? -1 : undefined}>
+                  <Image src="/scoresaber.svg" width={32} height={32} alt={labels.scoresaber} className="size-8" />
+               </ProviderIconButton>
+               <ProviderIconButton icon={Icons.steam} label={labels.steam} href={steamHref} tabIndex={isExpanded ? -1 : undefined} />
                <ProviderIconButton
                   icon={Icons.meta}
                   label={labels.meta}
@@ -102,17 +98,14 @@ export function LoginProviderPicker({
             <div
                aria-hidden={!isExpanded}
                className={cn(
-                  'absolute inset-0 flex translate-x-6 items-center justify-center gap-3 whitespace-nowrap transition-opacity duration-200 ease-out',
+                  'absolute inset-0 flex translate-x-5 items-center justify-center gap-1.5 whitespace-nowrap transition-opacity duration-200 ease-out sm:gap-3',
                   isExpanded ? 'opacity-100' : 'pointer-events-none opacity-0'
                )}
             >
-               <ProviderIconButton
-                  icon={Icons.steam}
-                  label={labels.steam}
-                  href={steamHref}
-                  tooltip={steamTooltip}
-                  tabIndex={isExpanded ? undefined : -1}
-               />
+               <ProviderIconButton label={labels.scoresaber} onClick={onPasswordSelect} tabIndex={isExpanded ? undefined : -1}>
+                  <Image src="/scoresaber.svg" width={32} height={32} alt={labels.scoresaber} className="size-8" />
+               </ProviderIconButton>
+               <ProviderIconButton icon={Icons.steam} label={labels.steam} href={steamHref} tabIndex={isExpanded ? undefined : -1} />
                <ProviderIconButton
                   icon={Icons.meta}
                   label={labels.meta}
@@ -121,20 +114,8 @@ export function LoginProviderPicker({
                   usePointerCursor={false}
                   tabIndex={isExpanded ? undefined : -1}
                />
-               <ProviderIconButton
-                  icon={Icons.patreon}
-                  label={labels.patreon}
-                  href={patreonHref}
-                  tooltip={patreonTooltip}
-                  tabIndex={isExpanded ? undefined : -1}
-               />
-               <ProviderIconButton
-                  icon={Icons.discordColor}
-                  label={labels.discord}
-                  href={discordHref}
-                  tooltip={discordTooltip}
-                  tabIndex={isExpanded ? undefined : -1}
-               />
+               <ProviderIconButton icon={Icons.patreon} label={labels.patreon} href={patreonHref} tabIndex={isExpanded ? undefined : -1} />
+               <ProviderIconButton icon={Icons.discordColor} label={labels.discord} href={discordHref} tabIndex={isExpanded ? undefined : -1} />
                <Button
                   variant="ghost"
                   size="icon-sm"
@@ -170,17 +151,18 @@ function ProviderIconButton({
    tooltip,
    usePointerCursor = true,
    className,
-   tabIndex
+   tabIndex,
+   children
 }: ProviderIconButtonProps) {
    const content = (
       <>
-         <Icon className="size-7 fill-current" aria-hidden />
+         {children ?? (Icon ? <Icon className="size-7 fill-current" aria-hidden /> : null)}
          <span className="sr-only">{label}</span>
       </>
    );
 
    const buttonClassName = cn(
-      'border-border/70 bg-background/78 text-muted-foreground size-16 rounded-md border backdrop-blur-xl transition-[background-color,color,scale] active:scale-[0.96]',
+      'border-border/70 bg-background/78 text-muted-foreground size-14 rounded-md border backdrop-blur-xl transition-[background-color,color,scale] active:scale-[0.96] sm:size-16',
       active && 'bg-accent/70 text-foreground ring-primary/35 ring-1',
       !disabled && 'hover:bg-accent/70 hover:text-foreground',
       disabled && 'hover:bg-background/78 hover:text-muted-foreground active:scale-100',

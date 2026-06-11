@@ -36,15 +36,13 @@ const disabledClass = 'cursor-not-allowed text-muted-foreground/45';
 function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
    const location = useLocation();
    const pathname = location.pathname;
-   const searchParams = new URLSearchParams(location.searchStr);
    const { user } = useAuth();
    const { setOpen: setSearchOpen } = useOmniSearch();
    const tNav = useTranslations();
    const tSidebar = useTranslations();
 
    const iconLink = cn(navLinkClass, inactiveClass, 'justify-center px-0');
-   const search = searchParams.toString();
-   const currentPath = search ? `${pathname}?${search}` : pathname;
+   const currentPath = location.href;
 
    function navLabel(key: string) {
       return key === 'home'
@@ -151,7 +149,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                <Tooltip>
                   <TooltipTrigger asChild>
                      <Button variant="ghost" asChild className={cn(iconLink, 'cursor-pointer')}>
-                        <loginRoute.Link search={pathname === '/login' ? {} : { redirectTo: currentPath }}>
+                        <loginRoute.Link search={pathname === loginRoute.id ? {} : { redirectTo: currentPath }}>
                            <LogIn data-icon />
                         </loginRoute.Link>
                      </Button>

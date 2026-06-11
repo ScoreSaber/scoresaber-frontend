@@ -1,20 +1,20 @@
 'use client';
 
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi, linkOptions, useRouter } from '@tanstack/react-router';
 import { LogIn } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
 
 import { useAuth } from '@/modules/auth';
-import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { getRouteHref } from '@/shared/url-state/route-location';
 
 const loginRoute = getRouteApi('/login');
-const questRoute = getRouteApi('/quest');
 
 export function StepSignIn() {
    const t = useTranslations();
    const { user } = useAuth();
+   const router = useRouter();
 
    if (user) {
       return (
@@ -30,7 +30,7 @@ export function StepSignIn() {
       );
    }
 
-   const redirectTo = `${questRoute.id}${stringifyUrlSearch({ step: 2 })}`;
+   const redirectTo = getRouteHref(router, linkOptions({ to: '/quest', search: { step: 2 } }));
 
    return (
       <div className="flex flex-col gap-4 text-sm">

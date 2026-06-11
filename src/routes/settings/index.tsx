@@ -1,10 +1,8 @@
-import { createFileRoute, getRouteApi, redirect } from '@tanstack/react-router';
-
-const settingsAccountRoute = getRouteApi('/settings/account');
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/settings/')({
    loader: () => {
-      throw redirect({ to: settingsAccountRoute.id });
+      throw redirect({ to: '/settings/account' });
    },
    component: SettingsRoute
 });

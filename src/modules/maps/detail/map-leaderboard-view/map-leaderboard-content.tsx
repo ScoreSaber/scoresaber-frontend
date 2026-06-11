@@ -22,6 +22,7 @@ import { LeaderboardScoresTable } from '@/modules/scores/leaderboard/leaderboard
 import type { LeaderboardControllerGetLeaderboardByIdResponse, MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
 import { Pagination } from '@/shared/components/pagination';
 import { cn } from '@/shared/format/helpers';
+import type { RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 
@@ -41,7 +42,7 @@ const tabLinkClass =
 const mapRoute = getRouteApi('/map/$id');
 const mapDifficultyRoute = getRouteApi('/map/$id/difficulty/$leaderboardId');
 
-export function MapLeaderboardContent({
+export function MapLeaderboardContent<TLocation>({
    mapInfo,
    routeName,
    leaderboardInfo,
@@ -56,9 +57,9 @@ export function MapLeaderboardContent({
    hasMultipleGameModes,
    userPermissions,
    renderHeaderActions,
-   buildHref,
+   buildLocation,
    parseSearch
-}: MapLeaderboardContentProps) {
+}: MapLeaderboardContentProps<TLocation>) {
    const t = useTranslations();
    const tRR = useTranslations();
    const isUnrank = rankRequest?.requestType === 'UNRANK';
@@ -83,7 +84,7 @@ export function MapLeaderboardContent({
                   search={search}
                />
                <Separator orientation="vertical" variant="gradient" size="toolbar" className="hidden md:block" />
-               <MapLeaderboardFilters currentSearch={currentSearch} search={search} buildHref={buildHref} parseSearch={parseSearch} />
+               <MapLeaderboardFilters currentSearch={currentSearch} search={search} buildLocation={buildLocation} parseSearch={parseSearch} />
                <div className="ml-auto shrink-0">{renderHeaderActions(activeTab)}</div>
             </div>
             <Separator variant="fade" />
@@ -93,7 +94,7 @@ export function MapLeaderboardContent({
                currentPage={currentPage}
                highlight={highlight}
                search={search}
-               buildHref={buildHref}
+               buildLocation={buildLocation}
             />
          </>
       );
@@ -146,7 +147,7 @@ export function MapLeaderboardContent({
                <>
                   <Separator orientation="vertical" variant="gradient" size="toolbar" className="md:order-4" />
                   <div className="shrink-0 md:order-5">
-                     <MapLeaderboardFilters currentSearch={currentSearch} search={search} buildHref={buildHref} parseSearch={parseSearch} />
+                     <MapLeaderboardFilters currentSearch={currentSearch} search={search} buildLocation={buildLocation} parseSearch={parseSearch} />
                   </div>
                </>
             )}
@@ -162,7 +163,7 @@ export function MapLeaderboardContent({
                   currentPage={currentPage}
                   highlight={highlight}
                   search={search}
-                  buildHref={buildHref}
+                  buildLocation={buildLocation}
                />
             </div>
          )}
@@ -288,20 +289,20 @@ function DifficultyToolbar({
    );
 }
 
-function ScoresList({
+function ScoresList<TLocation>({
    leaderboardInfo,
    leaderboardScores,
    currentPage,
    highlight,
    search,
-   buildHref
+   buildLocation
 }: {
    leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
    leaderboardScores: LeaderboardScores;
    currentPage: number;
    highlight?: number;
    search: LeaderboardSearchParams;
-   buildHref: (search?: LeaderboardSearchParams) => string;
+   buildLocation: RouteLocationBuilder<LeaderboardSearchParams, TLocation>;
 }) {
    const t = useTranslations();
    const isScoped = !!search.scope || !!search.search || !!search.pivot;
@@ -316,7 +317,7 @@ function ScoresList({
       );
    }
 
-   const getPageHref = (page: number) => buildHref(updateSearchParams(search, { page: page > 1 ? page : undefined }));
+   const getPageLocation = (page: number) => buildLocation(updateSearchParams(search, { page: page > 1 ? page : undefined }));
 
    return (
       <div className="flex flex-col gap-3">
@@ -332,14 +333,14 @@ function ScoresList({
                currentPage={currentPage}
                totalItems={leaderboardScores.metadata.totalItems}
                pageSize={leaderboardScores.metadata.itemsPerPage}
-               getPageHref={getPageHref}
+               getPageLocation={getPageLocation}
             />
          </div>
       </div>
    );
 }
 
-interface MapLeaderboardContentProps {
+interface MapLeaderboardContentProps<TLocation> {
    mapInfo: MapControllerGetMapByIdResponse;
    routeName: MapLeaderboardRouteName;
    leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
@@ -354,6 +355,6 @@ interface MapLeaderboardContentProps {
    hasMultipleGameModes: boolean;
    userPermissions: number;
    renderHeaderActions: (activeTab: MapLeaderboardTab) => ReactNode;
-   buildHref: (search?: LeaderboardSearchParams) => string;
+   buildLocation: RouteLocationBuilder<LeaderboardSearchParams, TLocation>;
    parseSearch: (search: SearchParamsRecord) => LeaderboardSearchParams | null;
 }

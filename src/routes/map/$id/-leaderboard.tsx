@@ -1,3 +1,4 @@
+import { linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getCookie } from '@tanstack/react-start/server';
 import { z } from 'zod';
@@ -18,7 +19,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isNumber, isPageNumber } from '@/shared/url-state/params';
 import { leaderboardFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
-import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 export const leaderboardSearchSchema = z.object({
@@ -77,8 +78,8 @@ export function MapLeaderboardRouteContent({
 
    const currentPage = searchParams.page ?? 1;
    const { mapInfo, leaderboardInfo, leaderboardScores, leaderboardId: activeLeaderboardId } = result.data;
-   const buildHref = (search?: LeaderboardSearchParams) =>
-      buildMapLeaderboardHref({ routeName: input.routeName, mapId: input.mapId, leaderboardId: activeLeaderboardId, search });
+   const buildLocation = (search?: LeaderboardSearchParams) =>
+      buildMapLeaderboardLocation({ routeName: input.routeName, mapId: input.mapId, leaderboardId: activeLeaderboardId, search });
 
    return (
       <div className="relative flex-1 overflow-hidden">
@@ -95,7 +96,7 @@ export function MapLeaderboardRouteContent({
                highlight={searchParams.highlight}
                rankRequest={mapInfo.rankRequest}
                defaultTab={searchParams.tab}
-               buildHref={buildHref}
+               buildLocation={buildLocation}
                parseSearch={parseLeaderboardSearch}
             />
          </div>
@@ -103,7 +104,7 @@ export function MapLeaderboardRouteContent({
    );
 }
 
-function buildMapLeaderboardHref({
+function buildMapLeaderboardLocation({
    routeName,
    mapId,
    leaderboardId,
@@ -114,8 +115,18 @@ function buildMapLeaderboardHref({
    leaderboardId: number;
    search?: LeaderboardSearchParams;
 }) {
-   const path = routeName === 'map' ? `/map/${mapId}` : `/map/${mapId}/difficulty/${leaderboardId}`;
-   return `${path}${stringifyUrlSearch(search ?? {})}`;
+   const routeSearch = normalizeMapLeaderboardLocationSearch(search);
+
+   if (routeName === 'map') {
+      return linkOptions({ to: '/map/$id', params: { id: mapId }, search: routeSearch });
+   }
+
+   return linkOptions({ to: '/map/$id/difficulty/$leaderboardId', params: { id: mapId, leaderboardId }, search: routeSearch });
+}
+
+function normalizeMapLeaderboardLocationSearch(search?: LeaderboardSearchParams) {
+   const { page = 1, ...rest } = search ?? {};
+   return { page, ...rest };
 }
 
 function parseLeaderboardSearch(search: Record<string, unknown>) {

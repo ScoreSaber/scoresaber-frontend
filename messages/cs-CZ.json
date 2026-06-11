@@ -117,21 +117,21 @@
       "hideOtherMethods": "",
       "secondaryDescription": "",
       "providers": {
+         "SCORESABER": {
+            "label": ""
+         },
          "STEAM": {
-            "label": "",
-            "tooltip": ""
+            "label": ""
          },
          "OCULUS": {
             "label": "",
             "tooltip": ""
          },
          "PATREON": {
-            "label": "",
-            "tooltip": ""
+            "label": ""
          },
          "DISCORD": {
-            "label": "",
-            "tooltip": ""
+            "label": ""
          }
       },
       "oauth": {
@@ -140,7 +140,6 @@
       },
       "email": {
          "title": "",
-         "emailDescription": "",
          "emailLabel": "",
          "emailPlaceholder": "",
          "sendCode": "",
@@ -160,8 +159,42 @@
          "pendingTitle": "",
          "pendingDescription": "",
          "supportTitle": "",
-         "supportDescription": ""
-      }
+         "supportDescription": "",
+         "metaInfo": {
+            "title": "",
+            "pcOnly": "",
+            "newPc": "",
+            "quest": ""
+         }
+      },
+      "password": {
+         "method": "",
+         "title": "",
+         "description": "",
+         "passwordLabel": "",
+         "submit": "",
+         "forgot": "",
+         "newPasswordLabel": "",
+         "passwordHelp": "",
+         "resetDescription": "",
+         "resetSubmit": "",
+         "backToLogin": "",
+         "failedToast": "",
+         "resetFailedToast": ""
+      },
+      "passkey": {
+         "method": "",
+         "failedToast": ""
+      },
+      "signup": {
+         "title": "",
+         "displayNameLabel": "",
+         "displayNameHelp": "",
+         "submit": "",
+         "failedToast": "",
+         "emailCallToAction": ""
+      },
+      "subtitle": ""
    },
    "sidebar": {
       "scoreSaberLogoAlt": "",
@@ -227,7 +260,10 @@
       "rankRequestActions": "",
       "adminActions": "",
       "scoreSaberLogo": "",
-      "underConstruction": ""
+      "underConstruction": "",
+      "edit": "",
+      "copy": "",
+      "copied": ""
    },
    "error": {
       "somethingWentWrong": "",
@@ -602,7 +638,8 @@
       "tabs": {
          "account": "",
          "connections": "",
-         "perks": ""
+         "perks": "",
+         "developer": ""
       },
       "account": {
          "detailsTitle": "",
@@ -656,6 +693,9 @@
             },
             "DISCORD": {
                "label": ""
+            },
+            "SCORESABER": {
+               "label": ""
             }
          },
          "oauth": {
@@ -705,13 +745,13 @@
             "mergeFailedTitle": "",
             "mergeFailedDescription": "",
             "retry": ""
-         }
+         },
+         "setup": ""
       },
       "perks": {
          "tabs": {
             "overview": "",
-            "replays": "",
-            "scoreSaber2Badge": ""
+            "replays": ""
          },
          "gate": {
             "title": "",
@@ -753,21 +793,97 @@
             "unknownValue": "",
             "loadFailed": ""
          },
-         "scoreSaber2Badge": {
+         "vanity": {
             "title": "",
             "description": "",
-            "promptTitle": "",
-            "promoTitle": "",
-            "promoDescription": "",
-            "alreadySupporting": "",
-            "countdownLabel": "",
-            "supportAction": "",
-            "redeemAction": "",
-            "redeemingAction": "",
-            "redeemedToast": "",
-            "redeemFailedToast": "",
-            "dismiss": ""
+            "loadFailed": "",
+            "current": "",
+            "changeLabel": "",
+            "claimLabel": "",
+            "placeholder": "",
+            "change": "",
+            "claim": "",
+            "claimed": "",
+            "claimFailed": "",
+            "cooldown": "",
+            "rules": ""
          }
+      },
+      "security": {
+         "title": "",
+         "changePassword": "",
+         "changePasswordHelper": "",
+         "currentPassword": "",
+         "newPassword": "",
+         "passwordSaved": "",
+         "passwordSaveFailed": "",
+         "passkeys": "",
+         "passkeysHelper": "",
+         "addPasskey": "",
+         "passkeyAdded": "",
+         "passkeyAddFailed": "",
+         "passkeyRenamed": "",
+         "passkeyRenameFailed": "",
+         "passkeyDeleted": "",
+         "passkeyDeleteFailed": "",
+         "renamePasskey": "",
+         "renamePasskeyDesc": "",
+         "passkeyLabel": "",
+         "deletePasskey": "",
+         "deletePasskeyDesc": "",
+         "passkeyLastUsed": "",
+         "passkeyCreated": "",
+         "deviceLogin": "",
+         "deviceLoginComingSoon": "",
+         "deviceLoginHelper": "",
+         "deviceLoginAction": "",
+         "deviceLoginInstructions": "",
+         "deviceLoginClaimed": "",
+         "deviceCodeExpired": "",
+         "deviceCodeNew": "",
+         "deviceCodeExpiresIn": "",
+         "deviceCodeFailed": "",
+         "setPassword": "",
+         "setPasswordHelper": "",
+         "setPasswordSubmit": "",
+         "passwordSetupSaved": "",
+         "passwordSetupFailed": "",
+         "forgotPassword": ""
+      },
+      "developer": {
+         "title": "",
+         "description": "",
+         "noAccess": "",
+         "loadFailed": "",
+         "empty": "",
+         "create": "",
+         "createTitle": "",
+         "editTitle": "",
+         "formDescription": "",
+         "nameLabel": "",
+         "descriptionLabel": "",
+         "redirectUrisLabel": "",
+         "redirectUrisHelp": "",
+         "scopesLabel": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "created": "",
+         "createFailed": "",
+         "saved": "",
+         "saveFailed": "",
+         "rotate": "",
+         "rotated": "",
+         "rotateFailed": "",
+         "revoke": "",
+         "revokeDesc": "",
+         "revoked": "",
+         "revokeFailed": "",
+         "clientId": "",
+         "clientSecret": "",
+         "secretTitle": "",
+         "secretDescription": "",
+         "createdAt": "",
+         "redirectUris": ""
       }
    },
    "richTextEditor": {
@@ -841,6 +957,21 @@
          "necessaryDescription": "",
          "privacyPolicy": "",
          "cookiePolicy": ""
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "",
+         "invalidDescription": "",
+         "loginTitle": "",
+         "loginDescription": "",
+         "title": "",
+         "scopesIntro": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "approveFailed": "",
+         "deny": "",
+         "approve": ""
       }
    }
 }

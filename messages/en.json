@@ -117,21 +117,21 @@
       "hideOtherMethods": "Hide other methods",
       "secondaryDescription": "Secondary connections like Discord & Patreon can only be used after they are connected from account settings",
       "providers": {
+         "SCORESABER": {
+            "label": "ScoreSaber"
+         },
          "STEAM": {
-            "label": "Steam",
-            "tooltip": "Sign in with Steam"
+            "label": "Steam"
          },
          "OCULUS": {
             "label": "Meta",
-            "tooltip": "Sign in with Meta"
+            "tooltip": "Meta"
          },
          "PATREON": {
-            "label": "Patreon",
-            "tooltip": "Sign in with Patreon"
+            "label": "Patreon"
          },
          "DISCORD": {
-            "label": "Discord",
-            "tooltip": "Sign in with Discord"
+            "label": "Discord"
          }
       },
       "oauth": {
@@ -139,9 +139,8 @@
          "failedDescription": "The provider did not complete sign in. Try again from this page"
       },
       "email": {
-         "title": "Meta login",
-         "emailDescription": "Enter the email address you use for your Meta account",
-         "emailLabel": "Meta account email",
+         "title": "Email login",
+         "emailLabel": "Email",
          "emailPlaceholder": "you@example.com",
          "sendCode": "Send code",
          "resendCode": "Resend",
@@ -160,8 +159,42 @@
          "pendingTitle": "Email verified",
          "pendingDescription": "Open the Meta PC version of Beat Saber with ScoreSaber installed, view any leaderboard, then try email login again",
          "supportTitle": "Support review needed",
-         "supportDescription": "This email matches more than one account or a protected account"
-      }
+         "supportDescription": "This email matches more than one account or a protected account",
+         "metaInfo": {
+            "title": "Meta PC only",
+            "pcOnly": "Use this only if you <strong>actively</strong> submit scores from the <strong>PC</strong> Meta Store version of Beat Saber",
+            "newPc": "New <strong>PC</strong> Meta players should install ScoreSaber, open any in-game leaderboard, then sign in here",
+            "quest": "New <strong>Quest Standalone</strong> players should create an account first <signupLink>here</signupLink>, then follow the Quest Installer"
+         }
+      },
+      "password": {
+         "method": "Sign in with password",
+         "title": "Sign in with password",
+         "description": "Enter your email and password to sign in",
+         "passwordLabel": "Password",
+         "submit": "Sign in",
+         "forgot": "Forgot your password?",
+         "newPasswordLabel": "New password",
+         "passwordHelp": "Must be 10-128 characters",
+         "resetDescription": "Verify your email to set a new password",
+         "resetSubmit": "Reset password",
+         "backToLogin": "Back to sign in",
+         "failedToast": "Sign in failed",
+         "resetFailedToast": "Password reset failed"
+      },
+      "passkey": {
+         "method": "Sign in with a passkey",
+         "failedToast": "Passkey sign in failed"
+      },
+      "signup": {
+         "title": "Create your account",
+         "displayNameLabel": "Display name",
+         "displayNameHelp": "Shown on your profile and leaderboards",
+         "submit": "Create account",
+         "failedToast": "Sign up failed",
+         "emailCallToAction": "Create new account"
+      },
+      "subtitle": "Sign in or create an account with ScoreSaber"
    },
    "sidebar": {
       "scoreSaberLogoAlt": "ScoreSaber Logo",
@@ -227,7 +260,10 @@
       "rankRequestActions": "Rank request actions",
       "adminActions": "Admin actions",
       "scoreSaberLogo": "ScoreSaber Logo",
-      "underConstruction": "under construction"
+      "underConstruction": "under construction",
+      "edit": "Edit",
+      "copy": "Copy",
+      "copied": "Copied to clipboard"
    },
    "error": {
       "somethingWentWrong": "Something Went Wrong",
@@ -602,7 +638,8 @@
       "tabs": {
          "account": "Account",
          "connections": "Connections",
-         "perks": "Perks"
+         "perks": "Perks",
+         "developer": "Developer"
       },
       "account": {
          "detailsTitle": "Account details",
@@ -630,11 +667,11 @@
          "countryResetFailed": "Failed to reset country",
          "resetCountryDialogDesc": "This recalculates your profile country from your current location. After it succeeds, country reset is locked for {days} days",
          "resetCountryHelper": "Use this only when you are in the country you want displayed on ScoreSaber, and make sure you are not using a VPN or proxy",
-         "resetCountryAvailableAt": "You already reset your country recently. You can reset it again on {date}",
+         "resetCountryAvailableAt": "You already reset your country recently. You can reset it again on <date></date>",
          "resetCountryConfirmText": "RESET"
       },
       "connections": {
-         "primaryHelper": "This is the primary sign-in account and cannot be disconnected here",
+         "primaryHelper": "This is a primary sign-in account and cannot be disconnected",
          "legacyUpgradeHelper": "Account is verified through an old legacy system. Click \"Upgrade\" to enhance this account's connection",
          "connect": "Connect",
          "upgrade": "Upgrade",
@@ -656,6 +693,9 @@
             },
             "DISCORD": {
                "label": "Discord"
+            },
+            "SCORESABER": {
+               "label": "ScoreSaber"
             }
          },
          "oauth": {
@@ -705,13 +745,13 @@
             "mergeFailedTitle": "Merge failed",
             "mergeFailedDescription": "This merge challenge may be expired, invalid, or for another account",
             "retry": "Try again"
-         }
+         },
+         "setup": "Set up"
       },
       "perks": {
          "tabs": {
             "overview": "Overview",
-            "replays": "Replays",
-            "scoreSaber2Badge": "Redeem ScoreSaber 2 badge"
+            "replays": "Replays"
          },
          "gate": {
             "title": "Perks require supporter access",
@@ -753,21 +793,97 @@
             "unknownValue": "-",
             "loadFailed": "Replay slots could not be loaded"
          },
-         "scoreSaber2Badge": {
-            "title": "ScoreSaber 2 launch badge",
-            "description": "For being a supporter between the launch of ScoreSaber 2 and June 3, you have unlocked a limited edition badge!",
-            "promptTitle": "You unlocked a limited edition badge!",
-            "promoTitle": "Limited ScoreSaber 2 badge",
-            "promoDescription": "To celebrate ScoreSaber 2, all new and existing supporters can claim it on the website until June 3 at 11:59 PM ET",
-            "alreadySupporting": "Already supporting ScoreSaber?",
-            "countdownLabel": "Ends in",
-            "supportAction": "Support",
-            "redeemAction": "Redeem",
-            "redeemingAction": "Redeeming",
-            "redeemedToast": "Badge redeemed",
-            "redeemFailedToast": "Badge redemption failed",
-            "dismiss": "Dismiss"
+         "vanity": {
+            "title": "Your Profile URL",
+            "description": "Claim a personalized profile URL",
+            "loadFailed": "Couldn't load your vanity URL",
+            "current": "Your profile URL",
+            "changeLabel": "New vanity URL",
+            "claimLabel": "Choose a vanity URL",
+            "placeholder": "your-name",
+            "change": "Change URL",
+            "claim": "Claim URL",
+            "claimed": "Vanity URL claimed",
+            "claimFailed": "Failed to claim vanity URL",
+            "cooldown": "You can change your vanity URL again on <date></date>",
+            "rules": "3-32 characters: lowercase letters, numbers, and hyphens. Must contain a letter. Changeable once every 180 days"
          }
+      },
+      "security": {
+         "title": "Security",
+         "setPassword": "Set email/password login",
+         "setPasswordHelper": "Add an email and password to sign in on the website",
+         "setPasswordSubmit": "Set password",
+         "passwordSetupSaved": "Password login added",
+         "passwordSetupFailed": "Failed to add password login",
+         "changePassword": "Change password",
+         "changePasswordHelper": "Update the password you use to sign in",
+         "currentPassword": "Current password",
+         "newPassword": "New password",
+         "passwordSaved": "Password updated",
+         "passwordSaveFailed": "Failed to update password",
+         "passkeys": "Passkeys",
+         "passkeysHelper": "Sign in with your fingerprint, face, or device PIN",
+         "addPasskey": "Add passkey",
+         "passkeyAdded": "Passkey added",
+         "passkeyAddFailed": "Failed to add passkey",
+         "passkeyRenamed": "Passkey renamed",
+         "passkeyRenameFailed": "Failed to rename passkey",
+         "passkeyDeleted": "Passkey removed",
+         "passkeyDeleteFailed": "Failed to remove passkey",
+         "renamePasskey": "Rename passkey",
+         "renamePasskeyDesc": "Choose a name that helps you recognize this passkey",
+         "passkeyLabel": "Name",
+         "deletePasskey": "Remove passkey",
+         "deletePasskeyDesc": "This will remove \"{label}\". You will no longer be able to sign in with it",
+         "passkeyLastUsed": "Last used <date></date>",
+         "passkeyCreated": "Added <date></date>",
+         "deviceLogin": "Sign in on Beat Saber",
+         "deviceLoginComingSoon": "(coming soon with pc & quest mod refresh)",
+         "deviceLoginHelper": "Get a one-time code to sign in inside the game",
+         "deviceLoginAction": "Get code",
+         "deviceLoginInstructions": "Enter this code in Beat Saber to sign in there",
+         "deviceLoginClaimed": "Signed in on Beat Saber",
+         "deviceCodeExpired": "This code has expired",
+         "deviceCodeNew": "Get a new code",
+         "deviceCodeExpiresIn": "Expires in {seconds}s",
+         "deviceCodeFailed": "Failed to get a code",
+         "forgotPassword": "Forgot?"
+      },
+      "developer": {
+         "title": "OAuth applications",
+         "description": "Register applications that sign users in with their ScoreSaber account",
+         "noAccess": "You don't have access to developer settings",
+         "loadFailed": "Couldn't load your applications",
+         "empty": "No applications yet",
+         "create": "New application",
+         "createTitle": "New application",
+         "editTitle": "Edit application",
+         "formDescription": "Users will see this information on the authorization screen",
+         "nameLabel": "Name",
+         "descriptionLabel": "Description",
+         "redirectUrisLabel": "Redirect URIs",
+         "redirectUrisHelp": "One per line. Must be HTTPS, except localhost for development",
+         "scopesLabel": "Scopes",
+         "scopeIdentity": "Identity (id, name, avatar)",
+         "scopeIdentityProviders": "Linked accounts (Steam, Oculus, ScoreSaber ids)",
+         "created": "Application created",
+         "createFailed": "Failed to create application",
+         "saved": "Application updated",
+         "saveFailed": "Failed to update application",
+         "rotate": "Rotate secret",
+         "rotated": "Client secret rotated",
+         "rotateFailed": "Failed to rotate client secret",
+         "revoke": "Revoke",
+         "revokeDesc": "This permanently revokes \"{name}\" and all of its tokens. Connected users will be signed out of it",
+         "revoked": "Application revoked",
+         "revokeFailed": "Failed to revoke application",
+         "clientId": "Client ID",
+         "clientSecret": "Client secret",
+         "secretTitle": "Save your client secret",
+         "secretDescription": "This secret is only shown once. Store it somewhere safe — you can't view it again",
+         "createdAt": "Created <date></date>",
+         "redirectUris": "Redirect URIs"
       }
    },
    "richTextEditor": {
@@ -841,6 +957,21 @@
          "necessaryDescription": "Needed for sign-in, security, rate limiting, language, theme, saved filters, and core site features. These are always on.",
          "privacyPolicy": "Privacy Policy",
          "cookiePolicy": "Cookies Policy"
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "Invalid authorization request",
+         "invalidDescription": "This link is missing required parameters or is malformed. Contact the application developer",
+         "loginTitle": "Sign in to continue",
+         "loginDescription": "An application wants to access your ScoreSaber account. Sign in to review the request",
+         "title": "Authorize {app}",
+         "scopesIntro": "This application will be able to:",
+         "scopeIdentity": "See your id, name, avatar, country, and role",
+         "scopeIdentityProviders": "See your linked Steam, Oculus, and ScoreSaber account ids",
+         "approveFailed": "Authorization failed",
+         "deny": "Deny",
+         "approve": "Authorize"
       }
    }
 }

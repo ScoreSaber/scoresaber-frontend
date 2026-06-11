@@ -13,6 +13,11 @@ type _R<T extends (...args: never[]) => Promise<{ data: unknown }>> = Awaited<Re
 
 // ── Param enum arrays & types ────────────────────────────────────────────
 
+export const PLAYER_CONTROLLER_GET_PLAYERS_SCOPE = ['country', 'region'] as const satisfies readonly NonNullable<
+   ApiTypes.PlayerControllerGetPlayersParams['scope']
+>[];
+export type PlayerControllerGetPlayersScope = (typeof PLAYER_CONTROLLER_GET_PLAYERS_SCOPE)[number];
+
 export const PLAYER_CONTROLLER_GET_PLAYERS_SORT = [
    'rank',
    'countryRank',
@@ -134,6 +139,11 @@ export const AUTH_CONTROLLER_DISCORD_LOGIN_INTENT = ['login', 'link'] as const s
 >[];
 export type AuthControllerDiscordLoginIntent = (typeof AUTH_CONTROLLER_DISCORD_LOGIN_INTENT)[number];
 
+export const OAUTH_CONTROLLER_GET_AUTHORIZE_INFO_CODE_CHALLENGE_METHOD = ['S256'] as const satisfies readonly NonNullable<
+   ApiTypes.OAuthControllerGetAuthorizeInfoParams['code_challenge_method']
+>[];
+export type OauthControllerGetAuthorizeInfoCodeChallengeMethod = (typeof OAUTH_CONTROLLER_GET_AUTHORIZE_INFO_CODE_CHALLENGE_METHOD)[number];
+
 export const USER_CONTROLLER_REMOVE_CONNECTION_PROVIDER = ['STEAM', 'OCULUS', 'PATREON', 'DISCORD'] as const satisfies readonly NonNullable<
    ApiTypes.UserControllerRemoveConnectionParams['provider']
 >[];
@@ -147,13 +157,16 @@ type _PlayerAlias = _ApiInstance['playerAlias'];
 type _Leaderboard = _ApiInstance['leaderboard'];
 type _Map = _ApiInstance['map'];
 type _Auth = _ApiInstance['auth'];
+type _OAuth = _ApiInstance['oAuth'];
 type _Game = _ApiInstance['game'];
+type _GameUploadBuilds = _ApiInstance['gameUploadBuilds'];
 type _Ranking = _ApiInstance['ranking'];
 type _Score = _ApiInstance['score'];
 type _AdminBadge = _ApiInstance['adminBadge'];
 type _AdminLeaderboard = _ApiInstance['adminLeaderboard'];
 type _AdminPermission = _ApiInstance['adminPermission'];
 type _AdminScore = _ApiInstance['adminScore'];
+type _AdminUploadTrust = _ApiInstance['adminUploadTrust'];
 type _AdminUser = _ApiInstance['adminUser'];
 type _AdminVersion = _ApiInstance['adminVersion'];
 type _User = _ApiInstance['user'];
@@ -167,6 +180,8 @@ export type PlayerControllerGetPlayersResponse = _R<_Player['playerControllerGet
 export type PlayerControllerGetPlayersDataItem = PlayerControllerGetPlayersResponse['data'][number];
 
 export type PlayerControllerGetPlayerCountResponse = _R<_Player['playerControllerGetPlayerCount']>;
+
+export type PlayerControllerGetPlayerByVanityResponse = _R<_Player['playerControllerGetPlayerByVanity']>;
 
 export type PlayerControllerGetPlayerResponse = _R<_Player['playerControllerGetPlayer']>;
 
@@ -225,11 +240,57 @@ export type AuthControllerStartEmailLoginResponse = _R<_Auth['authControllerStar
 
 export type AuthControllerLogoutResponse = _R<_Auth['authControllerLogout']>;
 
+export type PasswordAuthControllerStartSignupResponse = _R<_Auth['passwordAuthControllerStartSignup']>;
+
+export type PasswordAuthControllerStartPasswordResetResponse = _R<_Auth['passwordAuthControllerStartPasswordReset']>;
+
+export type PasswordAuthControllerGetPasswordCredentialResponse = _R<_Auth['passwordAuthControllerGetPasswordCredential']>;
+
+export type PasswordAuthControllerStartPasswordSetupResponse = _R<_Auth['passwordAuthControllerStartPasswordSetup']>;
+
+export type PasswordAuthControllerCompletePasswordSetupResponse = _R<_Auth['passwordAuthControllerCompletePasswordSetup']>;
+
+export type PasswordAuthControllerChangePasswordResponse = _R<_Auth['passwordAuthControllerChangePassword']>;
+
+export type PasskeyControllerVerifyRegistrationResponse = _R<_Auth['passkeyControllerVerifyRegistration']>;
+
+export type PasskeyControllerStartAuthenticationResponse = _R<_Auth['passkeyControllerStartAuthentication']>;
+
+export type PasskeyControllerListPasskeysResponse = _R<_Auth['passkeyControllerListPasskeys']>;
+
+export type PasskeyControllerRenamePasskeyResponse = _R<_Auth['passkeyControllerRenamePasskey']>;
+
+export type PasskeyControllerDeletePasskeyResponse = _R<_Auth['passkeyControllerDeletePasskey']>;
+
+export type DeviceCodeControllerStartDeviceLoginResponse = _R<_Auth['deviceCodeControllerStartDeviceLogin']>;
+
+export type DeviceCodeControllerGetDeviceLoginStatusResponse = _R<_Auth['deviceCodeControllerGetDeviceLoginStatus']>;
+
+export type OAuthControllerGetAuthorizeInfoResponse = _R<_OAuth['oAuthControllerGetAuthorizeInfo']>;
+
+export type OAuthControllerApproveAuthorizationResponse = _R<_OAuth['oAuthControllerApproveAuthorization']>;
+
+export type OAuthControllerTokenResponse = _R<_OAuth['oAuthControllerToken']>;
+
+export type OAuthControllerUserinfoResponse = _R<_OAuth['oAuthControllerUserinfo']>;
+
+export type OAuthClientControllerListClientsResponse = _R<_OAuth['oAuthClientControllerListClients']>;
+
+export type OAuthClientControllerCreateClientResponse = _R<_OAuth['oAuthClientControllerCreateClient']>;
+
+export type OAuthClientControllerUpdateClientResponse = _R<_OAuth['oAuthClientControllerUpdateClient']>;
+
+export type OAuthClientControllerRevokeClientResponse = _R<_OAuth['oAuthClientControllerRevokeClient']>;
+
+export type OAuthClientControllerRotateSecretResponse = _R<_OAuth['oAuthClientControllerRotateSecret']>;
+
 export type GameControllerAuthenticateResponse = _R<_Game['gameControllerAuthenticate']>;
 
 export type GameControllerUploadScoreResponse = _R<_Game['gameControllerUploadScore']>;
 
 export type GameControllerSetActiveRealmsResponse = _R<_Game['gameControllerSetActiveRealms']>;
+
+export type GameBuildControllerRegisterOfficialBuildResponse = _R<_GameUploadBuilds['gameBuildControllerRegisterOfficialBuild']>;
 
 export type RankingControllerGetRequestsResponse = _R<_Ranking['rankingControllerGetRequests']>;
 export type RankingControllerGetRequestsDataItem = RankingControllerGetRequestsResponse['data'][number];
@@ -301,6 +362,16 @@ export type AdminPermissionControllerListPermissionsItem = AdminPermissionContro
 
 export type AdminScoreControllerDeleteScoreResponse = _R<_AdminScore['adminScoreControllerDeleteScore']>;
 
+export type AdminUploadTrustControllerCreateDevelopmentCredentialResponse = _R<
+   _AdminUploadTrust['adminUploadTrustControllerCreateDevelopmentCredential']
+>;
+
+export type AdminUploadTrustControllerRevokeDevelopmentCredentialResponse = _R<
+   _AdminUploadTrust['adminUploadTrustControllerRevokeDevelopmentCredential']
+>;
+
+export type AdminUploadTrustControllerRevokeOfficialBuildResponse = _R<_AdminUploadTrust['adminUploadTrustControllerRevokeOfficialBuild']>;
+
 export type AdminUserControllerBanPlayerResponse = _R<_AdminUser['adminUserControllerBanPlayer']>;
 
 export type AdminUserControllerUnbanPlayerResponse = _R<_AdminUser['adminUserControllerUnbanPlayer']>;
@@ -328,6 +399,10 @@ export type AdminVersionControllerDeleteVersionResponse = _R<_AdminVersion['admi
 
 export type UserControllerGetMeResponse = _R<_User['userControllerGetMe']>;
 
+export type UserControllerGetVanityResponse = _R<_User['userControllerGetVanity']>;
+
+export type UserControllerClaimVanityResponse = _R<_User['userControllerClaimVanity']>;
+
 export type UserControllerGetMyInfoResponse = _R<_User['userControllerGetMyInfo']>;
 
 export type UserControllerGetQuestKeyResponse = _R<_User['userControllerGetQuestKey']>;
@@ -345,8 +420,6 @@ export type UserControllerUploadAvatarResponse = _R<_User['userControllerUploadA
 export type UserControllerGetReplaySlotsResponse = _R<_User['userControllerGetReplaySlots']>;
 
 export type UserControllerRefreshPatreonBenefitsResponse = _R<_User['userControllerRefreshPatreonBenefits']>;
-
-export type UserControllerRedeemScoreSaber2BadgeResponse = _R<_User['userControllerRedeemScoreSaber2Badge']>;
 
 export type UserControllerClaimReplaySlotResponse = _R<_User['userControllerClaimReplaySlot']>;
 

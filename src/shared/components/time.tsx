@@ -13,6 +13,7 @@ type TimeProps = {
    date: Date | string | number | null | undefined;
    short?: boolean;
    dateOnly?: boolean;
+   dateStyle?: 'medium' | 'long';
    className?: string;
    longRelativeClassName?: string;
    shortFitTargetLength?: number;
@@ -31,7 +32,16 @@ const LONG_SHORT_TIME_LENGTH = 11;
 const MIN_SHORT_TIME_SCALE = 0.65;
 const SHORT_RELATIVE_TIME_LOCALES = ['fr', 'ru'];
 
-export function Time({ date, short, dateOnly, className, longRelativeClassName, shortFitTargetLength, minShortFitScale }: TimeProps) {
+export function Time({
+   date,
+   short = false,
+   dateOnly,
+   dateStyle,
+   className,
+   longRelativeClassName,
+   shortFitTargetLength,
+   minShortFitScale
+}: TimeProps) {
    const dateObj = date == null ? null : new Date(date);
    const [mounted, setMounted] = useState(false);
    const locale = useLocale();
@@ -48,11 +58,15 @@ export function Time({ date, short, dateOnly, className, longRelativeClassName, 
 
    const fullDate = formatters.fullDate.format(dateObj);
 
-   if (dateOnly) {
+   if (dateStyle || dateOnly) {
+      const displayText = dateStyle
+         ? formatters[dateStyle === 'long' ? 'longDate' : 'mediumDate'].format(dateObj)
+         : formatters.monthYear.format(dateObj);
+
       return (
          <Tooltip>
             <TooltipTrigger asChild>
-               <span className={cn(className, 'cursor-help')}>{formatters.monthYear.format(dateObj)}</span>
+               <span className={cn(className, 'cursor-help')}>{displayText}</span>
             </TooltipTrigger>
             <TooltipContent>
                <p>{fullDate}</p>
@@ -62,18 +76,15 @@ export function Time({ date, short, dateOnly, className, longRelativeClassName, 
    }
 
    const displayText = mounted ? timeAgo(dateObj, short, formatters, t('justNow')) : formatters.shortDate.format(dateObj);
-   const shortTimeStyle = getShortTimeStyle(displayText, !!(short && longRelativeClassName), shortFitTargetLength, minShortFitScale);
+   const canFitShortTime = short && !!longRelativeClassName;
+   const longShortTimeClassName = canFitShortTime && displayText.length > LONG_SHORT_TIME_LENGTH ? longRelativeClassName : undefined;
+   const shortTimeStyle = getShortTimeStyle(displayText, canFitShortTime, shortFitTargetLength, minShortFitScale);
 
    return (
       <Tooltip>
          <TooltipTrigger asChild>
             <span
-               className={cn(
-                  className,
-                  'cursor-help',
-                  short && 'whitespace-nowrap',
-                  short && displayText.length > LONG_SHORT_TIME_LENGTH && longRelativeClassName
-               )}
+               className={cn(className, 'cursor-help', short && 'whitespace-nowrap', longShortTimeClassName)}
                style={shortTimeStyle}
                suppressHydrationWarning
             >
@@ -94,7 +105,7 @@ function getShortTimeStyle(text: string, enabled: boolean, targetLength = LONG_S
    return { '--short-time-font-size': `${scale}em` } as CSSProperties;
 }
 
-function timeAgo(date: Date, isShort: boolean | undefined, formatters: TimeFormatters, justNow: string) {
+function timeAgo(date: Date, isShort: boolean, formatters: TimeFormatters, justNow: string) {
    const secondsFromNow = Math.round((date.getTime() - Date.now()) / 1000);
    const absoluteSeconds = Math.abs(secondsFromNow);
 
@@ -132,6 +143,12 @@ function createTimeFormatters(locale: string) {
          month: 'short',
          day: 'numeric',
          year: '2-digit'
+      }),
+      mediumDate: new Intl.DateTimeFormat(locale, {
+         dateStyle: 'medium'
+      }),
+      longDate: new Intl.DateTimeFormat(locale, {
+         dateStyle: 'long'
       })
    };
 }

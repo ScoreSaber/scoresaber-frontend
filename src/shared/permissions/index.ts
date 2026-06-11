@@ -12,7 +12,8 @@ const permissions = {
    CCT: 1024,
    CCTHead: 2048,
    CAT: 4096,
-   RTR: 8192
+   RTR: 8192,
+   EXTERNAL_DEV: 16384
 };
 
 const group_permissions = {

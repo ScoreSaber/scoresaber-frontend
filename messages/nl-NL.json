@@ -117,21 +117,21 @@
       "hideOtherMethods": "Andere methoden verbergen",
       "secondaryDescription": "Secundaire koppelingen zoals Discord en Patreon kunnen pas worden gebruikt nadat ze in de accountinstellingen zijn gekoppeld",
       "providers": {
+         "SCORESABER": {
+            "label": ""
+         },
          "STEAM": {
-            "label": "Steam",
-            "tooltip": "Inloggen met Steam"
+            "label": "Steam"
          },
          "OCULUS": {
             "label": "Meta",
-            "tooltip": "Inloggen met Meta"
+            "tooltip": ""
          },
          "PATREON": {
-            "label": "Patreon",
-            "tooltip": "Inloggen met Patreon"
+            "label": "Patreon"
          },
          "DISCORD": {
-            "label": "Discord",
-            "tooltip": "Inloggen met Discord"
+            "label": "Discord"
          }
       },
       "oauth": {
@@ -139,9 +139,8 @@
          "failedDescription": "De provider heeft het inloggen niet voltooid. Probeer het opnieuw vanaf deze pagina"
       },
       "email": {
-         "title": "Meta-login",
-         "emailDescription": "Vul het e-mailadres in dat je voor je Meta-account gebruikt",
-         "emailLabel": "Meta-account e-mail",
+         "title": "",
+         "emailLabel": "",
          "emailPlaceholder": "jij@example.com",
          "sendCode": "Code sturen",
          "resendCode": "Opnieuw sturen",
@@ -160,8 +159,42 @@
          "pendingTitle": "E-mail gecontroleerd",
          "pendingDescription": "Open de Meta PC-versie van Beat Saber met ScoreSaber geinstalleerd, bekijk een leaderboard en probeer daarna opnieuw in te loggen",
          "supportTitle": "Supportcontrole nodig",
-         "supportDescription": "Deze e-mail hoort bij meer dan een account of een beschermd account"
-      }
+         "supportDescription": "Deze e-mail hoort bij meer dan een account of een beschermd account",
+         "metaInfo": {
+            "title": "",
+            "pcOnly": "",
+            "newPc": "",
+            "quest": ""
+         }
+      },
+      "password": {
+         "method": "",
+         "title": "",
+         "description": "",
+         "passwordLabel": "",
+         "submit": "",
+         "forgot": "",
+         "newPasswordLabel": "",
+         "passwordHelp": "",
+         "resetDescription": "",
+         "resetSubmit": "",
+         "backToLogin": "",
+         "failedToast": "",
+         "resetFailedToast": ""
+      },
+      "passkey": {
+         "method": "",
+         "failedToast": ""
+      },
+      "signup": {
+         "title": "",
+         "displayNameLabel": "",
+         "displayNameHelp": "",
+         "submit": "",
+         "failedToast": "",
+         "emailCallToAction": ""
+      },
+      "subtitle": ""
    },
    "sidebar": {
       "scoreSaberLogoAlt": "ScoreSaber Logo",
@@ -227,7 +260,10 @@
       "rankRequestActions": "Acties voor rankverzoeken",
       "adminActions": "Adminacties",
       "scoreSaberLogo": "ScoreSaber Logo",
-      "underConstruction": "in aanbouw"
+      "underConstruction": "in aanbouw",
+      "edit": "",
+      "copy": "",
+      "copied": ""
    },
    "error": {
       "somethingWentWrong": "Er is iets misgegaan",
@@ -602,7 +638,8 @@
       "tabs": {
          "account": "Account",
          "connections": "Koppelingen",
-         "perks": "Voordelen"
+         "perks": "Voordelen",
+         "developer": ""
       },
       "account": {
          "detailsTitle": "Accountgegevens",
@@ -630,11 +667,11 @@
          "countryResetFailed": "Land resetten mislukt",
          "resetCountryDialogDesc": "Hiermee wordt je profielland opnieuw berekend op basis van je huidige locatie. Als dit lukt, wordt land resetten {days} dagen vergrendeld",
          "resetCountryHelper": "Gebruik dit alleen wanneer je in het land bent dat je op ScoreSaber wilt tonen, en zorg dat je geen VPN of proxy gebruikt",
-         "resetCountryAvailableAt": "Je hebt je land onlangs al gereset. Je kunt het opnieuw resetten op {date}",
+         "resetCountryAvailableAt": "Je hebt je land onlangs al gereset. Je kunt het opnieuw resetten op <date></date>",
          "resetCountryConfirmText": "HERSTEL"
       },
       "connections": {
-         "primaryHelper": "Dit is het primaire inlogaccount en kan hier niet worden ontkoppeld",
+         "primaryHelper": "",
          "legacyUpgradeHelper": "Account is geverifieerd via een oud legacy-systeem. Klik op \"Upgraden\" om de koppeling van dit account te verbeteren",
          "connect": "Koppelen",
          "upgrade": "Upgraden",
@@ -656,6 +693,9 @@
             },
             "DISCORD": {
                "label": "Discord"
+            },
+            "SCORESABER": {
+               "label": ""
             }
          },
          "oauth": {
@@ -705,13 +745,13 @@
             "mergeFailedTitle": "Samenvoegen mislukt",
             "mergeFailedDescription": "Deze samenvoegchallenge is mogelijk verlopen, ongeldig of voor een ander account",
             "retry": "Opnieuw proberen"
-         }
+         },
+         "setup": ""
       },
       "perks": {
          "tabs": {
             "overview": "Overzicht",
-            "replays": "Replays",
-            "scoreSaber2Badge": "ScoreSaber 2-badge inwisselen"
+            "replays": "Replays"
          },
          "gate": {
             "title": "Voordelen vereisen supportertoegang",
@@ -753,21 +793,97 @@
             "unknownValue": "-",
             "loadFailed": "Replay slots konden niet worden geladen"
          },
-         "scoreSaber2Badge": {
-            "title": "ScoreSaber 2 launchbadge",
-            "description": "Omdat je tussen de lancering van ScoreSaber 2 en 3 juni supporter bent, heb je een limited edition badge ontgrendeld!",
-            "promptTitle": "Je hebt een limited edition badge ontgrendeld!",
-            "promoTitle": "Beperkte ScoreSaber 2 badge",
-            "promoDescription": "Om ScoreSaber 2 te vieren, kunnen alle nieuwe en bestaande supporters het claimen op de website tot 3 juni om 23:59 ET",
-            "alreadySupporting": "Steun je al ScoreSaber?",
-            "countdownLabel": "Eindigt over",
-            "supportAction": "Support",
-            "redeemAction": "Inwisselen",
-            "redeemingAction": "Inwisselen",
-            "redeemedToast": "Badge ingewisseld",
-            "redeemFailedToast": "Badge inwisselen mislukt",
-            "dismiss": "Sluiten"
+         "vanity": {
+            "title": "",
+            "description": "",
+            "loadFailed": "",
+            "current": "",
+            "changeLabel": "",
+            "claimLabel": "",
+            "placeholder": "",
+            "change": "",
+            "claim": "",
+            "claimed": "",
+            "claimFailed": "",
+            "cooldown": "",
+            "rules": ""
          }
+      },
+      "security": {
+         "title": "",
+         "changePassword": "",
+         "changePasswordHelper": "",
+         "currentPassword": "",
+         "newPassword": "",
+         "passwordSaved": "",
+         "passwordSaveFailed": "",
+         "passkeys": "",
+         "passkeysHelper": "",
+         "addPasskey": "",
+         "passkeyAdded": "",
+         "passkeyAddFailed": "",
+         "passkeyRenamed": "",
+         "passkeyRenameFailed": "",
+         "passkeyDeleted": "",
+         "passkeyDeleteFailed": "",
+         "renamePasskey": "",
+         "renamePasskeyDesc": "",
+         "passkeyLabel": "",
+         "deletePasskey": "",
+         "deletePasskeyDesc": "",
+         "passkeyLastUsed": "",
+         "passkeyCreated": "",
+         "deviceLogin": "",
+         "deviceLoginComingSoon": "",
+         "deviceLoginHelper": "",
+         "deviceLoginAction": "",
+         "deviceLoginInstructions": "",
+         "deviceLoginClaimed": "",
+         "deviceCodeExpired": "",
+         "deviceCodeNew": "",
+         "deviceCodeExpiresIn": "",
+         "deviceCodeFailed": "",
+         "setPassword": "",
+         "setPasswordHelper": "",
+         "setPasswordSubmit": "",
+         "passwordSetupSaved": "",
+         "passwordSetupFailed": "",
+         "forgotPassword": ""
+      },
+      "developer": {
+         "title": "",
+         "description": "",
+         "noAccess": "",
+         "loadFailed": "",
+         "empty": "",
+         "create": "",
+         "createTitle": "",
+         "editTitle": "",
+         "formDescription": "",
+         "nameLabel": "",
+         "descriptionLabel": "",
+         "redirectUrisLabel": "",
+         "redirectUrisHelp": "",
+         "scopesLabel": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "created": "",
+         "createFailed": "",
+         "saved": "",
+         "saveFailed": "",
+         "rotate": "",
+         "rotated": "",
+         "rotateFailed": "",
+         "revoke": "",
+         "revokeDesc": "",
+         "revoked": "",
+         "revokeFailed": "",
+         "clientId": "",
+         "clientSecret": "",
+         "secretTitle": "",
+         "secretDescription": "",
+         "createdAt": "",
+         "redirectUris": ""
       }
    },
    "richTextEditor": {
@@ -841,6 +957,21 @@
          "necessaryDescription": "Nodig voor inloggen, beveiliging, snelheidslimieten, taal, thema, opgeslagen filters en kernfuncties van de site. Deze staan altijd aan.",
          "privacyPolicy": "Privacybeleid",
          "cookiePolicy": "Cookiebeleid"
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "",
+         "invalidDescription": "",
+         "loginTitle": "",
+         "loginDescription": "",
+         "title": "",
+         "scopesIntro": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "approveFailed": "",
+         "deny": "",
+         "approve": ""
       }
    }
 }

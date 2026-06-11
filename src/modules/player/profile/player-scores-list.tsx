@@ -1,16 +1,17 @@
 import { ScoreCard } from '@/modules/scores/score-card';
 import type { PlayerControllerGetPlayerScoresDataItem } from '@/shared/api/generated/ApiParams';
 import { Pagination } from '@/shared/components/pagination';
+import type { RouteLocation } from '@/shared/url-state/route-location';
 
-interface PlayerScoresListProps {
+interface PlayerScoresListProps<TLocation> {
    playerScores: PlayerControllerGetPlayerScoresDataItem[];
    totalItems: number;
    pageSize: number;
    currentPage: number;
-   getPageHref: (page: number) => string;
+   getPageLocation: (page: number) => RouteLocation<TLocation>;
 }
 
-export function PlayerScoresList({ playerScores, totalItems, pageSize, currentPage, getPageHref }: PlayerScoresListProps) {
+export function PlayerScoresList<TLocation>({ playerScores, totalItems, pageSize, currentPage, getPageLocation }: PlayerScoresListProps<TLocation>) {
    return (
       <div>
          <div className="flex flex-col gap-2">
@@ -20,7 +21,7 @@ export function PlayerScoresList({ playerScores, totalItems, pageSize, currentPa
          </div>
          {totalItems > pageSize && (
             <div className="mt-4 flex justify-center">
-               <Pagination totalItems={totalItems} pageSize={pageSize} currentPage={currentPage} getPageHref={getPageHref} scroll={false} />
+               <Pagination totalItems={totalItems} pageSize={pageSize} currentPage={currentPage} getPageLocation={getPageLocation} scroll={false} />
             </div>
          )}
       </div>

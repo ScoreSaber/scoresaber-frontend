@@ -4,7 +4,7 @@ import type { UserControllerGetConnectionsItem, UserControllerRemoveConnectionPr
 import { api } from '@/shared/api/server-api';
 import { actionApiData, actionResultVoid } from '@/shared/result/action';
 
-type PrimaryConnectionProvider = Extract<UserControllerGetConnectionsItem['provider'], 'STEAM' | 'OCULUS'>;
+type PrimaryConnectionProvider = Extract<UserControllerGetConnectionsItem['provider'], 'STEAM' | 'OCULUS' | 'SCORESABER'>;
 
 const removeConnectionFn = createServerFn({ method: 'POST' })
    .inputValidator((provider: UserControllerRemoveConnectionProvider) => provider)

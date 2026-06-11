@@ -1,11 +1,11 @@
 'use client';
 
-import type { ComponentType, HTMLAttributes } from 'react';
+import type { ComponentType } from 'react';
 import { useEffect, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { getRouteApi, useRouter } from '@tanstack/react-router';
-import { ExternalLink, Loader2, LockKeyhole, LogIn, RefreshCw, Trash2 } from 'lucide-react';
+import { getRouteApi, linkOptions, useRouter } from '@tanstack/react-router';
+import { ExternalLink, KeyRound, Loader2, LockKeyhole, LogIn, RefreshCw, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'use-intl';
 
@@ -22,14 +22,13 @@ import {
    type UserControllerGetConnectionsItem
 } from '@/shared/api/generated/ApiParams';
 import { Icons } from '@/shared/components/icons';
+import { Image } from '@/shared/components/image';
 import { cn } from '@/shared/format/helpers';
-import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { getRouteHref } from '@/shared/url-state/route-location';
 
-const discordAuthRoute = getRouteApi('/auth/discord');
 const loginRoute = getRouteApi('/login');
-const patreonAuthRoute = getRouteApi('/auth/patreon');
+const settingsAccountRoute = getRouteApi('/settings/account');
 const settingsConnectionsRoute = getRouteApi('/settings/connections');
-const steamAuthRoute = getRouteApi('/auth/steam');
 
 interface ConnectionsSectionProps {
    connections: UserControllerGetConnectionsItem[];
@@ -38,24 +37,29 @@ interface ConnectionsSectionProps {
 }
 
 type ConnectionProvider = UserControllerGetConnectionsItem['provider'];
-type PrimaryProvider = Extract<ConnectionProvider, 'STEAM' | 'OCULUS'>;
+type MergeProvider = Extract<ConnectionProvider, 'STEAM' | 'OCULUS'>;
 type SecondaryProvider = Extract<ConnectionProvider, 'PATREON' | 'DISCORD'>;
 type SwitchPrimaryConnection = Extract<Awaited<ReturnType<typeof switchPrimaryConnection>>, { ok: true }>['value'];
 type RefreshPatreonBenefits = Extract<Awaited<ReturnType<typeof refreshPatreonBenefits>>, { ok: true }>['value'];
 
-const providers = USER_CONTROLLER_REMOVE_CONNECTION_PROVIDER;
-const primaryProviders: PrimaryProvider[] = ['STEAM', 'OCULUS'];
+const providers: ConnectionProvider[] = ['SCORESABER', ...USER_CONTROLLER_REMOVE_CONNECTION_PROVIDER];
+const primaryProviders: ConnectionProvider[] = ['SCORESABER', 'STEAM', 'OCULUS'];
 
-const secondaryProviderRoutes: Record<SecondaryProvider, () => string> = {
-   PATREON: () => `${patreonAuthRoute.id}${stringifyUrlSearch({ intent: 'link' })}`,
-   DISCORD: () => `${discordAuthRoute.id}${stringifyUrlSearch({ intent: 'link' })}`
+const secondaryProviderLocations = {
+   PATREON: () => linkOptions({ to: '/auth/patreon', search: { intent: 'link' } }),
+   DISCORD: () => linkOptions({ to: '/auth/discord', search: { intent: 'link' } })
+} satisfies Record<SecondaryProvider, () => object>;
+
+type ProviderIconProps = {
+   className?: string;
 };
 
-const providerIcons: Record<ConnectionProvider, ComponentType<HTMLAttributes<SVGElement>>> = {
-   STEAM: Icons.steam,
-   OCULUS: Icons.meta,
-   PATREON: Icons.patreon,
-   DISCORD: Icons.discordColor
+const providerIcons: Record<ConnectionProvider, ComponentType<ProviderIconProps>> = {
+   SCORESABER: ({ className }) => <Image src="/scoresaber.svg" width={20} height={20} alt="" className={className} aria-hidden />,
+   STEAM: ({ className }) => <Icons.steam className={className} aria-hidden />,
+   OCULUS: ({ className }) => <Icons.meta className={className} aria-hidden />,
+   PATREON: ({ className }) => <Icons.patreon className={className} aria-hidden />,
+   DISCORD: ({ className }) => <Icons.discordColor className={className} aria-hidden />
 };
 
 export function ConnectionsSection({ connections, initialMergeChallengeId, steamFailed }: ConnectionsSectionProps) {
@@ -67,10 +71,10 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
    const primarySwitchMutation = useActionMutation<SwitchPrimaryConnection>();
    const patreonRefreshMutation = useActionMutation<RefreshPatreonBenefits>();
    const [localConnections, setLocalConnections] = useState(connections);
-   const [mergeProvider, setMergeProvider] = useState<PrimaryProvider | null>(initialMergeChallengeId || steamFailed ? 'STEAM' : null);
+   const [mergeProvider, setMergeProvider] = useState<MergeProvider | null>(initialMergeChallengeId || steamFailed ? 'STEAM' : null);
    const [mergeDialogOpen, setMergeDialogOpen] = useState(Boolean(initialMergeChallengeId || steamFailed));
    const byProvider = new Map(localConnections.map((connection) => [connection.provider, connection]));
-   const hasSteamAndOculus = primaryProviders.every((provider) => byProvider.has(provider));
+   const hasMultiplePrimary = primaryProviders.filter((provider) => byProvider.has(provider)).length > 1;
    useEffect(() => {
       if (!initialMergeChallengeId && !steamFailed) return;
 
@@ -102,7 +106,7 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
 
       setMergeProvider(null);
       if (initialMergeChallengeId || steamFailed) {
-         void router.navigate({ to: settingsConnectionsRoute.id, replace: true });
+         void router.navigate({ to: '/settings/connections', replace: true });
       }
    }
 
@@ -114,18 +118,19 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
                const hasConnection = Boolean(connection);
                const isVerified = connection?.state === 'VERIFIED';
                const isSecondary = provider === 'PATREON' || provider === 'DISCORD';
-               const isPrimary = provider === 'STEAM' || provider === 'OCULUS';
+               const isPrimary = provider === 'SCORESABER' || provider === 'STEAM' || provider === 'OCULUS';
                const canConnectSecondary = isSecondary && (!connection || isVerified);
                const canConnectPrimary = isPrimary && !connection;
                const canDisconnect = isSecondary && hasConnection;
-               const connectHref = isSecondary ? secondaryProviderRoutes[provider]() : undefined;
+               const connectHref = isSecondary ? getRouteHref(router, secondaryProviderLocations[provider]()) : undefined;
                const ProviderIcon = providerIcons[provider];
                const disconnectPending = mutation.isPendingKey(`disconnect-${provider}`);
                const refreshPatreonPending = patreonRefreshMutation.isPending && provider === 'PATREON';
                const switchPrimaryPending = primarySwitchMutation.isPendingKey(`primary-${provider}`);
-               const canSwitchPrimary = isPrimary && hasSteamAndOculus && connection && !connection.isPrimary;
+               const canSwitchPrimary = isPrimary && hasMultiplePrimary && connection && !connection.isPrimary;
                const canRefreshPatreon = provider === 'PATREON' && hasConnection;
-               const hasHelperText = Boolean(connection?.isPrimary || (isVerified && isSecondary));
+               const hasPrimaryConnection = isPrimary && hasConnection;
+               const hasHelperText = Boolean(hasPrimaryConnection || (isVerified && isSecondary));
 
                return (
                   <div
@@ -137,21 +142,23 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
                   >
                      <div className="contents md:flex md:min-w-0 md:gap-3">
                         <span className="border-border/60 bg-secondary/35 text-muted-foreground flex size-9 shrink-0 items-center justify-center rounded border">
-                           <ProviderIcon className="size-5 fill-current" aria-hidden />
+                           <ProviderIcon className="size-5 fill-current" />
                         </span>
                         <div className="flex min-h-9 min-w-0 flex-col justify-center">
                            <h3 className="flex items-center gap-1.5 leading-5 font-semibold">
-                              {provider === 'STEAM'
-                                 ? t('settings.connections.providers.STEAM.label')
-                                 : provider === 'OCULUS'
-                                   ? t('settings.connections.providers.OCULUS.label')
-                                   : provider === 'PATREON'
-                                     ? t('settings.connections.providers.PATREON.label')
-                                     : t('settings.connections.providers.DISCORD.label')}
+                              {provider === 'SCORESABER'
+                                 ? t('settings.connections.providers.SCORESABER.label')
+                                 : provider === 'STEAM'
+                                   ? t('settings.connections.providers.STEAM.label')
+                                   : provider === 'OCULUS'
+                                     ? t('settings.connections.providers.OCULUS.label')
+                                     : provider === 'PATREON'
+                                       ? t('settings.connections.providers.PATREON.label')
+                                       : t('settings.connections.providers.DISCORD.label')}
                               {connection?.isPrimary && <LockKeyhole className="text-muted-foreground size-3.5" />}
                               {connection?.isPrimary && <Badge variant="secondary">{t('settings.connections.merge.primaryBadge')}</Badge>}
                            </h3>
-                           {connection?.isPrimary && (
+                           {hasPrimaryConnection && (
                               <p className="text-muted-foreground text-xs leading-4 text-pretty">{t('settings.connections.primaryHelper')}</p>
                            )}
                            {isVerified && isSecondary && (
@@ -172,10 +179,28 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
                               asChild
                               className="h-7 cursor-pointer rounded-sm px-2 text-xs md:h-8 md:rounded-md md:px-2.5 md:text-sm"
                            >
-                              <a href={`${steamAuthRoute.id}${stringifyUrlSearch({ intent: 'merge', redirectTo: settingsConnectionsRoute.id })}`}>
+                              <a
+                                 href={getRouteHref(
+                                    router,
+                                    linkOptions({ to: '/auth/steam', search: { intent: 'merge', redirectTo: settingsConnectionsRoute.id } })
+                                 )}
+                              >
                                  <ExternalLink data-icon="inline-start" />
                                  {t('settings.connections.connect')}
                               </a>
+                           </Button>
+                        )}
+                        {canConnectPrimary && provider === 'SCORESABER' && (
+                           <Button
+                              type="button"
+                              size="sm"
+                              asChild
+                              className="h-7 cursor-pointer rounded-sm px-2 text-xs md:h-8 md:rounded-md md:px-2.5 md:text-sm"
+                           >
+                              <settingsAccountRoute.Link search={{ setupPassword: true }} resetScroll={false}>
+                                 <KeyRound data-icon="inline-start" />
+                                 {t('settings.connections.setup')}
+                              </settingsAccountRoute.Link>
                            </Button>
                         )}
                         {canConnectPrimary && provider === 'OCULUS' && (
@@ -204,9 +229,11 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
                                        toast.success(
                                           t('settings.connections.merge.primarySwitched', {
                                              provider:
-                                                result.provider === 'STEAM'
-                                                   ? t('settings.connections.providers.STEAM.label')
-                                                   : t('settings.connections.providers.OCULUS.label'),
+                                                result.provider === 'SCORESABER'
+                                                   ? t('settings.connections.providers.SCORESABER.label')
+                                                   : result.provider === 'STEAM'
+                                                     ? t('settings.connections.providers.STEAM.label')
+                                                     : t('settings.connections.providers.OCULUS.label'),
                                              publicPlayerId: result.publicPlayerId
                                           })
                                        );

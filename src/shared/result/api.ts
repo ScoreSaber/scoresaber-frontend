@@ -131,6 +131,10 @@ function getApiMessage(cause: unknown) {
 
 function getApiRequestMessage(cause: unknown, status: number | null) {
    const message = getApiMessage(cause);
+   if (message !== 'request failed') {
+      return message;
+   }
+
    const details = [getApiUrl(cause), getApiStatusText(cause)].filter(Boolean);
    const statusLabel = status == null ? 'unknown status' : String(status);
 

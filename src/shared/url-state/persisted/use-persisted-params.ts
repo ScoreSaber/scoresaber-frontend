@@ -12,14 +12,15 @@ import {
    savePersistedSearchStorage,
    writePersistedSearchCookie
 } from '@/shared/url-state/persisted/storage';
+import { getRouteHref, navigateToRoute, type RouteLocation, type RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { useRouteHrefPreload } from '@/shared/url-state/use-route-href-preload';
 
-interface UsePersistedParamsOptions<TSearch extends SearchParamsRecord & { page?: number }> {
+interface UsePersistedParamsOptions<TSearch extends SearchParamsRecord & { page?: number }, TLocation> {
    storageKey: string;
    search?: TSearch;
-   buildHref: (search?: TSearch) => string;
+   buildLocation: RouteLocationBuilder<TSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => TSearch | null;
    persistedKeys?: readonly PersistedSearchKey<TSearch>[];
    legacyStorageKeys?: Partial<Record<PersistedSearchKey<TSearch>, string>>;
@@ -31,45 +32,50 @@ interface RouteUpdateOptions<TSearch extends SearchParamsRecord> {
    scroll?: boolean;
 }
 
-function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number }>({
+function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number }, TLocation>({
    storageKey,
    search,
-   buildHref,
+   buildLocation,
    parseSearch,
    persistedKeys = [],
    legacyStorageKeys = {},
    resetKeys = ['page']
-}: UsePersistedParamsOptions<TSearch>) {
+}: UsePersistedParamsOptions<TSearch, TLocation>) {
    const router = useRouter();
    const { schedulePreload, cancelPreload } = useRouteHrefPreload();
    const [isPending, startTransition] = useTransition();
 
-   const persistUrlValues = useCallback(
-      (url: string) => {
+   const persistLocationValues = useCallback(
+      (location: RouteLocation<TLocation>) => {
          if (persistedKeys.length === 0) return;
 
-         const next = new URLSearchParams(url.includes('?') ? url.split('?')[1] : '');
+         const next = new URL(getRouteHref(router, location), window.location.href).searchParams;
          savePersistedSearchStorage(
             storageKey,
             buildPersistedSearchStorageUpdates(persistedKeys, (key) => next.get(key) || undefined)
          );
       },
-      [persistedKeys, storageKey]
+      [persistedKeys, router, storageKey]
    );
 
+   const buildRouteLocation = useCallback(
+      (updates: Partial<TSearch>, options?: Pick<RouteUpdateOptions<TSearch>, 'resetKeys'>) =>
+         buildLocation(updateSearchParams(search, updates, options?.resetKeys ?? resetKeys)),
+      [buildLocation, resetKeys, search]
+   );
    const buildUrl = useCallback(
       (updates: Partial<TSearch>, options?: Pick<RouteUpdateOptions<TSearch>, 'resetKeys'>) =>
-         buildHref(updateSearchParams(search, updates, options?.resetKeys ?? resetKeys)),
-      [buildHref, resetKeys, search]
+         getRouteHref(router, buildRouteLocation(updates, options)),
+      [buildRouteLocation, router]
    );
 
    const navigate = useCallback(
       (method: 'push' | 'replace', updates: Partial<TSearch>, options?: RouteUpdateOptions<TSearch>) => {
-         const url = buildUrl(updates, options);
-         persistUrlValues(url);
-         startTransition(() => router.navigate({ href: url, replace: method === 'replace', resetScroll: options?.scroll }));
+         const location = buildRouteLocation(updates, options);
+         persistLocationValues(location);
+         startTransition(() => navigateToRoute(router, location, { replace: method === 'replace', resetScroll: options?.scroll }));
       },
-      [buildUrl, persistUrlValues, router]
+      [buildRouteLocation, persistLocationValues, router]
    );
 
    const push = useCallback((updates: Partial<TSearch>, options?: RouteUpdateOptions<TSearch>) => navigate('push', updates, options), [navigate]);
@@ -78,10 +84,10 @@ function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number
       [navigate]
    );
    const preload = useCallback(
-      (updates: Partial<TSearch>, options?: RouteUpdateOptions<TSearch>) => schedulePreload(buildUrl(updates, options)),
-      [buildUrl, schedulePreload]
+      (updates: Partial<TSearch>, options?: RouteUpdateOptions<TSearch>) => schedulePreload(buildRouteLocation(updates, options)),
+      [buildRouteLocation, schedulePreload]
    );
-   const preloadClearAll = useCallback(() => schedulePreload(buildHref(undefined)), [buildHref, schedulePreload]);
+   const preloadClearAll = useCallback(() => schedulePreload(buildLocation(undefined)), [buildLocation, schedulePreload]);
 
    const clearAll = useCallback(
       (options?: { scroll?: boolean }) => {
@@ -90,9 +96,9 @@ function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number
                storageKey,
                buildPersistedSearchStorageUpdates(persistedKeys, () => undefined)
             );
-         startTransition(() => router.navigate({ href: buildHref(undefined), resetScroll: options?.scroll }));
+         startTransition(() => navigateToRoute(router, buildLocation(undefined), { resetScroll: options?.scroll }));
       },
-      [buildHref, router, storageKey, persistedKeys]
+      [buildLocation, router, storageKey, persistedKeys]
    );
 
    // restore persisted params on mount when URL is missing them
@@ -104,7 +110,7 @@ function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number
 
       if (Object.keys(migrated).length > 0) savePersistedSearchStorage(storageKey, migrated);
       if (Object.keys(updates).length === 0) return;
-      startTransition(() => router.navigate({ href: buildHref(updateSearchParams(search, updates)), replace: true }));
+      startTransition(() => navigateToRoute(router, buildLocation(updateSearchParams(search, updates)), { replace: true }));
    }, []);
 
    return {
