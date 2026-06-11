@@ -12,7 +12,10 @@ import { validateRequest } from '@/shared/url-state/params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const accountSettingsSearchSchema = z.object({
-   setupPassword: z.literal(true).optional()
+   setupPassword: z.preprocess((val) => {
+      const value = Array.isArray(val) ? val[0] : val;
+      return value === 'true' ? true : value;
+   }, z.literal(true).optional())
 });
 
 const getAccountSettingsData = createServerFn({ method: 'GET' }).handler(async () => {
