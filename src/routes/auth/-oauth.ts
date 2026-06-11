@@ -2,7 +2,14 @@ import { getRouteApi } from '@tanstack/react-router';
 import { Result } from 'better-result';
 
 import { env } from '@/env';
-import { authCookieMaxAge, getSiteUrl, oauthIntentCookieName, oauthRedirectCookieName, safeSiteRedirect } from '@/modules/auth/lib/redirect';
+import {
+   authCookieMaxAge,
+   getApiOriginUrl,
+   getSiteUrl,
+   oauthIntentCookieName,
+   oauthRedirectCookieName,
+   safeSiteRedirect
+} from '@/modules/auth/lib/redirect';
 import type {
    AuthControllerDiscordLoginIntent,
    AuthControllerPatreonLoginIntent,
@@ -53,7 +60,7 @@ export async function handleSteamLogin(
       api.auth.authControllerSteamLogin(
          {
             intent,
-            returnUrl,
+            returnUrl: returnUrl ?? getApiOriginUrl(),
             redirectTo
          },
          {

@@ -201,7 +201,7 @@ export function LoginFlow({
                <UserRoundPlus className="size-5" aria-hidden />
                {t('login.signup.title')}
             </>,
-            <SignupForm key={`signup-${formKey}`} redirectTo={redirectTo} />
+            <SignupForm key={`signup-${formKey}`} redirectTo={redirectTo} onSignInSelect={goBackToProviders} />
          )}
       </div>
    );

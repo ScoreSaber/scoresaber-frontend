@@ -9,6 +9,7 @@ import { IntlProvider } from 'use-intl';
 
 import { env } from '@/env';
 import { getLocale, getMessages, getVisibleLocales } from '@/i18n/server';
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import type { RouterContext } from '@/router';
 import { api } from '@/shared/api/server-api';
 import { cn } from '@/shared/format/helpers';
@@ -24,8 +25,8 @@ const themeInitScript = `(function(){var theme='system';try{var stored=localStor
 const criticalPaintStyles = `@layer theme,base,components,utilities;@layer base{*,::after,::before,::backdrop,::file-selector-button{border-color:var(--border,hsl(0 0% 20%))}body{background:var(--background,hsl(240 10% 4%));color:var(--foreground,hsl(60 7% 90%))}}@layer utilities{.app-container{margin-inline:auto;padding-inline:2rem;max-width:1300px}}`;
 
 const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
-   const token = getCookie('token');
-   const user = token && token !== 'null' ? await optionalApi(api.user.userControllerGetMe().then((r) => r.data)) : null;
+   const token = readAuthCookie();
+   const user = token ? await optionalApi(api.user.userControllerGetMe().then((r) => r.data)) : null;
    const initialTheme = parseServerTheme(getCookie(THEME_COOKIE_NAME)) ?? null;
    const locale = await getLocale();
    const messages = (await getMessages()) as RootMessages;

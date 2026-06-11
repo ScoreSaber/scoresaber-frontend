@@ -1,11 +1,11 @@
 'use client';
 
-import type { SubmitEvent } from 'react';
+import type { ReactNode, SubmitEvent } from 'react';
 import { useState } from 'react';
 
 import { useRouter } from '@tanstack/react-router';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { CircleCheck, Loader2, Mail, TriangleAlert, UserRoundPlus } from 'lucide-react';
+import { CircleCheck, Info, Loader2, Mail, TriangleAlert, UserRoundPlus } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -30,7 +30,9 @@ type FeedbackState = {
    description?: string;
 } | null;
 
-export function SignupForm({ redirectTo }: { redirectTo: string }) {
+const signupInfoStrong = (chunks: ReactNode) => <strong className="font-semibold">{chunks}</strong>;
+
+export function SignupForm({ redirectTo, onSignInSelect }: { redirectTo: string; onSignInSelect: () => void }) {
    const t = useTranslations();
    const router = useRouter();
    const [displayName, setDisplayName] = useState('');
@@ -53,8 +55,8 @@ export function SignupForm({ redirectTo }: { redirectTo: string }) {
       onStarted: () =>
          setFeedback({
             variant: 'default',
-            title: t('login.email.sentToast'),
-            description: t('login.email.sentDescription')
+            title: t('login.signup.sentToast'),
+            description: t('login.signup.sentDescription')
          }),
       onStartError: (error) =>
          setFeedback({
@@ -98,6 +100,32 @@ export function SignupForm({ redirectTo }: { redirectTo: string }) {
 
    return (
       <div className="flex w-full max-w-sm flex-col gap-4 text-left">
+         <Alert variant="info">
+            <Info aria-hidden />
+            <AlertTitle>{t('login.signup.returningPlayerTitle')}</AlertTitle>
+            <AlertDescription className="text-xs">
+               <ul className="list-disc pl-4 leading-relaxed">
+                  <li>
+                     {t.rich('login.signup.returningPlayerDescription', {
+                        strong: signupInfoStrong,
+                        signInLink: (chunks) => (
+                           <button
+                              type="button"
+                              onClick={onSignInSelect}
+                              className="hover:text-foreground cursor-pointer font-medium underline underline-offset-2"
+                           >
+                              {chunks}
+                           </button>
+                        )
+                     })}
+                  </li>
+                  <li>
+                     <strong className="font-semibold">{t('login.signup.newPlayerLead')}</strong> {t('login.signup.newPlayerDescription')}
+                  </li>
+               </ul>
+            </AlertDescription>
+         </Alert>
+
          <form className="flex flex-col gap-2" onSubmit={submitEmail}>
             <Label htmlFor="signup-email">{t('login.email.emailLabel')}</Label>
             <div className="flex gap-2">

@@ -1,8 +1,8 @@
 import { linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getCookie } from '@tanstack/react-start/server';
 import { z } from 'zod';
 
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import { MapLeaderboardView } from '@/modules/maps/detail/map-leaderboard-view';
 import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
 import { getDisplayLeaderboards } from '@/modules/maps/map-leaderboards';
@@ -47,13 +47,13 @@ export const getMapLeaderboardPageData = createServerFn({ method: 'GET' })
    .inputValidator((data: MapLeaderboardRouteInput) => data)
    .handler(async ({ data }) => {
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
-      const token = getCookie('token');
+      const token = readAuthCookie();
       const effectiveSearchParams = await applyPersistedSearchParams<LeaderboardSearchParams>({
          searchParams: rawSearchParams,
          parseSearch: parseLeaderboardSearch,
          storageKey: leaderboardFilterPreferences.storageKey,
          persistedKeys: leaderboardFilterPreferences.persistedKeys,
-         enabled: Boolean(token && token !== 'null')
+         enabled: Boolean(token)
       });
       const searchParams = leaderboardSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
       const result = await loadMapLeaderboardPageData({

@@ -1,8 +1,8 @@
 import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getCookie } from '@tanstack/react-start/server';
 import { z } from 'zod';
 
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import { RankingsFilters } from '@/modules/rankings/rankings-filters';
 import { RankingsTable } from '@/modules/rankings/rankings-table';
 import {
@@ -45,14 +45,14 @@ type RankingsRouteInput = {
 const getRankingsPageData = createServerFn({ method: 'GET' })
    .inputValidator((data: RankingsRouteInput) => data)
    .handler(async ({ data }) => {
-      const token = getCookie('token');
+      const token = readAuthCookie();
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
       const [effectiveSearchParams, persistedStorage] = await Promise.all([
          applyPersistedSearchParams<RankingsSearchParams>({
             searchParams: rawSearchParams,
             parseSearch: parseRankingsSearch,
             storageKey: rankingFilterPreferences.storageKey,
-            persistedKeys: token && token !== 'null' ? rankingFilterPreferences.authPersistedKeys : rankingFilterPreferences.persistedKeys
+            persistedKeys: token ? rankingFilterPreferences.authPersistedKeys : rankingFilterPreferences.persistedKeys
          }),
          readPersistedSearchStorage(rankingFilterPreferences.storageKey)
       ]);

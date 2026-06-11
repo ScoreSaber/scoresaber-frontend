@@ -19,11 +19,22 @@ type AuthCookieOptions = {
 };
 
 export function setAuthCookie(token: string) {
+   clearHostAuthCookie();
    setCookie('token', token, getAuthCookieOptions());
 }
 
 export function clearAuthCookie() {
-   setCookie('token', '', { ...getAuthCookieOptions(), maxAge: 0 });
+   clearHostAuthCookie();
+
+   const options = getAuthCookieOptions();
+   if (options.domain) {
+      setCookie('token', '', { ...options, maxAge: 0 });
+   }
+}
+
+export function readAuthCookie() {
+   const token = getLastCookieValue(getRequestHeaders().get('cookie'), 'token');
+   return token && token !== 'null' ? token : null;
 }
 
 export function getEmailLoginHeaders() {
@@ -70,4 +81,37 @@ function getAuthCookieOptions(): AuthCookieOptions {
       maxAge: siteAuthCookieMaxAge,
       ...(domain ? { domain } : {})
    };
+}
+
+function clearHostAuthCookie() {
+   const options = getAuthCookieOptions();
+   setCookie('token', '', {
+      httpOnly: options.httpOnly,
+      sameSite: options.sameSite,
+      secure: options.secure,
+      path: options.path,
+      maxAge: 0
+   });
+}
+
+function getLastCookieValue(header: string | null, name: string) {
+   if (!header) return null;
+
+   let value: string | null = null;
+   for (const part of header.split(';')) {
+      const [cookieName, ...cookieValueParts] = part.trim().split('=');
+      if (cookieName !== name) continue;
+
+      value = decodeCookieValue(cookieValueParts.join('='));
+   }
+
+   return value;
+}
+
+function decodeCookieValue(value: string) {
+   try {
+      return decodeURIComponent(value);
+   } catch {
+      return value;
+   }
 }

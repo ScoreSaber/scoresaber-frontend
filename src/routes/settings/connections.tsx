@@ -14,7 +14,7 @@ import { buildNoindexHead } from '@/shared/seo/metadata';
 import { validateRequest } from '@/shared/url-state/params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
-const connectionOAuthProviders = ['patreon', 'discord'] as const;
+const connectionOAuthProviders = ['steam', 'patreon', 'discord'] as const;
 type ConnectionOAuthProvider = (typeof connectionOAuthProviders)[number];
 type SettingsConnectionsSearch = ReturnType<typeof settingsConnectionsSearchSchema.parse>;
 
@@ -26,7 +26,7 @@ function optionalSearchParamEnum<TValues extends readonly [string, ...string[]]>
 
 const settingsConnectionsSearchSchema = z.object({
    accountMergeChallengeId: searchParamString,
-   steam: optionalSearchParamEnum(['failed']),
+   steam: optionalSearchParamEnum(['connected', 'failed']),
    patreon: optionalSearchParamEnum(['connected', 'failed']),
    discord: optionalSearchParamEnum(['connected', 'failed'])
 });
@@ -52,6 +52,11 @@ function SettingsConnectionsRoute() {
    const initialMergeChallengeId = params.accountMergeChallengeId ?? null;
    const steamFailed = params.steam === 'failed';
    const oauthStatus = getOAuthStatus(params);
+   const oauthProviderLabels = {
+      steam: t('settings.connections.providers.STEAM.label'),
+      patreon: t('settings.connections.providers.PATREON.label'),
+      discord: t('settings.connections.providers.DISCORD.label')
+   };
 
    return (
       <>
@@ -63,16 +68,10 @@ function SettingsConnectionsRoute() {
                   <AlertTitle>
                      {oauthStatus.status === 'failed'
                         ? t('settings.connections.oauth.failedTitle', {
-                             provider:
-                                oauthStatus.provider === 'patreon'
-                                   ? t('settings.connections.providers.PATREON.label')
-                                   : t('settings.connections.providers.DISCORD.label')
+                             provider: oauthProviderLabels[oauthStatus.provider]
                           })
                         : t('settings.connections.oauth.connectedTitle', {
-                             provider:
-                                oauthStatus.provider === 'patreon'
-                                   ? t('settings.connections.providers.PATREON.label')
-                                   : t('settings.connections.providers.DISCORD.label')
+                             provider: oauthProviderLabels[oauthStatus.provider]
                           })}
                   </AlertTitle>
                   <AlertDescription>

@@ -71,7 +71,12 @@ export function LoginProviderPicker({
                   isExpanded ? 'pointer-events-none opacity-0' : 'opacity-100'
                )}
             >
-               <ProviderIconButton label={labels.scoresaber} onClick={onPasswordSelect} tabIndex={isExpanded ? -1 : undefined}>
+               <ProviderIconButton
+                  label={labels.scoresaber}
+                  onClick={onPasswordSelect}
+                  usePointerCursor={false}
+                  tabIndex={isExpanded ? -1 : undefined}
+               >
                   <Image src="/scoresaber.svg" width={32} height={32} alt={labels.scoresaber} className="size-8" />
                </ProviderIconButton>
                <ProviderIconButton icon={Icons.steam} label={labels.steam} href={steamHref} tabIndex={isExpanded ? -1 : undefined} />
@@ -102,7 +107,12 @@ export function LoginProviderPicker({
                   isExpanded ? 'opacity-100' : 'pointer-events-none opacity-0'
                )}
             >
-               <ProviderIconButton label={labels.scoresaber} onClick={onPasswordSelect} tabIndex={isExpanded ? undefined : -1}>
+               <ProviderIconButton
+                  label={labels.scoresaber}
+                  onClick={onPasswordSelect}
+                  usePointerCursor={false}
+                  tabIndex={isExpanded ? undefined : -1}
+               >
                   <Image src="/scoresaber.svg" width={32} height={32} alt={labels.scoresaber} className="size-8" />
                </ProviderIconButton>
                <ProviderIconButton icon={Icons.steam} label={labels.steam} href={steamHref} tabIndex={isExpanded ? undefined : -1} />

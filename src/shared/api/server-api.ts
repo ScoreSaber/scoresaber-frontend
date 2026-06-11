@@ -8,6 +8,7 @@ import { addVisitorRateLimitHeaders } from './visitor-rate-limit';
 import { VISITOR_COOKIE_MAX_AGE, VISITOR_COOKIE_NAME, VISITOR_HEADER_NAME } from './visitor-rate-limit-constants';
 
 import { env } from '@/env';
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
 
 const authenticatedFetchCache: RequestInit = { cache: 'no-store' };
 const publicFetchCache: RequestInit = {};
@@ -20,7 +21,7 @@ class SessionCookieReadError extends TaggedError('SessionCookieReadError')<{
 async function readSessionToken() {
    const result = await Result.tryPromise({
       try: async () => {
-         return getCookie('token') ?? null;
+         return readAuthCookie();
       },
       catch: (cause) =>
          new SessionCookieReadError({
