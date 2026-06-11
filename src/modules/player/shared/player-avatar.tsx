@@ -1,6 +1,8 @@
 'use client';
 
-import { type ComponentProps, useState } from 'react';
+import { type ComponentProps, useEffect, useState } from 'react';
+
+import { repairCachedAvatar } from './avatar-cache-repair';
 
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { cn } from '@/shared/format/helpers';
@@ -9,6 +11,11 @@ type PlayerAvatarProps = Omit<ComponentProps<typeof FadeInImage>, 'onError'>;
 
 export function PlayerAvatar({ className, alt, src, ...props }: PlayerAvatarProps) {
    const [hasError, setHasError] = useState(false);
+
+   useEffect(() => {
+      repairCachedAvatar(src);
+   }, [src]);
+
    const { style, width, height, ...imageProps } = props;
    const boxStyle = { width: width ?? undefined, height: height ?? undefined, ...style };
 

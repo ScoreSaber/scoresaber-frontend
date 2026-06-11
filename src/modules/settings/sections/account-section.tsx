@@ -397,8 +397,13 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
 }
 
 // the avatar keeps its url when it changes, so re-fetch it to replace the stale browser cache entry
+const avatarRefreshGapsMs = [0, 1500, 2500];
+
 async function refreshCachedAvatar(avatarUrl: string) {
-   await Result.tryPromise(() => fetch(avatarUrl, { cache: 'reload', mode: 'no-cors' }));
+   for (const gap of avatarRefreshGapsMs) {
+      if (gap > 0) await new Promise((resolve) => setTimeout(resolve, gap));
+      await Result.tryPromise(() => fetch(avatarUrl, { cache: 'reload', mode: 'no-cors' }));
+   }
 }
 
 function getCountryResetAvailableAt(lastReset: string | null | undefined) {
