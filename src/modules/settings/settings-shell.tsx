@@ -16,7 +16,7 @@ export function SettingsShell({ activeTab, children }: { activeTab: SettingsTab;
                <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t('pageTitle')}</h1>
                <SettingsNav activeTab={activeTab} />
                <Separator variant="fade" />
-               <div>{children}</div>
+               <div className="min-w-0">{children}</div>
             </div>
          </div>
       </div>

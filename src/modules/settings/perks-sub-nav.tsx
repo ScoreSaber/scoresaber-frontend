@@ -17,7 +17,7 @@ export function PerksSubNav({ activeSubTab, children }: { activeSubTab: PerksSub
    const t = useTranslations();
 
    return (
-      <Tabs value={activeSubTab} orientation="vertical" className="gap-4 md:gap-6">
+      <Tabs value={activeSubTab} orientation="vertical" className="flex-col gap-4 md:flex-row md:gap-6">
          <TabsList variant="sidebar" className="md:w-44">
             {PERKS_SUB_TABS.map((tab) => (
                <TabsTrigger key={tab} value={tab} className="h-auto min-h-8 text-left leading-snug whitespace-normal" asChild>
