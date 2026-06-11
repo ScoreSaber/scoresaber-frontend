@@ -3,6 +3,7 @@
 import { type ComponentProps, useEffect, useState } from 'react';
 
 import { repairCachedAvatar } from './avatar-cache-repair';
+import { useAvatarSrc } from './avatar-version';
 
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { cn } from '@/shared/format/helpers';
@@ -11,6 +12,7 @@ type PlayerAvatarProps = Omit<ComponentProps<typeof FadeInImage>, 'onError'>;
 
 export function PlayerAvatar({ className, alt, src, ...props }: PlayerAvatarProps) {
    const [hasError, setHasError] = useState(false);
+   const displaySrc = useAvatarSrc(src);
 
    useEffect(() => {
       repairCachedAvatar(src);
@@ -27,7 +29,7 @@ export function PlayerAvatar({ className, alt, src, ...props }: PlayerAvatarProp
       <span className={cn('relative inline-flex shrink-0 overflow-hidden rounded-full', className)} style={boxStyle}>
          <FadeInImage
             {...imageProps}
-            src={src}
+            src={displaySrc}
             alt={alt}
             width={width}
             height={height}

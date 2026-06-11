@@ -17,6 +17,7 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '
 
 import { useActionMutation } from '@/hooks/use-action-mutation';
 import { useAuth } from '@/modules/auth';
+import { bumpAvatarVersion } from '@/modules/player/shared/avatar-version';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { requestCountryReset, updateBio, updateName, uploadAvatar } from '@/modules/settings/actions/account';
 import type { UserControllerCanResetCountryResponse } from '@/shared/api/generated/ApiParams';
@@ -117,7 +118,9 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
          t('settings.account.avatarSaved'),
          t('settings.account.avatarSaveFailed'),
          () => {
-            void refreshCachedAvatar(user.avatar).finally(clearAvatarFile);
+            bumpAvatarVersion(user.avatar);
+            void refreshCachedAvatar(user.avatar);
+            clearAvatarFile();
          }
       );
    };
@@ -397,7 +400,7 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
 }
 
 // the avatar keeps its url when it changes, so re-fetch it to replace the stale browser cache entry
-const avatarRefreshGapsMs = [0, 1500, 2500];
+const avatarRefreshGapsMs = [0, 2500, 8000];
 
 async function refreshCachedAvatar(avatarUrl: string) {
    for (const gap of avatarRefreshGapsMs) {
