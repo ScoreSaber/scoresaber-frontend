@@ -30,9 +30,9 @@ export function PerksAccessGate({ children, patreonConnected }: PerksAccessGateP
          shouldShow={() => !hasPerksAccess}
          component={PerksRequiredOverlay}
          componentProps={{ patreonConnected }}
-         className="min-h-112 overflow-visible rounded-lg"
+         className="min-h-112 overflow-visible rounded"
          contentClassName="min-h-[28rem]"
-         overlayClassName="min-h-[28rem] rounded-lg"
+         overlayClassName="min-h-[28rem]"
       >
          {children}
       </ConditionalOverlay>
