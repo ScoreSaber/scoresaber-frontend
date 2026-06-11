@@ -32,14 +32,14 @@ const playerParamsSchema = z.object({
 });
 
 const playerSearchSchema = z.object({
-   sort: ScoreEnum.default('top'),
-   page: isPageNumber,
+   sort: ScoreEnum.optional(),
+   page: isPageNumber.optional(),
    search: z.string().min(3).max(64).optional()
 });
 
 type PlayerProfileSearch = SearchParamsRecord & {
-   sort: PlayerControllerGetPlayerScoresSort;
-   page: number;
+   sort?: PlayerControllerGetPlayerScoresSort;
+   page?: number;
    search?: string;
 };
 
@@ -78,8 +78,8 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
             api.player.playerControllerGetPlayerScores({
                id: apiPlayerId,
                limit: 8,
-               page: data.search.page,
-               sort: data.search.sort,
+               page: data.search.page ?? 1,
+               sort: data.search.sort ?? 'top',
                search: data.search.search
             })
          ),
@@ -195,8 +195,8 @@ function PlayerProfileRouteContent({
                   <PlayerScoresSection
                      playerId={input.playerId}
                      scores={scores}
-                     page={input.search.page}
-                     sort={input.search.sort}
+                     page={input.search.page ?? 1}
+                     sort={input.search.sort ?? 'top'}
                      search={input.search.search}
                      hasScores={player.stats.totalSubmittedPlays > 0}
                      hasContentAbove={!player.inactive || hasBioContent}
@@ -302,7 +302,11 @@ function buildPlayerLocation(playerId: string, search?: Partial<PlayerProfileSea
 
 function normalizePlayerLocationSearch(search?: Partial<PlayerProfileSearch>) {
    const { sort = 'top', page = 1, ...rest } = search ?? {};
-   return { sort, page, ...rest };
+   return {
+      sort: sort === 'top' ? undefined : sort,
+      page: page > 1 ? page : undefined,
+      ...rest
+   };
 }
 
 function playerProfileHead(

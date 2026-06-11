@@ -71,11 +71,7 @@ export function VanitySection({ vanity }: VanitySectionProps) {
             {vanity.slug && (
                <p className="text-sm">
                   {t('settings.perks.vanity.current')}{' '}
-                  <playerRoute.Link
-                     params={{ playerId: vanity.slug }}
-                     search={{ sort: 'top', page: 1 }}
-                     className="text-primary font-medium underline-offset-4 hover:underline"
-                  >
+                  <playerRoute.Link params={{ playerId: vanity.slug }} className="text-primary font-medium underline-offset-4 hover:underline">
                      /u/{vanity.slug}
                   </playerRoute.Link>
                </p>

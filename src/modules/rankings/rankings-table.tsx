@@ -242,8 +242,8 @@ function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, hig
             player.inactive && 'opacity-60',
             isHighlighted && 'border-primary ring-primary/40 ring-1'
          )}
-         onClick={() => router.navigate({ to: '/u/$playerId', params: { playerId: player.id }, search: { sort: 'top', page: 1 } })}
-         onMouseEnter={() => router.preloadRoute({ to: '/u/$playerId', params: { playerId: player.id }, search: { sort: 'top', page: 1 } })}
+         onClick={() => router.navigate({ to: '/u/$playerId', params: { playerId: player.id } })}
+         onMouseEnter={() => router.preloadRoute({ to: '/u/$playerId', params: { playerId: player.id } })}
       >
          <div className="flex items-center gap-2">
             <span className="text-muted-foreground shrink-0 text-sm tabular-nums">
