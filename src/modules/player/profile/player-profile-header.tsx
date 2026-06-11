@@ -65,7 +65,6 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                         height={96}
                         alt={player.name}
                         src={player.avatar}
-                        playerId={player.id}
                         priority
                      />
                      {player.banned && (

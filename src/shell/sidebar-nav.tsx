@@ -245,14 +245,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                   <div className="hover:bg-accent/40 min-w-0 flex-1 rounded-md px-2 py-1.5 transition-colors">
                      <div className="flex min-w-0 items-center gap-2">
                         <playerRoute.Link params={{ playerId: user.id }} onClick={onNavigateAction} className="shrink-0 translate-y-1 self-center">
-                           <PlayerAvatar
-                              src={user.avatar}
-                              playerId={user.id}
-                              alt={user.name}
-                              width={32}
-                              height={32}
-                              className="h-8 w-8 rounded-full"
-                           />
+                           <PlayerAvatar src={user.avatar} alt={user.name} width={32} height={32} className="h-8 w-8 rounded-full" />
                         </playerRoute.Link>
                         <div className="min-w-0 flex-1">
                            <playerRoute.Link

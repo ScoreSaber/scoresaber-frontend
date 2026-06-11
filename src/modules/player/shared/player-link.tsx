@@ -64,7 +64,6 @@ export function PlayerLink({ player, outLink, className, withPFP, variant = 'lin
          {withPFP && (
             <PlayerAvatar
                src={player.avatar}
-               playerId={player.id}
                alt={player.name}
                width={32}
                height={32}

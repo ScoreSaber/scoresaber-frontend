@@ -544,7 +544,7 @@ const PlayerResult = memo(function PlayerResult({
          onMouseEnter={() => onFocus(itemIndex)}
          className={cn('flex cursor-pointer items-center gap-3 px-4 py-2.5 transition-colors', focused ? 'bg-accent' : 'hover:bg-accent/50')}
       >
-         <PlayerAvatar src={player.avatar} playerId={player.id} alt={player.name} width={32} height={32} className="h-8 w-8 shrink-0 rounded-full" />
+         <PlayerAvatar src={player.avatar} alt={player.name} width={32} height={32} className="h-8 w-8 shrink-0 rounded-full" />
          <div className="flex min-w-0 flex-1 items-center gap-2">
             <CountryImage country={player.country} size={18} className="shrink-0" />
             <span className={cn('min-w-0 truncate text-sm font-medium', getPlayerRoleStyleAndTitle(player)[0])}>{player.name}</span>

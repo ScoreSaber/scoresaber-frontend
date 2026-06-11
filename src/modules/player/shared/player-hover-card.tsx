@@ -7,7 +7,7 @@ import { getRouteApi } from '@tanstack/react-router';
 import { FaGlobe } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
-import { PlayerAvatar, usePlayerAvatarSrc } from './player-avatar';
+import { PlayerAvatar } from './player-avatar';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
@@ -107,7 +107,6 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
    const t = useTranslations();
    const { stats, badges } = player;
    const playerSummary = buildPlayerSummary(player);
-   const avatarSrc = usePlayerAvatarSrc(player.avatar, player.id);
 
    const hasDevice = !!(stats?.device?.hmd || stats?.device?.controllerLeft || stats?.device?.controllerRight);
 
@@ -141,21 +140,14 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
       <div className="relative">
          {/* blurred avatar background */}
          <div className="absolute inset-0 opacity-0 dark:opacity-25">
-            <FadeInImage src={avatarSrc} alt="" fill className={BLURRED_BG_IMAGE_CLASSES} sizes="320px" />
+            <FadeInImage src={player.avatar} alt="" fill className={BLURRED_BG_IMAGE_CLASSES} sizes="320px" />
          </div>
          <div className="from-popover/60 to-popover/60 absolute inset-0 hidden bg-linear-to-r via-transparent dark:block" />
 
          <div className="relative z-10 flex flex-col gap-2.5 p-3">
             {/* header row: avatar + info + follow */}
             <div className="flex items-center gap-2.5">
-               <PlayerAvatar
-                  src={player.avatar}
-                  playerId={player.id}
-                  alt={player.name}
-                  width={44}
-                  height={44}
-                  className="h-11 w-11 shrink-0 rounded-full"
-               />
+               <PlayerAvatar src={player.avatar} alt={player.name} width={44} height={44} className="h-11 w-11 shrink-0 rounded-full" />
                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1">
                      <CountryImage country={player.country} size={14} />

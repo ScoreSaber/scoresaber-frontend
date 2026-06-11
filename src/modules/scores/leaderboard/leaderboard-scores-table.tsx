@@ -102,14 +102,7 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
                      {rankDisplay}
                   </span>
                   <div className="flex items-center gap-2">
-                     <PlayerAvatar
-                        src={score.player.avatar}
-                        playerId={score.player.id}
-                        alt={score.player.name}
-                        width={28}
-                        height={28}
-                        className="shrink-0 rounded-full"
-                     />
+                     <PlayerAvatar src={score.player.avatar} alt={score.player.name} width={28} height={28} className="shrink-0 rounded-full" />
                      <PlayerLink player={score.player} />
                   </div>
                   {deviceIcons ?? <span />}
@@ -144,14 +137,7 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
                         />
                      </span>
                   </div>
-                  <PlayerAvatar
-                     src={score.player.avatar}
-                     playerId={score.player.id}
-                     alt={score.player.name}
-                     width={32}
-                     height={32}
-                     className="shrink-0 rounded-full"
-                  />
+                  <PlayerAvatar src={score.player.avatar} alt={score.player.name} width={32} height={32} className="shrink-0 rounded-full" />
                   <div className="min-w-0 flex-1">
                      <PlayerLink player={score.player} />
                      {deviceIcons && <div className="pt-0.5">{deviceIcons}</div>}
