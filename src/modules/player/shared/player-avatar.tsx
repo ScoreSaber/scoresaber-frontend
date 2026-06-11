@@ -1,22 +1,20 @@
 'use client';
 
-import { type ComponentProps, useEffect, useState } from 'react';
-
-import { repairCachedAvatar } from './avatar-cache-repair';
-import { useAvatarSrc } from './avatar-version';
+import { type ComponentProps, useState } from 'react';
 
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { cn } from '@/shared/format/helpers';
 
-type PlayerAvatarProps = Omit<ComponentProps<typeof FadeInImage>, 'onError'>;
+type PlayerAvatarProps = Omit<ComponentProps<typeof FadeInImage>, 'onError'> & {
+   version?: number;
+};
 
-export function PlayerAvatar({ className, alt, src, ...props }: PlayerAvatarProps) {
+export function versionedAvatarUrl(src: string, version?: number) {
+   return version ? `${src}?v=${version}` : src;
+}
+
+export function PlayerAvatar({ className, alt, src, version, ...props }: PlayerAvatarProps) {
    const [hasError, setHasError] = useState(false);
-   const displaySrc = useAvatarSrc(src);
-
-   useEffect(() => {
-      repairCachedAvatar(src);
-   }, [src]);
 
    const { style, width, height, ...imageProps } = props;
    const boxStyle = { width: width ?? undefined, height: height ?? undefined, ...style };
@@ -29,7 +27,7 @@ export function PlayerAvatar({ className, alt, src, ...props }: PlayerAvatarProp
       <span className={cn('relative inline-flex shrink-0 overflow-hidden rounded-full', className)} style={boxStyle}>
          <FadeInImage
             {...imageProps}
-            src={displaySrc}
+            src={src === undefined ? undefined : versionedAvatarUrl(src, version)}
             alt={alt}
             width={width}
             height={height}

@@ -104,10 +104,6 @@ export interface PlayerControllerGetPlayerParams {
     * @min 0
     */
    realmId?: number;
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -117,10 +113,6 @@ export interface PlayerControllerGetPlayerBasicParams {
     * @min 0
     */
    realmId?: number;
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -130,18 +122,10 @@ export interface PlayerControllerGetPlayerHistoryParams {
     * @min 0
     */
    realmId?: number;
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
 export interface PlayerControllerGetGlobalPlayerHistoryParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -193,52 +177,28 @@ export interface PlayerControllerGetPlayerScoresParams {
     * @min 0
     */
    realmId?: number;
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
 export interface PlayerAliasControllerGetAliasesParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
 export interface PlayerAliasControllerDisableAliasParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
    /** @exclusiveMin true */
    aliasId: number;
 }
 
 export interface PlayerAliasControllerDisableAllAliasesParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
 export interface PlayerRelationshipControllerFollowPlayerParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
 export interface PlayerRelationshipControllerUnfollowPlayerParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -803,8 +763,11 @@ export interface OAuthControllerTokenPayload {
    grant_type: string;
    /** @minLength 1 */
    client_id: string;
-   /** Required for confidential clients */
-   client_secret?: string;
+   /**
+    * OAuth client secret
+    * @minLength 1
+    */
+   client_secret: string;
    code?: string;
    redirect_uri?: string;
    /** PKCE code verifier */
@@ -1402,20 +1365,12 @@ export interface AdminBadgeControllerAssignBadgeParams {
    description?: string;
    /** @exclusiveMin true */
    id: number;
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    playerId: string;
 }
 
 export interface AdminBadgeControllerUnassignBadgeParams {
    /** @exclusiveMin true */
    id: number;
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    playerId: string;
 }
 
@@ -1563,18 +1518,10 @@ export interface AdminUserControllerBanPlayerPayload {
 }
 
 export interface AdminUserControllerBanPlayerParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
 export interface AdminUserControllerUnbanPlayerParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -1592,18 +1539,10 @@ export interface AdminUserControllerSilencePlayerPayload {
 }
 
 export interface AdminUserControllerSilencePlayerParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
 export interface AdminUserControllerUnsilencePlayerParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -1616,10 +1555,6 @@ export interface AdminUserControllerUpdateRoleTextPayload {
 }
 
 export interface AdminUserControllerUpdateRoleTextParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -1633,10 +1568,6 @@ export interface AdminUserControllerAdminResetCountryPayload {
 }
 
 export interface AdminUserControllerAdminResetCountryParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -1648,10 +1579,6 @@ export interface AdminUserControllerUpdatePermissionsPayload {
 }
 
 export interface AdminUserControllerUpdatePermissionsParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -1671,10 +1598,6 @@ export interface AdminUserControllerMergePlayerPayload {
 }
 
 export interface AdminUserControllerMergePlayerParams {
-   /**
-    * @pattern ^\d+$
-    * @example "76561199471863419"
-    */
    id: string;
 }
 
@@ -2257,6 +2180,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
     banned: boolean,
     silenced: boolean,
@@ -2364,6 +2288,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   country: string;
                   role: string | null;
                   avatar: string;
+                  avatarVersion: number;
                   permissions: number;
                   banned: boolean;
                   silenced: boolean;
@@ -2602,6 +2527,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
     banned: boolean,
     silenced: boolean,
@@ -2711,6 +2637,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                country: string;
                role: string | null;
                avatar: string;
+               avatarVersion: number;
                permissions: number;
                banned: boolean;
                silenced: boolean;
@@ -2820,6 +2747,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
     banned: boolean,
     silenced: boolean,
@@ -2929,6 +2857,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                country: string;
                role: string | null;
                avatar: string;
+               avatarVersion: number;
                permissions: number;
                banned: boolean;
                silenced: boolean;
@@ -3038,6 +2967,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
     banned: boolean,
     silenced: boolean,
@@ -3135,6 +3065,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                country: string;
                role: string | null;
                avatar: string;
+               avatarVersion: number;
                permissions: number;
                banned: boolean;
                silenced: boolean;
@@ -3546,6 +3477,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -3697,6 +3629,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      device: {
@@ -4923,6 +4856,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -5035,6 +4969,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      country: string;
                      role: string | null;
                      avatar: string;
+                     avatarVersion: number;
                      permissions: number;
                   };
                   device: {
@@ -5488,6 +5423,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -5533,6 +5469,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -5638,6 +5575,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      country: string;
                      role: string | null;
                      avatar: string;
+                     avatarVersion: number;
                      permissions: number;
                   };
                   device: {
@@ -5679,6 +5617,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      country: string;
                      role: string | null;
                      avatar: string;
+                     avatarVersion: number;
                      permissions: number;
                   };
                   device: {
@@ -6113,6 +6052,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -6130,6 +6070,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -6336,6 +6277,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                            country: string;
                            role: string | null;
                            avatar: string;
+                           avatarVersion: number;
                            permissions: number;
                         };
                         comment: string;
@@ -6351,6 +6293,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                            country: string;
                            role: string | null;
                            avatar: string;
+                           avatarVersion: number;
                            permissions: number;
                         };
                         comment: string;
@@ -9664,11 +9607,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * @name DeviceCodeControllerStartDeviceLogin
  * @request POST:/api/v2/auth/device/start
  * @response `200` `{
-  /** @pattern ^\d{6}$ *\/
+  /** @pattern ^[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{12}$ *\/
     code: string,
     expiresAt: string,
 
-}` Generate a one-time code to sign in on Beat Saber
+}` Generate a one-time code to sign in on Beat Saber for Quest
  * @response `401` `{
     statusCode: 401,
     error: "Unauthorized",
@@ -9707,7 +9650,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       deviceCodeControllerStartDeviceLogin: (params: RequestParams = {}) =>
          this.request<
             {
-               /** @pattern ^\d{6}$ */
+               /** @pattern ^[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{12}$ */
                code: string;
                expiresAt: string;
             },
@@ -12013,6 +11956,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -12030,6 +11974,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -12239,6 +12184,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      comment: string;
@@ -12254,6 +12200,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      comment: string;
@@ -12474,6 +12421,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -12491,6 +12439,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -12673,6 +12622,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      comment: string;
@@ -12688,6 +12638,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      comment: string;
@@ -12881,6 +12832,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -12898,6 +12850,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -13111,6 +13064,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      comment: string;
@@ -13126,6 +13080,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      comment: string;
@@ -13346,6 +13301,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -13363,6 +13319,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -13572,6 +13529,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      comment: string;
@@ -13587,6 +13545,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      comment: string;
@@ -15281,6 +15240,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -15549,6 +15509,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      country: string;
                      role: string | null;
                      avatar: string;
+                     avatarVersion: number;
                      permissions: number;
                   };
                   device: {
@@ -15798,6 +15759,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     country: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     permissions: number,
 
 },
@@ -15949,6 +15911,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         country: string;
                         role: string | null;
                         avatar: string;
+                        avatarVersion: number;
                         permissions: number;
                      };
                      device: {
@@ -21021,6 +20984,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playerNameInGame: string,
     role: string | null,
     avatar: string,
+    avatarVersion: number,
     bio: string | null,
     country: string,
     permissions: number,
@@ -21075,6 +21039,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                playerNameInGame: string;
                role: string | null;
                avatar: string;
+               avatarVersion: number;
                bio: string | null;
                country: string;
                permissions: number;

@@ -3,8 +3,7 @@
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import { getRouteApi } from '@tanstack/react-router';
-import { Result } from 'better-result';
+import { getRouteApi, useRouter } from '@tanstack/react-router';
 import { ChevronRight, FileText, ImageUp, Loader2, LogIn, RotateCcw, Save, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'use-intl';
@@ -17,7 +16,6 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '
 
 import { useActionMutation } from '@/hooks/use-action-mutation';
 import { useAuth } from '@/modules/auth';
-import { bumpAvatarVersion } from '@/modules/player/shared/avatar-version';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { requestCountryReset, updateBio, updateName, uploadAvatar } from '@/modules/settings/actions/account';
 import type { UserControllerCanResetCountryResponse } from '@/shared/api/generated/ApiParams';
@@ -46,6 +44,7 @@ const BioEditorForm = dynamic(() => import('@/shared/components/bio-editor-form'
 export function AccountSection({ countryReset, patreonConnected, beforeActions }: AccountSectionProps) {
    const t = useTranslations();
    const tSidebar = useTranslations();
+   const router = useRouter();
    const { user } = useAuth();
    const mutation = useActionMutation();
    const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -117,11 +116,7 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
          () => uploadAvatar(formData),
          t('settings.account.avatarSaved'),
          t('settings.account.avatarSaveFailed'),
-         () => {
-            bumpAvatarVersion(user.avatar);
-            void refreshCachedAvatar(user.avatar);
-            clearAvatarFile();
-         }
+         () => void router.invalidate().finally(clearAvatarFile)
       );
    };
    const clearAvatarFile = () => {
@@ -171,6 +166,7 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
                   <div className="border-border/70 flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center">
                      <PlayerAvatar
                         src={avatarPreviewUrl ?? user.avatar}
+                        version={avatarPreviewUrl ? undefined : user.avatarVersion}
                         alt={user.name}
                         width={104}
                         height={104}
@@ -397,16 +393,6 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
          </ConfirmDialog>
       </>
    );
-}
-
-// the avatar keeps its url when it changes, so re-fetch it to replace the stale browser cache entry
-const avatarRefreshGapsMs = [0, 2500, 8000];
-
-async function refreshCachedAvatar(avatarUrl: string) {
-   for (const gap of avatarRefreshGapsMs) {
-      if (gap > 0) await new Promise((resolve) => setTimeout(resolve, gap));
-      await Result.tryPromise(() => fetch(avatarUrl, { cache: 'reload', mode: 'no-cors' }));
-   }
 }
 
 function getCountryResetAvailableAt(lastReset: string | null | undefined) {

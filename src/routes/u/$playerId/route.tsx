@@ -14,6 +14,7 @@ import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
 import { PlayerProfileHeader } from '@/modules/player/profile/player-profile-header';
 import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
 import { PlayerScoresToolbar } from '@/modules/player/profile/player-scores-toolbar';
+import { versionedAvatarUrl } from '@/modules/player/shared/player-avatar';
 import type { PlayerControllerGetPlayerScoresSort } from '@/shared/api/generated/ApiParams';
 import { api } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
@@ -219,7 +220,7 @@ export function buildPlayerProfileHead(loaderData: Awaited<ReturnType<typeof get
 
    return playerProfileHead(`${player.name}'s Profile`, {
       ogTitle: `${player.name}'s Profile`,
-      image: player.avatar,
+      image: versionedAvatarUrl(player.avatar, player.avatarVersion),
       path: `/u/${player.id}`,
       noindex: player.banned,
       description: [

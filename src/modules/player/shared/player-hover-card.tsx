@@ -147,7 +147,14 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
          <div className="relative z-10 flex flex-col gap-2.5 p-3">
             {/* header row: avatar + info + follow */}
             <div className="flex items-center gap-2.5">
-               <PlayerAvatar src={player.avatar} alt={player.name} width={44} height={44} className="h-11 w-11 shrink-0 rounded-full" />
+               <PlayerAvatar
+                  src={player.avatar}
+                  version={player.avatarVersion}
+                  alt={player.name}
+                  width={44}
+                  height={44}
+                  className="h-11 w-11 shrink-0 rounded-full"
+               />
                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1">
                      <CountryImage country={player.country} size={14} />

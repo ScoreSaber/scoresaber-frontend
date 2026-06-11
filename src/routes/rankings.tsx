@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
+import { versionedAvatarUrl } from '@/modules/player/shared/player-avatar';
 import { RankingsFilters } from '@/modules/rankings/rankings-filters';
 import { RankingsTable } from '@/modules/rankings/rankings-table';
 import {
@@ -94,7 +95,7 @@ function RankingsRoute() {
    const response = result.data;
    const players = response.data;
    const meta = response.metadata;
-   const bgCandidates = players.filter((p) => isSteamPlayer(p.id)).map((p) => p.avatar);
+   const bgCandidates = players.filter((p) => isSteamPlayer(p.id)).map((p) => versionedAvatarUrl(p.avatar, p.avatarVersion));
    const getPageLocation = (page: number) => buildRankingsLocation(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
 
    return (

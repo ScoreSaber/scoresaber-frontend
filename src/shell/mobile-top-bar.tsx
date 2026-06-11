@@ -37,7 +37,14 @@ export function MobileTopBar() {
                {/* left: hamburger or pfp */}
                <Button variant="ghost" size="icon-sm" onClick={() => setOpen(true)} aria-label={tSidebar('sidebar.openMenu')}>
                   {user ? (
-                     <PlayerAvatar src={user.avatar} alt={user.name} width={28} height={28} className="size-7 rounded-full" />
+                     <PlayerAvatar
+                        src={user.avatar}
+                        version={user.avatarVersion}
+                        alt={user.name}
+                        width={28}
+                        height={28}
+                        className="size-7 rounded-full"
+                     />
                   ) : (
                      <Menu data-icon className="size-5" />
                   )}
