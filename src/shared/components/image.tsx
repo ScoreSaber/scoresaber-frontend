@@ -1,4 +1,4 @@
-import type { ImgHTMLAttributes } from 'react';
+import type { CSSProperties, ImgHTMLAttributes } from 'react';
 
 type ImageProps = ImgHTMLAttributes<HTMLImageElement> & {
    src: string;
@@ -12,11 +12,9 @@ type ImageProps = ImgHTMLAttributes<HTMLImageElement> & {
 };
 
 export function Image({ priority: _priority, fill, unoptimized: _unoptimized, style, alt, ...props }: ImageProps) {
-   return (
-      <img
-         {...props}
-         alt={alt}
-         style={fill ? { ...style, position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } : style}
-      />
-   );
+   const imageStyle: CSSProperties = fill
+      ? { ...style, position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', color: 'transparent' }
+      : { ...style, color: 'transparent' };
+
+   return <img {...props} alt={alt} style={imageStyle} />;
 }

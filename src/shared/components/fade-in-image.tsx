@@ -54,7 +54,7 @@ function FadeInImageImpl({ className, onLoad, fill, sizes: _sizes, unoptimized: 
             ref={imgRef}
             loading={priority ? 'eager' : undefined}
             style={mergedStyle}
-            className={className}
+            className={cn(className, 'transition-opacity duration-300', isLoaded ? 'opacity-100' : 'opacity-0')}
             onLoad={(e) => {
                setIsLoaded(true);
                onLoad?.(e);
