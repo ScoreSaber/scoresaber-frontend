@@ -2,7 +2,17 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { absoluteSiteUrl } from '@/shared/seo/metadata';
 
-const sitemapPaths = ['/maps', '/rankings', '/ranking/requests', '/quest', '/team', '/legal/privacy', '/legal/cookies-policy', '/legal/copyright'];
+const sitemapPaths = [
+   '/',
+   '/maps',
+   '/rankings',
+   '/ranking/requests',
+   '/quest',
+   '/team',
+   '/legal/privacy',
+   '/legal/cookies-policy',
+   '/legal/copyright'
+];
 
 export const Route = createFileRoute('/sitemap.xml')({
    server: {
