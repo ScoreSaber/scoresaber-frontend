@@ -45,10 +45,10 @@ const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Prom
       optionalApi(
          api.map
             .mapControllerGetMapListings({
-               page: HOME_TRENDING_MAP_SEARCH.page,
+               page: 1,
                limit: TRENDING_MAP_COUNT,
                status: [HOME_TRENDING_MAP_SEARCH.status],
-               verified: HOME_TRENDING_MAP_SEARCH.verified,
+               verified: 'true',
                sortBy: HOME_TRENDING_MAP_SEARCH.sortBy,
                sortDirection: HOME_TRENDING_MAP_SEARCH.sortDirection
             })

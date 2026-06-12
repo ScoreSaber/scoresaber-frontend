@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { Engine, ISourceOptions } from '@tsparticles/engine';
 import { Particles, ParticlesProvider } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
+
+import { cn } from '@/shared/format/helpers';
 
 const PARTICLE_OPTIONS = {
    background: {
@@ -125,12 +127,28 @@ async function loadParticles(engine: Engine) {
    await loadSlim(engine);
 }
 
+function prefersReducedMotion() {
+   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 export function BeatSaberParticles() {
-   const [options] = useState(() => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? STATIC_PARTICLE_OPTIONS : PARTICLE_OPTIONS));
+   const [options] = useState(() => (prefersReducedMotion() ? STATIC_PARTICLE_OPTIONS : PARTICLE_OPTIONS));
+   const [loaded, setLoaded] = useState(false);
+   const handleLoaded = useCallback(() => {
+      setLoaded(true);
+   }, []);
 
    return (
       <ParticlesProvider init={loadParticles}>
-         <Particles id="home-beat-saber-particles" className="absolute inset-0 opacity-85" options={options} />
+         <Particles
+            id="home-beat-saber-particles"
+            className={cn(
+               'absolute inset-0 opacity-0 transition-opacity duration-1000 ease-out motion-reduce:transition-none',
+               loaded && 'opacity-85'
+            )}
+            options={options}
+            particlesLoaded={handleLoaded}
+         />
       </ParticlesProvider>
    );
 }

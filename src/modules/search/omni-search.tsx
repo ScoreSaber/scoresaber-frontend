@@ -216,7 +216,7 @@ function OmniSearchBody() {
    const navigateToMaps = useCallback(
       (search: string) => {
          setOpen(false);
-         void router.navigate({ to: '/maps', search: { page: 1, verified: 'true', search } });
+         void router.navigate({ to: '/maps', search: { search } });
       },
       [setOpen, router]
    );

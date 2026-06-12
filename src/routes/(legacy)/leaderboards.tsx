@@ -7,6 +7,6 @@ export const Route = createFileRoute('/(legacy)/leaderboards')({
    loaderDeps: ({ search }) => search,
    loader: ({ deps }) => {
       const search = legacyLeaderboardsSearchParams(deps);
-      throw redirect({ to: '/maps', search: { ...search, page: search.page ?? 1, verified: search.verified ?? 'true' }, statusCode: 308 });
+      throw redirect({ to: '/maps', search: { ...search, page: search.page && search.page > 1 ? search.page : undefined }, statusCode: 308 });
    }
 });

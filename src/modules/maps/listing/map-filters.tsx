@@ -99,7 +99,7 @@ export function MapFilters<TLocation>({
    });
    const currentSearch = search.search;
    const currentStatuses = search.status;
-   const currentVerified = search.verified;
+   const currentVerified = search.verified ?? 'true';
    const currentMinStars = search.minStars ?? DEFAULT_MIN_STARS;
    const currentMaxStars = search.maxStars ?? DEFAULT_MAX_STARS;
    const currentSortBy = search.sortBy ?? 'trending';

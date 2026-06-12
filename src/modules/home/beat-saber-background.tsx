@@ -1,10 +1,6 @@
-import { type CSSProperties, useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 
-import { dynamic } from '@/shared/components/dynamic';
-
-// tsparticles is heavy, keep it out of the route chunk and load it after hydration;
-// the canvas only shows once the engine inits anyway, so nothing visible changes
-const BeatSaberParticles = dynamic(() => import('./beat-saber-particles').then((mod) => mod.BeatSaberParticles), { ssr: false });
+import { BeatSaberParticles } from './beat-saber-particles';
 
 const MENU_BACKGROUND_STYLE = {
    background: [
@@ -28,16 +24,10 @@ const PAGE_DARKENING_STYLE = {
 } satisfies CSSProperties;
 
 export function BeatSaberPageBackground() {
-   const [showParticles, setShowParticles] = useState(false);
-
-   useEffect(() => {
-      setShowParticles(true);
-   }, []);
-
    return (
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
          <div className="absolute inset-0 overflow-hidden" style={MENU_BACKGROUND_STYLE}>
-            {showParticles && <BeatSaberParticles />}
+            <BeatSaberParticles />
             <div className="absolute inset-x-[-20%] bottom-[-18%] h-[58%]" style={FLOOR_HAZE_STYLE} />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_45%,rgba(0,0,0,0.62)_100%)]" />
          </div>

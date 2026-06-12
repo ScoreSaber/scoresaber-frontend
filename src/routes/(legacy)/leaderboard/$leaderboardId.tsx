@@ -30,7 +30,7 @@ export const Route = createFileRoute('/(legacy)/leaderboard/$leaderboardId')({
       const target = await getLegacyLeaderboardRedirect({ data: { leaderboardId: params.leaderboardId, search: deps } });
 
       if (target.name === 'maps') {
-         throw redirect({ to: '/maps', search: { page: 1, verified: 'true' }, statusCode: 308 });
+         throw redirect({ to: '/maps', statusCode: 308 });
       }
 
       throw redirect({

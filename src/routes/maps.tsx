@@ -31,10 +31,10 @@ const mapStatusListSchema = z
    .transform((statuses) => statuses.filter((status) => status != null));
 
 const mapsSearchSchema = z.object({
-   page: isPageNumber,
+   page: isPageNumber.optional(),
    search: z.string().min(3).max(64).optional(),
    status: z.string().optional(),
-   verified: z.enum(['true', 'false']).default('true'),
+   verified: z.enum(['true', 'false']).optional(),
    minStars: isOptionalNumber,
    maxStars: isOptionalNumber,
    sortBy: z.enum(MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY).optional(),
@@ -63,10 +63,10 @@ const getMapsPageData = createServerFn({ method: 'GET' })
       const statuses = parseMapListingStatuses(searchParams.status);
       const result = await pageApiData(
          api.map.mapControllerGetMapListings({
-            page: searchParams.page,
+            page: searchParams.page ?? 1,
             search: searchParams.search,
             status: statuses.length > 0 ? statuses : undefined,
-            verified: searchParams.verified,
+            verified: searchParams.verified ?? 'true',
             minStars: searchParams.minStars,
             maxStars: searchParams.maxStars,
             sortBy: searchParams.sortBy ?? 'trending',
@@ -102,6 +102,7 @@ function MapsRoute() {
    const expandLowest = searchParams.sortBy === 'highestStars' && (searchParams.sortDirection ?? 'desc') === 'asc';
    const minStars = searchParams.minStars ?? DEFAULT_MIN_STARS;
    const maxStars = searchParams.maxStars ?? DEFAULT_MAX_STARS;
+   const currentPage = searchParams.page ?? 1;
    const starRange =
       minStars !== DEFAULT_MIN_STARS || maxStars !== DEFAULT_MAX_STARS
          ? {
@@ -118,7 +119,7 @@ function MapsRoute() {
 
          <div className="app-container relative z-10 flex flex-col gap-4 p-4 md:p-8">
             <MapFilters
-               currentPage={searchParams.page}
+               currentPage={currentPage}
                totalPages={meta.totalPages}
                search={searchParams}
                buildLocation={buildMapsLocation}
@@ -135,7 +136,7 @@ function MapsRoute() {
             {meta.totalPages > 1 && (
                <div className="flex justify-center">
                   <Pagination
-                     currentPage={searchParams.page}
+                     currentPage={currentPage}
                      totalItems={meta.totalItems}
                      pageSize={meta.itemsPerPage}
                      getPageLocation={getPageLocation}
@@ -154,7 +155,11 @@ function buildMapsLocation(search?: MapsSearchParams) {
 
 function normalizeMapsLocationSearch(search?: MapsSearchParams) {
    const { page = 1, verified = 'true', ...rest } = search ?? {};
-   return { page, verified, ...rest };
+   return {
+      page: page > 1 ? page : undefined,
+      verified: verified === 'false' ? verified : undefined,
+      ...rest
+   };
 }
 
 function parseMapsSearch(search: Record<string, unknown>) {
