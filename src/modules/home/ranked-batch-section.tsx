@@ -2,7 +2,7 @@ import { ExternalLink, Play } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import type { HomeRankedBatchVideo } from './actions/news';
-import { HOME_BANNER_SRC, HOME_NEWS_YOUTUBE_HANDLE } from './home-constants';
+import { HOME_NEWS_YOUTUBE_HANDLE } from './home-constants';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -20,7 +20,7 @@ export function RankedBatchSection({ video }: { video: HomeRankedBatchVideo | nu
             aria-label={t('rankedBatch.watchAction')}
             className="relative aspect-video shrink-0 overflow-hidden md:aspect-auto md:min-h-44 md:w-[22rem] lg:w-[24rem]"
          >
-            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${video?.imageUrl ?? HOME_BANNER_SRC}')` }} />
+            {video?.imageUrl && <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${video.imageUrl}')` }} />}
             <div className="bg-background/55 absolute inset-0" />
             <div className="absolute inset-0 flex items-center justify-center">
                <div className="bg-primary text-primary-foreground shadow-primary/30 flex size-14 items-center justify-center rounded-full shadow-lg">

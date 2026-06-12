@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { useTranslations } from 'use-intl';
@@ -10,7 +8,7 @@ import { getHomeNewsFeed } from '@/modules/home/actions/news.server';
 import { BeatSaberPageBackground } from '@/modules/home/beat-saber-background';
 import { HeroSection } from '@/modules/home/hero-section';
 import { HomeColumn, HomeColumnLink } from '@/modules/home/home-column';
-import { HOME_BANNER_SRC, HOME_TRENDING_MAP_SEARCH, TOP_PLAYER_COUNT, TRENDING_MAP_COUNT } from '@/modules/home/home-constants';
+import { HOME_TRENDING_MAP_SEARCH, TOP_PLAYER_COUNT, TRENDING_MAP_COUNT } from '@/modules/home/home-constants';
 import { InstallSection } from '@/modules/home/install-section';
 import { NewsColumn, NewsSocialLinks } from '@/modules/home/news-column';
 import { RankedBatchSection } from '@/modules/home/ranked-batch-section';
@@ -20,7 +18,6 @@ import type { MapControllerGetMapListingsDataItem, PlayerControllerGetPlayersDat
 import { api } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
-import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const homeSearchSchema = z.object({
    accountMergeChallengeId: z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional())
@@ -82,9 +79,7 @@ export const Route = createFileRoute('/')({
       buildSeoHead({
          title: 'Home',
          description: 'The original leaderboard system for Beat Saber custom songs, built for competitive players worldwide',
-         path: '/',
-         image: HOME_BANNER_SRC,
-         twitterCard: 'summary_large_image'
+         path: '/'
       }),
    component: HomeRoute
 });
@@ -92,11 +87,9 @@ export const Route = createFileRoute('/')({
 function HomeRoute() {
    const data = Route.useLoaderData();
    const t = useTranslations('home');
-   const bgCandidates = useMemo(() => [HOME_BANNER_SRC, ...data.trendingMaps.map((map) => map.coverUrl).filter(Boolean)], [data.trendingMaps]);
 
    return (
       <div className="dark bg-background text-foreground relative flex-1 overflow-hidden">
-         <SetPageBackground src={HOME_BANNER_SRC} candidates={bgCandidates} />
          <BeatSaberPageBackground />
 
          <HeroSection />
