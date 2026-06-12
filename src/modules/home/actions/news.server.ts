@@ -10,6 +10,8 @@ import { env } from '@/env';
 
 const NEWS_FEED_POST_LIMIT = 15;
 const FEED_CACHE_MS = 10 * 60 * 1000;
+// retry sooner when a source failed so recovery doesn't wait a full cache window
+const FEED_RETRY_MS = 60 * 1000;
 const REQUEST_TIMEOUT_MS = 8_000;
 const POST_BODY_LENGTH = 500;
 const YOUTUBE_POST_BODY_WORD_LIMIT = 22;
@@ -69,15 +71,18 @@ type XMedia = {
 
 type YouTubeThumbnails = Partial<Record<'default' | 'medium' | 'high' | 'standard' | 'maxres', { url: string }>>;
 
-type YouTubeSearchItem = {
-   id: {
-      videoId?: string;
-   };
+type YouTubePlaylistItem = {
    snippet: {
       title: string;
       description: string;
       publishedAt: string;
       thumbnails?: YouTubeThumbnails;
+      resourceId: {
+         videoId?: string;
+      };
+   };
+   contentDetails?: {
+      videoPublishedAt?: string;
    };
 };
 
@@ -96,40 +101,69 @@ type XPost = {
 };
 
 let cachedFeed: { expiresAt: number; feed: HomeNewsFeed } | null = null;
+let pendingRefresh: Promise<HomeNewsFeed> | null = null;
 
 export async function getHomeNewsFeed() {
-   const now = Date.now();
-   if (cachedFeed && cachedFeed.expiresAt > now) return cachedFeed.feed;
+   if (cachedFeed && cachedFeed.expiresAt > Date.now()) return cachedFeed.feed;
 
-   const feed = await loadHomeNewsFeed();
-   cachedFeed = {
-      expiresAt: now + FEED_CACHE_MS,
-      feed
-   };
+   pendingRefresh ??= refreshHomeNewsFeed().finally(() => {
+      pendingRefresh = null;
+   });
 
-   return feed;
+   // serve the stale feed while the refresh runs in the background
+   if (cachedFeed) {
+      // nothing awaits the background refresh, so keep a rejection from going unhandled
+      void pendingRefresh.catch((cause) => console.warn('[home news] background refresh failed', cause));
+      return cachedFeed.feed;
+   }
+
+   return pendingRefresh;
 }
 
-async function loadHomeNewsFeed(): Promise<HomeNewsFeed> {
+async function refreshHomeNewsFeed() {
+   const { feed, degraded } = await loadHomeNewsFeed();
+
+   // a degraded fetch never overwrites good data, e.g. youtube vanishing for a day on quota errors
+   if (degraded && cachedFeed) {
+      cachedFeed = {
+         expiresAt: Date.now() + FEED_RETRY_MS,
+         feed: cachedFeed.feed
+      };
+   } else {
+      cachedFeed = {
+         expiresAt: Date.now() + (degraded ? FEED_RETRY_MS : FEED_CACHE_MS),
+         feed
+      };
+   }
+
+   return cachedFeed.feed;
+}
+
+async function loadHomeNewsFeed(): Promise<{ feed: HomeNewsFeed; degraded: boolean }> {
    const [patreonPosts, youtubeVideos, xPosts] = await Promise.all([
-      fetchOptional('patreon', fetchPatreonPosts, []),
-      fetchOptional('youtube', fetchYouTubeVideos, []),
-      fetchOptional('x', fetchXPosts, [])
+      fetchOptional('patreon', fetchPatreonPosts),
+      fetchOptional('youtube', fetchYouTubeVideos),
+      fetchOptional('x', fetchXPosts)
    ]);
-   const latestRankedBatchVideo = await findLatestRankedBatchVideo(youtubeVideos);
-   const filteredXPosts = await removeDuplicateXPosts(xPosts, latestRankedBatchVideo);
-   const posts = [...patreonPosts, ...youtubeVideos.map(toYouTubePost), ...filteredXPosts]
+   const degraded = patreonPosts == null || youtubeVideos == null || xPosts == null;
+   const latestRankedBatchVideo = await findLatestRankedBatchVideo(youtubeVideos ?? []);
+   const filteredXPosts = await removeDuplicateXPosts(xPosts ?? [], latestRankedBatchVideo);
+   const posts = [...(patreonPosts ?? []), ...(youtubeVideos ?? []).map(toYouTubePost), ...filteredXPosts]
       .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt))
       .slice(0, NEWS_FEED_POST_LIMIT);
 
    return {
-      posts,
-      latestRankedBatchVideo,
-      generatedAt: new Date().toISOString()
+      feed: {
+         posts,
+         latestRankedBatchVideo,
+         generatedAt: new Date().toISOString()
+      },
+      degraded
    };
 }
 
-async function fetchOptional<T>(source: SocialSource, load: () => Promise<T>, fallback: T) {
+// null means the source failed, so the feed is degraded rather than legitimately empty
+async function fetchOptional<T>(source: SocialSource, load: () => Promise<T>) {
    const result = await Result.tryPromise({
       try: load,
       catch: (cause) =>
@@ -144,7 +178,7 @@ async function fetchOptional<T>(source: SocialSource, load: () => Promise<T>, fa
       ok: (value) => value,
       err: (error) => {
          console.warn('[home news]', error.message, error.cause);
-         return fallback;
+         return null;
       }
    });
 }
@@ -226,38 +260,43 @@ async function fetchXPosts(): Promise<XPost[]> {
    });
 }
 
+// the id never changes for a username, so look it up once per process
+let cachedXUserId: string | null = null;
+
 async function fetchXUserId() {
+   if (cachedXUserId) return cachedXUserId;
+
    const url = new URL(`https://api.x.com/2/users/by/username/${env.HOME_NEWS_X_USERNAME}`);
    const response = await fetchJson<{ data: { id: string } }>('x', url, {
       headers: xHeaders()
    });
 
-   return response.data.id;
+   cachedXUserId = response.data.id;
+   return cachedXUserId;
 }
 
 async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
    if (!env.HOME_NEWS_YOUTUBE_API_KEY) return [];
 
-   const url = new URL('https://www.googleapis.com/youtube/v3/search');
+   const uploadsPlaylistId = HOME_NEWS_YOUTUBE_CHANNEL_ID.replace(/^UC/, 'UU');
+   const url = new URL('https://www.googleapis.com/youtube/v3/playlistItems');
    url.searchParams.set('key', env.HOME_NEWS_YOUTUBE_API_KEY);
-   url.searchParams.set('part', 'snippet');
-   url.searchParams.set('channelId', HOME_NEWS_YOUTUBE_CHANNEL_ID);
-   url.searchParams.set('type', 'video');
-   url.searchParams.set('order', 'date');
+   url.searchParams.set('part', 'snippet,contentDetails');
+   url.searchParams.set('playlistId', uploadsPlaylistId);
    url.searchParams.set('maxResults', String(NEWS_FEED_POST_LIMIT));
 
-   const response = await fetchJson<{ items?: YouTubeSearchItem[] }>('youtube', url);
+   const response = await fetchJson<{ items?: YouTubePlaylistItem[] }>('youtube', url);
 
    return (response.items ?? [])
       .map((item) => {
-         const id = item.id.videoId;
+         const id = item.snippet.resourceId.videoId;
          if (!id || item.snippet.title === 'Private video' || item.snippet.title === 'Deleted video') return null;
 
          return {
             id,
             title: item.snippet.title,
             description: item.snippet.description,
-            publishedAt: item.snippet.publishedAt,
+            publishedAt: item.contentDetails?.videoPublishedAt ?? item.snippet.publishedAt,
             imageUrl: getBestYouTubeThumbnail(item.snippet.thumbnails)
          };
       })
