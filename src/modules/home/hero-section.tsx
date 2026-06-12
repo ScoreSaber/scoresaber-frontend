@@ -8,9 +8,11 @@ import { ScoreSaberBrand } from './score-saber-brand';
 
 import { Button } from '@/components/ui/button';
 
+import { useAuth } from '@/modules/auth';
 import { Image } from '@/shared/components/image';
 
 const loginRoute = getRouteApi('/login');
+const playerRoute = getRouteApi('/u/$playerId');
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 const STAT_FEED_EVENT_MS = 1600;
@@ -37,6 +39,7 @@ const statGrowthPerDay: Record<HomeStatKey, number> = {
 
 export function HeroSection() {
    const t = useTranslations('home');
+   const { user } = useAuth();
    const stats = [
       {
          key: 'players',
@@ -92,7 +95,11 @@ export function HeroSection() {
                   </a>
                </Button>
                <Button asChild variant="menu-filled" size="lg" className="cursor-pointer border-white/20">
-                  <loginRoute.Link search={{}}>{t('hero.secondaryAction')}</loginRoute.Link>
+                  {user ? (
+                     <playerRoute.Link params={{ playerId: user.id }}>{t('hero.secondaryActionSignedIn')}</playerRoute.Link>
+                  ) : (
+                     <loginRoute.Link search={{}}>{t('hero.secondaryAction')}</loginRoute.Link>
+                  )}
                </Button>
             </div>
          </div>

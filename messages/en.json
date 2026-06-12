@@ -109,7 +109,8 @@
          "title": "Welcome to <brand>ScoreSaber</brand>",
          "description": "The home of competitive Beat Saber. Established in May 2018, ScoreSaber is the largest leaderboard / competitive system for Beat Saber custom songs",
          "primaryAction": "Get ScoreSaber",
-         "secondaryAction": "Create an account"
+         "secondaryAction": "Create an account",
+         "secondaryActionSignedIn": "View your profile"
       },
       "stats": {
          "playersValue": "1.3M",
