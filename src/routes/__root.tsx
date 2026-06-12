@@ -17,6 +17,7 @@ import { optionalApi } from '@/shared/result/api';
 import { absoluteSiteUrl, SITE_DESCRIPTION, SITE_NAME, buildSeoHead } from '@/shared/seo/metadata';
 import { parseServerTheme, THEME_COOKIE_NAME, THEME_MEDIA_QUERY, THEME_STORAGE_KEY } from '@/shared/ui-adjacent/theme';
 import { AppShell } from '@/shell/app-shell';
+import { parseSidebarCollapsedCookie, SEEN_HOME_COOKIE_NAME, SIDEBAR_COLLAPSED_COOKIE_NAME } from '@/shell/sidebar-state';
 
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 type RootMessages = Record<string, JsonValue>;
@@ -28,6 +29,8 @@ const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
    const token = readAuthCookie();
    const user = token ? await optionalApi(api.user.userControllerGetMe().then((r) => r.data)) : null;
    const initialTheme = parseServerTheme(getCookie(THEME_COOKIE_NAME)) ?? null;
+   const seenHome = getCookie(SEEN_HOME_COOKIE_NAME) === 'true';
+   const sidebarCollapsed = parseSidebarCollapsedCookie(getCookie(SIDEBAR_COLLAPSED_COOKIE_NAME));
    const locale = await getLocale();
    const messages = (await getMessages()) as RootMessages;
    const visibleLocales = getVisibleLocales();
@@ -35,6 +38,8 @@ const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
    return {
       user,
       initialTheme,
+      seenHome,
+      sidebarCollapsed,
       locale,
       messages,
       visibleLocales,
@@ -94,6 +99,8 @@ function RootComponent() {
                initialUser={data.user}
                messages={data.messages}
                visibleLocales={data.visibleLocales}
+               initialSeenHome={data.seenHome}
+               initialSidebarCollapsed={data.sidebarCollapsed}
                queryClient={queryClient}
                debugBreakpoints={data.debugBreakpoints}
                debugPageBackground={data.debugPageBackground}

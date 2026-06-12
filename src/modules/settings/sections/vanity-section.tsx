@@ -31,7 +31,7 @@ export function VanitySection({ vanity }: VanitySectionProps) {
 
    if (!vanity) {
       return (
-         <Card className="bg-background/35 rounded-lg shadow-none">
+         <Card variant="settings">
             <CardContent className="text-muted-foreground px-5 py-8 text-sm">{t('settings.perks.vanity.loadFailed')}</CardContent>
          </Card>
       );
@@ -62,7 +62,7 @@ export function VanitySection({ vanity }: VanitySectionProps) {
    }
 
    return (
-      <Card className="bg-background/35 gap-4 rounded-lg py-5 shadow-none">
+      <Card variant="settings" className="gap-4 py-5">
          <CardHeader className="px-5">
             <CardTitle className="text-base">{t('settings.perks.vanity.title')}</CardTitle>
             {canChange && <p className="text-muted-foreground text-sm text-pretty">{t('settings.perks.vanity.description')}</p>}

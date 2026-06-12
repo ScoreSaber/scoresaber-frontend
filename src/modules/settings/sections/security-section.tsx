@@ -54,7 +54,7 @@ export function SecuritySection({ passkeys, credential, openPasswordSetup }: Sec
    }
 
    return (
-      <Card className="bg-background/35 gap-4 rounded-lg py-5 shadow-none">
+      <Card variant="settings" className="gap-4 py-5">
          <CardHeader className="px-5">
             <CardTitle className="text-base">{t('settings.security.title')}</CardTitle>
          </CardHeader>

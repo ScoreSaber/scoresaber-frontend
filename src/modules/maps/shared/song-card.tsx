@@ -28,8 +28,11 @@ interface SongCardProps {
    pills?: ReactNode;
    mobileMetadata?: ReactNode;
    desktopMetadata?: ReactNode;
+   coverBadge?: ReactNode;
    className?: string;
    compact?: boolean;
+   showMappedAt?: boolean;
+   background?: 'default' | 'transparent';
 }
 
 export function SongCard({
@@ -46,14 +49,24 @@ export function SongCard({
    pills,
    mobileMetadata,
    desktopMetadata,
+   coverBadge,
    className,
-   compact = false
+   compact = false,
+   showMappedAt = true,
+   background = 'default'
 }: SongCardProps) {
    const tc = useTranslations('common');
    const accent = <div className={cn('absolute top-0 bottom-0 left-0 z-30 w-0.75', accentTooltip && 'cursor-help', accentClass)} />;
+   const transparentBackground = background === 'transparent';
 
    return (
-      <div className={cn(CARD_GRADIENT_CLASSES, 'flex items-center', className)}>
+      <div
+         className={cn(
+            transparentBackground ? 'relative overflow-hidden rounded border bg-card/35' : CARD_GRADIENT_CLASSES,
+            'flex items-center',
+            className
+         )}
+      >
          {accentTooltip ? (
             <Tooltip>
                <TooltipTrigger asChild>{accent}</TooltipTrigger>
@@ -63,13 +76,15 @@ export function SongCard({
             accent
          )}
 
-         {coverUrl && (
+         {coverUrl && !transparentBackground && (
             <div className="absolute inset-0 opacity-0 dark:opacity-25">
                <FadeInImage src={coverUrl} alt="" fill className={BLURRED_BG_IMAGE_CLASSES} sizes="(min-width: 768px) 50vw, 100vw" />
             </div>
          )}
 
-         <div className="from-background/75 via-background/50 to-background/75 absolute inset-0 hidden bg-linear-to-r dark:block" />
+         {!transparentBackground && (
+            <div className="from-background/75 via-background/50 to-background/75 absolute inset-0 hidden bg-linear-to-r dark:block" />
+         )}
 
          <div
             className={cn(
@@ -78,6 +93,7 @@ export function SongCard({
             )}
          >
             <FadeInImage src={coverUrl} alt={songName} fill className="object-cover" sizes={compact ? '56px' : '86px'} />
+            {coverBadge && <div className="absolute right-0.75 bottom-0.75 left-0.75 z-10 flex justify-center">{coverBadge}</div>}
          </div>
 
          <div className={cn('relative z-20 flex min-w-0 flex-1 flex-col justify-center py-2.5 pr-3', !compact && 'md:flex-row md:justify-between')}>
@@ -102,8 +118,13 @@ export function SongCard({
                      <span className="text-foreground font-semibold">{levelAuthorName}</span>
                   ) : (
                      <LinkedNames name={levelAuthorName} splitCommas />
-                  )}{' '}
-                  &middot; <Time date={createdAt} short />
+                  )}
+                  {showMappedAt && (
+                     <>
+                        {' '}
+                        &middot; <Time date={createdAt} short />
+                     </>
+                  )}
                </p>
 
                {pills && <div className="flex flex-nowrap items-center gap-1.5 pt-1.5">{pills}</div>}

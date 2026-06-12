@@ -67,7 +67,7 @@ export function DeveloperSection({ clients }: DeveloperSectionProps) {
 
    if (!Permissions.checkPermissionNumber(user.permissions, Permissions.security.EXTERNAL_DEV)) {
       return (
-         <Card className="bg-background/35 rounded-lg shadow-none">
+         <Card variant="settings">
             <CardContent className="text-muted-foreground px-5 py-8 text-sm">{t('settings.developer.noAccess')}</CardContent>
          </Card>
       );
@@ -75,7 +75,7 @@ export function DeveloperSection({ clients }: DeveloperSectionProps) {
 
    if (!clients) {
       return (
-         <Card className="bg-background/35 rounded-lg shadow-none">
+         <Card variant="settings">
             <CardContent className="text-muted-foreground px-5 py-8 text-sm">{t('settings.developer.loadFailed')}</CardContent>
          </Card>
       );
@@ -97,7 +97,7 @@ export function DeveloperSection({ clients }: DeveloperSectionProps) {
 
    return (
       <>
-         <Card className="bg-background/35 gap-4 rounded-lg py-5 shadow-none">
+         <Card variant="settings" className="gap-4 py-5">
             <CardHeader className="gap-4 px-5">
                <div className="min-w-0">
                   <CardTitle className="text-base">{t('settings.developer.title')}</CardTitle>

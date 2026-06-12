@@ -7,8 +7,10 @@ import type { IconType } from 'react-icons';
 import { FaBullseye, FaGlobe, FaPlay, FaSortAmountDown, FaSortAmountUp, FaStar, FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
+import { cardSurfaceVariants } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
+import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
 import type {
    PlayerControllerGetPlayersDataItem,
@@ -220,11 +222,12 @@ interface RankingItemProps {
    isDefaultSort: boolean;
    listPosition: number;
    highlight?: string;
+   variant?: 'default' | 'summary';
+   className?: string;
 }
 
-function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, highlight }: RankingItemProps) {
+export function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, highlight, variant = 'default', className }: RankingItemProps) {
    const router = useRouter();
-   const stats = player.stats;
    const isHighlighted = highlight === player.id;
    const ref = useRef<HTMLDivElement>(null);
 
@@ -238,24 +241,34 @@ function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, hig
       <div
          ref={ref}
          className={cn(
-            'group bg-secondary/40 hover:bg-primary/10 flex cursor-pointer flex-col gap-1.5 rounded-lg border px-3 py-2.5 transition-colors',
+            'group flex cursor-pointer flex-col px-3 transition-colors',
+            variant === 'summary'
+               ? cn(cardSurfaceVariants.settings, 'hover:border-primary/35')
+               : 'bg-secondary/40 rounded-lg border hover:border-primary/35',
+            variant === 'summary' ? 'py-2' : 'gap-1.5 py-2.5',
             player.inactive && 'opacity-60',
-            isHighlighted && 'border-primary ring-primary/40 ring-1'
+            isHighlighted && 'border-primary ring-primary/40 ring-1',
+            className
          )}
          onClick={() => router.navigate({ to: '/u/$playerId', params: { playerId: player.id } })}
          onMouseEnter={() => router.preloadRoute({ to: '/u/$playerId', params: { playerId: player.id } })}
       >
+         {variant === 'summary' ? (
+            <RankingCardSummary player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
+         ) : (
+            <RankingCardDefault player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
+         )}
+      </div>
+   );
+}
+
+function RankingCardDefault({ player, countryFiltered, isDefaultSort, listPosition }: RankingItemProps) {
+   const stats = player.stats;
+
+   return (
+      <>
          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground shrink-0 text-sm tabular-nums">
-               <RankCell
-                  isDefaultSort={isDefaultSort}
-                  countryFiltered={countryFiltered}
-                  listPosition={listPosition}
-                  globalRank={stats.rank}
-                  countryRank={stats.countryRank}
-                  country={player.country}
-               />
-            </span>
+            <RankingCardRank player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
             <div className="min-w-0 flex-1">
                <PlayerLink withPFP player={player} isInactive={player.inactive} />
             </div>
@@ -274,7 +287,52 @@ function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, hig
                </span>
             ))}
          </div>
+      </>
+   );
+}
+
+function RankingCardSummary({ player, countryFiltered, isDefaultSort, listPosition }: RankingItemProps) {
+   const stats = player.stats;
+
+   return (
+      <div className="flex items-center gap-2.5">
+         <RankingCardRank player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
+         <PlayerAvatar
+            src={player.avatar}
+            version={player.avatarVersion}
+            alt={player.name}
+            width={32}
+            height={32}
+            className={cn('rounded-full', player.inactive && 'opacity-50 grayscale')}
+         />
+         <div className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2">
+            <CountryImage country={player.country} className="row-span-2 shrink-0" />
+            <div className="relative -top-px col-start-2 flex min-w-0 flex-col">
+               <PlayerLink player={player} variant="inline" className={cn('truncate text-sm font-semibold', player.inactive && 'opacity-50')} />
+               <span className="text-score-pp inline-flex min-w-0 items-center gap-1 text-[11px] leading-tight font-semibold">
+                  <FaStar className="size-2.5 shrink-0" />
+                  <span className="truncate">{formatPP(stats.totalPP)}pp</span>
+               </span>
+            </div>
+         </div>
       </div>
+   );
+}
+
+function RankingCardRank({ player, countryFiltered, isDefaultSort, listPosition }: RankingItemProps) {
+   const stats = player.stats;
+
+   return (
+      <span className="text-muted-foreground shrink-0 text-sm tabular-nums">
+         <RankCell
+            isDefaultSort={isDefaultSort}
+            countryFiltered={countryFiltered}
+            listPosition={listPosition}
+            globalRank={stats.rank}
+            countryRank={stats.countryRank}
+            country={player.country}
+         />
+      </span>
    );
 }
 

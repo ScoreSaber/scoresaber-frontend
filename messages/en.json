@@ -103,6 +103,63 @@
       "questInstaller": "Quest Installer",
       "team": "Team"
    },
+   "home": {
+      "hero": {
+         "logoAlt": "ScoreSaber logo",
+         "title": "Welcome to <brand>ScoreSaber</brand>",
+         "description": "The home of competitive Beat Saber. Established in May 2018, ScoreSaber is the largest leaderboard / competitive system for Beat Saber custom songs",
+         "primaryAction": "Get ScoreSaber",
+         "secondaryAction": "Create an account"
+      },
+      "stats": {
+         "playersValue": "1.3M",
+         "playersLabel": "Registered players",
+         "scoresValue": "90M",
+         "scoresLabel": "Scores",
+         "leaderboardsValue": "300K",
+         "leaderboardsLabel": "Leaderboards",
+         "tickerAria": "{label}: {value}"
+      },
+      "sections": {
+         "news": "News",
+         "topPlayers": "Top players",
+         "rankings": "Rankings",
+         "trendingMaps": "Trending maps",
+         "browse": "Browse"
+      },
+      "news": {
+         "readMore": "Read more...",
+         "openInNewTab": "Open in new tab"
+      },
+      "rankedBatch": {
+         "eyebrow": "Latest ranked batch",
+         "title": "Ranked Batch Overview",
+         "description": "New maps get ranked every month. Watch the batch overview, then check the reweights as star ratings are corrected after ranking",
+         "watchAction": "Watch on YouTube",
+         "reweightsAction": "View reweights"
+      },
+      "install": {
+         "title": "Ready to compete?",
+         "description": "Get ScoreSaber installed on your platform and your scores start counting on leaderboards right away",
+         "quest": {
+            "title": "Meta Quest Standalone",
+            "action": "Install on Quest Standalone"
+         },
+         "bsmanager": {
+            "title": "PC (BSManager)",
+            "action": "Download BSManager"
+         },
+         "beatmods": {
+            "title": "PC (BeatMods)",
+            "action": "Download from BeatMods"
+         }
+      },
+      "empty": {
+         "players": "Top players are unavailable right now",
+         "maps": "Trending maps are unavailable right now",
+         "news": "News is unavailable right now"
+      }
+   },
    "supporterGate": {
       "title": "Supporter perk",
       "connectDescription": "Connect Patreon to use profile perks like custom bios",

@@ -158,7 +158,7 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
    return (
       <>
          <div className="flex flex-col gap-4">
-            <Card className="bg-background/35 gap-4 rounded-lg py-5 shadow-none">
+            <Card variant="settings" className="gap-4 py-5">
                <CardHeader className="px-5">
                   <CardTitle className="text-base">{t('settings.account.detailsTitle')}</CardTitle>
                </CardHeader>
@@ -336,7 +336,7 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
 
             {beforeActions}
 
-            <Card className="bg-background/35 gap-4 rounded-lg py-5 shadow-none">
+            <Card variant="settings" className="gap-4 py-5">
                <CardHeader className="px-5">
                   <CardTitle className="text-base">{t('settings.account.actionsTitle')}</CardTitle>
                </CardHeader>

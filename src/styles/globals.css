@@ -159,6 +159,8 @@
    /* only the colors that actually differ from light */
    --chart-grid: hsl(60 9.1% 97.8%);
    --score-accuracy-good: hsl(60 9.1% 97.8%);
+
+   --role-default: var(--foreground);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -292,7 +294,7 @@
    ::before,
    ::backdrop,
    ::file-selector-button {
-      border-color: var(--color-border, currentcolor);
+      border-color: var(--border, currentcolor);
    }
    body {
       background-color: var(--background);
@@ -364,6 +366,53 @@
    -webkit-background-clip: text;
 }
 
+.home-stat-feed {
+   mask-image: linear-gradient(to bottom, transparent, black 28%, black 72%, transparent);
+   -webkit-mask-image: linear-gradient(to bottom, transparent, black 28%, black 72%, transparent);
+}
+
+.home-stat-feed-tick {
+   animation: home-stat-feed-tick 1600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.home-news-scroll-fade-top {
+   mask-image: linear-gradient(to bottom, transparent 0%, black 4.25rem, black 100%);
+   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 4.25rem, black 100%);
+}
+
+.home-news-scroll-fade-bottom {
+   mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 4.25rem), transparent 100%);
+   -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 4.25rem), transparent 100%);
+}
+
+.home-news-scroll-fade-both {
+   mask-image: linear-gradient(to bottom, transparent 0%, black 4.25rem, black calc(100% - 4.25rem), transparent 100%);
+   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 4.25rem, black calc(100% - 4.25rem), transparent 100%);
+}
+
+@keyframes home-stat-feed-tick {
+   0% {
+      opacity: 0;
+      filter: blur(2px);
+      transform: translateY(0.55rem) scale(0.92);
+   }
+   18% {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(-50%) scale(1);
+   }
+   58% {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(-50%) scale(1);
+   }
+   100% {
+      opacity: 0;
+      filter: blur(1px);
+      transform: translateY(-1.25rem) scale(0.96);
+   }
+}
+
 .team-rainbow-border::before {
    content: '';
    position: absolute;
@@ -414,6 +463,75 @@
    to {
       height: 0;
       opacity: 0;
+   }
+}
+
+.home-brand-flicker-anchor {
+   display: inline-block;
+   isolation: isolate;
+   position: relative;
+}
+
+.home-brand-text {
+   text-shadow:
+      0 0 0.06em rgb(255 238 142 / 0.34),
+      0 0 0.16em rgb(255 198 56 / 0.18);
+}
+
+.home-brand-flicker-letter {
+   color: inherit;
+   display: inline-block;
+   position: relative;
+   transition:
+      color 36ms linear,
+      filter 36ms linear,
+      opacity 36ms linear;
+   z-index: 1;
+}
+
+.home-brand-flicker-letter.is-off {
+   color: #b88f28;
+   filter: brightness(0.82);
+   opacity: 0.9;
+   text-shadow: none;
+}
+
+.home-brand-sparks {
+   inset: -0.34em -0.48em;
+   overflow: visible;
+   pointer-events: none;
+   position: absolute;
+   z-index: 2;
+}
+
+.home-brand-spark {
+   animation: home-brand-spark var(--spark-duration, 320ms) ease-out var(--spark-delay, 0ms) forwards;
+   background: #ffe76f;
+   border-radius: 999px;
+   box-shadow:
+      0 0 6px rgb(255 244 148 / 1),
+      0 0 14px rgb(255 197 46 / 0.82);
+   height: var(--spark-size, 3px);
+   left: var(--spark-x, 50%);
+   position: absolute;
+   top: var(--spark-y, 50%);
+   transform: translate(-50%, -50%) rotate(var(--spark-angle, 0deg)) translateX(0) scale(0.45);
+   width: var(--spark-size, 3px);
+}
+
+@keyframes home-brand-spark {
+   0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--spark-angle, 0deg)) translateX(0) scale(0.35);
+   }
+
+   18% {
+      opacity: 1;
+   }
+
+   100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(var(--spark-angle, 0deg)) translateX(var(--spark-distance, 20px)) scale(0.08);
    }
 }
 

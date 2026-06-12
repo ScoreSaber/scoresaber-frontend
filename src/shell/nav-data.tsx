@@ -14,7 +14,7 @@ type InternalSecondaryItem = { key: NavKey; icon: React.ReactNode; route: AppNav
 type ExternalSecondaryItem = { key: NavKey; icon: React.ReactNode; href: string; external: true };
 
 export const navItems: NavItem[] = [
-   { key: 'home', shortKey: 'home', icon: <Home data-icon className="size-4" aria-hidden="true" />, route: 'home', disabled: true },
+   { key: 'home', shortKey: 'home', icon: <Home data-icon className="size-4" aria-hidden="true" />, route: 'home' },
    { key: 'maps', shortKey: 'maps', icon: <FaMap data-icon className="size-4 fill-current" aria-hidden="true" />, route: 'maps' },
    { key: 'rankings', shortKey: 'rankings', icon: <FaMedal data-icon className="size-4 fill-current" aria-hidden="true" />, route: 'rankings' },
    {
@@ -27,7 +27,7 @@ export const navItems: NavItem[] = [
 
 // bottom bar uses search instead of being in the main nav
 export const bottomBarItems: (NavItem | SearchNavItem)[] = [
-   { key: 'home', shortKey: 'home', icon: <Home data-icon className="size-4" aria-hidden="true" />, route: 'home', disabled: true },
+   { key: 'home', shortKey: 'home', icon: <Home data-icon className="size-4" aria-hidden="true" />, route: 'home' },
    { key: 'search', shortKey: 'search', icon: <Search data-icon className="size-4" aria-hidden="true" />, action: 'search' },
    { key: 'maps', shortKey: 'maps', icon: <FaMap data-icon className="size-4 fill-current" aria-hidden="true" />, route: 'maps' },
    { key: 'rankings', shortKey: 'rankings', icon: <FaMedal data-icon className="size-4 fill-current" aria-hidden="true" />, route: 'rankings' },
