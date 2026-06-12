@@ -3,6 +3,7 @@ import '@tanstack/react-start/server-only';
 import { Result, TaggedError } from 'better-result';
 import sanitizeHtml from 'sanitize-html';
 
+import { HOME_NEWS_YOUTUBE_CHANNEL_ID, HOME_NEWS_YOUTUBE_HANDLE } from '../home-constants';
 import type { HomeNewsFeed, HomeNewsPost, HomeNewsSource, HomeRankedBatchVideo } from './news';
 
 import { env } from '@/env';
@@ -139,7 +140,13 @@ async function fetchOptional<T>(source: SocialSource, load: () => Promise<T>, fa
          })
    });
 
-   return Result.unwrapOr(result, fallback);
+   return Result.match(result, {
+      ok: (value) => value,
+      err: (error) => {
+         console.warn('[home news]', error.message, error.cause);
+         return fallback;
+      }
+   });
 }
 
 async function fetchPatreonPosts(): Promise<HomeNewsPost[]> {
@@ -231,11 +238,10 @@ async function fetchXUserId() {
 async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
    if (!env.HOME_NEWS_YOUTUBE_API_KEY) return [];
 
-   const channelId = await fetchYouTubeChannelId();
    const url = new URL('https://www.googleapis.com/youtube/v3/search');
    url.searchParams.set('key', env.HOME_NEWS_YOUTUBE_API_KEY);
    url.searchParams.set('part', 'snippet');
-   url.searchParams.set('channelId', channelId);
+   url.searchParams.set('channelId', HOME_NEWS_YOUTUBE_CHANNEL_ID);
    url.searchParams.set('type', 'video');
    url.searchParams.set('order', 'date');
    url.searchParams.set('maxResults', String(NEWS_FEED_POST_LIMIT));
@@ -256,19 +262,6 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
          };
       })
       .filter((video) => video != null);
-}
-
-async function fetchYouTubeChannelId() {
-   const url = new URL('https://www.googleapis.com/youtube/v3/channels');
-   url.searchParams.set('key', env.HOME_NEWS_YOUTUBE_API_KEY ?? '');
-   url.searchParams.set('part', 'id');
-   url.searchParams.set('forHandle', env.HOME_NEWS_YOUTUBE_HANDLE);
-
-   const response = await fetchJson<{ items?: { id: string }[] }>('youtube', url);
-   const channelId = response.items?.[0]?.id;
-   if (!channelId) throw new Error('youtube channel not found');
-
-   return channelId;
 }
 
 // drop tweets that only relay content the feed already shows: patreon posts or the ranked batch video
@@ -325,7 +318,7 @@ async function fetchJson<T>(source: SocialSource, url: URL, init?: RequestInit) 
          source,
          message: `${source} request failed (${response.status})`,
          cause: {
-            url: url.toString(),
+            url: redactedUrl(url),
             status: response.status,
             statusText: response.statusText
          }
@@ -352,8 +345,8 @@ function toYouTubePost(video: YouTubeVideo): HomeNewsPost {
    return {
       id: `youtube:${video.id}`,
       source: 'youtube',
-      sourceLabel: env.HOME_NEWS_YOUTUBE_HANDLE,
-      sourceHref: `https://www.youtube.com/${env.HOME_NEWS_YOUTUBE_HANDLE}`,
+      sourceLabel: HOME_NEWS_YOUTUBE_HANDLE,
+      sourceHref: `https://www.youtube.com/${HOME_NEWS_YOUTUBE_HANDLE}`,
       title: video.title,
       body: wordExcerpt(video.description, YOUTUBE_POST_BODY_WORD_LIMIT),
       href: youtubeWatchUrl(video.id),
@@ -452,6 +445,15 @@ function getYouTubeVideoId(value: string) {
 
 function parseUrl(value: string) {
    return URL.canParse(value) ? new URL(value) : null;
+}
+
+function redactedUrl(url: URL) {
+   const redacted = new URL(url);
+   if (redacted.searchParams.has('key')) {
+      redacted.searchParams.set('key', '[redacted]');
+   }
+
+   return redacted.toString();
 }
 
 function youtubeWatchUrl(id: string) {
