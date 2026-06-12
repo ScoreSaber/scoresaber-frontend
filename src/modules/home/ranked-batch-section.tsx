@@ -2,16 +2,14 @@ import { ExternalLink, Play } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import type { HomeRankedBatchVideo } from './actions/news';
-import { HOME_BANNER_SRC } from './home-constants';
+import { HOME_BANNER_SRC, HOME_NEWS_YOUTUBE_HANDLE } from './home-constants';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-import { env } from '@/env';
-
 export function RankedBatchSection({ video }: { video: HomeRankedBatchVideo | null }) {
    const t = useTranslations('home');
-   const watchHref = video?.href ?? `https://youtube.com/${env.HOME_NEWS_YOUTUBE_HANDLE}`;
+   const watchHref = video?.href ?? `https://youtube.com/${HOME_NEWS_YOUTUBE_HANDLE}`;
 
    return (
       <Card variant="settings" className="gap-0 overflow-hidden border-white/20 py-0 md:flex-row">
