@@ -23,6 +23,7 @@ interface MapCardProps {
    compact?: boolean;
    variant?: 'default' | 'home';
    background?: 'default' | 'transparent';
+   coverPriority?: boolean;
 }
 
 export function MapCard({
@@ -33,7 +34,8 @@ export function MapCard({
    showChips = true,
    compact = false,
    variant = 'default',
-   background
+   background,
+   coverPriority = false
 }: MapCardProps) {
    const t = useTranslations();
    const linkSearch = usePersistedLeaderboardSearch();
@@ -65,6 +67,7 @@ export function MapCard({
          compact={compact}
          showMappedAt={!homeVariant}
          background={background}
+         coverPriority={coverPriority}
          coverBadge={
             homeVariant && map.bsid ? (
                <a

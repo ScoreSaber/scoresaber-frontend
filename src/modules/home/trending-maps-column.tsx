@@ -15,7 +15,15 @@ export function TrendingMapsColumn({ maps }: { maps: MapControllerGetMapListings
    return (
       <div className="flex min-h-0 flex-1 flex-col gap-2.5">
          {maps.map((map) => (
-            <MapCard key={map.id} map={map} compact variant="home" background="transparent" className="min-h-0 flex-1 rounded-lg border-white/20" />
+            <MapCard
+               key={map.id}
+               map={map}
+               compact
+               variant="home"
+               background="transparent"
+               coverPriority
+               className="min-h-0 flex-1 rounded-lg border-white/20"
+            />
          ))}
       </div>
    );

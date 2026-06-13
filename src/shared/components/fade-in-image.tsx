@@ -21,8 +21,20 @@ type FadeInImageProps = Omit<ComponentProps<'img'>, 'ref'> & {
 
 const FILL_STYLE: CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%' };
 
-function FadeInImageImpl({ className, onLoad, fill, sizes: _sizes, unoptimized: _unoptimized, priority, style, alt, ...props }: FadeInImageProps) {
-   const [isLoaded, setIsLoaded] = useState(false);
+function FadeInImageImpl({
+   className,
+   onLoad,
+   fill,
+   sizes: _sizes,
+   unoptimized: _unoptimized,
+   priority,
+   style,
+   alt,
+   loading,
+   fetchPriority,
+   ...props
+}: FadeInImageProps) {
+   const [isLoaded, setIsLoaded] = useState(() => priority === true);
    const imgRef = useRef<HTMLImageElement>(null);
 
    // pull rounded-* classes so the skeleton matches
@@ -52,7 +64,8 @@ function FadeInImageImpl({ className, onLoad, fill, sizes: _sizes, unoptimized: 
             {...props}
             alt={alt}
             ref={imgRef}
-            loading={priority ? 'eager' : undefined}
+            loading={priority ? 'eager' : loading}
+            fetchPriority={priority ? 'high' : fetchPriority}
             style={mergedStyle}
             className={cn(className, 'transition-opacity duration-300', isLoaded ? 'opacity-100' : 'opacity-0')}
             onLoad={(e) => {

@@ -1,7 +1,7 @@
 'use client';
 
 import type { SubmitEvent } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
@@ -43,7 +43,10 @@ export function PasswordLoginForm({
    const t = useTranslations();
    const router = useRouter();
    const [mode, setMode] = useState<'login' | 'reset'>(initialMode);
-   const [password, setPassword] = useState('');
+   const loginPasswordInputRef = useRef<HTMLInputElement>(null);
+   const hasLoginPasswordRef = useRef(false);
+   const [hasLoginPassword, setHasLoginPassword] = useState(false);
+   const [resetPassword, setResetPassword] = useState('');
    const [feedback, setFeedback] = useState<FeedbackState>(null);
    const [supportRequired, setSupportRequired] = useState(false);
 
@@ -60,7 +63,7 @@ export function PasswordLoginForm({
    const { email, setEmail, code, setCode, challenge, clearChallenge, resendSeconds, expirySeconds, startMutation, verifyMutation } =
       useEmailChallenge<ChallengeState, CredentialAuthActionValue>({
          start: async (email) => unwrapAction(await startPasswordReset(email)),
-         verify: async (challengeId, code, email) => unwrapAction(await completePasswordReset({ email, challengeId, code, password })),
+         verify: async (challengeId, code, email) => unwrapAction(await completePasswordReset({ email, challengeId, code, password: resetPassword })),
          missingChallengeMessage: t('login.email.missingChallenge'),
          onStartMutate: () => setFeedback(null),
          onStarted: () =>
@@ -86,7 +89,7 @@ export function PasswordLoginForm({
       });
 
    const loginMutation = useMutation({
-      mutationFn: async () => unwrapAction(await loginWithPassword({ email, password })),
+      mutationFn: async (credentials: { email: string; password: string }) => unwrapAction(await loginWithPassword(credentials)),
       onMutate: () => setFeedback(null),
       onSuccess: onAuthenticated,
       onError: (error) =>
@@ -99,16 +102,35 @@ export function PasswordLoginForm({
 
    const pending = loginMutation.isPending || startMutation.isPending || verifyMutation.isPending;
 
+   const syncHasLoginPassword = (value: string) => {
+      const nextHasPassword = value.length > 0;
+
+      if (hasLoginPasswordRef.current === nextHasPassword) return;
+
+      hasLoginPasswordRef.current = nextHasPassword;
+      setHasLoginPassword(nextHasPassword);
+   };
+
+   const clearLoginPassword = () => {
+      if (loginPasswordInputRef.current) loginPasswordInputRef.current.value = '';
+
+      if (!hasLoginPasswordRef.current) return;
+
+      hasLoginPasswordRef.current = false;
+      setHasLoginPassword(false);
+   };
+
    const switchMode = (nextMode: 'login' | 'reset') => {
       setMode(nextMode);
-      setPassword('');
+      clearLoginPassword();
+      setResetPassword('');
       setFeedback(null);
       clearChallenge();
    };
 
    function submitLogin(event: SubmitEvent<HTMLFormElement>) {
       event.preventDefault();
-      loginMutation.mutate();
+      loginMutation.mutate({ email, password: loginPasswordInputRef.current?.value ?? '' });
    }
 
    function submitResetEmail(event: SubmitEvent<HTMLFormElement>) {
@@ -146,13 +168,13 @@ export function PasswordLoginForm({
                   <Input
                      id="password-login-password"
                      type="password"
-                     value={password}
+                     ref={loginPasswordInputRef}
                      autoComplete="current-password"
                      disabled={pending}
-                     onChange={(event) => setPassword(event.target.value)}
+                     onChange={(event) => syncHasLoginPassword(event.target.value)}
                   />
                </div>
-               <Button type="submit" disabled={!email || !password || pending} className="cursor-pointer">
+               <Button type="submit" disabled={!email || !hasLoginPassword || pending} className="cursor-pointer">
                   {loginMutation.isPending ? <Loader2 data-icon="inline-start" className="animate-spin" /> : <KeyRound data-icon="inline-start" />}
                   {t('login.password.submit')}
                </Button>
@@ -228,16 +250,16 @@ export function PasswordLoginForm({
                         <Input
                            id="password-reset-password"
                            type="password"
-                           value={password}
+                           value={resetPassword}
                            autoComplete="new-password"
                            minLength={10}
                            maxLength={128}
                            disabled={pending}
-                           onChange={(event) => setPassword(event.target.value)}
+                           onChange={(event) => setResetPassword(event.target.value)}
                         />
                         <p className="text-muted-foreground text-xs">{t('login.password.passwordHelp')}</p>
                      </div>
-                     <Button type="submit" disabled={code.length !== 6 || password.length < 10 || pending} className="cursor-pointer">
+                     <Button type="submit" disabled={code.length !== 6 || resetPassword.length < 10 || pending} className="cursor-pointer">
                         {verifyMutation.isPending ? (
                            <Loader2 data-icon="inline-start" className="animate-spin" />
                         ) : (

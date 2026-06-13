@@ -224,9 +224,19 @@ interface RankingItemProps {
    highlight?: string;
    variant?: 'default' | 'summary';
    className?: string;
+   avatarPriority?: boolean;
 }
 
-export function RankingCard({ player, countryFiltered, isDefaultSort, listPosition, highlight, variant = 'default', className }: RankingItemProps) {
+export function RankingCard({
+   player,
+   countryFiltered,
+   isDefaultSort,
+   listPosition,
+   highlight,
+   variant = 'default',
+   className,
+   avatarPriority
+}: RankingItemProps) {
    const router = useRouter();
    const isHighlighted = highlight === player.id;
    const ref = useRef<HTMLDivElement>(null);
@@ -254,7 +264,13 @@ export function RankingCard({ player, countryFiltered, isDefaultSort, listPositi
          onMouseEnter={() => router.preloadRoute({ to: '/u/$playerId', params: { playerId: player.id } })}
       >
          {variant === 'summary' ? (
-            <RankingCardSummary player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
+            <RankingCardSummary
+               player={player}
+               countryFiltered={countryFiltered}
+               isDefaultSort={isDefaultSort}
+               listPosition={listPosition}
+               avatarPriority={avatarPriority}
+            />
          ) : (
             <RankingCardDefault player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
          )}
@@ -291,7 +307,7 @@ function RankingCardDefault({ player, countryFiltered, isDefaultSort, listPositi
    );
 }
 
-function RankingCardSummary({ player, countryFiltered, isDefaultSort, listPosition }: RankingItemProps) {
+function RankingCardSummary({ player, countryFiltered, isDefaultSort, listPosition, avatarPriority }: RankingItemProps) {
    const stats = player.stats;
 
    return (
@@ -303,6 +319,7 @@ function RankingCardSummary({ player, countryFiltered, isDefaultSort, listPositi
             alt={player.name}
             width={32}
             height={32}
+            priority={avatarPriority}
             className={cn('rounded-full', player.inactive && 'opacity-50 grayscale')}
          />
          <div className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2">

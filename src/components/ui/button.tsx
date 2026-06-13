@@ -6,7 +6,7 @@ import { Slot } from 'radix-ui';
 import { cn } from '@/shared/format/helpers';
 
 const buttonVariants = cva(
-   "inline-flex cursor-default items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[background-color,color,border-color,opacity,box-shadow,scale] duration-150 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive active:scale-[0.96] data-[slot=dropdown-menu-trigger]:active:!scale-100 data-[slot=popover-trigger]:active:!scale-100",
+   "inline-flex cursor-default touch-manipulation items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[background-color,color,border-color,opacity,box-shadow,scale] duration-150 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive active:scale-[0.96] data-[slot=dropdown-menu-trigger]:active:!scale-100 data-[slot=popover-trigger]:active:!scale-100",
    {
       variants: {
          variant: {

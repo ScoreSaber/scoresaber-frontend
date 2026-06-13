@@ -33,6 +33,7 @@ interface SongCardProps {
    compact?: boolean;
    showMappedAt?: boolean;
    background?: 'default' | 'transparent';
+   coverPriority?: boolean;
 }
 
 export function SongCard({
@@ -53,7 +54,8 @@ export function SongCard({
    className,
    compact = false,
    showMappedAt = true,
-   background = 'default'
+   background = 'default',
+   coverPriority = false
 }: SongCardProps) {
    const tc = useTranslations('common');
    const accent = <div className={cn('absolute top-0 bottom-0 left-0 z-30 w-0.75', accentTooltip && 'cursor-help', accentClass)} />;
@@ -92,7 +94,7 @@ export function SongCard({
                compact ? 'h-14 w-14' : 'h-18 w-18 md:h-21.5 md:w-21.5'
             )}
          >
-            <FadeInImage src={coverUrl} alt={songName} fill className="object-cover" sizes={compact ? '56px' : '86px'} />
+            <FadeInImage src={coverUrl} alt={songName} fill className="object-cover" sizes={compact ? '56px' : '86px'} priority={coverPriority} />
             {coverBadge && <div className="absolute right-0.75 bottom-0.75 left-0.75 z-10 flex justify-center">{coverBadge}</div>}
          </div>
 

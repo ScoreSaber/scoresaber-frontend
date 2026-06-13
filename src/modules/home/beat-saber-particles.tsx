@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { Engine, ISourceOptions } from '@tsparticles/engine';
+import { loadBasic } from '@tsparticles/basic';
+import type { Container, Engine, ISourceOptions } from '@tsparticles/engine';
 import { Particles, ParticlesProvider } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
 
 import { cn } from '@/shared/format/helpers';
 
@@ -17,18 +17,8 @@ const PARTICLE_OPTIONS = {
    fullScreen: {
       enable: false
    },
-   interactivity: {
-      events: {
-         onClick: {
-            enable: false
-         },
-         onHover: {
-            enable: false
-         },
-         resize: {
-            enable: true
-         }
-      }
+   resize: {
+      enable: true
    },
    particles: {
       color: {
@@ -124,7 +114,7 @@ const STATIC_PARTICLE_OPTIONS = {
 } satisfies ISourceOptions;
 
 async function loadParticles(engine: Engine) {
-   await loadSlim(engine);
+   await loadBasic(engine);
 }
 
 function prefersReducedMotion() {
@@ -134,21 +124,55 @@ function prefersReducedMotion() {
 export function BeatSaberParticles() {
    const [options] = useState(() => (prefersReducedMotion() ? STATIC_PARTICLE_OPTIONS : PARTICLE_OPTIONS));
    const [loaded, setLoaded] = useState(false);
-   const handleLoaded = useCallback(() => {
+   const containerRef = useRef<Container | null>(null);
+   const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+   const handleLoaded = useCallback((container?: Container) => {
+      if (container) {
+         containerRef.current = container;
+      }
+
       setLoaded(true);
    }, []);
 
+   useEffect(() => {
+      const container = containerRef.current;
+      const wrapper = wrapperRef.current;
+
+      if (!loaded || !container || !wrapper || typeof IntersectionObserver === 'undefined') {
+         return;
+      }
+
+      const observer = new IntersectionObserver(([entry]) => {
+         if (container.destroyed || !entry) {
+            return;
+         }
+
+         if (entry.isIntersecting) {
+            container.play();
+         } else {
+            container.pause();
+         }
+      });
+
+      observer.observe(wrapper);
+
+      return () => {
+         observer.disconnect();
+      };
+   }, [loaded]);
+
    return (
       <ParticlesProvider init={loadParticles}>
-         <Particles
-            id="home-beat-saber-particles"
+         <div
+            ref={wrapperRef}
             className={cn(
-               'absolute inset-0 opacity-0 transition-opacity duration-1000 ease-out motion-reduce:transition-none',
+               'pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-1000 ease-out motion-reduce:transition-none',
                loaded && 'opacity-85'
             )}
-            options={options}
-            particlesLoaded={handleLoaded}
-         />
+         >
+            <Particles id="home-beat-saber-particles" className="absolute inset-0" options={options} particlesLoaded={handleLoaded} />
+         </div>
       </ParticlesProvider>
    );
 }

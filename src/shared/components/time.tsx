@@ -1,7 +1,7 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { useLocale, useTranslations } from 'use-intl';
 
@@ -43,14 +43,9 @@ export function Time({
    minShortFitScale
 }: TimeProps) {
    const dateObj = date == null ? null : new Date(date);
-   const [mounted, setMounted] = useState(false);
    const locale = useLocale();
    const t = useTranslations('common');
    const formatters = useMemo(() => createTimeFormatters(locale), [locale]);
-
-   useEffect(() => {
-      setMounted(true);
-   }, []);
 
    if (!dateObj || isNaN(dateObj.getTime())) {
       return <span className={className}>{t('unknownDate')}</span>;
@@ -75,7 +70,7 @@ export function Time({
       );
    }
 
-   const displayText = mounted ? timeAgo(dateObj, short, formatters, t('justNow')) : formatters.shortDate.format(dateObj);
+   const displayText = timeAgo(dateObj, short, formatters, t('justNow'));
    const canFitShortTime = short && !!longRelativeClassName;
    const longShortTimeClassName = canFitShortTime && displayText.length > LONG_SHORT_TIME_LENGTH ? longRelativeClassName : undefined;
    const shortTimeStyle = getShortTimeStyle(displayText, canFitShortTime, shortFitTargetLength, minShortFitScale);

@@ -22,6 +22,7 @@ export function TopPlayersColumn({ players }: { players: PlayerControllerGetPlay
                isDefaultSort
                listPosition={index + 1}
                variant="summary"
+               avatarPriority
                className="flex-1 justify-center border-white/20"
             />
          ))}
