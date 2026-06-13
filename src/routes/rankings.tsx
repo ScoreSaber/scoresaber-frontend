@@ -11,7 +11,7 @@ import {
    PLAYER_CONTROLLER_GET_PLAYERS_SORT,
    PLAYER_CONTROLLER_GET_PLAYERS_SORT_DIRECTION
 } from '@/shared/api/generated/ApiParams';
-import { api } from '@/shared/api/server-api';
+import { api, publicApi } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { PaginationArrows } from '@/shared/components/pagination';
 import { countryRegionSearchSchema, formatCountryRegionParam } from '@/shared/country-region';
@@ -58,8 +58,9 @@ const getRankingsPageData = createServerFn({ method: 'GET' })
          readPersistedSearchStorage(rankingFilterPreferences.storageKey)
       ]);
       const searchParams = rankingsSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
+      const apiClient = searchParams.pivot ? api : publicApi;
       const result = await pageApiData(
-         api.player.playerControllerGetPlayers({
+         apiClient.player.playerControllerGetPlayers({
             page: searchParams.page,
             search: searchParams.search,
             countries: formatCountryRegionParam(searchParams.countries),

@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Result } from 'better-result';
 
 import { fetchQuestReleases } from '@/modules/quest/lib/releases';
+import { publicCacheControl } from '@/shared/cache-control';
 
 export const Route = createFileRoute('/quest/versions')({
    server: {
@@ -19,7 +20,7 @@ async function listQuestVersions() {
             { releases },
             {
                headers: {
-                  'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600'
+                  'Cache-Control': publicCacheControl({ sMaxAge: 1800, staleWhileRevalidate: 3600 })
                }
             }
          ),

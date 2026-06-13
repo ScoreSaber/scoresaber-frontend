@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 
 import { RankRequestCard } from '@/modules/rank-requests/rank-request-card';
 import { RankRequestFilters } from '@/modules/rank-requests/rank-request-filters';
-import { api } from '@/shared/api/server-api';
+import { publicApi } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { Pagination } from '@/shared/components/pagination';
 import { pageApiData } from '@/shared/result/api';
@@ -50,7 +50,7 @@ const getRankRequestsPageData = createServerFn({ method: 'GET' })
       });
       const searchParams = rankRequestsSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
       const result = await pageApiData(
-         api.ranking.rankingControllerGetRequests({
+         publicApi.ranking.rankingControllerGetRequests({
             page: searchParams.page,
             limit: 24
          })

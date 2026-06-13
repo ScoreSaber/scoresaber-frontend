@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 
 import { legacyLeaderboardSearchParams, parseLegacyRouteId } from '../-redirects';
 
-import { api } from '@/shared/api/server-api';
+import { publicApi } from '@/shared/api/server-api';
 import { optionalApiData } from '@/shared/result/api';
 
 const getLegacyLeaderboardRedirect = createServerFn({ method: 'GET' })
@@ -12,7 +12,7 @@ const getLegacyLeaderboardRedirect = createServerFn({ method: 'GET' })
       const id = parseLegacyRouteId(data.leaderboardId);
       if (!id) return { name: 'maps' } as const;
 
-      const leaderboard = await optionalApiData(api.leaderboard.leaderboardControllerGetLeaderboardById({ id }));
+      const leaderboard = await optionalApiData(publicApi.leaderboard.leaderboardControllerGetLeaderboardById({ id }));
       if (!leaderboard) return { name: 'maps' } as const;
 
       return {

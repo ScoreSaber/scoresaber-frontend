@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 
 import { parseLegacyRouteId } from '@/routes/(legacy)/-redirects';
-import { api } from '@/shared/api/server-api';
+import { publicApi } from '@/shared/api/server-api';
 import { optionalApiData } from '@/shared/result/api';
 
 const getRankRequestRedirect = createServerFn({ method: 'GET' })
@@ -11,7 +11,7 @@ const getRankRequestRedirect = createServerFn({ method: 'GET' })
       const id = parseLegacyRouteId(data.requestId);
       if (!id) return { name: 'rankRequests' } as const;
 
-      const request = await optionalApiData(api.ranking.rankingControllerGetRequestById({ id }));
+      const request = await optionalApiData(publicApi.ranking.rankingControllerGetRequestById({ id }));
       if (!request) return { name: 'rankRequests' } as const;
 
       const leaderboard = request.difficulties[0]?.leaderboard;

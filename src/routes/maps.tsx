@@ -9,7 +9,7 @@ import {
    MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION,
    MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS
 } from '@/shared/api/generated/ApiParams';
-import { api } from '@/shared/api/server-api';
+import { publicApi } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { Pagination } from '@/shared/components/pagination';
 import { pageApiData } from '@/shared/result/api';
@@ -62,7 +62,7 @@ const getMapsPageData = createServerFn({ method: 'GET' })
       const persistedStorage = await readPersistedSearchStorage(mapFilterPreferences.storageKey);
       const statuses = parseMapListingStatuses(searchParams.status);
       const result = await pageApiData(
-         api.map.mapControllerGetMapListings({
+         publicApi.map.mapControllerGetMapListings({
             page: searchParams.page ?? 1,
             search: searchParams.search,
             status: statuses.length > 0 ? statuses : undefined,

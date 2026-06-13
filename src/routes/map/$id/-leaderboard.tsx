@@ -8,7 +8,7 @@ import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderbo
 import { getDisplayLeaderboards } from '@/modules/maps/map-leaderboards';
 import { getDefaultMapLeaderboardId, getRankRequestDisplayStatus, getRankRequestStatusLabel } from '@/modules/rank-requests/lib/model';
 import { LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT, type MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
-import { api } from '@/shared/api/server-api';
+import { api, publicApi } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { countryRegionSearchSchema, formatCountryRegionParam } from '@/shared/country-region';
 import { formatStars } from '@/shared/format/helpers';
@@ -59,7 +59,8 @@ export const getMapLeaderboardPageData = createServerFn({ method: 'GET' })
       const result = await loadMapLeaderboardPageData({
          mapId: data.mapId,
          leaderboardId: data.leaderboardId,
-         searchParams
+         searchParams,
+         hasSession: Boolean(token)
       });
 
       return { result, searchParams };
@@ -156,14 +157,18 @@ export function buildMapLeaderboardHead(
 async function loadMapLeaderboardPageData({
    mapId,
    leaderboardId,
-   searchParams
+   searchParams,
+   hasSession
 }: {
    mapId: number;
    leaderboardId?: number;
    searchParams: MapLeaderboardSearch;
+   hasSession: boolean;
 }) {
    const page = searchParams.page ?? 1;
-   const mapResult = await pageApiData(api.map.mapControllerGetMapById({ id: mapId }));
+   const mapApi = hasSession ? api : publicApi;
+   const scoreApi = searchParams.pivot ? api : publicApi;
+   const mapResult = await pageApiData(mapApi.map.mapControllerGetMapById({ id: mapId }));
    if (!mapResult.ok) return mapResult;
 
    const mapInfo = mapResult.data;
@@ -171,10 +176,10 @@ async function loadMapLeaderboardPageData({
 
    const shouldLoadScores = searchParams.tab !== 'rank-request' || mapInfo.rankRequest == null;
    const [leaderboardInfoResult, leaderboardScores] = await Promise.all([
-      pageApiData(api.leaderboard.leaderboardControllerGetLeaderboardById({ id: activeLeaderboardId })),
+      pageApiData(publicApi.leaderboard.leaderboardControllerGetLeaderboardById({ id: activeLeaderboardId })),
       shouldLoadScores
          ? optionalApiData(
-              api.leaderboard.leaderboardControllerGetLeaderboardScoresById({
+              scoreApi.leaderboard.leaderboardControllerGetLeaderboardScoresById({
                  id: activeLeaderboardId,
                  page,
                  search: searchParams.search,

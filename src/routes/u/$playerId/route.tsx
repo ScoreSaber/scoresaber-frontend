@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 import { Separator } from '@/components/ui/separator';
 
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-chart-lazy';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
@@ -16,7 +17,7 @@ import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
 import { PlayerScoresToolbar } from '@/modules/player/profile/player-scores-toolbar';
 import { versionedAvatarUrl } from '@/modules/player/shared/player-avatar';
 import type { PlayerControllerGetPlayerScoresSort } from '@/shared/api/generated/ApiParams';
-import { api } from '@/shared/api/server-api';
+import { api, publicApi } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
 import { PageError } from '@/shared/components/error/page-error';
 import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
@@ -55,9 +56,11 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
    .inputValidator((data: PlayerProfileRouteInput) => data)
    .handler(async ({ data }) => {
       const numericId = isPlayerId.safeParse(data.playerId);
+      const token = readAuthCookie();
+      const aliasApi = token ? api : publicApi;
       const playerResult = numericId.success
-         ? await pageApiData(api.player.playerControllerGetPlayer({ id: numericId.data.toString() }))
-         : await pageApiData(api.player.playerControllerGetPlayerByVanity({ slug: data.playerId.toLowerCase() }));
+         ? await pageApiData(publicApi.player.playerControllerGetPlayer({ id: numericId.data.toString() }))
+         : await pageApiData(publicApi.player.playerControllerGetPlayerByVanity({ slug: data.playerId.toLowerCase() }));
 
       if (!playerResult.ok) {
          return {
@@ -76,7 +79,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
 
       const [scores, history, aliases] = await Promise.all([
          optionalApiData(
-            api.player.playerControllerGetPlayerScores({
+            publicApi.player.playerControllerGetPlayerScores({
                id: apiPlayerId,
                limit: 8,
                page: data.search.page ?? 1,
@@ -84,8 +87,8 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
                search: data.search.search
             })
          ),
-         optionalApiData(api.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
-         optionalApiData(api.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId }))
+         optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
+         optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId }))
       ]);
 
       return {

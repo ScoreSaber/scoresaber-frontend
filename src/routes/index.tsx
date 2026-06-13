@@ -15,7 +15,7 @@ import { RankedBatchSection } from '@/modules/home/ranked-batch-section';
 import { TopPlayersColumn } from '@/modules/home/top-players-column';
 import { TrendingMapsColumn } from '@/modules/home/trending-maps-column';
 import type { MapControllerGetMapListingsDataItem, PlayerControllerGetPlayersDataItem } from '@/shared/api/generated/ApiParams';
-import { api } from '@/shared/api/server-api';
+import { publicApi } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
 
@@ -32,7 +32,7 @@ type HomePageData = {
 const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Promise<HomePageData> => {
    const [playersResponse, mapsResponse, news] = await Promise.all([
       optionalApi(
-         api.player
+         publicApi.player
             .playerControllerGetPlayers({
                page: 1,
                limit: TOP_PLAYER_COUNT,
@@ -43,7 +43,7 @@ const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Prom
             .then((response) => response.data)
       ),
       optionalApi(
-         api.map
+         publicApi.map
             .mapControllerGetMapListings({
                page: 1,
                limit: TRENDING_MAP_COUNT,
