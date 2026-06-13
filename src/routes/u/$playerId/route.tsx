@@ -215,21 +215,27 @@ export function buildPlayerProfileHead(loaderData: Awaited<ReturnType<typeof get
 
    const player = loaderData.result.data;
    const { stats } = player;
-   const globalRank = `Global #${formatNumber(stats.rank)}`;
-   const countryRank = `${player.country.toUpperCase()} #${formatNumber(stats.countryRank)}`;
+   const globalRank = `${String.fromCodePoint(0x1f30d)} #${formatNumber(stats.rank)} Global`;
+   const countryRank = `${getFlagEmoji(player.country)} #${formatNumber(stats.countryRank)} ${player.country.toUpperCase()}`;
 
    return playerProfileHead(`${player.name}'s Profile`, {
-      ogTitle: `${player.name}'s Profile`,
+      ogTitle: `${player.name}'s profile`,
       image: versionedAvatarUrl(player.avatar, player.avatarVersion),
       path: `/u/${player.id}`,
       noindex: player.banned,
       description: [
-         globalRank,
-         countryRank,
-         `${formatPP(stats.totalPP)}pp`,
-         `${formatAccuracy(stats.averageAccuracy)} average ranked accuracy`,
-         `${formatNumber(stats.totalReplayViews)} replay views`
+         `${globalRank} / ${countryRank}`,
+         `Performance Points: ${formatPP(stats.totalPP)}pp`,
+         `Average Ranked Accuracy: ${formatAccuracy(stats.averageAccuracy)}`,
+         `Replay Views: ${formatNumber(stats.totalReplayViews)}`
       ].join('\n')
+   });
+}
+
+function getFlagEmoji(countryCode: string) {
+   return countryCode.toLowerCase().replace(/[a-z]/g, (char) => {
+      const codePoint = char.codePointAt(0);
+      return codePoint ? String.fromCodePoint(codePoint - 97 + 0x1f1e6) : '';
    });
 }
 
