@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useReducer } from 'react';
 
-import { analyzeImage, pickBestBackground, type ScoredImage } from './analyze-background';
+import { analyzeImage, type ScoredImage } from './analyze-background';
 
 import { Image } from '@/shared/components/image';
 import { BackgroundDebugPanel } from '@/shell/background/page-background-debug';
@@ -10,6 +10,7 @@ import { BackgroundDebugPanel } from '@/shell/background/page-background-debug';
 const BASE_OPACITY = 0.2;
 const FADE_MS = 700;
 const CLEANUP_MS = 1000;
+const MAX_DEBUG_BACKGROUND_CANDIDATES = 8;
 
 interface Layer {
    id: string;
@@ -34,6 +35,7 @@ interface PageBackgroundState {
 type PageBackgroundAction =
    | { type: 'request-start'; requestKey: string }
    | { type: 'analysis-complete'; requestKey: string; results: ScoredImage[]; pick: ScoredImage; layerId: string }
+   | { type: 'debug-results-complete'; requestKey: string; results: ScoredImage[] }
    | { type: 'transition'; src: string; intensity: number; layerId: string }
    | { type: 'loaded'; src: string }
    | { type: 'fade-in'; src: string }
@@ -50,7 +52,7 @@ const initialState: PageBackgroundState = {
 // the src via SetPageBackground from page-background-provider.
 export function PageBackground({ src, candidates, debugPanel }: PageBackgroundProps) {
    const [{ layers, debugResults }, dispatch] = useReducer(pageBackgroundReducer, initialState);
-   const requestKey = JSON.stringify([src, candidates ?? []]);
+   const requestKey = JSON.stringify([src, debugPanel ? (candidates ?? []) : []]);
 
    const transition = useCallback((url: string, intensity: number) => {
       dispatch({ type: 'transition', src: url, intensity, layerId: Math.random().toString(36).slice(2) });
@@ -62,20 +64,21 @@ export function PageBackground({ src, candidates, debugPanel }: PageBackgroundPr
       dispatch({ type: 'request-start', requestKey });
 
       async function analyze() {
-         if (!candidates || candidates.length <= 1) {
-            const result = await analyzeImage(src);
-            if (cancelled) return;
+         const result = await analyzeImage(src);
+         if (cancelled) return;
 
-            const pick = { url: src, ...result };
-            dispatch({ type: 'analysis-complete', requestKey, results: [pick], pick, layerId: Math.random().toString(36).slice(2) });
+         const pick = { url: src, ...result };
+         dispatch({ type: 'analysis-complete', requestKey, results: [pick], pick, layerId: Math.random().toString(36).slice(2) });
+
+         if (!debugPanel || !candidates || candidates.length <= 1) {
             return;
          }
 
-         const results = await pickBestBackground(candidates);
+         // candidate scoring is debug-only so list pages do not re-load every image for canvas analysis.
+         const results = await scoreDebugCandidates(src, candidates, pick);
          if (cancelled || results.length === 0) return;
 
-         const pick = results[Math.floor(Math.random() * Math.min(4, results.length))];
-         dispatch({ type: 'analysis-complete', requestKey, results, pick, layerId: Math.random().toString(36).slice(2) });
+         dispatch({ type: 'debug-results-complete', requestKey, results });
       }
 
       void analyze();
@@ -148,6 +151,9 @@ function pageBackgroundReducer(state: PageBackgroundState, action: PageBackgroun
             debugResults: action.results,
             layers: addTransitionLayer(state.layers, action.pick.url, action.pick.intensity, action.layerId)
          };
+      case 'debug-results-complete':
+         if (state.requestKey !== action.requestKey) return state;
+         return { ...state, debugResults: action.results };
       case 'transition':
          return { ...state, layers: addTransitionLayer(state.layers, action.src, action.intensity, action.layerId) };
       case 'loaded':
@@ -169,4 +175,11 @@ function addTransitionLayer(layers: Layer[], src: string, intensity: number, lay
    }
 
    return [...layers, { id: layerId, src, opacity: 0, loaded: false, intensity }];
+}
+
+async function scoreDebugCandidates(src: string, candidates: string[], srcResult: ScoredImage) {
+   const urls = Array.from(new Set([src, ...candidates])).slice(0, MAX_DEBUG_BACKGROUND_CANDIDATES);
+   const results = await Promise.all(urls.map(async (url) => (url === src ? srcResult : { url, ...(await analyzeImage(url)) })));
+   results.sort((a, b) => b.score - a.score);
+   return results;
 }
