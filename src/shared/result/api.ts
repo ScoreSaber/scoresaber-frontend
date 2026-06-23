@@ -91,7 +91,7 @@ function toApiError(cause: unknown) {
 
    if (status === 404) {
       return new ApiNotFoundError({
-         message: 'resource not found',
+         message: getApiNotFoundMessage(cause),
          cause
       });
    }
@@ -106,6 +106,11 @@ function toApiError(cause: unknown) {
 function getApiStatus(cause: unknown) {
    if (typeof cause !== 'object' || cause == null || !('status' in cause)) return null;
    return typeof cause.status === 'number' ? cause.status : null;
+}
+
+function getApiNotFoundMessage(cause: unknown) {
+   const message = getApiMessage(cause);
+   return message === 'request failed' ? 'resource not found' : message;
 }
 
 function getApiMessage(cause: unknown) {

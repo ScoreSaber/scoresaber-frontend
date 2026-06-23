@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useAuth } from '@/modules/auth';
+import { canUseLivePlatform } from '@/modules/live/lib/permissions';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { useOmniSearch } from '@/modules/search/search-provider';
 import { Image } from '@/shared/components/image';
@@ -61,12 +62,16 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                      ? tNav('nav.wiki')
                      : key === 'feedbackHub'
                        ? tNav('nav.feedbackHub')
-                       : key === 'questInstaller'
-                         ? tNav('nav.questInstaller')
-                         : key === 'team'
-                           ? tNav('nav.team')
-                           : tNav('nav.apiDocs');
+                       : key === 'livePlatform'
+                         ? tNav('nav.livePlatform')
+                         : key === 'questInstaller'
+                           ? tNav('nav.questInstaller')
+                           : key === 'team'
+                             ? tNav('nav.team')
+                             : tNav('nav.apiDocs');
    }
+
+   const visibleNavItems = navItems.filter((item) => item.route !== 'live' || canUseLivePlatform(user?.permissions));
 
    return (
       <>
@@ -89,7 +94,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                </TooltipTrigger>
                <TooltipContent side="right">{tNav('nav.search')}</TooltipContent>
             </Tooltip>
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
                <Tooltip key={item.key}>
                   <TooltipTrigger asChild>
                      {item.disabled ? (

@@ -16,9 +16,11 @@ import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as QuestRouteImport } from './routes/quest'
 import { Route as MapsRouteImport } from './routes/maps'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LiveRouteImport } from './routes/live'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as LiveIndexRouteImport } from './routes/live/index'
 import { Route as SettingsPerksRouteImport } from './routes/settings/perks'
 import { Route as SettingsDeveloperRouteImport } from './routes/settings/developer'
 import { Route as SettingsConnectionsRouteImport } from './routes/settings/connections'
@@ -27,6 +29,7 @@ import { Route as RankingRequestsRouteImport } from './routes/ranking/requests'
 import { Route as QuestVersionsRouteImport } from './routes/quest/versions'
 import { Route as QuestDownloadRouteImport } from './routes/quest/download'
 import { Route as OauthAuthorizeRouteImport } from './routes/oauth/authorize'
+import { Route as LiveTournamentIdRouteImport } from './routes/live/$tournamentId'
 import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
 import { Route as LegalCopyrightRouteImport } from './routes/legal/copyright'
 import { Route as LegalCookiesPolicyRouteImport } from './routes/legal/cookies-policy'
@@ -38,11 +41,19 @@ import { Route as UPlayerIdRouteRouteImport } from './routes/u/$playerId/route'
 import { Route as MapIdRouteRouteImport } from './routes/map/$id/route'
 import { Route as SettingsPerksIndexRouteImport } from './routes/settings/perks/index'
 import { Route as MapIdIndexRouteImport } from './routes/map/$id/index'
+import { Route as LiveTournamentIdIndexRouteImport } from './routes/live/$tournamentId/index'
 import { Route as SettingsPerksReplaysRouteImport } from './routes/settings/perks/replays'
 import { Route as RankingRequestRequestIdRouteImport } from './routes/ranking/request/$requestId'
+import { Route as LiveTournamentIdTeamsRouteImport } from './routes/live/$tournamentId/teams'
+import { Route as LiveTournamentIdSettingsRouteImport } from './routes/live/$tournamentId/settings'
+import { Route as LiveTournamentIdRoomsRouteImport } from './routes/live/$tournamentId/rooms'
+import { Route as LiveTournamentIdRolesRouteImport } from './routes/live/$tournamentId/roles'
+import { Route as LiveTournamentIdPlayersRouteImport } from './routes/live/$tournamentId/players'
 import { Route as AuthPatreonCallbackRouteImport } from './routes/auth/patreon/callback'
 import { Route as AuthDiscordCallbackRouteImport } from './routes/auth/discord/callback'
 import { Route as legacyLeaderboardLeaderboardIdRouteImport } from './routes/(legacy)/leaderboard/$leaderboardId'
+import { Route as LiveTournamentIdRoomsIndexRouteImport } from './routes/live/$tournamentId/rooms/index'
+import { Route as LiveTournamentIdRoomsMatchIdRouteImport } from './routes/live/$tournamentId/rooms/$matchId'
 import { Route as MapIdDifficultyLeaderboardIdRouteRouteImport } from './routes/map/$id/difficulty/$leaderboardId/route'
 
 const TeamRoute = TeamRouteImport.update({
@@ -80,6 +91,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LiveRoute = LiveRouteImport.update({
+  id: '/live',
+  path: '/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
@@ -94,6 +110,11 @@ const SettingsIndexRoute = SettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LiveIndexRoute = LiveIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LiveRoute,
 } as any)
 const SettingsPerksRoute = SettingsPerksRouteImport.update({
   id: '/settings/perks',
@@ -134,6 +155,11 @@ const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
   id: '/oauth/authorize',
   path: '/oauth/authorize',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LiveTournamentIdRoute = LiveTournamentIdRouteImport.update({
+  id: '/$tournamentId',
+  path: '/$tournamentId',
+  getParentRoute: () => LiveRoute,
 } as any)
 const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
   id: '/legal/privacy',
@@ -190,6 +216,11 @@ const MapIdIndexRoute = MapIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MapIdRouteRoute,
 } as any)
+const LiveTournamentIdIndexRoute = LiveTournamentIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LiveTournamentIdRoute,
+} as any)
 const SettingsPerksReplaysRoute = SettingsPerksReplaysRouteImport.update({
   id: '/replays',
   path: '/replays',
@@ -199,6 +230,32 @@ const RankingRequestRequestIdRoute = RankingRequestRequestIdRouteImport.update({
   id: '/ranking/request/$requestId',
   path: '/ranking/request/$requestId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LiveTournamentIdTeamsRoute = LiveTournamentIdTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => LiveTournamentIdRoute,
+} as any)
+const LiveTournamentIdSettingsRoute =
+  LiveTournamentIdSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => LiveTournamentIdRoute,
+  } as any)
+const LiveTournamentIdRoomsRoute = LiveTournamentIdRoomsRouteImport.update({
+  id: '/rooms',
+  path: '/rooms',
+  getParentRoute: () => LiveTournamentIdRoute,
+} as any)
+const LiveTournamentIdRolesRoute = LiveTournamentIdRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => LiveTournamentIdRoute,
+} as any)
+const LiveTournamentIdPlayersRoute = LiveTournamentIdPlayersRouteImport.update({
+  id: '/players',
+  path: '/players',
+  getParentRoute: () => LiveTournamentIdRoute,
 } as any)
 const AuthPatreonCallbackRoute = AuthPatreonCallbackRouteImport.update({
   id: '/callback',
@@ -216,6 +273,18 @@ const legacyLeaderboardLeaderboardIdRoute =
     path: '/leaderboard/$leaderboardId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const LiveTournamentIdRoomsIndexRoute =
+  LiveTournamentIdRoomsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => LiveTournamentIdRoomsRoute,
+  } as any)
+const LiveTournamentIdRoomsMatchIdRoute =
+  LiveTournamentIdRoomsMatchIdRouteImport.update({
+    id: '/$matchId',
+    path: '/$matchId',
+    getParentRoute: () => LiveTournamentIdRoomsRoute,
+  } as any)
 const MapIdDifficultyLeaderboardIdRouteRoute =
   MapIdDifficultyLeaderboardIdRouteRouteImport.update({
     id: '/difficulty/$leaderboardId',
@@ -226,6 +295,7 @@ const MapIdDifficultyLeaderboardIdRouteRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/health': typeof HealthRoute
+  '/live': typeof LiveRouteWithChildren
   '/login': typeof LoginRoute
   '/maps': typeof MapsRoute
   '/quest': typeof QuestRouteWithChildren
@@ -242,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/legal/cookies-policy': typeof LegalCookiesPolicyRoute
   '/legal/copyright': typeof LegalCopyrightRoute
   '/legal/privacy': typeof LegalPrivacyRoute
+  '/live/$tournamentId': typeof LiveTournamentIdRouteWithChildren
   '/oauth/authorize': typeof OauthAuthorizeRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
@@ -250,15 +321,24 @@ export interface FileRoutesByFullPath {
   '/settings/connections': typeof SettingsConnectionsRoute
   '/settings/developer': typeof SettingsDeveloperRoute
   '/settings/perks': typeof SettingsPerksRouteWithChildren
+  '/live/': typeof LiveIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
   '/auth/discord/callback': typeof AuthDiscordCallbackRoute
   '/auth/patreon/callback': typeof AuthPatreonCallbackRoute
+  '/live/$tournamentId/players': typeof LiveTournamentIdPlayersRoute
+  '/live/$tournamentId/roles': typeof LiveTournamentIdRolesRoute
+  '/live/$tournamentId/rooms': typeof LiveTournamentIdRoomsRouteWithChildren
+  '/live/$tournamentId/settings': typeof LiveTournamentIdSettingsRoute
+  '/live/$tournamentId/teams': typeof LiveTournamentIdTeamsRoute
   '/ranking/request/$requestId': typeof RankingRequestRequestIdRoute
   '/settings/perks/replays': typeof SettingsPerksReplaysRoute
+  '/live/$tournamentId/': typeof LiveTournamentIdIndexRoute
   '/map/$id/': typeof MapIdIndexRoute
   '/settings/perks/': typeof SettingsPerksIndexRoute
   '/map/$id/difficulty/$leaderboardId': typeof MapIdDifficultyLeaderboardIdRouteRoute
+  '/live/$tournamentId/rooms/$matchId': typeof LiveTournamentIdRoomsMatchIdRoute
+  '/live/$tournamentId/rooms/': typeof LiveTournamentIdRoomsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -285,20 +365,29 @@ export interface FileRoutesByTo {
   '/settings/account': typeof SettingsAccountRoute
   '/settings/connections': typeof SettingsConnectionsRoute
   '/settings/developer': typeof SettingsDeveloperRoute
+  '/live': typeof LiveIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
   '/auth/discord/callback': typeof AuthDiscordCallbackRoute
   '/auth/patreon/callback': typeof AuthPatreonCallbackRoute
+  '/live/$tournamentId/players': typeof LiveTournamentIdPlayersRoute
+  '/live/$tournamentId/roles': typeof LiveTournamentIdRolesRoute
+  '/live/$tournamentId/settings': typeof LiveTournamentIdSettingsRoute
+  '/live/$tournamentId/teams': typeof LiveTournamentIdTeamsRoute
   '/ranking/request/$requestId': typeof RankingRequestRequestIdRoute
   '/settings/perks/replays': typeof SettingsPerksReplaysRoute
+  '/live/$tournamentId': typeof LiveTournamentIdIndexRoute
   '/map/$id': typeof MapIdIndexRoute
   '/settings/perks': typeof SettingsPerksIndexRoute
   '/map/$id/difficulty/$leaderboardId': typeof MapIdDifficultyLeaderboardIdRouteRoute
+  '/live/$tournamentId/rooms/$matchId': typeof LiveTournamentIdRoomsMatchIdRoute
+  '/live/$tournamentId/rooms': typeof LiveTournamentIdRoomsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/health': typeof HealthRoute
+  '/live': typeof LiveRouteWithChildren
   '/login': typeof LoginRoute
   '/maps': typeof MapsRoute
   '/quest': typeof QuestRouteWithChildren
@@ -315,6 +404,7 @@ export interface FileRoutesById {
   '/legal/cookies-policy': typeof LegalCookiesPolicyRoute
   '/legal/copyright': typeof LegalCopyrightRoute
   '/legal/privacy': typeof LegalPrivacyRoute
+  '/live/$tournamentId': typeof LiveTournamentIdRouteWithChildren
   '/oauth/authorize': typeof OauthAuthorizeRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
@@ -323,21 +413,31 @@ export interface FileRoutesById {
   '/settings/connections': typeof SettingsConnectionsRoute
   '/settings/developer': typeof SettingsDeveloperRoute
   '/settings/perks': typeof SettingsPerksRouteWithChildren
+  '/live/': typeof LiveIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/(legacy)/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
   '/auth/discord/callback': typeof AuthDiscordCallbackRoute
   '/auth/patreon/callback': typeof AuthPatreonCallbackRoute
+  '/live/$tournamentId/players': typeof LiveTournamentIdPlayersRoute
+  '/live/$tournamentId/roles': typeof LiveTournamentIdRolesRoute
+  '/live/$tournamentId/rooms': typeof LiveTournamentIdRoomsRouteWithChildren
+  '/live/$tournamentId/settings': typeof LiveTournamentIdSettingsRoute
+  '/live/$tournamentId/teams': typeof LiveTournamentIdTeamsRoute
   '/ranking/request/$requestId': typeof RankingRequestRequestIdRoute
   '/settings/perks/replays': typeof SettingsPerksReplaysRoute
+  '/live/$tournamentId/': typeof LiveTournamentIdIndexRoute
   '/map/$id/': typeof MapIdIndexRoute
   '/settings/perks/': typeof SettingsPerksIndexRoute
   '/map/$id/difficulty/$leaderboardId': typeof MapIdDifficultyLeaderboardIdRouteRoute
+  '/live/$tournamentId/rooms/$matchId': typeof LiveTournamentIdRoomsMatchIdRoute
+  '/live/$tournamentId/rooms/': typeof LiveTournamentIdRoomsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/health'
+    | '/live'
     | '/login'
     | '/maps'
     | '/quest'
@@ -354,6 +454,7 @@ export interface FileRouteTypes {
     | '/legal/cookies-policy'
     | '/legal/copyright'
     | '/legal/privacy'
+    | '/live/$tournamentId'
     | '/oauth/authorize'
     | '/quest/download'
     | '/quest/versions'
@@ -362,15 +463,24 @@ export interface FileRouteTypes {
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/perks'
+    | '/live/'
     | '/settings/'
     | '/leaderboard/$leaderboardId'
     | '/auth/discord/callback'
     | '/auth/patreon/callback'
+    | '/live/$tournamentId/players'
+    | '/live/$tournamentId/roles'
+    | '/live/$tournamentId/rooms'
+    | '/live/$tournamentId/settings'
+    | '/live/$tournamentId/teams'
     | '/ranking/request/$requestId'
     | '/settings/perks/replays'
+    | '/live/$tournamentId/'
     | '/map/$id/'
     | '/settings/perks/'
     | '/map/$id/difficulty/$leaderboardId'
+    | '/live/$tournamentId/rooms/$matchId'
+    | '/live/$tournamentId/rooms/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -397,19 +507,28 @@ export interface FileRouteTypes {
     | '/settings/account'
     | '/settings/connections'
     | '/settings/developer'
+    | '/live'
     | '/settings'
     | '/leaderboard/$leaderboardId'
     | '/auth/discord/callback'
     | '/auth/patreon/callback'
+    | '/live/$tournamentId/players'
+    | '/live/$tournamentId/roles'
+    | '/live/$tournamentId/settings'
+    | '/live/$tournamentId/teams'
     | '/ranking/request/$requestId'
     | '/settings/perks/replays'
+    | '/live/$tournamentId'
     | '/map/$id'
     | '/settings/perks'
     | '/map/$id/difficulty/$leaderboardId'
+    | '/live/$tournamentId/rooms/$matchId'
+    | '/live/$tournamentId/rooms'
   id:
     | '__root__'
     | '/'
     | '/health'
+    | '/live'
     | '/login'
     | '/maps'
     | '/quest'
@@ -426,6 +545,7 @@ export interface FileRouteTypes {
     | '/legal/cookies-policy'
     | '/legal/copyright'
     | '/legal/privacy'
+    | '/live/$tournamentId'
     | '/oauth/authorize'
     | '/quest/download'
     | '/quest/versions'
@@ -434,20 +554,30 @@ export interface FileRouteTypes {
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/perks'
+    | '/live/'
     | '/settings/'
     | '/(legacy)/leaderboard/$leaderboardId'
     | '/auth/discord/callback'
     | '/auth/patreon/callback'
+    | '/live/$tournamentId/players'
+    | '/live/$tournamentId/roles'
+    | '/live/$tournamentId/rooms'
+    | '/live/$tournamentId/settings'
+    | '/live/$tournamentId/teams'
     | '/ranking/request/$requestId'
     | '/settings/perks/replays'
+    | '/live/$tournamentId/'
     | '/map/$id/'
     | '/settings/perks/'
     | '/map/$id/difficulty/$leaderboardId'
+    | '/live/$tournamentId/rooms/$matchId'
+    | '/live/$tournamentId/rooms/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HealthRoute: typeof HealthRoute
+  LiveRoute: typeof LiveRouteWithChildren
   LoginRoute: typeof LoginRoute
   MapsRoute: typeof MapsRoute
   QuestRoute: typeof QuestRouteWithChildren
@@ -526,6 +656,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/live': {
+      id: '/live'
+      path: '/live'
+      fullPath: '/live'
+      preLoaderRoute: typeof LiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/health': {
       id: '/health'
       path: '/health'
@@ -546,6 +683,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/'
       preLoaderRoute: typeof SettingsIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/live/': {
+      id: '/live/'
+      path: '/'
+      fullPath: '/live/'
+      preLoaderRoute: typeof LiveIndexRouteImport
+      parentRoute: typeof LiveRoute
     }
     '/settings/perks': {
       id: '/settings/perks'
@@ -602,6 +746,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/oauth/authorize'
       preLoaderRoute: typeof OauthAuthorizeRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/live/$tournamentId': {
+      id: '/live/$tournamentId'
+      path: '/$tournamentId'
+      fullPath: '/live/$tournamentId'
+      preLoaderRoute: typeof LiveTournamentIdRouteImport
+      parentRoute: typeof LiveRoute
     }
     '/legal/privacy': {
       id: '/legal/privacy'
@@ -680,6 +831,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapIdIndexRouteImport
       parentRoute: typeof MapIdRouteRoute
     }
+    '/live/$tournamentId/': {
+      id: '/live/$tournamentId/'
+      path: '/'
+      fullPath: '/live/$tournamentId/'
+      preLoaderRoute: typeof LiveTournamentIdIndexRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
+    }
     '/settings/perks/replays': {
       id: '/settings/perks/replays'
       path: '/replays'
@@ -693,6 +851,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/ranking/request/$requestId'
       preLoaderRoute: typeof RankingRequestRequestIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/live/$tournamentId/teams': {
+      id: '/live/$tournamentId/teams'
+      path: '/teams'
+      fullPath: '/live/$tournamentId/teams'
+      preLoaderRoute: typeof LiveTournamentIdTeamsRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
+    }
+    '/live/$tournamentId/settings': {
+      id: '/live/$tournamentId/settings'
+      path: '/settings'
+      fullPath: '/live/$tournamentId/settings'
+      preLoaderRoute: typeof LiveTournamentIdSettingsRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
+    }
+    '/live/$tournamentId/rooms': {
+      id: '/live/$tournamentId/rooms'
+      path: '/rooms'
+      fullPath: '/live/$tournamentId/rooms'
+      preLoaderRoute: typeof LiveTournamentIdRoomsRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
+    }
+    '/live/$tournamentId/roles': {
+      id: '/live/$tournamentId/roles'
+      path: '/roles'
+      fullPath: '/live/$tournamentId/roles'
+      preLoaderRoute: typeof LiveTournamentIdRolesRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
+    }
+    '/live/$tournamentId/players': {
+      id: '/live/$tournamentId/players'
+      path: '/players'
+      fullPath: '/live/$tournamentId/players'
+      preLoaderRoute: typeof LiveTournamentIdPlayersRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
     }
     '/auth/patreon/callback': {
       id: '/auth/patreon/callback'
@@ -715,6 +908,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof legacyLeaderboardLeaderboardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/live/$tournamentId/rooms/': {
+      id: '/live/$tournamentId/rooms/'
+      path: '/'
+      fullPath: '/live/$tournamentId/rooms/'
+      preLoaderRoute: typeof LiveTournamentIdRoomsIndexRouteImport
+      parentRoute: typeof LiveTournamentIdRoomsRoute
+    }
+    '/live/$tournamentId/rooms/$matchId': {
+      id: '/live/$tournamentId/rooms/$matchId'
+      path: '/$matchId'
+      fullPath: '/live/$tournamentId/rooms/$matchId'
+      preLoaderRoute: typeof LiveTournamentIdRoomsMatchIdRouteImport
+      parentRoute: typeof LiveTournamentIdRoomsRoute
+    }
     '/map/$id/difficulty/$leaderboardId': {
       id: '/map/$id/difficulty/$leaderboardId'
       path: '/difficulty/$leaderboardId'
@@ -724,6 +931,54 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface LiveTournamentIdRoomsRouteChildren {
+  LiveTournamentIdRoomsMatchIdRoute: typeof LiveTournamentIdRoomsMatchIdRoute
+  LiveTournamentIdRoomsIndexRoute: typeof LiveTournamentIdRoomsIndexRoute
+}
+
+const LiveTournamentIdRoomsRouteChildren: LiveTournamentIdRoomsRouteChildren = {
+  LiveTournamentIdRoomsMatchIdRoute: LiveTournamentIdRoomsMatchIdRoute,
+  LiveTournamentIdRoomsIndexRoute: LiveTournamentIdRoomsIndexRoute,
+}
+
+const LiveTournamentIdRoomsRouteWithChildren =
+  LiveTournamentIdRoomsRoute._addFileChildren(
+    LiveTournamentIdRoomsRouteChildren,
+  )
+
+interface LiveTournamentIdRouteChildren {
+  LiveTournamentIdPlayersRoute: typeof LiveTournamentIdPlayersRoute
+  LiveTournamentIdRolesRoute: typeof LiveTournamentIdRolesRoute
+  LiveTournamentIdRoomsRoute: typeof LiveTournamentIdRoomsRouteWithChildren
+  LiveTournamentIdSettingsRoute: typeof LiveTournamentIdSettingsRoute
+  LiveTournamentIdTeamsRoute: typeof LiveTournamentIdTeamsRoute
+  LiveTournamentIdIndexRoute: typeof LiveTournamentIdIndexRoute
+}
+
+const LiveTournamentIdRouteChildren: LiveTournamentIdRouteChildren = {
+  LiveTournamentIdPlayersRoute: LiveTournamentIdPlayersRoute,
+  LiveTournamentIdRolesRoute: LiveTournamentIdRolesRoute,
+  LiveTournamentIdRoomsRoute: LiveTournamentIdRoomsRouteWithChildren,
+  LiveTournamentIdSettingsRoute: LiveTournamentIdSettingsRoute,
+  LiveTournamentIdTeamsRoute: LiveTournamentIdTeamsRoute,
+  LiveTournamentIdIndexRoute: LiveTournamentIdIndexRoute,
+}
+
+const LiveTournamentIdRouteWithChildren =
+  LiveTournamentIdRoute._addFileChildren(LiveTournamentIdRouteChildren)
+
+interface LiveRouteChildren {
+  LiveTournamentIdRoute: typeof LiveTournamentIdRouteWithChildren
+  LiveIndexRoute: typeof LiveIndexRoute
+}
+
+const LiveRouteChildren: LiveRouteChildren = {
+  LiveTournamentIdRoute: LiveTournamentIdRouteWithChildren,
+  LiveIndexRoute: LiveIndexRoute,
+}
+
+const LiveRouteWithChildren = LiveRoute._addFileChildren(LiveRouteChildren)
 
 interface QuestRouteChildren {
   QuestDownloadRoute: typeof QuestDownloadRoute
@@ -793,6 +1048,7 @@ const SettingsPerksRouteWithChildren = SettingsPerksRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HealthRoute: HealthRoute,
+  LiveRoute: LiveRouteWithChildren,
   LoginRoute: LoginRoute,
   MapsRoute: MapsRoute,
   QuestRoute: QuestRouteWithChildren,

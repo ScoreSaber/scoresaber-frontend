@@ -1,11 +1,7 @@
 import type {
    LeaderboardControllerGetLeaderboardByIdResponse,
-   LeaderboardControllerGetLeaderboardScoresByIdDataItem,
    MapControllerGetMapByIdResponse,
-   MapControllerGetMapListingsDataItem,
-   PlayerControllerGetPlayerResponse,
-   PlayerControllerGetPlayersDataItem,
-   UserControllerGetMeResponse
+   MapControllerGetMapListingsDataItem
 } from '@/shared/api/generated/ApiParams';
 import Permissions from '@/shared/permissions';
 
@@ -143,11 +139,15 @@ export function normalizePlayerRoleText(role: string) {
    return role.replaceAll('supporter', 'Supporter').replaceAll('pp-farmer', 'Supporter');
 }
 
-export type PlayerRoleSource =
-   | PlayerControllerGetPlayerResponse
-   | PlayerControllerGetPlayersDataItem
-   | LeaderboardControllerGetLeaderboardScoresByIdDataItem['player']
-   | UserControllerGetMeResponse;
+export type PlayerRoleSource = {
+   id: string;
+   name: string;
+   country: string;
+   role: string | null;
+   avatar: string;
+   avatarVersion?: number;
+   permissions: number;
+};
 
 function resolvePlayerRole(player: PlayerRoleSource): [RoleKey, string | null] {
    if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.PANDA)) {

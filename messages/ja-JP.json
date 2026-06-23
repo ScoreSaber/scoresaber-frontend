@@ -262,8 +262,7 @@
       "scoreSaberLogo": "ScoreSaberロゴ",
       "underConstruction": "準備中",
       "edit": "",
-      "copy": "",
-      "copied": ""
+      "copy": ""
    },
    "error": {
       "somethingWentWrong": "エラーが発生しました",
@@ -312,7 +311,8 @@
       "rankedPlayCount": "ランクマッチプレイ回数",
       "ranked": "ランク",
       "averageRankedAccuracy": "ランク平均精度",
-      "acc": "精度"
+      "acc": "精度",
+      "live": "Live"
    },
    "score": {
       "accuracy": "精度",
@@ -362,6 +362,7 @@
    },
    "map": {
       "searchMaps": "マップ検索",
+      "searchPlaceholder": "Search maps...",
       "statusRanked": "ランク",
       "statusQualified": "予選通過",
       "statusLoved": "好きの",
@@ -390,13 +391,24 @@
       "gameMode": "ゲームモード",
       "starRatingRange": "難易度範囲",
       "copyShareLink": "共有リンクのコピー",
-      "shareLinkCopied": "共有リンクをコピーしました",
       "shareLinkCopyFailed": "共有リンクのコピーに失敗しました"
    },
    "player": {
       "followers": "フォロワー",
       "following": "フォロー",
       "viewSteamProfile": "Steamプロフィールを見る",
+      "livePresence": {
+         "live": "",
+         "online": "",
+         "spectateCta": "",
+         "playingTooltip": "",
+         "menuTooltip": "",
+         "openViewer": "",
+         "viewerTitle": "",
+         "openViewerNewTab": "",
+         "openInNewTab": "",
+         "loading": ""
+      },
       "inactiveTooltip": "このプレイヤーは最近スコアを記録していません",
       "inactive": "休止",
       "bannedTooltip": "このプレイヤーはBANされています",

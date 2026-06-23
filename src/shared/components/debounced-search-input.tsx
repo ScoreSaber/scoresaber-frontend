@@ -19,6 +19,7 @@ interface DebouncedSearchInputProps {
    onSearchAction: (value: string | undefined) => void;
    debounceMs?: number;
    minLength?: number;
+   isSearchReady?: (value: string) => boolean;
    className?: string;
    inputClassName?: string;
 }
@@ -32,13 +33,15 @@ export function DebouncedSearchInput({
    onSearchAction,
    debounceMs = 400,
    minLength = 3,
+   isSearchReady,
    className,
    inputClassName
 }: DebouncedSearchInputProps) {
    const [searchValue, setSearchValue] = useState(initialValue);
    const debouncedSearch = useDebouncedCallback((value: string) => {
       const trimmed = value.trim();
-      onSearchAction(trimmed.length >= minLength ? trimmed : undefined);
+      const ready = isSearchReady ? isSearchReady(trimmed) : trimmed.length >= minLength;
+      onSearchAction(ready ? trimmed : undefined);
    }, debounceMs);
 
    function handleChange(value: string) {

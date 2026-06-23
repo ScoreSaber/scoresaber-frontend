@@ -262,8 +262,7 @@
       "scoreSaberLogo": "Logo ScoreSabera",
       "underConstruction": "w trakcie budowy",
       "edit": "",
-      "copy": "",
-      "copied": ""
+      "copy": ""
    },
    "error": {
       "somethingWentWrong": "Coś poszło nie tak",
@@ -312,7 +311,8 @@
       "rankedPlayCount": "Liczba zagrań rankingowych",
       "ranked": "Rankingowe",
       "averageRankedAccuracy": "Średnia celność w mapach rankingowych",
-      "acc": "Cel"
+      "acc": "Cel",
+      "live": "Live"
    },
    "score": {
       "accuracy": "Celność",
@@ -362,6 +362,7 @@
    },
    "map": {
       "searchMaps": "Szukaj map",
+      "searchPlaceholder": "Search maps...",
       "statusRanked": "Rankingowe",
       "statusQualified": "Zakwalifikowane",
       "statusLoved": "Polubione",
@@ -390,13 +391,24 @@
       "gameMode": "Tryb gry",
       "starRatingRange": "Zakres oceny gwiazdkowej",
       "copyShareLink": "Skopiuj link do udostępnienia",
-      "shareLinkCopied": "Skopiowano link udostępnienia",
       "shareLinkCopyFailed": "Kopiowanie linku udostępnienia nie powiodło się"
    },
    "player": {
       "followers": "Obserwujących",
       "following": "Obserwowanych",
       "viewSteamProfile": "Wyświetl profil Steam",
+      "livePresence": {
+         "live": "",
+         "online": "",
+         "spectateCta": "",
+         "playingTooltip": "",
+         "menuTooltip": "",
+         "openViewer": "",
+         "viewerTitle": "",
+         "openViewerNewTab": "",
+         "openInNewTab": "",
+         "loading": ""
+      },
       "inactiveTooltip": "Ten gracz nie ustawił ostatnio żadnych wyników",
       "inactive": "Nieaktywny/a",
       "bannedTooltip": "Ten gracz został zbanowany",

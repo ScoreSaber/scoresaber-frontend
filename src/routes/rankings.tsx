@@ -16,7 +16,7 @@ import { PageError } from '@/shared/components/error/page-error';
 import { PaginationArrows } from '@/shared/components/pagination';
 import { countryRegionSearchSchema, formatCountryRegionParam } from '@/shared/country-region';
 import { isSteamPlayer } from '@/shared/format/helpers';
-import { pageApiData } from '@/shared/result/api';
+import { optionalApiData, pageApiData } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankingFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
@@ -33,6 +33,7 @@ const rankingsSearchSchema = z.object({
    sortDirection: z.enum(PLAYER_CONTROLLER_GET_PLAYERS_SORT_DIRECTION).optional(),
    pivot: z.enum(PLAYER_CONTROLLER_GET_PLAYERS_PIVOT).optional(),
    includeInactive: z.enum(['true', 'false']).optional(),
+   live: z.enum(['true', 'false']).optional(),
    highlight: z.string().optional()
 });
 
@@ -59,19 +60,28 @@ const getRankingsPageData = createServerFn({ method: 'GET' })
       ]);
       const searchParams = rankingsSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
       const apiClient = searchParams.pivot ? api : publicApi;
-      const result = await pageApiData(
-         apiClient.player.playerControllerGetPlayers({
-            page: searchParams.page,
-            search: searchParams.search,
-            countries: formatCountryRegionParam(searchParams.countries),
-            sort: searchParams.sort,
-            sortDirection: searchParams.sortDirection,
-            pivot: searchParams.pivot,
-            includeInactive: searchParams.includeInactive ?? 'false'
-         })
-      );
+      const playerQuery = {
+         page: searchParams.page,
+         search: searchParams.search,
+         countries: formatCountryRegionParam(searchParams.countries),
+         sort: searchParams.sort,
+         sortDirection: searchParams.sortDirection,
+         pivot: searchParams.pivot,
+         includeInactive: searchParams.includeInactive ?? 'false',
+         live: searchParams.live
+      };
+      const liveCountQuery = {
+         includeInactive: searchParams.includeInactive ?? 'false',
+         live: 'true'
+      };
+      const liveCountPromise =
+         searchParams.live === 'true'
+            ? Promise.resolve({ count: 1 })
+            : optionalApiData(publicApi.player.playerControllerGetPlayerCount(liveCountQuery));
+      const [result, liveCount] = await Promise.all([pageApiData(apiClient.player.playerControllerGetPlayers(playerQuery)), liveCountPromise]);
+      const liveAvailable = searchParams.live === 'true' || (liveCount?.count ?? 0) > 0;
 
-      return { result, searchParams, persistedStorage };
+      return { result, searchParams, persistedStorage, liveAvailable };
    });
 
 export const Route = createFileRoute('/rankings')({
@@ -89,7 +99,7 @@ export const Route = createFileRoute('/rankings')({
 
 function RankingsRoute() {
    const data = Route.useLoaderData();
-   const { result, searchParams, persistedStorage } = data;
+   const { result, searchParams, persistedStorage, liveAvailable } = data;
 
    if (!result.ok) return <PageError status={result.status} />;
 
@@ -108,6 +118,8 @@ function RankingsRoute() {
                currentPage={searchParams.page}
                totalPages={meta.totalPages}
                includeInactive={searchParams.includeInactive === 'true'}
+               live={searchParams.live === 'true'}
+               showLiveFilter={liveAvailable}
                search={searchParams}
                buildLocation={buildRankingsLocation}
                parseSearch={parseRankingsSearch}

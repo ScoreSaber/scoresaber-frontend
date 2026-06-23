@@ -262,8 +262,7 @@
       "scoreSaberLogo": "ScoreSaber Logo",
       "underConstruction": "in aanbouw",
       "edit": "",
-      "copy": "",
-      "copied": ""
+      "copy": ""
    },
    "error": {
       "somethingWentWrong": "Er is iets misgegaan",
@@ -312,7 +311,8 @@
       "rankedPlayCount": "Ranked plays",
       "ranked": "Gerangschikt",
       "averageRankedAccuracy": "Gem. ranked acc",
-      "acc": "Acc"
+      "acc": "Acc",
+      "live": "Live"
    },
    "score": {
       "accuracy": "Nauwkeurigheid",
@@ -362,6 +362,7 @@
    },
    "map": {
       "searchMaps": "Maps zoeken",
+      "searchPlaceholder": "Search maps...",
       "statusRanked": "Gerangschikt",
       "statusQualified": "Gekwalificeerd",
       "statusLoved": "Gelieft",
@@ -390,13 +391,24 @@
       "gameMode": "Game mode",
       "starRatingRange": "Bereik voor sterrenrating",
       "copyShareLink": "Deellink kopieren",
-      "shareLinkCopied": "Deellink gekopieerd",
       "shareLinkCopyFailed": "Deellink kopieren mislukt"
    },
    "player": {
       "followers": "Volgers",
       "following": "Volgend",
       "viewSteamProfile": "Steam-profiel bekijken",
+      "livePresence": {
+         "live": "",
+         "online": "",
+         "spectateCta": "",
+         "playingTooltip": "",
+         "menuTooltip": "",
+         "openViewer": "",
+         "viewerTitle": "",
+         "openViewerNewTab": "",
+         "openInNewTab": "",
+         "loading": ""
+      },
       "inactiveTooltip": "Deze speler heeft de laatste tijd geen scores gezet",
       "inactive": "Inactief",
       "bannedTooltip": "Deze speler is verbannen",

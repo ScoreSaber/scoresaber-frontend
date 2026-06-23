@@ -4,8 +4,7 @@ import type { SubmitEvent } from 'react';
 import { useState } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
-import { Copy, KeyRound, Loader2, LogIn, Pencil, Plus, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { KeyRound, Loader2, LogIn, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Badge } from '@/components/ui/badge';
@@ -29,6 +28,7 @@ import {
 } from '@/modules/settings/actions/developer';
 import type { OAuthClientControllerListClientsResponse } from '@/shared/api/generated/ApiParams';
 import { ConfirmDialog } from '@/shared/components/confirm-dialog';
+import { CopyButton } from '@/shared/components/copy-button';
 import { Time } from '@/shared/components/time';
 import Permissions from '@/shared/permissions';
 
@@ -230,19 +230,7 @@ function CopyableValue({ label, value }: { label: string; value: string }) {
       <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
          <span className="font-medium">{label}:</span>
          <code className="bg-secondary/40 rounded px-1.5 py-0.5 font-mono break-all">{value}</code>
-         <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={t('common.copy')}
-            onClick={() => {
-               void navigator.clipboard.writeText(value);
-               toast.success(t('common.copied'));
-            }}
-            className="cursor-pointer"
-         >
-            <Copy data-icon />
-         </Button>
+         <CopyButton value={value} aria-label={t('common.copy')} title={t('common.copy')} />
       </div>
    );
 }

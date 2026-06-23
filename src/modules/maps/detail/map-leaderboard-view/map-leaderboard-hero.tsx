@@ -1,27 +1,23 @@
 'use client';
 
 import { useLocation } from '@tanstack/react-router';
-import { Result, TaggedError } from 'better-result';
-import { FaClock, FaDrum, FaKey, FaLink, FaMusic } from 'react-icons/fa';
-import { toast } from 'sonner';
+import { Check, Hash } from 'lucide-react';
+import { FaClock, FaDrum, FaLink, FaMusic } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import { BeatSaverKeyPill } from '@/modules/maps/shared/beatsaver-key-pill';
 import { LinkedNames } from '@/modules/search/search-link';
 import type { LeaderboardControllerGetLeaderboardByIdResponse, MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
+import { CopyButton } from '@/shared/components/copy-button';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { Stat } from '@/shared/components/stat';
 import { Time } from '@/shared/components/time';
 import { cn, formatNumber } from '@/shared/format/helpers';
 import { getStatusAccentClass } from '@/shared/format/styling';
 import { isLeaderboardPersonalizationParam } from '@/shared/url-state/persisted-filter-preferences';
-
-class ShareLinkCopyError extends TaggedError('ShareLinkCopyError')<{
-   message: string;
-   cause: unknown;
-}>() {}
 
 export function MapLeaderboardHero({ mapInfo, leaderboardInfo }: MapLeaderboardHeroProps) {
    const tc = useTranslations();
@@ -56,6 +52,7 @@ export function MapLeaderboardHero({ mapInfo, leaderboardInfo }: MapLeaderboardH
                             : tc('map.statusUnranked')}
                   </span>
                   <ShareMapButton />
+                  <CopyMapHashButton hash={mapInfo.hash} />
                </div>
 
                <h1 className="min-w-0 text-base leading-tight text-pretty sm:text-lg md:text-xl">
@@ -101,18 +98,7 @@ function MapStats({ mapInfo }: { mapInfo: MapControllerGetMapByIdResponse }) {
          <Stat icon={FaClock} label={t('map.created')}>
             <Time date={mapInfo.createdAt} short />
          </Stat>
-         {mapInfo.bsid && (
-            <Stat icon={FaKey} label="">
-               <a
-                  href={`https://beatsaver.com/maps/${mapInfo.bsid}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary font-mono transition-colors"
-               >
-                  {mapInfo.bsid}
-               </a>
-            </Stat>
-         )}
+         {mapInfo.bsid && <BeatSaverKeyPill beatSaverKey={mapInfo.bsid} variant="copy" size="sm" className="bg-secondary/35" />}
       </div>
    );
 }
@@ -121,47 +107,72 @@ function ShareMapButton() {
    const location = useLocation();
    const t = useTranslations();
 
-   async function handleCopyShareLink() {
-      const result = await Result.tryPromise({
-         try: () => {
-            const url = new URL(location.href, window.location.origin);
+   function getShareLink() {
+      const url = new URL(location.href, window.location.origin);
+      const personalizationKeys = Array.from(url.searchParams.keys()).filter(isLeaderboardPersonalizationParam);
 
-            const personalizationKeys = Array.from(url.searchParams.keys()).filter(isLeaderboardPersonalizationParam);
+      for (const key of personalizationKeys) {
+         url.searchParams.delete(key);
+      }
 
-            for (const key of personalizationKeys) {
-               url.searchParams.delete(key);
-            }
-
-            return navigator.clipboard.writeText(url.toString());
-         },
-         catch: (cause) =>
-            new ShareLinkCopyError({
-               message: 'failed to copy share link',
-               cause
-            })
-      });
-
-      Result.match(result, {
-         ok: () => toast.success(t('map.shareLinkCopied')),
-         err: () => toast.error(t('map.shareLinkCopyFailed'))
-      });
+      return url.toString();
    }
 
    return (
       <Tooltip>
          <TooltipTrigger asChild>
-            <Button
-               type="button"
-               variant="secondary"
-               size="icon-xs"
-               className="border-border/70 h-6 w-6 cursor-pointer rounded-full border"
+            <CopyButton
+               value={getShareLink}
+               icon={<FaLink className="size-2.5" />}
+               copiedIcon={<Check className="size-2.5" />}
                aria-label={t('map.copyShareLink')}
-               onClick={handleCopyShareLink}
+               title={t('map.copyShareLink')}
+               errorMessage={t('map.shareLinkCopyFailed')}
             >
-               <FaLink className="size-2.5" />
-            </Button>
+               {({ buttonProps, icon }) => (
+                  <Button
+                     {...buttonProps}
+                     variant="secondary"
+                     size="icon-xs"
+                     className={cn('border-border/70 h-6 w-6 cursor-pointer rounded-full border', buttonProps.className)}
+                  >
+                     {icon}
+                  </Button>
+               )}
+            </CopyButton>
          </TooltipTrigger>
          <TooltipContent>{t('map.copyShareLink')}</TooltipContent>
+      </Tooltip>
+   );
+}
+
+function CopyMapHashButton({ hash }: { hash: string }) {
+   const t = useTranslations();
+
+   return (
+      <Tooltip>
+         <TooltipTrigger asChild>
+            <CopyButton
+               value={hash}
+               icon={<Hash className="size-2.5" />}
+               copiedIcon={<Check className="size-2.5" />}
+               aria-label={t('map.copyMapHash')}
+               title={t('map.copyMapHash')}
+               errorMessage={t('map.mapHashCopyFailed')}
+            >
+               {({ buttonProps, icon }) => (
+                  <Button
+                     {...buttonProps}
+                     variant="secondary"
+                     size="icon-xs"
+                     className={cn('border-border/70 h-6 w-6 cursor-pointer rounded-full border', buttonProps.className)}
+                  >
+                     {icon}
+                  </Button>
+               )}
+            </CopyButton>
+         </TooltipTrigger>
+         <TooltipContent>{t('map.copyMapHash')}</TooltipContent>
       </Tooltip>
    );
 }

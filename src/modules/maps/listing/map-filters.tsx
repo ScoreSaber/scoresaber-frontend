@@ -11,6 +11,7 @@ import { Slider } from '@/components/ui/slider';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
+import { isMapSearchReady } from '@/modules/maps/shared/map-search';
 import {
    MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY,
    MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS,
@@ -208,7 +209,7 @@ export function MapFilters<TLocation>({
       (activeStatuses.size > 0 ? 1 : 0) +
       (currentVerified === 'false' ? 1 : 0) +
       (currentMinStars !== DEFAULT_MIN_STARS || currentMaxStars !== DEFAULT_MAX_STARS ? 1 : 0) +
-      (currentSearch && currentSearch.length >= 3 ? 1 : 0);
+      (currentSearch && isMapSearchReady(currentSearch) ? 1 : 0);
    const hasActiveFilters = activeFilterCount > 0;
    const getPageLocation = (page: number) => buildLocation(updateSearchParams(search, { page: page > 1 ? page : undefined }));
 
@@ -231,9 +232,10 @@ export function MapFilters<TLocation>({
                   <DebouncedSearchInput
                      id="map-search"
                      initialValue={currentSearch ?? ''}
-                     placeholder={t('common.searchPlaceholder')}
+                     placeholder={t('map.searchPlaceholder')}
                      clearLabel={t('common.clearSearch')}
                      srLabel={t('map.searchMaps')}
+                     isSearchReady={isMapSearchReady}
                      onSearchAction={(value) => navigate({ search: value })}
                   />
 
