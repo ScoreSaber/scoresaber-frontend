@@ -129,6 +129,27 @@ export interface PlayerControllerGetGlobalPlayerHistoryParams {
    id: string;
 }
 
+export interface PlayerControllerGetPlayerScoreByHashParams {
+   /**
+    * Realm ID (defaults to the active realm)
+    * @min 0
+    */
+   realmId?: number;
+   id: string;
+   /**
+    * @minLength 1
+    * @maxLength 40
+    */
+   hash: string;
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   mode: string;
+   /** @exclusiveMin true */
+   difficulty: number;
+}
+
 export interface PlayerControllerGetPlayerScoresParams {
    /**
     * Page number
@@ -407,6 +428,472 @@ export interface LeaderboardControllerGetLeaderboardScoresByHashParams {
    difficulty: number;
 }
 
+export interface LiveTournamentControllerCreateTournamentPayload {
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   name: string;
+   /** @minItems 1 */
+   staffPermissions?: (
+      | 'VIEW_TOURNAMENT'
+      | 'EDIT_TOURNAMENT_SETTINGS'
+      | 'EDIT_TOURNAMENT_ROLES'
+      | 'ASSIGN_TOURNAMENT_ROLES'
+      | 'SYNC_TOURNAMENT_PLAYERS'
+      | 'MANAGE_MATCH_ROOMS'
+      | 'COORDINATE_MATCHES'
+      | 'CAST_MATCHES'
+   )[];
+}
+
+export interface LiveTournamentControllerGetSettingsParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveTournamentControllerUpsertSettingsPayload {
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   name?: string;
+   status?: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+}
+
+export interface LiveTournamentControllerUpsertSettingsParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LivePlayerControllerListPlayerRoomsParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LivePlayerControllerGetPlayerRoomParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LivePlayerControllerGetPlayerRoomByInviteCodeParams {
+   /** @pattern ^\d{4}$ */
+   inviteCode: string;
+}
+
+export interface LiveTournamentRosterControllerListRolesParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveTournamentRosterControllerUpsertRolePayload {
+   /** @exclusiveMin true */
+   id?: number;
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   name: string;
+   /** @maxLength 512 */
+   description?: string | null;
+   /** @maxLength 16 */
+   color?: string | null;
+   order?: number;
+   /** @minItems 1 */
+   permissions: (
+      | 'VIEW_TOURNAMENT'
+      | 'EDIT_TOURNAMENT_SETTINGS'
+      | 'EDIT_TOURNAMENT_ROLES'
+      | 'ASSIGN_TOURNAMENT_ROLES'
+      | 'SYNC_TOURNAMENT_PLAYERS'
+      | 'MANAGE_MATCH_ROOMS'
+      | 'COORDINATE_MATCHES'
+      | 'CAST_MATCHES'
+   )[];
+}
+
+export interface LiveTournamentRosterControllerUpsertRoleParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveTournamentRosterControllerDeleteRoleParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /** @exclusiveMin true */
+   roleId: number;
+}
+
+export interface LiveTournamentRosterControllerAssignRolePayload {
+   /** @pattern ^\d+$ */
+   playerId: string;
+}
+
+export interface LiveTournamentRosterControllerAssignRoleParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /** @exclusiveMin true */
+   roleId: number;
+}
+
+export interface LiveTournamentRosterControllerUnassignRoleParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /** @exclusiveMin true */
+   roleId: number;
+   /** @pattern ^\d+$ */
+   playerId: string;
+}
+
+export interface LiveTournamentRosterControllerListTeamsParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveTournamentRosterControllerUpsertTeamPayload {
+   /** @exclusiveMin true */
+   id?: number;
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   name: string;
+}
+
+export interface LiveTournamentRosterControllerUpsertTeamParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveTournamentRosterControllerDeleteTeamParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /** @exclusiveMin true */
+   teamId: number;
+}
+
+export interface LiveTournamentRosterControllerListAuthorizedPlayersParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveTournamentRosterControllerSyncAuthorizedPlayersPayload {
+   players: {
+      /** @pattern ^\d+$ */
+      playerId: string;
+      /** @exclusiveMin true */
+      teamId?: number | null;
+   }[];
+}
+
+export interface LiveTournamentRosterControllerSyncAuthorizedPlayersParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveMatchRoomControllerListRoomsParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveMatchRoomControllerUpsertRoomPayload {
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+   rosterMode?: 'TEAM' | 'FLAT';
+   members?: {
+      /**
+       * @minLength 1
+       * @maxLength 64
+       */
+      playerId: string;
+      role?: 'PLAYER' | 'VIEWER';
+   }[];
+}
+
+export interface LiveMatchRoomControllerUpsertRoomParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveMatchRoomControllerGetRoomsViewParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
+export interface LiveMatchRoomControllerGetRoomViewParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchRoomControllerSetRoomMembersPayload {
+   members: {
+      /**
+       * @minLength 1
+       * @maxLength 64
+       */
+      playerId: string;
+      role?: 'PLAYER' | 'VIEWER';
+   }[];
+   rosterMode?: 'TEAM' | 'FLAT';
+}
+
+export interface LiveMatchRoomControllerSetRoomMembersParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchRoomControllerSetRoomSongPayload {
+   /** @exclusiveMin true */
+   mapId?: number | null;
+   /** @exclusiveMin true */
+   leaderboardId?: number | null;
+   difficulty?: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+   characteristic?: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+}
+
+export interface LiveMatchRoomControllerSetRoomSongParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchRoomControllerCloseRoomParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchRoomControllerDeleteRoomParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchCommandControllerStartMapPayload {
+   /** @default false */
+   withSync?: boolean;
+   /**
+    * @min 0
+    * @max 120000
+    * @default 10000
+    */
+   countdownMs?: number;
+   /** @default false */
+   forceStart?: boolean;
+}
+
+export interface LiveMatchCommandControllerStartMapParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchCommandControllerReturnToMenuParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchCommandControllerPromptPayload {
+   playerIds: string[];
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   title?: string;
+   /**
+    * @minLength 1
+    * @maxLength 512
+    */
+   message: string;
+   /**
+    * @minLength 1
+    * @maxLength 32
+    */
+   primaryText?: string;
+   /**
+    * @minLength 1
+    * @maxLength 32
+    */
+   secondaryText?: string;
+   /** @exclusiveMin true */
+   timeoutMs?: number;
+}
+
+export interface LiveMatchCommandControllerPromptParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchCommandControllerBottifyPlayerPayload {
+   /** @default true */
+   autoReady?: boolean;
+}
+
+export interface LiveMatchCommandControllerBottifyPlayerParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+   /** @pattern ^\d+$ */
+   playerId: string;
+}
+
+export interface LiveMatchCommandControllerUnbottifyPlayerParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+   /** @pattern ^\d+$ */
+   playerId: string;
+}
+
+export interface LiveMatchCommandControllerFollowRoomPayload {
+   /**
+    * @minLength 1
+    * @maxLength 128
+    */
+   matchId: string;
+}
+
+export interface LiveMatchCommandControllerFollowRoomParams {
+   /**
+    * @minLength 1
+    * @maxLength 64
+    */
+   tournamentId: string;
+}
+
 export interface MapControllerGetMapListingsParams {
    /**
     * Page number
@@ -456,6 +943,19 @@ export interface MapControllerGetMapListingsParams {
     * @min 0
     */
    realmId?: number;
+}
+
+export interface MapControllerGetMapByHashParams {
+   /**
+    * Realm ID (defaults to the active realm)
+    * @min 0
+    */
+   realmId?: number;
+   /**
+    * @minLength 1
+    * @maxLength 40
+    */
+   hash: string;
 }
 
 export interface MapControllerGetMapByIdParams {
@@ -670,7 +1170,7 @@ export interface PasswordAuthControllerChangePasswordPayload {
 
 export interface PasskeyControllerVerifyRegistrationPayload {
    /** WebAuthn registration response from the browser */
-   response: Record<string, any>;
+   response: any;
    /**
     * Friendly name for this passkey
     * @minLength 1
@@ -683,7 +1183,7 @@ export interface PasskeyControllerVerifyAuthenticationPayload {
    /** @minLength 1 */
    sessionId: string;
    /** WebAuthn authentication response from the browser */
-   response: Record<string, any>;
+   response: any;
 }
 
 export interface PasskeyControllerRenamePasskeyPayload {
@@ -767,7 +1267,7 @@ export interface OAuthControllerTokenPayload {
     * OAuth client secret
     * @minLength 1
     */
-   client_secret: string;
+   client_secret?: string;
    code?: string;
    redirect_uri?: string;
    /** PKCE code verifier */
@@ -823,11 +1323,7 @@ export interface OAuthClientControllerRotateSecretParams {
 }
 
 export interface GameControllerAuthenticatePayload {
-   /**
-    * Auth type (0=Steam, 1=Oculus, 2=Quest key, 3=Dev, 4=Device code)
-    * @min 0
-    * @max 4
-    */
+   /** Auth type (0=Steam, 1=Oculus, 2=Quest key, 3=Dev, 4=Device code) */
    at: number;
    /**
     * Player platform ID
@@ -1670,6 +2166,11 @@ export interface UserControllerUpdateNamePayload {
     * @maxLength 128
     */
    name: string;
+}
+
+export interface UserControllerUpdateLiveSpectatingPayload {
+   /** Opt out of public live presence outside tournaments */
+   publicLivePresenceOptOut: boolean;
 }
 
 export interface UserControllerUploadAvatarPayload {
@@ -3438,6 +3939,210 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          >({
             path: `/api/v2/players/${id}/global-history`,
             method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Player
+ * @name PlayerControllerGetPlayerScoreByHash
+ * @request GET:/api/v2/players/{id}/scores/hash/{hash}/{mode}/{difficulty}
+ * @response `200` `{
+    id: number,
+    rank: number,
+    unmodifiedScore: number,
+    modifiedScore: number,
+    accuracy: number,
+    pp: number,
+    weight: number,
+    mods: (string)[],
+    badCuts: number,
+    missedNotes: number,
+    maxCombo: number,
+    fullCombo: boolean,
+    hasReplay: boolean,
+    personalBest: boolean,
+    legacyHmdId: number | null,
+    version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
+    createdAt: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+},
+    device: {
+    hmd: string | null,
+    controllerLeft: string | null,
+    controllerRight: string | null,
+
+} | null,
+
+}` Player's score by hash and difficulty
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      playerControllerGetPlayerScoreByHash: (
+         { id, hash, mode, difficulty, ...query }: PlayerControllerGetPlayerScoreByHashParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               id: number;
+               rank: number;
+               unmodifiedScore: number;
+               modifiedScore: number;
+               accuracy: number;
+               pp: number;
+               weight: number;
+               mods: string[];
+               badCuts: number;
+               missedNotes: number;
+               maxCombo: number;
+               fullCombo: boolean;
+               hasReplay: boolean;
+               personalBest: boolean;
+               legacyHmdId: number | null;
+               version: string | null;
+               playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+               playOutcomeTime: number | null;
+               createdAt: string;
+               player: {
+                  id: string;
+                  name: string;
+                  playerNameInGame: string;
+                  country: string;
+                  role: string | null;
+                  avatar: string;
+                  avatarVersion: number;
+                  permissions: number;
+               };
+               device: {
+                  hmd: string | null;
+                  controllerLeft: string | null;
+                  controllerRight: string | null;
+               } | null;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/players/${id}/scores/hash/${hash}/${mode}/${difficulty}`,
+            method: 'GET',
+            query: query,
             format: 'json',
             ...params
          }),
@@ -5686,6 +6391,6987 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             ...params
          })
    };
+   livePlatform = {
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentControllerListTournaments
+ * @request GET:/api/v2/live/tournaments
+ * @response `200` `({
+    tournamentId: string,
+    name: string,
+    status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    roleNames: (string)[],
+    permissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+    createdAt: string,
+    updatedAt: string,
+
+})[]` Live tournaments available to the current player
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      liveTournamentControllerListTournaments: (params: RequestParams = {}) =>
+         this.request<
+            {
+               tournamentId: string;
+               name: string;
+               status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+               roleNames: string[];
+               permissions: (
+                  | 'VIEW_TOURNAMENT'
+                  | 'EDIT_TOURNAMENT_SETTINGS'
+                  | 'EDIT_TOURNAMENT_ROLES'
+                  | 'ASSIGN_TOURNAMENT_ROLES'
+                  | 'SYNC_TOURNAMENT_PLAYERS'
+                  | 'MANAGE_MATCH_ROOMS'
+                  | 'COORDINATE_MATCHES'
+                  | 'CAST_MATCHES'
+               )[];
+               createdAt: string;
+               updatedAt: string;
+            }[],
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/live/tournaments`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentControllerCreateTournament
+ * @request POST:/api/v2/live/tournaments
+ * @response `200` `{
+    tournamentId: string,
+    name: string,
+    status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    roleNames: (string)[],
+    permissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+    createdAt: string,
+    updatedAt: string,
+
+}` Created live tournament
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentControllerCreateTournament: (data: LiveTournamentControllerCreateTournamentPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               tournamentId: string;
+               name: string;
+               status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+               roleNames: string[];
+               permissions: (
+                  | 'VIEW_TOURNAMENT'
+                  | 'EDIT_TOURNAMENT_SETTINGS'
+                  | 'EDIT_TOURNAMENT_ROLES'
+                  | 'ASSIGN_TOURNAMENT_ROLES'
+                  | 'SYNC_TOURNAMENT_PLAYERS'
+                  | 'MANAGE_MATCH_ROOMS'
+                  | 'COORDINATE_MATCHES'
+                  | 'CAST_MATCHES'
+               )[];
+               createdAt: string;
+               updatedAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentControllerGetWorkflowOptions
+ * @request GET:/api/v2/live/tournaments/options
+ * @response `200` `{
+    tournamentStatuses: ("DRAFT" | "ACTIVE" | "ARCHIVED")[],
+    playerPlatforms: ("STEAM" | "OCULUS" | "UNKNOWN")[],
+    roomRosterModes: ("TEAM" | "FLAT")[],
+    roomMemberRoles: ("PLAYER" | "VIEWER")[],
+    mapDifficulties: ("Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus")[],
+    mapCharacteristics: ("Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow")[],
+    tournamentPermissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+
+}` Live workflow option values
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      liveTournamentControllerGetWorkflowOptions: (params: RequestParams = {}) =>
+         this.request<
+            {
+               tournamentStatuses: ('DRAFT' | 'ACTIVE' | 'ARCHIVED')[];
+               playerPlatforms: ('STEAM' | 'OCULUS' | 'UNKNOWN')[];
+               roomRosterModes: ('TEAM' | 'FLAT')[];
+               roomMemberRoles: ('PLAYER' | 'VIEWER')[];
+               mapDifficulties: ('Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus')[];
+               mapCharacteristics: ('Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow')[];
+               tournamentPermissions: (
+                  | 'VIEW_TOURNAMENT'
+                  | 'EDIT_TOURNAMENT_SETTINGS'
+                  | 'EDIT_TOURNAMENT_ROLES'
+                  | 'ASSIGN_TOURNAMENT_ROLES'
+                  | 'SYNC_TOURNAMENT_PLAYERS'
+                  | 'MANAGE_MATCH_ROOMS'
+                  | 'COORDINATE_MATCHES'
+                  | 'CAST_MATCHES'
+               )[];
+            },
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/live/tournaments/options`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentControllerGetSettings
+ * @request GET:/api/v2/live/tournaments/{tournamentId}/settings
+ * @response `200` `{
+    tournamentId: string,
+    name: string,
+    status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    liveConnectionUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+}` Live tournament settings
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentControllerGetSettings: ({ tournamentId }: LiveTournamentControllerGetSettingsParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               tournamentId: string;
+               name: string;
+               status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+               liveConnectionUrl: string | null;
+               createdAt: string;
+               updatedAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/settings`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentControllerUpsertSettings
+ * @request PUT:/api/v2/live/tournaments/{tournamentId}/settings
+ * @response `200` `{
+    tournamentId: string,
+    name: string,
+    status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    liveConnectionUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+}` Updated live tournament settings
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentControllerUpsertSettings: (
+         { tournamentId }: LiveTournamentControllerUpsertSettingsParams,
+         data: LiveTournamentControllerUpsertSettingsPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               tournamentId: string;
+               name: string;
+               status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+               liveConnectionUrl: string | null;
+               createdAt: string;
+               updatedAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/settings`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LivePlayerControllerListPlayerTournaments
+ * @request GET:/api/v2/live/player/tournaments
+ * @response `200` `({
+    tournamentId: string,
+    name: string,
+    status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    permissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+    roomSummary: string,
+    createdAt: string,
+    updatedAt: string,
+
+})[]` Active live tournaments available to the current player as a participant
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      livePlayerControllerListPlayerTournaments: (params: RequestParams = {}) =>
+         this.request<
+            {
+               tournamentId: string;
+               name: string;
+               status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+               permissions: (
+                  | 'VIEW_TOURNAMENT'
+                  | 'EDIT_TOURNAMENT_SETTINGS'
+                  | 'EDIT_TOURNAMENT_ROLES'
+                  | 'ASSIGN_TOURNAMENT_ROLES'
+                  | 'SYNC_TOURNAMENT_PLAYERS'
+                  | 'MANAGE_MATCH_ROOMS'
+                  | 'COORDINATE_MATCHES'
+                  | 'CAST_MATCHES'
+               )[];
+               roomSummary: string;
+               createdAt: string;
+               updatedAt: string;
+            }[],
+            {
+               statusCode: 401;
+               error: 'Unauthorized';
+               code: 'UNAUTHORIZED';
+               message: string;
+            }
+         >({
+            path: `/api/v2/live/player/tournaments`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LivePlayerControllerListPlayerRooms
+ * @request GET:/api/v2/live/player/tournaments/{tournamentId}/rooms
+ * @response `200` `({
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    playerCount: number,
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    createdAt: string,
+    updatedAt: string,
+
+})[]` Live match rooms available to the current player as a participant
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      livePlayerControllerListPlayerRooms: ({ tournamentId }: LivePlayerControllerListPlayerRoomsParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               tournamentId: string;
+               matchId: string;
+               /** @pattern ^\d{4}$ */
+               inviteCode: string;
+               state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+               rosterMode: 'TEAM' | 'FLAT';
+               playerCount: number;
+               selectedSong: {
+                  id: number;
+                  tournamentId: string;
+                  mapId: number;
+                  beatSaverKey: string | null;
+                  mapHash: string;
+                  difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                  characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                  leaderboardId: number | null;
+                  songName: string;
+                  songSubName: string;
+                  songAuthorName: string;
+                  levelAuthorName: string;
+                  bpm: number;
+                  nps: number;
+                  durationSeconds: number;
+                  maxScore: number;
+                  downloadUrl: string | null;
+                  coverUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               } | null;
+               createdAt: string;
+               updatedAt: string;
+            }[],
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/live/player/tournaments/${tournamentId}/rooms`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LivePlayerControllerGetPlayerRoom
+ * @request GET:/api/v2/live/player/tournaments/{tournamentId}/rooms/{matchId}
+ * @response `200` `{
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    playerCount: number,
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    members: ({
+    playerId: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    teamId: number | null,
+    teamName: string | null,
+    connected: boolean,
+    isBot: boolean,
+    role: "PLAYER" | "VIEWER",
+    playState: "IN_MENU" | "PAUSED" | "IN_GAME",
+    downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
+    joinedAt: string,
+    lastSeenAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+
+}` Live match room details available to the current player as a participant
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      livePlayerControllerGetPlayerRoom: ({ tournamentId, matchId }: LivePlayerControllerGetPlayerRoomParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               tournamentId: string;
+               matchId: string;
+               /** @pattern ^\d{4}$ */
+               inviteCode: string;
+               state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+               rosterMode: 'TEAM' | 'FLAT';
+               playerCount: number;
+               selectedSong: {
+                  id: number;
+                  tournamentId: string;
+                  mapId: number;
+                  beatSaverKey: string | null;
+                  mapHash: string;
+                  difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                  characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                  leaderboardId: number | null;
+                  songName: string;
+                  songSubName: string;
+                  songAuthorName: string;
+                  levelAuthorName: string;
+                  bpm: number;
+                  nps: number;
+                  durationSeconds: number;
+                  maxScore: number;
+                  downloadUrl: string | null;
+                  coverUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               } | null;
+               members: {
+                  playerId: string;
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  } | null;
+                  teamId: number | null;
+                  teamName: string | null;
+                  connected: boolean;
+                  isBot: boolean;
+                  role: 'PLAYER' | 'VIEWER';
+                  playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
+                  downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
+                  joinedAt: string;
+                  lastSeenAt: string;
+               }[];
+               createdAt: string;
+               updatedAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/live/player/tournaments/${tournamentId}/rooms/${matchId}`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LivePlayerControllerGetPlayerRoomByInviteCode
+ * @request GET:/api/v2/live/player/rooms/by-invite-code/{inviteCode}
+ * @response `200` `{
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    playerCount: number,
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    members: ({
+    playerId: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    teamId: number | null,
+    teamName: string | null,
+    connected: boolean,
+    isBot: boolean,
+    role: "PLAYER" | "VIEWER",
+    playState: "IN_MENU" | "PAUSED" | "IN_GAME",
+    downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
+    joinedAt: string,
+    lastSeenAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+
+}` Live match room details for a participant invite code
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      livePlayerControllerGetPlayerRoomByInviteCode: (
+         { inviteCode }: LivePlayerControllerGetPlayerRoomByInviteCodeParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               tournamentId: string;
+               matchId: string;
+               /** @pattern ^\d{4}$ */
+               inviteCode: string;
+               state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+               rosterMode: 'TEAM' | 'FLAT';
+               playerCount: number;
+               selectedSong: {
+                  id: number;
+                  tournamentId: string;
+                  mapId: number;
+                  beatSaverKey: string | null;
+                  mapHash: string;
+                  difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                  characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                  leaderboardId: number | null;
+                  songName: string;
+                  songSubName: string;
+                  songAuthorName: string;
+                  levelAuthorName: string;
+                  bpm: number;
+                  nps: number;
+                  durationSeconds: number;
+                  maxScore: number;
+                  downloadUrl: string | null;
+                  coverUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               } | null;
+               members: {
+                  playerId: string;
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  } | null;
+                  teamId: number | null;
+                  teamName: string | null;
+                  connected: boolean;
+                  isBot: boolean;
+                  role: 'PLAYER' | 'VIEWER';
+                  playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
+                  downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
+                  joinedAt: string;
+                  lastSeenAt: string;
+               }[];
+               createdAt: string;
+               updatedAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/live/player/rooms/by-invite-code/${inviteCode}`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerListRoles
+ * @request GET:/api/v2/live/tournaments/{tournamentId}/roles
+ * @response `200` `({
+    id: number,
+    tournamentId: string,
+    name: string,
+    description: string | null,
+    color: string | null,
+    order: number,
+    permissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+    assignments: ({
+    roleId: number,
+    playerId: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    assignedAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+
+})[]` Live tournament roles
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      liveTournamentRosterControllerListRoles: ({ tournamentId }: LiveTournamentRosterControllerListRolesParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               id: number;
+               tournamentId: string;
+               name: string;
+               description: string | null;
+               color: string | null;
+               order: number;
+               permissions: (
+                  | 'VIEW_TOURNAMENT'
+                  | 'EDIT_TOURNAMENT_SETTINGS'
+                  | 'EDIT_TOURNAMENT_ROLES'
+                  | 'ASSIGN_TOURNAMENT_ROLES'
+                  | 'SYNC_TOURNAMENT_PLAYERS'
+                  | 'MANAGE_MATCH_ROOMS'
+                  | 'COORDINATE_MATCHES'
+                  | 'CAST_MATCHES'
+               )[];
+               assignments: {
+                  roleId: number;
+                  playerId: string;
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  } | null;
+                  assignedAt: string;
+               }[];
+               createdAt: string;
+               updatedAt: string;
+            }[],
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/roles`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerUpsertRole
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/roles
+ * @response `200` `{
+    id: number,
+    tournamentId: string,
+    name: string,
+    description: string | null,
+    color: string | null,
+    order: number,
+    permissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+    assignments: ({
+    roleId: number,
+    playerId: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    assignedAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+
+}` Created or updated live tournament role
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentRosterControllerUpsertRole: (
+         { tournamentId }: LiveTournamentRosterControllerUpsertRoleParams,
+         data: LiveTournamentRosterControllerUpsertRolePayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               id: number;
+               tournamentId: string;
+               name: string;
+               description: string | null;
+               color: string | null;
+               order: number;
+               permissions: (
+                  | 'VIEW_TOURNAMENT'
+                  | 'EDIT_TOURNAMENT_SETTINGS'
+                  | 'EDIT_TOURNAMENT_ROLES'
+                  | 'ASSIGN_TOURNAMENT_ROLES'
+                  | 'SYNC_TOURNAMENT_PLAYERS'
+                  | 'MANAGE_MATCH_ROOMS'
+                  | 'COORDINATE_MATCHES'
+                  | 'CAST_MATCHES'
+               )[];
+               assignments: {
+                  roleId: number;
+                  playerId: string;
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  } | null;
+                  assignedAt: string;
+               }[];
+               createdAt: string;
+               updatedAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/roles`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerDeleteRole
+ * @request DELETE:/api/v2/live/tournaments/{tournamentId}/roles/{roleId}
+ * @response `200` `{
+    success: boolean,
+
+}` Deleted live tournament role
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentRosterControllerDeleteRole: (
+         { tournamentId, roleId }: LiveTournamentRosterControllerDeleteRoleParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/roles/${roleId}`,
+            method: 'DELETE',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerAssignRole
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/roles/{roleId}/assign
+ * @response `200` `{
+    success: boolean,
+
+}` Assigned live tournament role
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentRosterControllerAssignRole: (
+         { tournamentId, roleId }: LiveTournamentRosterControllerAssignRoleParams,
+         data: LiveTournamentRosterControllerAssignRolePayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/roles/${roleId}/assign`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerUnassignRole
+ * @request DELETE:/api/v2/live/tournaments/{tournamentId}/roles/{roleId}/assignments/{playerId}
+ * @response `200` `{
+    success: boolean,
+
+}` Removed live tournament role assignment
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentRosterControllerUnassignRole: (
+         { tournamentId, roleId, playerId }: LiveTournamentRosterControllerUnassignRoleParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/roles/${roleId}/assignments/${playerId}`,
+            method: 'DELETE',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerListTeams
+ * @request GET:/api/v2/live/tournaments/{tournamentId}/teams
+ * @response `200` `({
+    id: number,
+    tournamentId: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+
+})[]` Live tournament teams
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      liveTournamentRosterControllerListTeams: ({ tournamentId }: LiveTournamentRosterControllerListTeamsParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               id: number;
+               tournamentId: string;
+               name: string;
+               createdAt: string;
+               updatedAt: string;
+            }[],
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/teams`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerUpsertTeam
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/teams
+ * @response `200` `{
+    id: number,
+    tournamentId: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+
+}` Created or updated live tournament team
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentRosterControllerUpsertTeam: (
+         { tournamentId }: LiveTournamentRosterControllerUpsertTeamParams,
+         data: LiveTournamentRosterControllerUpsertTeamPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               id: number;
+               tournamentId: string;
+               name: string;
+               createdAt: string;
+               updatedAt: string;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/teams`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerDeleteTeam
+ * @request DELETE:/api/v2/live/tournaments/{tournamentId}/teams/{teamId}
+ * @response `200` `{
+    success: boolean,
+
+}` Deleted live tournament team
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentRosterControllerDeleteTeam: (
+         { tournamentId, teamId }: LiveTournamentRosterControllerDeleteTeamParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/teams/${teamId}`,
+            method: 'DELETE',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerListAuthorizedPlayers
+ * @request GET:/api/v2/live/tournaments/{tournamentId}/authorized-players
+ * @response `200` `({
+    id: number,
+    tournamentId: string,
+    playerId: string,
+    platform: "STEAM" | "OCULUS" | "UNKNOWN",
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    teamId: number | null,
+    teamName: string | null,
+    lastSyncedAt: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+})[]` Authorized live tournament players
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      liveTournamentRosterControllerListAuthorizedPlayers: (
+         { tournamentId }: LiveTournamentRosterControllerListAuthorizedPlayersParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               id: number;
+               tournamentId: string;
+               playerId: string;
+               platform: 'STEAM' | 'OCULUS' | 'UNKNOWN';
+               player: {
+                  id: string;
+                  name: string;
+                  playerNameInGame: string;
+                  country: string;
+                  role: string | null;
+                  avatar: string;
+                  avatarVersion: number;
+                  permissions: number;
+               } | null;
+               teamId: number | null;
+               teamName: string | null;
+               lastSyncedAt: string | null;
+               createdAt: string;
+               updatedAt: string;
+            }[],
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/authorized-players`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveTournamentRosterControllerSyncAuthorizedPlayers
+ * @request PUT:/api/v2/live/tournaments/{tournamentId}/authorized-players
+ * @response `200` `{
+    players: ({
+    id: number,
+    tournamentId: string,
+    playerId: string,
+    platform: "STEAM" | "OCULUS" | "UNKNOWN",
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    teamId: number | null,
+    teamName: string | null,
+    lastSyncedAt: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+})[],
+
+}` Synced authorized live tournament players
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveTournamentRosterControllerSyncAuthorizedPlayers: (
+         { tournamentId }: LiveTournamentRosterControllerSyncAuthorizedPlayersParams,
+         data: LiveTournamentRosterControllerSyncAuthorizedPlayersPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               players: {
+                  id: number;
+                  tournamentId: string;
+                  playerId: string;
+                  platform: 'STEAM' | 'OCULUS' | 'UNKNOWN';
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  } | null;
+                  teamId: number | null;
+                  teamName: string | null;
+                  lastSyncedAt: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               }[];
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/authorized-players`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchRoomControllerListRooms
+ * @request GET:/api/v2/live/tournaments/{tournamentId}/rooms
+ * @response `200` `({
+    id: number,
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    loadedSong: boolean,
+    members: ({
+    playerId: string,
+    connected: boolean,
+    isBot: boolean,
+    role: "PLAYER" | "VIEWER",
+    playState: "IN_MENU" | "PAUSED" | "IN_GAME",
+    downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
+    joinedAt: string,
+    lastSeenAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+    closedAt: string | null,
+
+})[]` Live match rooms
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ */
+      liveMatchRoomControllerListRooms: ({ tournamentId }: LiveMatchRoomControllerListRoomsParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               id: number;
+               tournamentId: string;
+               matchId: string;
+               /** @pattern ^\d{4}$ */
+               inviteCode: string;
+               state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+               rosterMode: 'TEAM' | 'FLAT';
+               selectedSong: {
+                  id: number;
+                  tournamentId: string;
+                  mapId: number;
+                  beatSaverKey: string | null;
+                  mapHash: string;
+                  difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                  characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                  leaderboardId: number | null;
+                  songName: string;
+                  songSubName: string;
+                  songAuthorName: string;
+                  levelAuthorName: string;
+                  bpm: number;
+                  nps: number;
+                  durationSeconds: number;
+                  maxScore: number;
+                  downloadUrl: string | null;
+                  coverUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               } | null;
+               loadedSong: boolean;
+               members: {
+                  playerId: string;
+                  connected: boolean;
+                  isBot: boolean;
+                  role: 'PLAYER' | 'VIEWER';
+                  playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
+                  downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
+                  joinedAt: string;
+                  lastSeenAt: string;
+               }[];
+               createdAt: string;
+               updatedAt: string;
+               closedAt: string | null;
+            }[],
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchRoomControllerUpsertRoom
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/rooms
+ * @response `200` `{
+    id: number,
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    loadedSong: boolean,
+    members: ({
+    playerId: string,
+    connected: boolean,
+    isBot: boolean,
+    role: "PLAYER" | "VIEWER",
+    playState: "IN_MENU" | "PAUSED" | "IN_GAME",
+    downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
+    joinedAt: string,
+    lastSeenAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+    closedAt: string | null,
+
+}` Created or updated live match room
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchRoomControllerUpsertRoom: (
+         { tournamentId }: LiveMatchRoomControllerUpsertRoomParams,
+         data: LiveMatchRoomControllerUpsertRoomPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               id: number;
+               tournamentId: string;
+               matchId: string;
+               /** @pattern ^\d{4}$ */
+               inviteCode: string;
+               state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+               rosterMode: 'TEAM' | 'FLAT';
+               selectedSong: {
+                  id: number;
+                  tournamentId: string;
+                  mapId: number;
+                  beatSaverKey: string | null;
+                  mapHash: string;
+                  difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                  characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                  leaderboardId: number | null;
+                  songName: string;
+                  songSubName: string;
+                  songAuthorName: string;
+                  levelAuthorName: string;
+                  bpm: number;
+                  nps: number;
+                  durationSeconds: number;
+                  maxScore: number;
+                  downloadUrl: string | null;
+                  coverUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               } | null;
+               loadedSong: boolean;
+               members: {
+                  playerId: string;
+                  connected: boolean;
+                  isBot: boolean;
+                  role: 'PLAYER' | 'VIEWER';
+                  playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
+                  downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
+                  joinedAt: string;
+                  lastSeenAt: string;
+               }[];
+               createdAt: string;
+               updatedAt: string;
+               closedAt: string | null;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchRoomControllerGetRoomsView
+ * @request GET:/api/v2/live/tournaments/{tournamentId}/rooms/view
+ * @response `200` `{
+    settings: {
+    tournamentId: string,
+    name: string,
+    status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    liveConnectionUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+},
+    access: {
+    tournamentId: string,
+    roleNames: (string)[],
+    permissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+
+},
+    rooms: ({
+    id: number,
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    loadedSong: boolean,
+    members: ({
+    playerId: string,
+    connected: boolean,
+    isBot: boolean,
+    role: "PLAYER" | "VIEWER",
+    playState: "IN_MENU" | "PAUSED" | "IN_GAME",
+    downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
+    joinedAt: string,
+    lastSeenAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+    closedAt: string | null,
+
+})[],
+    authorizedPlayers: ({
+    id: number,
+    tournamentId: string,
+    playerId: string,
+    platform: "STEAM" | "OCULUS" | "UNKNOWN",
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    teamId: number | null,
+    teamName: string | null,
+    lastSyncedAt: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+})[],
+    teams: ({
+    id: number,
+    tournamentId: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+
+})[],
+    options: {
+    tournamentStatuses: ("DRAFT" | "ACTIVE" | "ARCHIVED")[],
+    playerPlatforms: ("STEAM" | "OCULUS" | "UNKNOWN")[],
+    roomRosterModes: ("TEAM" | "FLAT")[],
+    roomMemberRoles: ("PLAYER" | "VIEWER")[],
+    mapDifficulties: ("Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus")[],
+    mapCharacteristics: ("Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow")[],
+    tournamentPermissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+
+},
+
+}` Live rooms workflow view
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchRoomControllerGetRoomsView: ({ tournamentId }: LiveMatchRoomControllerGetRoomsViewParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               settings: {
+                  tournamentId: string;
+                  name: string;
+                  status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+                  liveConnectionUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               };
+               access: {
+                  tournamentId: string;
+                  roleNames: string[];
+                  permissions: (
+                     | 'VIEW_TOURNAMENT'
+                     | 'EDIT_TOURNAMENT_SETTINGS'
+                     | 'EDIT_TOURNAMENT_ROLES'
+                     | 'ASSIGN_TOURNAMENT_ROLES'
+                     | 'SYNC_TOURNAMENT_PLAYERS'
+                     | 'MANAGE_MATCH_ROOMS'
+                     | 'COORDINATE_MATCHES'
+                     | 'CAST_MATCHES'
+                  )[];
+               };
+               rooms: {
+                  id: number;
+                  tournamentId: string;
+                  matchId: string;
+                  /** @pattern ^\d{4}$ */
+                  inviteCode: string;
+                  state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+                  rosterMode: 'TEAM' | 'FLAT';
+                  selectedSong: {
+                     id: number;
+                     tournamentId: string;
+                     mapId: number;
+                     beatSaverKey: string | null;
+                     mapHash: string;
+                     difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                     characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                     leaderboardId: number | null;
+                     songName: string;
+                     songSubName: string;
+                     songAuthorName: string;
+                     levelAuthorName: string;
+                     bpm: number;
+                     nps: number;
+                     durationSeconds: number;
+                     maxScore: number;
+                     downloadUrl: string | null;
+                     coverUrl: string | null;
+                     createdAt: string;
+                     updatedAt: string;
+                  } | null;
+                  loadedSong: boolean;
+                  members: {
+                     playerId: string;
+                     connected: boolean;
+                     isBot: boolean;
+                     role: 'PLAYER' | 'VIEWER';
+                     playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
+                     downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
+                     joinedAt: string;
+                     lastSeenAt: string;
+                  }[];
+                  createdAt: string;
+                  updatedAt: string;
+                  closedAt: string | null;
+               }[];
+               authorizedPlayers: {
+                  id: number;
+                  tournamentId: string;
+                  playerId: string;
+                  platform: 'STEAM' | 'OCULUS' | 'UNKNOWN';
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  } | null;
+                  teamId: number | null;
+                  teamName: string | null;
+                  lastSyncedAt: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               }[];
+               teams: {
+                  id: number;
+                  tournamentId: string;
+                  name: string;
+                  createdAt: string;
+                  updatedAt: string;
+               }[];
+               options: {
+                  tournamentStatuses: ('DRAFT' | 'ACTIVE' | 'ARCHIVED')[];
+                  playerPlatforms: ('STEAM' | 'OCULUS' | 'UNKNOWN')[];
+                  roomRosterModes: ('TEAM' | 'FLAT')[];
+                  roomMemberRoles: ('PLAYER' | 'VIEWER')[];
+                  mapDifficulties: ('Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus')[];
+                  mapCharacteristics: ('Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow')[];
+                  tournamentPermissions: (
+                     | 'VIEW_TOURNAMENT'
+                     | 'EDIT_TOURNAMENT_SETTINGS'
+                     | 'EDIT_TOURNAMENT_ROLES'
+                     | 'ASSIGN_TOURNAMENT_ROLES'
+                     | 'SYNC_TOURNAMENT_PLAYERS'
+                     | 'MANAGE_MATCH_ROOMS'
+                     | 'COORDINATE_MATCHES'
+                     | 'CAST_MATCHES'
+                  )[];
+               };
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/view`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchRoomControllerGetRoomView
+ * @request GET:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/view
+ * @response `200` `{
+    settings: {
+    tournamentId: string,
+    name: string,
+    status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    liveConnectionUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+},
+    access: {
+    tournamentId: string,
+    roleNames: (string)[],
+    permissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+
+},
+    room: {
+    id: number,
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    loadedSong: boolean,
+    members: ({
+    playerId: string,
+    connected: boolean,
+    isBot: boolean,
+    role: "PLAYER" | "VIEWER",
+    playState: "IN_MENU" | "PAUSED" | "IN_GAME",
+    downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
+    joinedAt: string,
+    lastSeenAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+    closedAt: string | null,
+
+},
+    finalScores: ({
+    id: number,
+    tournamentId: string,
+    roomId: number,
+    matchId: string,
+    song: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+},
+    scoreId: number,
+    playerId: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    rank: number | null,
+    score: number,
+    modifiedScore: number | null,
+    maxScore: number | null,
+    accuracy: number | null,
+    badCuts: number,
+    misses: number,
+    completion: "PASSED" | "FAILED" | "QUIT",
+    fullCombo: boolean,
+    reportedAt: string,
+    createdAt: string,
+
+})[],
+    authorizedPlayers: ({
+    id: number,
+    tournamentId: string,
+    playerId: string,
+    platform: "STEAM" | "OCULUS" | "UNKNOWN",
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+} | null,
+    teamId: number | null,
+    teamName: string | null,
+    lastSyncedAt: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+})[],
+    teams: ({
+    id: number,
+    tournamentId: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+
+})[],
+    options: {
+    tournamentStatuses: ("DRAFT" | "ACTIVE" | "ARCHIVED")[],
+    playerPlatforms: ("STEAM" | "OCULUS" | "UNKNOWN")[],
+    roomRosterModes: ("TEAM" | "FLAT")[],
+    roomMemberRoles: ("PLAYER" | "VIEWER")[],
+    mapDifficulties: ("Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus")[],
+    mapCharacteristics: ("Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow")[],
+    tournamentPermissions: ("VIEW_TOURNAMENT" | "EDIT_TOURNAMENT_SETTINGS" | "EDIT_TOURNAMENT_ROLES" | "ASSIGN_TOURNAMENT_ROLES" | "SYNC_TOURNAMENT_PLAYERS" | "MANAGE_MATCH_ROOMS" | "COORDINATE_MATCHES" | "CAST_MATCHES")[],
+
+},
+
+}` Live room workflow view
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchRoomControllerGetRoomView: ({ tournamentId, matchId }: LiveMatchRoomControllerGetRoomViewParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               settings: {
+                  tournamentId: string;
+                  name: string;
+                  status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+                  liveConnectionUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               };
+               access: {
+                  tournamentId: string;
+                  roleNames: string[];
+                  permissions: (
+                     | 'VIEW_TOURNAMENT'
+                     | 'EDIT_TOURNAMENT_SETTINGS'
+                     | 'EDIT_TOURNAMENT_ROLES'
+                     | 'ASSIGN_TOURNAMENT_ROLES'
+                     | 'SYNC_TOURNAMENT_PLAYERS'
+                     | 'MANAGE_MATCH_ROOMS'
+                     | 'COORDINATE_MATCHES'
+                     | 'CAST_MATCHES'
+                  )[];
+               };
+               room: {
+                  id: number;
+                  tournamentId: string;
+                  matchId: string;
+                  /** @pattern ^\d{4}$ */
+                  inviteCode: string;
+                  state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+                  rosterMode: 'TEAM' | 'FLAT';
+                  selectedSong: {
+                     id: number;
+                     tournamentId: string;
+                     mapId: number;
+                     beatSaverKey: string | null;
+                     mapHash: string;
+                     difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                     characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                     leaderboardId: number | null;
+                     songName: string;
+                     songSubName: string;
+                     songAuthorName: string;
+                     levelAuthorName: string;
+                     bpm: number;
+                     nps: number;
+                     durationSeconds: number;
+                     maxScore: number;
+                     downloadUrl: string | null;
+                     coverUrl: string | null;
+                     createdAt: string;
+                     updatedAt: string;
+                  } | null;
+                  loadedSong: boolean;
+                  members: {
+                     playerId: string;
+                     connected: boolean;
+                     isBot: boolean;
+                     role: 'PLAYER' | 'VIEWER';
+                     playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
+                     downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
+                     joinedAt: string;
+                     lastSeenAt: string;
+                  }[];
+                  createdAt: string;
+                  updatedAt: string;
+                  closedAt: string | null;
+               };
+               finalScores: {
+                  id: number;
+                  tournamentId: string;
+                  roomId: number;
+                  matchId: string;
+                  song: {
+                     id: number;
+                     tournamentId: string;
+                     mapId: number;
+                     beatSaverKey: string | null;
+                     mapHash: string;
+                     difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                     characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                     leaderboardId: number | null;
+                     songName: string;
+                     songSubName: string;
+                     songAuthorName: string;
+                     levelAuthorName: string;
+                     bpm: number;
+                     nps: number;
+                     durationSeconds: number;
+                     maxScore: number;
+                     downloadUrl: string | null;
+                     coverUrl: string | null;
+                     createdAt: string;
+                     updatedAt: string;
+                  };
+                  scoreId: number;
+                  playerId: string;
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  } | null;
+                  rank: number | null;
+                  score: number;
+                  modifiedScore: number | null;
+                  maxScore: number | null;
+                  accuracy: number | null;
+                  badCuts: number;
+                  misses: number;
+                  completion: 'PASSED' | 'FAILED' | 'QUIT';
+                  fullCombo: boolean;
+                  reportedAt: string;
+                  createdAt: string;
+               }[];
+               authorizedPlayers: {
+                  id: number;
+                  tournamentId: string;
+                  playerId: string;
+                  platform: 'STEAM' | 'OCULUS' | 'UNKNOWN';
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  } | null;
+                  teamId: number | null;
+                  teamName: string | null;
+                  lastSyncedAt: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               }[];
+               teams: {
+                  id: number;
+                  tournamentId: string;
+                  name: string;
+                  createdAt: string;
+                  updatedAt: string;
+               }[];
+               options: {
+                  tournamentStatuses: ('DRAFT' | 'ACTIVE' | 'ARCHIVED')[];
+                  playerPlatforms: ('STEAM' | 'OCULUS' | 'UNKNOWN')[];
+                  roomRosterModes: ('TEAM' | 'FLAT')[];
+                  roomMemberRoles: ('PLAYER' | 'VIEWER')[];
+                  mapDifficulties: ('Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus')[];
+                  mapCharacteristics: ('Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow')[];
+                  tournamentPermissions: (
+                     | 'VIEW_TOURNAMENT'
+                     | 'EDIT_TOURNAMENT_SETTINGS'
+                     | 'EDIT_TOURNAMENT_ROLES'
+                     | 'ASSIGN_TOURNAMENT_ROLES'
+                     | 'SYNC_TOURNAMENT_PLAYERS'
+                     | 'MANAGE_MATCH_ROOMS'
+                     | 'COORDINATE_MATCHES'
+                     | 'CAST_MATCHES'
+                  )[];
+               };
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/view`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchRoomControllerSetRoomMembers
+ * @request PUT:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/members
+ * @response `200` `{
+    id: number,
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    loadedSong: boolean,
+    members: ({
+    playerId: string,
+    connected: boolean,
+    isBot: boolean,
+    role: "PLAYER" | "VIEWER",
+    playState: "IN_MENU" | "PAUSED" | "IN_GAME",
+    downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
+    joinedAt: string,
+    lastSeenAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+    closedAt: string | null,
+
+}` Updated live match room members
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchRoomControllerSetRoomMembers: (
+         { tournamentId, matchId }: LiveMatchRoomControllerSetRoomMembersParams,
+         data: LiveMatchRoomControllerSetRoomMembersPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               id: number;
+               tournamentId: string;
+               matchId: string;
+               /** @pattern ^\d{4}$ */
+               inviteCode: string;
+               state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+               rosterMode: 'TEAM' | 'FLAT';
+               selectedSong: {
+                  id: number;
+                  tournamentId: string;
+                  mapId: number;
+                  beatSaverKey: string | null;
+                  mapHash: string;
+                  difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                  characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                  leaderboardId: number | null;
+                  songName: string;
+                  songSubName: string;
+                  songAuthorName: string;
+                  levelAuthorName: string;
+                  bpm: number;
+                  nps: number;
+                  durationSeconds: number;
+                  maxScore: number;
+                  downloadUrl: string | null;
+                  coverUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               } | null;
+               loadedSong: boolean;
+               members: {
+                  playerId: string;
+                  connected: boolean;
+                  isBot: boolean;
+                  role: 'PLAYER' | 'VIEWER';
+                  playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
+                  downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
+                  joinedAt: string;
+                  lastSeenAt: string;
+               }[];
+               createdAt: string;
+               updatedAt: string;
+               closedAt: string | null;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/members`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchRoomControllerSetRoomSong
+ * @request PUT:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/song
+ * @response `200` `{
+    room: {
+    id: number,
+    tournamentId: string,
+    matchId: string,
+  /** @pattern ^\d{4}$ *\/
+    inviteCode: string,
+    state: "OPEN" | "CLOSED" | "ARCHIVED",
+    rosterMode: "TEAM" | "FLAT",
+    selectedSong: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+} | null,
+    loadedSong: boolean,
+    members: ({
+    playerId: string,
+    connected: boolean,
+    isBot: boolean,
+    role: "PLAYER" | "VIEWER",
+    playState: "IN_MENU" | "PAUSED" | "IN_GAME",
+    downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
+    joinedAt: string,
+    lastSeenAt: string,
+
+})[],
+    createdAt: string,
+    updatedAt: string,
+    closedAt: string | null,
+
+},
+    song: {
+    id: number,
+    tournamentId: string,
+    mapId: number,
+    beatSaverKey: string | null,
+    mapHash: string,
+    difficulty: "Easy" | "Normal" | "Hard" | "Expert" | "ExpertPlus",
+    characteristic: "Standard" | "Lawless" | "OneSaber" | "NoArrows" | "NinetyDegree" | "ThreeSixtyDegree" | "Lightshow",
+    leaderboardId: number | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    nps: number,
+    durationSeconds: number,
+    maxScore: number,
+    downloadUrl: string | null,
+    coverUrl: string | null,
+    createdAt: string,
+    updatedAt: string,
+
+},
+
+}` Set and load live match room song
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchRoomControllerSetRoomSong: (
+         { tournamentId, matchId }: LiveMatchRoomControllerSetRoomSongParams,
+         data: LiveMatchRoomControllerSetRoomSongPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               room: {
+                  id: number;
+                  tournamentId: string;
+                  matchId: string;
+                  /** @pattern ^\d{4}$ */
+                  inviteCode: string;
+                  state: 'OPEN' | 'CLOSED' | 'ARCHIVED';
+                  rosterMode: 'TEAM' | 'FLAT';
+                  selectedSong: {
+                     id: number;
+                     tournamentId: string;
+                     mapId: number;
+                     beatSaverKey: string | null;
+                     mapHash: string;
+                     difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                     characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                     leaderboardId: number | null;
+                     songName: string;
+                     songSubName: string;
+                     songAuthorName: string;
+                     levelAuthorName: string;
+                     bpm: number;
+                     nps: number;
+                     durationSeconds: number;
+                     maxScore: number;
+                     downloadUrl: string | null;
+                     coverUrl: string | null;
+                     createdAt: string;
+                     updatedAt: string;
+                  } | null;
+                  loadedSong: boolean;
+                  members: {
+                     playerId: string;
+                     connected: boolean;
+                     isBot: boolean;
+                     role: 'PLAYER' | 'VIEWER';
+                     playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
+                     downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
+                     joinedAt: string;
+                     lastSeenAt: string;
+                  }[];
+                  createdAt: string;
+                  updatedAt: string;
+                  closedAt: string | null;
+               };
+               song: {
+                  id: number;
+                  tournamentId: string;
+                  mapId: number;
+                  beatSaverKey: string | null;
+                  mapHash: string;
+                  difficulty: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus';
+                  characteristic: 'Standard' | 'Lawless' | 'OneSaber' | 'NoArrows' | 'NinetyDegree' | 'ThreeSixtyDegree' | 'Lightshow';
+                  leaderboardId: number | null;
+                  songName: string;
+                  songSubName: string;
+                  songAuthorName: string;
+                  levelAuthorName: string;
+                  bpm: number;
+                  nps: number;
+                  durationSeconds: number;
+                  maxScore: number;
+                  downloadUrl: string | null;
+                  coverUrl: string | null;
+                  createdAt: string;
+                  updatedAt: string;
+               };
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/song`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchRoomControllerCloseRoom
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/close
+ * @response `200` `{
+    success: boolean,
+
+}` Closed live match room
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchRoomControllerCloseRoom: ({ tournamentId, matchId }: LiveMatchRoomControllerCloseRoomParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/close`,
+            method: 'POST',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchRoomControllerDeleteRoom
+ * @request DELETE:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}
+ * @response `200` `{
+    success: boolean,
+
+}` Deleted live match room
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchRoomControllerDeleteRoom: ({ tournamentId, matchId }: LiveMatchRoomControllerDeleteRoomParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}`,
+            method: 'DELETE',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchCommandControllerStartMap
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/start
+ * @response `200` `{
+    success: boolean,
+
+}` Start map command
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchCommandControllerStartMap: (
+         { tournamentId, matchId }: LiveMatchCommandControllerStartMapParams,
+         data: LiveMatchCommandControllerStartMapPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/start`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchCommandControllerReturnToMenu
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/return-to-menu
+ * @response `200` `{
+    success: boolean,
+
+}` Return room to menu command
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchCommandControllerReturnToMenu: ({ tournamentId, matchId }: LiveMatchCommandControllerReturnToMenuParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/return-to-menu`,
+            method: 'POST',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchCommandControllerPrompt
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/prompt
+ * @response `200` `{
+    success: boolean,
+
+}` Prompt players command
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchCommandControllerPrompt: (
+         { tournamentId, matchId }: LiveMatchCommandControllerPromptParams,
+         data: LiveMatchCommandControllerPromptPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/prompt`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchCommandControllerBottifyPlayer
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/players/{playerId}/bottify
+ * @response `200` `{
+    success: boolean,
+
+}` Turn a room player into a live test bot
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchCommandControllerBottifyPlayer: (
+         { tournamentId, matchId, playerId }: LiveMatchCommandControllerBottifyPlayerParams,
+         data: LiveMatchCommandControllerBottifyPlayerPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/players/${playerId}/bottify`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchCommandControllerUnbottifyPlayer
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/rooms/{matchId}/players/{playerId}/unbottify
+ * @response `200` `{
+    success: boolean,
+
+}` Turn a live test bot back into a normal room player
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchCommandControllerUnbottifyPlayer: (
+         { tournamentId, matchId, playerId }: LiveMatchCommandControllerUnbottifyPlayerParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/rooms/${matchId}/players/${playerId}/unbottify`,
+            method: 'POST',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Live Platform
+ * @name LiveMatchCommandControllerFollowRoom
+ * @request POST:/api/v2/live/tournaments/{tournamentId}/watch/follow
+ * @response `200` `{
+    success: boolean,
+
+}` Follow a live room from the current player game client
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      liveMatchCommandControllerFollowRoom: (
+         { tournamentId }: LiveMatchCommandControllerFollowRoomParams,
+         data: LiveMatchCommandControllerFollowRoomPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/live/tournaments/${tournamentId}/watch/follow`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         })
+   };
    map = {
       /**
  * No description
@@ -5898,6 +13584,205 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
               }
          >({
             path: `/api/v2/maps`,
+            method: 'GET',
+            query: query,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Map
+ * @name MapControllerGetMapByHash
+ * @request GET:/api/v2/maps/hash/{hash}
+ * @response `200` `{
+    id: number,
+    hash: string,
+    bsid: string | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    coverUrl: string,
+    verified: boolean,
+    totalScores: number,
+    dailyScores: number,
+    createdAt: string,
+    leaderboards: ({
+    id: number,
+    difficulty: number,
+    gameMode: string,
+    rawDifficulty: string,
+    maxScore: number,
+    totalScores: number,
+    dailyScores: number,
+    createdAt: string,
+    realm: {
+    realmId: number,
+    realmName: string,
+    leaderboardStatus: "UNRANKED" | "RANKED" | "QUALIFIED" | "LOVED",
+    positiveModifiers: boolean,
+    stars: number,
+    rankedAt: string | null,
+    qualifiedAt: string | null,
+    lovedAt: string | null,
+
+},
+
+})[],
+
+}` Map details by hash
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      mapControllerGetMapByHash: ({ hash, ...query }: MapControllerGetMapByHashParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               id: number;
+               hash: string;
+               bsid: string | null;
+               songName: string;
+               songSubName: string;
+               songAuthorName: string;
+               levelAuthorName: string;
+               bpm: number;
+               coverUrl: string;
+               verified: boolean;
+               totalScores: number;
+               dailyScores: number;
+               createdAt: string;
+               leaderboards: {
+                  id: number;
+                  difficulty: number;
+                  gameMode: string;
+                  rawDifficulty: string;
+                  maxScore: number;
+                  totalScores: number;
+                  dailyScores: number;
+                  createdAt: string;
+                  realm: {
+                     realmId: number;
+                     realmName: string;
+                     leaderboardStatus: 'UNRANKED' | 'RANKED' | 'QUALIFIED' | 'LOVED';
+                     positiveModifiers: boolean;
+                     stars: number;
+                     rankedAt: string | null;
+                     qualifiedAt: string | null;
+                     lovedAt: string | null;
+                  };
+               }[];
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/maps/hash/${hash}`,
             method: 'GET',
             query: query,
             format: 'json',
@@ -20991,6 +28876,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     banned: boolean,
     inactive: boolean,
     vanity: string | null,
+    publicLivePresenceOptOut: boolean,
     stats: {
     rank: number,
     countryRank: number,
@@ -21046,6 +28932,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                banned: boolean;
                inactive: boolean;
                vanity: string | null;
+               publicLivePresenceOptOut: boolean;
                stats: {
                   rank: number;
                   countryRank: number;
@@ -21858,6 +29745,140 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
               }
          >({
             path: `/api/v2/user/update-name`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags User
+ * @name UserControllerUpdateLiveSpectating
+ * @request POST:/api/v2/user/live-spectating
+ * @response `200` `{
+    success: boolean,
+
+}` Public live presence preference update result
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      userControllerUpdateLiveSpectating: (data: UserControllerUpdateLiveSpectatingPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/user/live-spectating`,
             method: 'POST',
             body: data,
             type: ContentType.Json,

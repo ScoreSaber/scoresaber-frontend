@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { FaChevronDown, FaGlobe, FaTimes, FaUser, FaUserFriends } from 'react-icons/fa';
+import { FaBroadcastTower, FaChevronDown, FaGlobe, FaTimes, FaUser, FaUserFriends } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
@@ -41,6 +41,7 @@ type RankingsFiltersSearch = SearchParamsRecord & {
    sortDirection?: PlayerControllerGetPlayersSortDirection;
    pivot?: PlayerControllerGetPlayersPivot;
    includeInactive?: 'true' | 'false';
+   live?: 'true' | 'false';
    highlight?: string;
 };
 
@@ -48,6 +49,8 @@ interface RankingsFiltersProps<TLocation> {
    currentPage: number;
    totalPages: number;
    includeInactive: boolean;
+   live: boolean;
+   showLiveFilter: boolean;
    search: RankingsFiltersSearch;
    buildLocation: RouteLocationBuilder<RankingsFiltersSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => RankingsFiltersSearch | null;
@@ -58,6 +61,8 @@ export function RankingsFilters<TLocation>({
    currentPage,
    totalPages,
    includeInactive,
+   live,
+   showLiveFilter,
    search,
    buildLocation,
    parseSearch,
@@ -128,7 +133,11 @@ export function RankingsFilters<TLocation>({
    }
 
    const activeFilterCount =
-      (currentPivot ? 1 : 0) + (currentCountries ? 1 : 0) + (includeInactive ? 1 : 0) + (currentSearch && currentSearch.length >= 3 ? 1 : 0);
+      (currentPivot ? 1 : 0) +
+      (currentCountries ? 1 : 0) +
+      (includeInactive ? 1 : 0) +
+      (live ? 1 : 0) +
+      (currentSearch && currentSearch.length >= 3 ? 1 : 0);
    const hasActiveFilters = activeFilterCount > 0;
    const getPageLocation = (page: number) => buildLocation(updateSearchParams(search, { page: page > 1 ? page : undefined }));
 
@@ -138,6 +147,7 @@ export function RankingsFilters<TLocation>({
          search: undefined,
          countries: undefined,
          includeInactive: undefined,
+         live: undefined,
          pivot: undefined,
          highlight: undefined
       });
@@ -285,6 +295,19 @@ export function RankingsFilters<TLocation>({
                      >
                         {tc('common.includeInactive')}
                      </FilterPill>
+
+                     {/* live */}
+                     {showLiveFilter && (
+                        <FilterPill
+                           className="cursor-pointer"
+                           active={live}
+                           icon={FaBroadcastTower}
+                           {...preloadHandlers({ live: live ? undefined : 'true' })}
+                           onClick={() => navigate({ live: live ? undefined : 'true' })}
+                        >
+                           {t('rankings.live')}
+                        </FilterPill>
+                     )}
 
                      {/* country */}
                      <CountryRegionFilter value={currentCountries} onChangeAction={(value) => navigate({ countries: value })} />

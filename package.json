@@ -3,7 +3,7 @@
    "version": "2.0.0",
    "private": true,
    "scripts": {
-      "dev": "PORTLESS_TLD=local portless scoresaber vite dev --host 0.0.0.0",
+      "dev": "PORTLESS_LAN=1 PORTLESS_TLD=local portless scoresaber vite dev --host 0.0.0.0",
       "build": "NODE_ENV=production vite build",
       "start": "HOST=0.0.0.0 PORT=4000 node --env-file-if-exists=.env --env-file-if-exists=.env.local .output/server/index.mjs",
       "typecheck": "tsc --noEmit",
@@ -16,6 +16,7 @@
       "crowdin:context": "bun scripts/sync-crowdin-context.ts"
    },
    "dependencies": {
+      "@bufbuild/protobuf": "^2.12.0",
       "@c15t/react": "^2.1.0",
       "@simplewebauthn/browser": "^13.3.0",
       "@t3-oss/env-core": "0.13.11",

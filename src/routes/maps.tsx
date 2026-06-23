@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import { MapCard } from '@/modules/maps/listing/map-card';
 import { DEFAULT_MAX_STARS, DEFAULT_MIN_STARS, MapFilters } from '@/modules/maps/listing/map-filters';
+import { isMapIdentifierSearch } from '@/modules/maps/shared/map-search';
 import {
    MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY,
    MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION,
@@ -32,7 +33,7 @@ const mapStatusListSchema = z
 
 const mapsSearchSchema = z.object({
    page: isPageNumber.optional(),
-   search: z.string().min(3).max(64).optional(),
+   search: z.string().min(1).max(64).optional(),
    status: z.string().optional(),
    verified: z.enum(['true', 'false']).optional(),
    minStars: isOptionalNumber,
@@ -61,14 +62,16 @@ const getMapsPageData = createServerFn({ method: 'GET' })
       const searchParams = mapsSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
       const persistedStorage = await readPersistedSearchStorage(mapFilterPreferences.storageKey);
       const statuses = parseMapListingStatuses(searchParams.status);
+      const search = searchParams.search?.trim();
+      const identifierSearch = search ? isMapIdentifierSearch(search) : false;
       const result = await pageApiData(
          publicApi.map.mapControllerGetMapListings({
             page: searchParams.page ?? 1,
-            search: searchParams.search,
-            status: statuses.length > 0 ? statuses : undefined,
-            verified: searchParams.verified ?? 'true',
-            minStars: searchParams.minStars,
-            maxStars: searchParams.maxStars,
+            search: search || undefined,
+            status: !identifierSearch && statuses.length > 0 ? statuses : undefined,
+            verified: identifierSearch ? undefined : (searchParams.verified ?? 'true'),
+            minStars: identifierSearch ? undefined : searchParams.minStars,
+            maxStars: identifierSearch ? undefined : searchParams.maxStars,
             sortBy: searchParams.sortBy ?? 'trending',
             sortDirection: searchParams.sortDirection ?? 'desc'
          })

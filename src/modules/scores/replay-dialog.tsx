@@ -9,10 +9,8 @@ import { useTranslations } from 'use-intl';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { env } from '@/env';
+import { getReplayArcviewerUrl } from '@/shared/arcviewer-url';
 import { cn } from '@/shared/format/helpers';
-
-const localArcviewerHostnames = new Set(['localhost', '0.0.0.0', '127.0.0.1', '[::1]']);
 
 interface ReplayDialogProps {
    scoreId: number;
@@ -116,19 +114,8 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
 }
 
 function getReplayUrl(scoreId: number) {
-   const arcviewerUrl = new URL(env.NEXT_PUBLIC_ARCVIEWER_URL);
-   const params = new URLSearchParams({
+   return getReplayArcviewerUrl({
       ssScoreId: scoreId.toString(),
       autoPlay: 'true'
    });
-
-   if (arcviewerUrl.protocol === 'http:' && localArcviewerHostnames.has(arcviewerUrl.hostname)) {
-      return `/watch/index.html?${params.toString()}`;
-   }
-
-   const replayUrl = new URL('/', arcviewerUrl);
-   replayUrl.pathname = `${arcviewerUrl.pathname.replace(/\/$/, '')}/`;
-   replayUrl.search = params.toString();
-
-   return replayUrl.toString();
 }

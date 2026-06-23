@@ -262,8 +262,7 @@
       "scoreSaberLogo": "Лого ScoreSaber",
       "underConstruction": "в разработке",
       "edit": "",
-      "copy": "",
-      "copied": ""
+      "copy": ""
    },
    "error": {
       "somethingWentWrong": "Что-то пошло не так",
@@ -312,7 +311,8 @@
       "rankedPlayCount": "Всего рейтинговых игр",
       "ranked": "Рейт. игр",
       "averageRankedAccuracy": "Средн. рейт. точность",
-      "acc": "Точн."
+      "acc": "Точн.",
+      "live": "Live"
    },
    "score": {
       "accuracy": "Точность",
@@ -362,6 +362,7 @@
    },
    "map": {
       "searchMaps": "Поиск карт",
+      "searchPlaceholder": "Search maps...",
       "statusRanked": "Рейтинговые",
       "statusQualified": "Квалифицированные",
       "statusLoved": "Любимые",
@@ -390,13 +391,24 @@
       "gameMode": "Режим игры",
       "starRatingRange": "Диапазон звёзд",
       "copyShareLink": "Скопировать ссылку",
-      "shareLinkCopied": "Ссылка скопирована",
       "shareLinkCopyFailed": "Не удалось скопировать ссылку"
    },
    "player": {
       "followers": "Подписчики",
       "following": "Подписки",
       "viewSteamProfile": "Посмотреть профиль Steam",
+      "livePresence": {
+         "live": "",
+         "online": "",
+         "spectateCta": "",
+         "playingTooltip": "",
+         "menuTooltip": "",
+         "openViewer": "",
+         "viewerTitle": "",
+         "openViewerNewTab": "",
+         "openInNewTab": "",
+         "loading": ""
+      },
       "inactiveTooltip": "Данный игроков не ставил никаких рекордов за последнее время",
       "inactive": "Неактивен",
       "bannedTooltip": "Этот игрок был забанен",

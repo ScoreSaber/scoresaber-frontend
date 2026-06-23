@@ -262,8 +262,7 @@
       "scoreSaberLogo": "ScoreSaber 로고",
       "underConstruction": "준비 중",
       "edit": "",
-      "copy": "",
-      "copied": ""
+      "copy": ""
    },
    "error": {
       "somethingWentWrong": "문제가 발생했습니다",
@@ -312,7 +311,8 @@
       "rankedPlayCount": "랭크 맵 플레이 수",
       "ranked": "랭크",
       "averageRankedAccuracy": "랭크 맵 평균 정확도",
-      "acc": "정확도"
+      "acc": "정확도",
+      "live": "Live"
    },
    "score": {
       "accuracy": "정확도",
@@ -362,6 +362,7 @@
    },
    "map": {
       "searchMaps": "맵 검색",
+      "searchPlaceholder": "Search maps...",
       "statusRanked": "랭크됨",
       "statusQualified": "심사 통과",
       "statusLoved": "Loved",
@@ -390,13 +391,24 @@
       "gameMode": "게임 모드",
       "starRatingRange": "별 레이팅 범위",
       "copyShareLink": "공류 링크 복사",
-      "shareLinkCopied": "고류 링크가 복사되었습니다",
       "shareLinkCopyFailed": "공유 링크 복사에 실패했습니다"
    },
    "player": {
       "followers": "팔로워",
       "following": "팔로잉",
       "viewSteamProfile": "Steam 프로필 보기",
+      "livePresence": {
+         "live": "",
+         "online": "",
+         "spectateCta": "",
+         "playingTooltip": "",
+         "menuTooltip": "",
+         "openViewer": "",
+         "viewerTitle": "",
+         "openViewerNewTab": "",
+         "openInNewTab": "",
+         "loading": ""
+      },
       "inactiveTooltip": "이 플레이어는 최근 기록한 점수가 없습니다",
       "inactive": "비활성",
       "bannedTooltip": "이 플레이어는 차단되었습니다",

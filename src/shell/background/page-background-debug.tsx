@@ -3,12 +3,13 @@
 import { useEffect, useState } from 'react';
 
 import { Result } from 'better-result';
-import { Check, ChevronDown, ChevronUp, Copy, Image as ImageIcon, Pin } from 'lucide-react';
+import { ChevronDown, ChevronUp, Image as ImageIcon, Pin } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
 
+import { CopyButton } from '@/shared/components/copy-button';
 import { cn } from '@/shared/format/helpers';
 import { readStorageValue, writeStorageValue } from '@/shared/result/storage';
 import type { ScoredImage } from '@/shell/background/analyze-background';
@@ -112,13 +113,6 @@ interface DebugItemProps {
 
 function DebugItem({ rank, result, open, pinned, onOpenChange, onTogglePin, onSwap }: DebugItemProps) {
    const d = result.diagnostics;
-   const [copied, setCopied] = useState(false);
-
-   const handleCopy = async () => {
-      await navigator.clipboard.writeText(formatStats(result));
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-   };
 
    return (
       <Collapsible open={open} onOpenChange={onOpenChange} className="border-border/40 rounded border">
@@ -168,10 +162,10 @@ function DebugItem({ rank, result, open, pinned, onOpenChange, onTogglePin, onSw
             <div>sat gate x{d.post.satGate.toFixed(3)} (sat&gt;=0.5: 1, else (sat/0.5)^0.8)</div>
             <div>hue concentration x{d.post.hueConcentrationPenalty.toFixed(3)} (kicks in &gt;95% in one bucket)</div>
             <div className="mt-2 flex gap-1">
-               <Button size="sm" variant="secondary" className="h-6 flex-1 cursor-pointer text-[10px]" onClick={handleCopy}>
-                  {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
-                  {copied ? 'copied' : 'copy stats'}
-               </Button>
+               <div className="bg-secondary/60 flex h-6 flex-1 items-center justify-center gap-1 rounded-md text-[10px]">
+                  <CopyButton value={() => formatStats(result)} size="sm" errorMessage="copy failed" />
+                  copy stats
+               </div>
                <Button
                   size="sm"
                   variant="secondary"

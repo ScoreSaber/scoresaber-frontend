@@ -18,6 +18,8 @@ import { Separator } from '@/components/ui/separator';
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import { getDisplayLeaderboards } from '@/modules/maps/map-leaderboards';
 import { MapDifficultyChip } from '@/modules/maps/shared/map-difficulty-chip';
+import { isMapSearchReady, MIN_TEXT_MAP_SEARCH_LENGTH } from '@/modules/maps/shared/map-search';
+import { PlayerListLivePresenceIndicator, PlayerLivePresenceProvider } from '@/modules/player/profile/player-live-presence-indicator';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { useOmniSearch } from '@/modules/search/search-provider';
 import { api } from '@/shared/api/ApiInstance';
@@ -29,7 +31,6 @@ import { cn, formatNumber } from '@/shared/format/helpers';
 import { getHighestStatus, getPlayerRoleStyleAndTitle, getStatusAccentClass } from '@/shared/format/styling';
 import { apiResult } from '@/shared/result/api';
 
-const MIN_SEARCH_LENGTH = 3;
 const DEBOUNCE_MS = 300;
 const RESULTS_LIMIT = 6;
 type SearchResults = {
@@ -93,7 +94,9 @@ function OmniSearchBody() {
    const debouncedQueryUpdate = useDebouncedCallback((value: string) => setDebouncedQuery(value), DEBOUNCE_MS);
 
    const trimmedQuery = debouncedQuery.trim();
-   const searchEnabled = open && trimmedQuery.length >= MIN_SEARCH_LENGTH;
+   const playerSearchEnabled = open && trimmedQuery.length >= MIN_TEXT_MAP_SEARCH_LENGTH;
+   const mapSearchEnabled = open && isMapSearchReady(trimmedQuery);
+   const searchEnabled = playerSearchEnabled || mapSearchEnabled;
 
    const {
       data: queryData = EMPTY_RESULTS,
@@ -103,24 +106,30 @@ function OmniSearchBody() {
       queryKey: ['omniSearch', trimmedQuery],
       queryFn: async ({ signal }) => {
          const [playersResult, mapsResult] = await Promise.all([
-            apiResult(api.player.playerControllerGetPlayers({ search: trimmedQuery, limit: RESULTS_LIMIT }, { signal })),
-            apiResult(
-               api.map.mapControllerGetMapListings(
-                  { search: trimmedQuery, limit: RESULTS_LIMIT, sortBy: 'totalScores', sortDirection: 'desc' },
-                  { signal }
-               )
-            )
+            playerSearchEnabled ? apiResult(api.player.playerControllerGetPlayers({ search: trimmedQuery, limit: RESULTS_LIMIT }, { signal })) : null,
+            mapSearchEnabled
+               ? apiResult(
+                    api.map.mapControllerGetMapListings(
+                       { search: trimmedQuery, limit: RESULTS_LIMIT, sortBy: 'totalScores', sortDirection: 'desc' },
+                       { signal }
+                    )
+                 )
+               : null
          ]);
 
          return {
-            players: Result.match(playersResult, {
-               ok: (response) => response.data.data ?? [],
-               err: () => []
-            }),
-            maps: Result.match(mapsResult, {
-               ok: (response) => response.data.data ?? [],
-               err: () => []
-            })
+            players: playersResult
+               ? Result.match(playersResult, {
+                    ok: (response) => response.data.data ?? [],
+                    err: () => []
+                 })
+               : [],
+            maps: mapsResult
+               ? Result.match(mapsResult, {
+                    ok: (response) => response.data.data ?? [],
+                    err: () => []
+                 })
+               : []
          };
       },
       enabled: searchEnabled,
@@ -141,7 +150,8 @@ function OmniSearchBody() {
    const hasSearched = searchEnabled && !loading;
 
    // true while debouncing or fetching -- query typed but results not back yet
-   const isSearchPending = query.trim().length >= MIN_SEARCH_LENGTH && (loading || query.trim() !== trimmedQuery);
+   const inputReady = query.trim().length >= MIN_TEXT_MAP_SEARCH_LENGTH || isMapSearchReady(query);
+   const isSearchPending = inputReady && (loading || query.trim() !== trimmedQuery);
 
    // flat list of navigable items
    const flatItems = useCallback((): { type: 'player' | 'map'; index: number }[] => {
@@ -323,7 +333,7 @@ function OmniSearchBody() {
    const showPlayers = totalPlayers > 0;
    const showMaps = totalMaps > 0;
    const showEmpty = hasSearched && !loading && !isSearchPending && totalPlayers === 0 && totalMaps === 0;
-   const showHint = !hasSearched && !loading && query.trim().length < MIN_SEARCH_LENGTH;
+   const showHint = !hasSearched && !loading && !inputReady;
 
    // track cumulative index for focus
    let currentIndex = 0;
@@ -363,32 +373,34 @@ function OmniSearchBody() {
 
             {/* players section */}
             {showPlayers && (
-               <div>
-                  <SectionHeader
-                     collapsed={playersCollapsed}
-                     onToggle={() => setPlayersCollapsed((prev) => !prev)}
-                     icon={<Users className="text-muted-foreground size-3.5" />}
-                     label={t('search.players')}
-                     count={totalPlayers}
-                     kbd="⌘1"
-                     onNavigate={() => navigateToRankings(query.trim())}
-                     navigateTitle={t('search.viewAllRankings')}
-                  />
-                  {!playersCollapsed &&
-                     results.players.map((player) => {
-                        const itemIndex = currentIndex++;
-                        return (
-                           <PlayerResult
-                              key={player.id}
-                              player={player}
-                              focused={focusIndex === itemIndex}
-                              itemIndex={itemIndex}
-                              onSelect={handleSelectPlayer}
-                              onFocus={handleFocusItem}
-                           />
-                        );
-                     })}
-               </div>
+               <PlayerLivePresenceProvider enabled={!playersCollapsed}>
+                  <div>
+                     <SectionHeader
+                        collapsed={playersCollapsed}
+                        onToggle={() => setPlayersCollapsed((prev) => !prev)}
+                        icon={<Users className="text-muted-foreground size-3.5" />}
+                        label={t('search.players')}
+                        count={totalPlayers}
+                        kbd="⌘1"
+                        onNavigate={() => navigateToRankings(query.trim())}
+                        navigateTitle={t('search.viewAllRankings')}
+                     />
+                     {!playersCollapsed &&
+                        results.players.map((player) => {
+                           const itemIndex = currentIndex++;
+                           return (
+                              <PlayerResult
+                                 key={player.id}
+                                 player={player}
+                                 focused={focusIndex === itemIndex}
+                                 itemIndex={itemIndex}
+                                 onSelect={handleSelectPlayer}
+                                 onFocus={handleFocusItem}
+                              />
+                           );
+                        })}
+                  </div>
+               </PlayerLivePresenceProvider>
             )}
 
             {/* maps section */}
@@ -544,14 +556,17 @@ const PlayerResult = memo(function PlayerResult({
          onMouseEnter={() => onFocus(itemIndex)}
          className={cn('flex cursor-pointer items-center gap-3 px-4 py-2.5 transition-colors', focused ? 'bg-accent' : 'hover:bg-accent/50')}
       >
-         <PlayerAvatar
-            src={player.avatar}
-            version={player.avatarVersion}
-            alt={player.name}
-            width={32}
-            height={32}
-            className="h-8 w-8 shrink-0 rounded-full"
-         />
+         <span className="relative inline-flex shrink-0">
+            <PlayerAvatar
+               src={player.avatar}
+               version={player.avatarVersion}
+               alt={player.name}
+               width={32}
+               height={32}
+               className="h-8 w-8 shrink-0 rounded-full"
+            />
+            <PlayerListLivePresenceIndicator playerId={player.id} className="absolute -bottom-0.5 left-[70%] z-10" />
+         </span>
          <div className="flex min-w-0 flex-1 items-center gap-2">
             <CountryImage country={player.country} size={18} className="shrink-0" />
             <span className={cn('min-w-0 truncate text-sm font-medium', getPlayerRoleStyleAndTitle(player)[0])}>{player.name}</span>

@@ -40,6 +40,7 @@ const defaultMapsSearch: MapsRouteSearch = {};
 const defaultRankingsSearch: RankingsRouteSearch = { page: 1 };
 const defaultRankRequestsSearch: RankRequestsRouteSearch = { page: 1 };
 const homeRoute = getRouteApi('/');
+const liveRoute = getRouteApi('/live');
 const mapsRoute = getRouteApi('/maps');
 const questRoute = getRouteApi('/quest');
 const rankingsRoute = getRouteApi('/rankings');
@@ -75,6 +76,7 @@ export function NavLink({ route, ...props }: NavLinkProps) {
    if (route === 'maps') return <mapsRoute.Link {...props} search={mapsSearch} />;
    if (route === 'rankings') return <rankingsRoute.Link {...props} search={rankingsSearch} />;
    if (route === 'rankRequests') return <rankRequestsRoute.Link {...props} search={rankRequestsSearch} />;
+   if (route === 'live') return <liveRoute.Link {...props} />;
    if (route === 'questInstaller') return <questRoute.Link {...props} search={{ step: 1 }} />;
    if (route === 'team') return <teamRoute.Link {...props} />;
 

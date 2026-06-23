@@ -55,6 +55,7 @@ export const env = createEnv({
    client: {
       NEXT_PUBLIC_API_URL: publicBrowserUrlSchema,
       NEXT_PUBLIC_ARCVIEWER_URL: publicBrowserUrlSchema,
+      NEXT_PUBLIC_LUDUS_URL: publicBrowserUrlSchema.default('https://ludus.scoresaber.local'),
       NEXT_PUBLIC_SITE_URL: publicBrowserUrlSchema.default('https://scoresaber.com')
    },
    runtimeEnvStrict: {
@@ -74,6 +75,7 @@ export const env = createEnv({
       HOME_NEWS_YOUTUBE_HANDLE: readEnv('HOME_NEWS_YOUTUBE_HANDLE'),
       NEXT_PUBLIC_API_URL: readEnv('NEXT_PUBLIC_API_URL'),
       NEXT_PUBLIC_ARCVIEWER_URL: readEnv('NEXT_PUBLIC_ARCVIEWER_URL'),
+      NEXT_PUBLIC_LUDUS_URL: readEnv('NEXT_PUBLIC_LUDUS_URL'),
       NEXT_PUBLIC_SITE_URL: readEnv('NEXT_PUBLIC_SITE_URL')
    },
    skipValidation: readEnv('SKIP_ENV_VALIDATION') === 'true',

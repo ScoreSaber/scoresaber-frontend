@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useAuth } from '@/modules/auth';
+import { canUseLivePlatform } from '@/modules/live/lib/permissions';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { useOmniSearch } from '@/modules/search/search-provider';
 import { CountryImage } from '@/shared/components/country-image';
@@ -69,6 +70,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
    const t = useTranslations();
    const [playerNameClass] = getPlayerRoleStyleAndTitle(user);
    const currentPath = location.href;
+   const visibleNavItems = navItems.filter((item) => item.route !== 'live' || canUseLivePlatform(user?.permissions));
 
    function navLabel(key: string) {
       return key === 'home'
@@ -87,11 +89,13 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                      ? t('nav.wiki')
                      : key === 'feedbackHub'
                        ? t('nav.feedbackHub')
-                       : key === 'questInstaller'
-                         ? t('nav.questInstaller')
-                         : key === 'team'
-                           ? t('nav.team')
-                           : t('nav.apiDocs');
+                       : key === 'livePlatform'
+                         ? t('nav.livePlatform')
+                         : key === 'questInstaller'
+                           ? t('nav.questInstaller')
+                           : key === 'team'
+                             ? t('nav.team')
+                             : t('nav.apiDocs');
    }
 
    const realmSwitcherTrigger = (
@@ -190,7 +194,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
 
          {/* main nav */}
          <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
-            {navItems.map((item) => {
+            {visibleNavItems.map((item) => {
                if (item.disabled) {
                   return (
                      <Tooltip key={item.key}>

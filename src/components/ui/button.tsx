@@ -19,7 +19,7 @@ const buttonVariants = cva(
             ghost: 'hover:bg-accent hover:text-primary dark:hover:bg-accent/50',
             menu: 'text-muted-foreground hover:bg-accent hover:text-primary dark:hover:bg-accent/50',
             'menu-filled': 'border bg-background/35 text-foreground/80 hover:border-primary/35 hover:bg-background/35 hover:text-primary',
-            'ghost-icon': 'text-muted-foreground/50 hover:text-muted-foreground active:!scale-100',
+            'ghost-icon': 'text-muted-foreground/50 hover:text-primary active:!scale-100',
             filter: 'bg-secondary/35 text-muted-foreground hover:bg-accent/50 hover:text-foreground border',
             link: 'text-primary underline-offset-4 hover:underline active:!scale-100'
          },

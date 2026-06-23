@@ -262,8 +262,7 @@
       "scoreSaberLogo": "ScreSaber标志",
       "underConstruction": "正在建造中",
       "edit": "",
-      "copy": "",
-      "copied": ""
+      "copy": ""
    },
    "error": {
       "somethingWentWrong": "出现了一些错误",
@@ -312,7 +311,8 @@
       "rankedPlayCount": "排名谱游玩数",
       "ranked": "已排名的",
       "averageRankedAccuracy": "排名谱平均准度",
-      "acc": "精准度"
+      "acc": "精准度",
+      "live": "Live"
    },
    "score": {
       "accuracy": "精准度",
@@ -362,6 +362,7 @@
    },
    "map": {
       "searchMaps": "搜索谱面",
+      "searchPlaceholder": "Search maps...",
       "statusRanked": "",
       "statusQualified": "",
       "statusLoved": "",
@@ -390,13 +391,24 @@
       "gameMode": "",
       "starRatingRange": "",
       "copyShareLink": "",
-      "shareLinkCopied": "",
       "shareLinkCopyFailed": ""
    },
    "player": {
       "followers": "",
       "following": "",
       "viewSteamProfile": "",
+      "livePresence": {
+         "live": "",
+         "online": "",
+         "spectateCta": "",
+         "playingTooltip": "",
+         "menuTooltip": "",
+         "openViewer": "",
+         "viewerTitle": "",
+         "openViewerNewTab": "",
+         "openInNewTab": "",
+         "loading": ""
+      },
       "inactiveTooltip": "",
       "inactive": "",
       "bannedTooltip": "",

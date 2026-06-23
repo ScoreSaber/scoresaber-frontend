@@ -59,3 +59,11 @@ export function getGameModeLabel(gameMode: string) {
    const stripped = gameMode.startsWith('Solo') ? gameMode.slice(4) : gameMode;
    return stripped.replace(/([A-Z])/g, ' $1').trim();
 }
+
+export function formatEnumLabel(value: string) {
+   return value
+      .toLowerCase()
+      .split('_')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ');
+}

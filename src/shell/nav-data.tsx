@@ -1,12 +1,12 @@
 import type { RegisteredRouter, RouteIds } from '@tanstack/react-router';
-import { BookOpen, Home, MessageSquareText, Search, Smartphone, Users } from 'lucide-react';
+import { BookOpen, Home, MessageSquareText, RadioTower, Search, Smartphone, Users } from 'lucide-react';
 import { FaList, FaMap, FaMedal } from 'react-icons/fa';
 import type { Messages } from 'use-intl';
 
 import { Icons } from '@/shared/components/icons';
 
 type NavKey = string & keyof Messages['nav'];
-export type AppNavRoute = 'home' | 'maps' | 'rankings' | 'rankRequests' | 'questInstaller' | 'team';
+export type AppNavRoute = 'home' | 'maps' | 'rankings' | 'rankRequests' | 'live' | 'questInstaller' | 'team';
 type AppRouteId = RouteIds<RegisteredRouter['routeTree']>;
 type NavItem = { key: NavKey; shortKey: NavKey; icon: React.ReactNode; route: AppNavRoute; disabled?: boolean };
 type SearchNavItem = { key: NavKey; shortKey: NavKey; icon: React.ReactNode; action: 'search' };
@@ -22,6 +22,12 @@ export const navItems: NavItem[] = [
       shortKey: 'requests',
       icon: <FaList data-icon className="size-4 fill-current" aria-hidden="true" />,
       route: 'rankRequests'
+   },
+   {
+      key: 'livePlatform',
+      shortKey: 'livePlatform',
+      icon: <RadioTower data-icon className="size-4" aria-hidden="true" />,
+      route: 'live'
    }
 ];
 
@@ -71,6 +77,7 @@ const navRouteIds = {
    maps: '/maps',
    rankings: '/rankings',
    rankRequests: '/ranking/requests',
+   live: '/live/',
    questInstaller: '/quest',
    team: '/team'
 } satisfies Record<AppNavRoute, AppRouteId>;

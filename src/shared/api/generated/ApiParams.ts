@@ -155,6 +155,7 @@ type _Realm = _ApiInstance['realm'];
 type _Player = _ApiInstance['player'];
 type _PlayerAlias = _ApiInstance['playerAlias'];
 type _Leaderboard = _ApiInstance['leaderboard'];
+type _LivePlatform = _ApiInstance['livePlatform'];
 type _Map = _ApiInstance['map'];
 type _Auth = _ApiInstance['auth'];
 type _OAuth = _ApiInstance['oAuth'];
@@ -193,6 +194,8 @@ export type PlayerControllerGetPlayerHistoryItem = PlayerControllerGetPlayerHist
 export type PlayerControllerGetGlobalPlayerHistoryResponse = _R<_Player['playerControllerGetGlobalPlayerHistory']>;
 export type PlayerControllerGetGlobalPlayerHistoryItem = PlayerControllerGetGlobalPlayerHistoryResponse[number];
 
+export type PlayerControllerGetPlayerScoreByHashResponse = _R<_Player['playerControllerGetPlayerScoreByHash']>;
+
 export type PlayerControllerGetPlayerScoresResponse = _R<_Player['playerControllerGetPlayerScores']>;
 export type PlayerControllerGetPlayerScoresDataItem = PlayerControllerGetPlayerScoresResponse['data'][number];
 
@@ -223,8 +226,83 @@ export type LeaderboardControllerGetLeaderboardByHashResponse = _R<_Leaderboard[
 export type LeaderboardControllerGetLeaderboardScoresByHashResponse = _R<_Leaderboard['leaderboardControllerGetLeaderboardScoresByHash']>;
 export type LeaderboardControllerGetLeaderboardScoresByHashDataItem = LeaderboardControllerGetLeaderboardScoresByHashResponse['data'][number];
 
+export type LiveTournamentControllerListTournamentsResponse = _R<_LivePlatform['liveTournamentControllerListTournaments']>;
+export type LiveTournamentControllerListTournamentsItem = LiveTournamentControllerListTournamentsResponse[number];
+
+export type LiveTournamentControllerCreateTournamentResponse = _R<_LivePlatform['liveTournamentControllerCreateTournament']>;
+
+export type LiveTournamentControllerGetWorkflowOptionsResponse = _R<_LivePlatform['liveTournamentControllerGetWorkflowOptions']>;
+
+export type LiveTournamentControllerGetSettingsResponse = _R<_LivePlatform['liveTournamentControllerGetSettings']>;
+
+export type LiveTournamentControllerUpsertSettingsResponse = _R<_LivePlatform['liveTournamentControllerUpsertSettings']>;
+
+export type LivePlayerControllerListPlayerTournamentsResponse = _R<_LivePlatform['livePlayerControllerListPlayerTournaments']>;
+export type LivePlayerControllerListPlayerTournamentsItem = LivePlayerControllerListPlayerTournamentsResponse[number];
+
+export type LivePlayerControllerListPlayerRoomsResponse = _R<_LivePlatform['livePlayerControllerListPlayerRooms']>;
+export type LivePlayerControllerListPlayerRoomsItem = LivePlayerControllerListPlayerRoomsResponse[number];
+
+export type LivePlayerControllerGetPlayerRoomResponse = _R<_LivePlatform['livePlayerControllerGetPlayerRoom']>;
+
+export type LivePlayerControllerGetPlayerRoomByInviteCodeResponse = _R<_LivePlatform['livePlayerControllerGetPlayerRoomByInviteCode']>;
+
+export type LiveTournamentRosterControllerListRolesResponse = _R<_LivePlatform['liveTournamentRosterControllerListRoles']>;
+export type LiveTournamentRosterControllerListRolesItem = LiveTournamentRosterControllerListRolesResponse[number];
+
+export type LiveTournamentRosterControllerUpsertRoleResponse = _R<_LivePlatform['liveTournamentRosterControllerUpsertRole']>;
+
+export type LiveTournamentRosterControllerDeleteRoleResponse = _R<_LivePlatform['liveTournamentRosterControllerDeleteRole']>;
+
+export type LiveTournamentRosterControllerAssignRoleResponse = _R<_LivePlatform['liveTournamentRosterControllerAssignRole']>;
+
+export type LiveTournamentRosterControllerUnassignRoleResponse = _R<_LivePlatform['liveTournamentRosterControllerUnassignRole']>;
+
+export type LiveTournamentRosterControllerListTeamsResponse = _R<_LivePlatform['liveTournamentRosterControllerListTeams']>;
+export type LiveTournamentRosterControllerListTeamsItem = LiveTournamentRosterControllerListTeamsResponse[number];
+
+export type LiveTournamentRosterControllerUpsertTeamResponse = _R<_LivePlatform['liveTournamentRosterControllerUpsertTeam']>;
+
+export type LiveTournamentRosterControllerDeleteTeamResponse = _R<_LivePlatform['liveTournamentRosterControllerDeleteTeam']>;
+
+export type LiveTournamentRosterControllerListAuthorizedPlayersResponse = _R<_LivePlatform['liveTournamentRosterControllerListAuthorizedPlayers']>;
+export type LiveTournamentRosterControllerListAuthorizedPlayersItem = LiveTournamentRosterControllerListAuthorizedPlayersResponse[number];
+
+export type LiveTournamentRosterControllerSyncAuthorizedPlayersResponse = _R<_LivePlatform['liveTournamentRosterControllerSyncAuthorizedPlayers']>;
+
+export type LiveMatchRoomControllerListRoomsResponse = _R<_LivePlatform['liveMatchRoomControllerListRooms']>;
+export type LiveMatchRoomControllerListRoomsItem = LiveMatchRoomControllerListRoomsResponse[number];
+
+export type LiveMatchRoomControllerUpsertRoomResponse = _R<_LivePlatform['liveMatchRoomControllerUpsertRoom']>;
+
+export type LiveMatchRoomControllerGetRoomsViewResponse = _R<_LivePlatform['liveMatchRoomControllerGetRoomsView']>;
+
+export type LiveMatchRoomControllerGetRoomViewResponse = _R<_LivePlatform['liveMatchRoomControllerGetRoomView']>;
+
+export type LiveMatchRoomControllerSetRoomMembersResponse = _R<_LivePlatform['liveMatchRoomControllerSetRoomMembers']>;
+
+export type LiveMatchRoomControllerSetRoomSongResponse = _R<_LivePlatform['liveMatchRoomControllerSetRoomSong']>;
+
+export type LiveMatchRoomControllerCloseRoomResponse = _R<_LivePlatform['liveMatchRoomControllerCloseRoom']>;
+
+export type LiveMatchRoomControllerDeleteRoomResponse = _R<_LivePlatform['liveMatchRoomControllerDeleteRoom']>;
+
+export type LiveMatchCommandControllerStartMapResponse = _R<_LivePlatform['liveMatchCommandControllerStartMap']>;
+
+export type LiveMatchCommandControllerReturnToMenuResponse = _R<_LivePlatform['liveMatchCommandControllerReturnToMenu']>;
+
+export type LiveMatchCommandControllerPromptResponse = _R<_LivePlatform['liveMatchCommandControllerPrompt']>;
+
+export type LiveMatchCommandControllerBottifyPlayerResponse = _R<_LivePlatform['liveMatchCommandControllerBottifyPlayer']>;
+
+export type LiveMatchCommandControllerUnbottifyPlayerResponse = _R<_LivePlatform['liveMatchCommandControllerUnbottifyPlayer']>;
+
+export type LiveMatchCommandControllerFollowRoomResponse = _R<_LivePlatform['liveMatchCommandControllerFollowRoom']>;
+
 export type MapControllerGetMapListingsResponse = _R<_Map['mapControllerGetMapListings']>;
 export type MapControllerGetMapListingsDataItem = MapControllerGetMapListingsResponse['data'][number];
+
+export type MapControllerGetMapByHashResponse = _R<_Map['mapControllerGetMapByHash']>;
 
 export type MapControllerGetMapByIdResponse = _R<_Map['mapControllerGetMapById']>;
 
@@ -414,6 +492,8 @@ export type UserControllerResetCountryResponse = _R<_User['userControllerResetCo
 export type UserControllerUpdateBioResponse = _R<_User['userControllerUpdateBio']>;
 
 export type UserControllerUpdateNameResponse = _R<_User['userControllerUpdateName']>;
+
+export type UserControllerUpdateLiveSpectatingResponse = _R<_User['userControllerUpdateLiveSpectating']>;
 
 export type UserControllerUploadAvatarResponse = _R<_User['userControllerUploadAvatar']>;
 

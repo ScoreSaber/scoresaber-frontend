@@ -262,8 +262,7 @@
       "scoreSaberLogo": "Logo ScoreSaber",
       "underConstruction": "en construction",
       "edit": "",
-      "copy": "",
-      "copied": ""
+      "copy": ""
    },
    "error": {
       "somethingWentWrong": "Une erreur s’est produite",
@@ -312,7 +311,8 @@
       "rankedPlayCount": "Nombre de maps classées jouées",
       "ranked": "Classé",
       "averageRankedAccuracy": "Précision moyenne en Classé",
-      "acc": "Précision"
+      "acc": "Précision",
+      "live": "Live"
    },
    "score": {
       "accuracy": "Précision",
@@ -362,6 +362,7 @@
    },
    "map": {
       "searchMaps": "Rechercher des maps",
+      "searchPlaceholder": "Search maps...",
       "statusRanked": "Classé",
       "statusQualified": "Qualifié",
       "statusLoved": "Aimé",
@@ -390,13 +391,24 @@
       "gameMode": "Mode de jeu",
       "starRatingRange": "Fourchette de difficulté en étoiles",
       "copyShareLink": "Copier le lien de partage",
-      "shareLinkCopied": "Lien de partage copié",
       "shareLinkCopyFailed": "La copie du lien de partage a échoué"
    },
    "player": {
       "followers": "Abonnés",
       "following": "Abonnements",
       "viewSteamProfile": "Voir le profil Steam",
+      "livePresence": {
+         "live": "",
+         "online": "",
+         "spectateCta": "",
+         "playingTooltip": "",
+         "menuTooltip": "",
+         "openViewer": "",
+         "viewerTitle": "",
+         "openViewerNewTab": "",
+         "openInNewTab": "",
+         "loading": ""
+      },
       "inactiveTooltip": "Ce joueur n'a pas réalisé de scores récemment",
       "inactive": "Inactif",
       "bannedTooltip": "Ce joueur a été banni",
