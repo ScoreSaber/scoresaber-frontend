@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 import { getReplayArcviewerUrl } from '@/shared/arcviewer-url';
 import { cn } from '@/shared/format/helpers';
+import { isMobileViewport } from '@/shared/ui-adjacent/viewport';
 
 interface ReplayDialogProps {
    scoreId: number;
@@ -33,6 +34,7 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
    const replayUrl = getReplayUrl(scoreId);
    const openReplayAction = (event: MouseEvent<HTMLElement>) => {
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (isMobileViewport()) return;
 
       event.preventDefault();
       setOpen(true);

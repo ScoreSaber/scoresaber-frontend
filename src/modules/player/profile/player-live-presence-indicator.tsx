@@ -18,6 +18,7 @@ import { getLudusPlayerPresence, getPublicPlayerMatchId, type LudusPlayerPresenc
 import { useLudus, type LudusState } from '@/modules/live/ludus/use-ludus';
 import { getArcviewerUrl } from '@/shared/arcviewer-url';
 import { cn } from '@/shared/format/helpers';
+import { isMobileViewport } from '@/shared/ui-adjacent/viewport';
 
 type PlayerLivePresenceState = Pick<LudusState, 'status' | 'rooms' | 'scores'>;
 
@@ -86,6 +87,7 @@ function ConnectedPlayerLivePresenceIndicator({
    const openLiveViewerAction = (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (isMobileViewport()) return;
 
       event.preventDefault();
       setOpen(true);
