@@ -6,14 +6,14 @@ import type { Message } from '@bufbuild/protobuf';
 import type { GenEnum, GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2';
 import { enumDesc, fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
 
-import type { LudusClientType } from './common_pb';
+import type { LiveMod, LudusClientType } from './common_pb';
 import { file_scoresaber_live_v1_common } from './common_pb';
 
 /**
  * Describes the file scoresaber/live/v1/room_actions.proto.
  */
 export const file_scoresaber_live_v1_room_actions: GenFile /*@__PURE__*/ = fileDesc(
-   'CiVzY29yZXNhYmVyL2xpdmUvdjEvcm9vbV9hY3Rpb25zLnByb3RvEhJzY29yZXNhYmVyLmxpdmUudjEibgoVU2V0Um9vbUNvbnRleHRSZXF1ZXN0Ej4KDHJvb21fY29udGV4dBgBIAEoDjIoLnNjb3Jlc2FiZXIubGl2ZS52MS5MdWR1c1Jvb21Db250ZXh0VHlwZRIVCg10b3VybmFtZW50X2lkGAIgASgJIr8BChJSb29tQ29udGV4dFVwZGF0ZWQSPgoMcm9vbV9jb250ZXh0GAEgASgOMiguc2NvcmVzYWJlci5saXZlLnYxLkx1ZHVzUm9vbUNvbnRleHRUeXBlEhUKDXRvdXJuYW1lbnRfaWQYAiABKAkSGAoQY3VycmVudF9tYXRjaF9pZBgDIAEoCRI4CgtjbGllbnRfdHlwZRgEIAEoDjIjLnNjb3Jlc2FiZXIubGl2ZS52MS5MdWR1c0NsaWVudFR5cGUiNAoPSm9pblJvb21SZXF1ZXN0EhAKCG1hdGNoX2lkGAEgASgJEg8KB3Jvb21faWQYAiABKAkiJAoQTGVhdmVSb29tUmVxdWVzdBIQCghtYXRjaF9pZBgBIAEoCSI4ChFGb2xsb3dSb29tUmVxdWVzdBIQCghtYXRjaF9pZBgBIAEoCRIRCglwbGF5ZXJfaWQYAiABKAkqtgEKFEx1ZHVzUm9vbUNvbnRleHRUeXBlEicKI0xVRFVTX1JPT01fQ09OVEVYVF9UWVBFX1VOU1BFQ0lGSUVEEAASIAocTFVEVVNfUk9PTV9DT05URVhUX1RZUEVfQ09SRRABEisKJ0xVRFVTX1JPT01fQ09OVEVYVF9UWVBFX1BVQkxJQ19QUkVTRU5DRRACEiYKIkxVRFVTX1JPT01fQ09OVEVYVF9UWVBFX1RPVVJOQU1FTlQQA0JuWldnaXRodWIuY29tL1Njb3JlU2FiZXIvcGxhdGZvcm0vYXBwcy9sdWR1cy9zcmMvZ2VuZXJhdGVkL3Byb3RvL3Njb3Jlc2FiZXIvbGl2ZS92MTtsaXZldjGqAhJTY29yZVNhYmVyLkxpdmUuVjFiBnByb3RvMw',
+   'CiVzY29yZXNhYmVyL2xpdmUvdjEvcm9vbV9hY3Rpb25zLnByb3RvEhJzY29yZXNhYmVyLmxpdmUudjEimQEKFVNldFJvb21Db250ZXh0UmVxdWVzdBI+Cgxyb29tX2NvbnRleHQYASABKA4yKC5zY29yZXNhYmVyLmxpdmUudjEuTHVkdXNSb29tQ29udGV4dFR5cGUSFQoNdG91cm5hbWVudF9pZBgCIAEoCRIpCgRtb2RzGAMgAygLMhsuc2NvcmVzYWJlci5saXZlLnYxLkxpdmVNb2QivwEKElJvb21Db250ZXh0VXBkYXRlZBI+Cgxyb29tX2NvbnRleHQYASABKA4yKC5zY29yZXNhYmVyLmxpdmUudjEuTHVkdXNSb29tQ29udGV4dFR5cGUSFQoNdG91cm5hbWVudF9pZBgCIAEoCRIYChBjdXJyZW50X21hdGNoX2lkGAMgASgJEjgKC2NsaWVudF90eXBlGAQgASgOMiMuc2NvcmVzYWJlci5saXZlLnYxLkx1ZHVzQ2xpZW50VHlwZSJfCg9Kb2luUm9vbVJlcXVlc3QSEAoIbWF0Y2hfaWQYASABKAkSDwoHcm9vbV9pZBgCIAEoCRIpCgRtb2RzGAMgAygLMhsuc2NvcmVzYWJlci5saXZlLnYxLkxpdmVNb2QiJAoQTGVhdmVSb29tUmVxdWVzdBIQCghtYXRjaF9pZBgBIAEoCSI4ChFGb2xsb3dSb29tUmVxdWVzdBIQCghtYXRjaF9pZBgBIAEoCRIRCglwbGF5ZXJfaWQYAiABKAkqtgEKFEx1ZHVzUm9vbUNvbnRleHRUeXBlEicKI0xVRFVTX1JPT01fQ09OVEVYVF9UWVBFX1VOU1BFQ0lGSUVEEAASIAocTFVEVVNfUk9PTV9DT05URVhUX1RZUEVfQ09SRRABEisKJ0xVRFVTX1JPT01fQ09OVEVYVF9UWVBFX1BVQkxJQ19QUkVTRU5DRRACEiYKIkxVRFVTX1JPT01fQ09OVEVYVF9UWVBFX1RPVVJOQU1FTlQQA0JuWldnaXRodWIuY29tL1Njb3JlU2FiZXIvcGxhdGZvcm0vYXBwcy9sdWR1cy9zcmMvZ2VuZXJhdGVkL3Byb3RvL3Njb3Jlc2FiZXIvbGl2ZS92MTtsaXZldjGqAhJTY29yZVNhYmVyLkxpdmUuVjFiBnByb3RvMw',
    [file_scoresaber_live_v1_common]
 );
 
@@ -30,6 +30,11 @@ export type SetRoomContextRequest = Message<'scoresaber.live.v1.SetRoomContextRe
     * @generated from field: string tournament_id = 2;
     */
    tournamentId: string;
+
+   /**
+    * @generated from field: repeated scoresaber.live.v1.LiveMod mods = 3;
+    */
+   mods: LiveMod[];
 };
 
 /**
@@ -82,6 +87,11 @@ export type JoinRoomRequest = Message<'scoresaber.live.v1.JoinRoomRequest'> & {
     * @generated from field: string room_id = 2;
     */
    roomId: string;
+
+   /**
+    * @generated from field: repeated scoresaber.live.v1.LiveMod mods = 3;
+    */
+   mods: LiveMod[];
 };
 
 /**
