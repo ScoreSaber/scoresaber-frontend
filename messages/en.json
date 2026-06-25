@@ -564,8 +564,8 @@
       "chartMetricPPShort": "PP",
       "chartMetricAcc": "Average Accuracy",
       "chartMetricAccShort": "Average Acc",
-      "chartMetricPlays": "Total Plays",
-      "chartMetricPlaysShort": "Plays",
+      "chartMetricPlays": "Plays Per Day",
+      "chartMetricPlaysShort": "Plays/Day",
       "chartTimeWeek": "Week",
       "chartTimeMonth": "Month",
       "chartTime3Months": "3 Months",
@@ -587,7 +587,7 @@
       "chartTooltipRank": "Rank: #{rank}",
       "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "Avg Acc: {acc}%",
-      "chartTooltipPlays": "Plays: {plays}",
+      "chartTooltipPlays": "Plays/day: {plays}",
       "chartTimeRange": "Time range"
    },
    "comments": {

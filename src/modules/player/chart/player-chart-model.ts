@@ -62,6 +62,44 @@ function getPlayerChartPadding(pointCount: number) {
    return Math.ceil((MIN_CHART_POINTS - pointCount) / 2);
 }
 
+function getPreviousHistoryByCreatedAt(history: PlayerControllerGetPlayerHistoryItem[]) {
+   const result = new Map<string, PlayerControllerGetPlayerHistoryItem>();
+   for (let i = 1; i < history.length; i++) {
+      result.set(history[i].createdAt, history[i - 1]);
+   }
+   return result;
+}
+
+function getDailyPlayCount(totalSubmittedPlays: number, time: number, previousEntry: PlayerControllerGetPlayerHistoryItem | undefined) {
+   if (!previousEntry) return null;
+
+   const previousTime = new Date(previousEntry.createdAt).getTime();
+   const dayCount = Math.max(1, Math.round((time - previousTime) / DAY_MS));
+   return Math.max(0, totalSubmittedPlays - previousEntry.totalSubmittedPlays) / dayCount;
+}
+
+function getHistoryMetricValue(
+   key: MetricKey,
+   entry: PlayerControllerGetPlayerHistoryItem,
+   previousEntry: PlayerControllerGetPlayerHistoryItem | undefined
+) {
+   if (key === 'totalSubmittedPlays') {
+      return getDailyPlayCount(entry.totalSubmittedPlays, new Date(entry.createdAt).getTime(), previousEntry);
+   }
+   return METRICS[key].getValue(entry);
+}
+
+function getNowMetricValue(
+   key: MetricKey,
+   nowValue: number | null,
+   nowTime: number,
+   latestHistoryEntry: PlayerControllerGetPlayerHistoryItem | undefined
+) {
+   if (nowValue === null) return null;
+   if (key === 'totalSubmittedPlays') return getDailyPlayCount(nowValue, nowTime, latestHistoryEntry);
+   return nowValue;
+}
+
 function padChartPoints(values: DatedChartPoint[], chartPadding: number, minTime: number, maxTime: number) {
    if (chartPadding <= 0) return values;
 
@@ -82,6 +120,7 @@ function padChartPoints(values: DatedChartPoint[], chartPadding: number, minTime
 function buildPlayerChartDatasets({
    activeKeys,
    sortedHistory,
+   fullHistory,
    chartColors,
    isSingle,
    estimatedFlags,
@@ -93,6 +132,7 @@ function buildPlayerChartDatasets({
 }: {
    activeKeys: MetricKey[];
    sortedHistory: PlayerControllerGetPlayerHistoryItem[];
+   fullHistory: PlayerControllerGetPlayerHistoryItem[];
    chartColors: ChartColors;
    isSingle: boolean;
    estimatedFlags: boolean[];
@@ -104,18 +144,19 @@ function buildPlayerChartDatasets({
 }) {
    const minTime = sortedHistory.length > 0 ? new Date(sortedHistory[0].createdAt).getTime() : nowTime;
    const maxTime = nowTime;
+   const previousHistoryByCreatedAt = getPreviousHistoryByCreatedAt(fullHistory);
+   const latestHistoryEntry = fullHistory[fullHistory.length - 1];
 
    return activeKeys.map((key) => {
-      const m = METRICS[key];
       const isRankMetric = key === 'rank';
       const historyData = sortedHistory.map((entry, i) => {
-         const val = m.getValue(entry);
+         const val = getHistoryMetricValue(key, entry, previousHistoryByCreatedAt.get(entry.createdAt));
          return {
             x: new Date(entry.createdAt).getTime(),
-            y: val === -1 || (!isRankMetric && !isShowingEstimated && estimatedFlags[i]) ? null : val
+            y: val === null || val === -1 || (!isRankMetric && !isShowingEstimated && estimatedFlags[i]) ? null : val
          };
       });
-      const nowVal = nowValues[key];
+      const nowVal = getNowMetricValue(key, nowValues[key], nowTime, latestHistoryEntry);
       const rawData = [...historyData, { x: nowTime, y: nowVal }];
       const data = padChartPoints(rawData, chartPadding, minTime, maxTime);
 
@@ -236,35 +277,47 @@ function lineDataset(dataset: ChartDataset<'line', DatedChartPoint[]>) {
 function buildPlayerChartMetricStats({
    activeKeys,
    sortedHistory,
+   fullHistory,
    isShowingEstimated,
    nowValues,
+   nowTime,
    changeLabel
 }: {
    activeKeys: MetricKey[];
    sortedHistory: PlayerControllerGetPlayerHistoryItem[];
+   fullHistory: PlayerControllerGetPlayerHistoryItem[];
    isShowingEstimated: boolean;
    nowValues: Record<MetricKey, number | null>;
+   nowTime: number;
    changeLabel: string;
 }): PlayerChartMetricStat[] {
+   const previousHistoryByCreatedAt = getPreviousHistoryByCreatedAt(fullHistory);
+   const latestHistoryEntry = fullHistory[fullHistory.length - 1];
+
    return activeKeys.map((key) => {
-      const m = METRICS[key];
       const isRankMetric = key === 'rank';
 
       const validValues: number[] = [];
       for (let i = 0; i < sortedHistory.length; i++) {
          const entry = sortedHistory[i];
-         const val = m.getValue(entry);
-         if (val === -1) continue;
+         const val = getHistoryMetricValue(key, entry, previousHistoryByCreatedAt.get(entry.createdAt));
+         if (val === null || val === -1) continue;
          if (!isRankMetric && !isShowingEstimated && entry.estimated) continue;
          validValues.push(val);
       }
 
-      const nowVal = nowValues[key];
+      const nowVal = getNowMetricValue(key, nowValues[key], nowTime, latestHistoryEntry);
       const current = nowVal ?? (validValues.length > 0 ? validValues[validValues.length - 1] : 0);
       const first = validValues.length > 0 ? validValues[0] : current;
       const days = validValues.length > 0 ? validValues.length : 1;
 
-      const avgPerDay = isRankMetric ? (first - current) / days : (current - first) / days;
+      const statValues = nowVal === null ? validValues : [...validValues, nowVal];
+      const avgPerDay =
+         key === 'totalSubmittedPlays'
+            ? statValues.reduce((total, value) => total + value, 0) / Math.max(1, statValues.length)
+            : isRankMetric
+              ? (first - current) / days
+              : (current - first) / days;
 
       let peak: number | null = null;
       if (isRankMetric || key === 'averageAccuracy') {
