@@ -131,8 +131,10 @@ export function LiveRoomManagementPage({
    const [singlePromptMessage, setSinglePromptMessage] = useState('');
    const [bottifyPlayerId, setBottifyPlayerId] = useState<string | null>(null);
    const [bottifyAutoReady, setBottifyAutoReady] = useState(true);
+   const [bottifyErratic, setBottifyErratic] = useState(false);
    const [bottifyAllOpen, setBottifyAllOpen] = useState(false);
    const [bottifyAllAutoReady, setBottifyAllAutoReady] = useState(true);
+   const [bottifyAllErratic, setBottifyAllErratic] = useState(false);
    const [removePlayerId, setRemovePlayerId] = useState<string | null>(null);
    const [startConfirmOpen, setStartConfirmOpen] = useState(false);
    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -520,7 +522,7 @@ export function LiveRoomManagementPage({
       if (!bottifyPlayerId) return;
 
       bottifyMutation.run(
-         () => bottifyLivePlayer(tournamentId, room.matchId, bottifyPlayerId, { autoReady: bottifyAutoReady }),
+         () => bottifyLivePlayer(tournamentId, room.matchId, bottifyPlayerId, { autoReady: bottifyAutoReady, erratic: bottifyErratic }),
          t('bottifyQueued'),
          t('bottifyFailed'),
          () => setBottifyPlayerId(null)
@@ -535,7 +537,7 @@ export function LiveRoomManagementPage({
       }
 
       bottifyAllMutation.run(
-         () => bottifyLivePlayers(tournamentId, room.matchId, playerIds, { autoReady: bottifyAllAutoReady }),
+         () => bottifyLivePlayers(tournamentId, room.matchId, playerIds, { autoReady: bottifyAllAutoReady, erratic: bottifyAllErratic }),
          t('bottifyAllQueued'),
          t('bottifyAllFailed'),
          () => setBottifyAllOpen(false)
@@ -890,6 +892,7 @@ export function LiveRoomManagementPage({
                if (!open) {
                   setBottifyPlayerId(null);
                   setBottifyAutoReady(true);
+                  setBottifyErratic(false);
                }
             }}
          >
@@ -904,6 +907,12 @@ export function LiveRoomManagementPage({
                   label={t('bottifyAutoReady')}
                   checked={bottifyAutoReady}
                   onCheckedChangeAction={setBottifyAutoReady}
+                  disabled={bottifyMutation.isPending}
+               />
+               <CheckboxRow
+                  label={t('bottifyErratic')}
+                  checked={bottifyErratic}
+                  onCheckedChangeAction={setBottifyErratic}
                   disabled={bottifyMutation.isPending}
                />
                <DialogFooter>
@@ -922,7 +931,10 @@ export function LiveRoomManagementPage({
             open={bottifyAllOpen}
             onOpenChange={(open) => {
                setBottifyAllOpen(open);
-               if (!open) setBottifyAllAutoReady(true);
+               if (!open) {
+                  setBottifyAllAutoReady(true);
+                  setBottifyAllErratic(false);
+               }
             }}
          >
             <DialogContent className="max-w-md">
@@ -934,6 +946,12 @@ export function LiveRoomManagementPage({
                   label={t('bottifyAutoReady')}
                   checked={bottifyAllAutoReady}
                   onCheckedChangeAction={setBottifyAllAutoReady}
+                  disabled={bottifyAllMutation.isPending}
+               />
+               <CheckboxRow
+                  label={t('bottifyErratic')}
+                  checked={bottifyAllErratic}
+                  onCheckedChangeAction={setBottifyAllErratic}
                   disabled={bottifyAllMutation.isPending}
                />
                <DialogFooter>

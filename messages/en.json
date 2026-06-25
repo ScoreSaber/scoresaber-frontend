@@ -1031,6 +1031,7 @@
       "bottifyAllPlayers": "Bottify all",
       "bottifyAllPlayersDescription": "Turn {count, plural, one {# room player} other {# room players}} into live testing bots",
       "bottifyAutoReady": "Auto-ready",
+      "bottifyErratic": "Erratic timing",
       "bottifyQueued": "Bot mode queued",
       "bottifyFailed": "Failed to enable bot mode",
       "bottifyAllQueued": "Bot mode queued",

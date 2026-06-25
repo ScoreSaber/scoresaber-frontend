@@ -846,6 +846,8 @@ export interface LiveMatchCommandControllerPromptParams {
 export interface LiveMatchCommandControllerBottifyPlayerPayload {
    /** @default true */
    autoReady?: boolean;
+   /** @default false */
+   erratic?: boolean;
 }
 
 export interface LiveMatchCommandControllerBottifyPlayerParams {
