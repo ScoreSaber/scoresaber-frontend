@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useTranslations } from 'use-intl';
 
 import { CopyrightNoticeTemplate } from './-copyright-notice-template';
+import { LegalLastUpdated } from './-last-updated';
 
 import { Card } from '@/components/ui/card';
 
@@ -30,7 +31,7 @@ function CopyrightTakedownPolicyPage() {
             >
                <header className="space-y-1">
                   <h1>{t('pageTitle')}</h1>
-                  <p className="text-muted-foreground text-xs tracking-wide uppercase">{t('lastUpdated')}</p>
+                  <LegalLastUpdated namespace="legal.copyright" />
                </header>
 
                <p>

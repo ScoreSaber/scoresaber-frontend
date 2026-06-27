@@ -1358,15 +1358,15 @@
    "legal": {
       "privacy": {
          "pageTitle": "Privacybeleid",
-         "lastUpdated": "Laatst bijgewerkt: 30 mei 2026"
+         "lastUpdated": "Laatst bijgewerkt: {date}"
       },
       "cookies": {
          "pageTitle": "Cookiebeleid",
-         "lastUpdated": "Laatst bijgewerkt: 30 mei 2026"
+         "lastUpdated": "Laatst bijgewerkt: {date}"
       },
       "copyright": {
          "pageTitle": "Auteursrechtverzoeken",
-         "lastUpdated": "Laatst bijgewerkt: 30 mei 2026"
+         "lastUpdated": "Laatst bijgewerkt: {date}"
       },
       "consent": {
          "bannerTitle": "Cookiemelding",

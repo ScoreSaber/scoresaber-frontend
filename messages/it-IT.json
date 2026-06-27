@@ -1358,15 +1358,15 @@
    "legal": {
       "privacy": {
          "pageTitle": "Informativa sulla privacy",
-         "lastUpdated": "Ultimo aggiornamento: 30 maggio 2026"
+         "lastUpdated": "Ultimo aggiornamento: {date}"
       },
       "cookies": {
          "pageTitle": "Informativa sui Cookie",
-         "lastUpdated": "Ultimo aggiornamento: 30 maggio 2026"
+         "lastUpdated": "Ultimo aggiornamento: {date}"
       },
       "copyright": {
          "pageTitle": "Informativa sulle richieste di copyright",
-         "lastUpdated": "Ultimo aggiornamento: 30 maggio 2026"
+         "lastUpdated": "Ultimo aggiornamento: {date}"
       },
       "consent": {
          "bannerTitle": "Informativa sui Cookie",

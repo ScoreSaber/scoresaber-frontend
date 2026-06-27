@@ -1,0 +1,23 @@
+import { useLocale, useTranslations } from 'use-intl';
+
+const LEGAL_LAST_UPDATED_DATE = new Date(Date.UTC(2026, 4, 30));
+const LEGAL_LAST_UPDATED_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
+   year: 'numeric',
+   month: 'long',
+   day: 'numeric',
+   timeZone: 'UTC'
+};
+
+type LegalLastUpdatedNamespace = 'legal.privacy' | 'legal.cookies' | 'legal.copyright';
+
+interface LegalLastUpdatedProps {
+   namespace: LegalLastUpdatedNamespace;
+}
+
+export function LegalLastUpdated({ namespace }: LegalLastUpdatedProps) {
+   const t = useTranslations(namespace);
+   const locale = useLocale();
+   const date = new Intl.DateTimeFormat(locale, LEGAL_LAST_UPDATED_FORMAT_OPTIONS).format(LEGAL_LAST_UPDATED_DATE);
+
+   return <p className="text-muted-foreground text-xs tracking-wide uppercase">{t('lastUpdated', { date })}</p>;
+}
