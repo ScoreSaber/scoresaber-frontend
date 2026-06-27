@@ -1094,7 +1094,7 @@
          "countryResetFailed": "Error al restablecer país",
          "resetCountryDialogDesc": "Esto recalcula el país de tu perfil en base a tu ubicación actual. Despues de ello, el restablecimiento de país quedará bloqueado por {days} días",
          "resetCountryHelper": "Usa esto sólo cuando estés en el país que quieres que se muestre en ScoreSaber, y asegúrate de que no estás usando una VPN o proxy",
-         "resetCountryAvailableAt": "Ya has restablecido tu país recientemente. Podrás restablecerlo de nuevo el {date}",
+         "resetCountryAvailableAt": "Ya has restablecido tu país recientemente. Podrás restablecerlo de nuevo el <date></date>",
          "resetCountryConfirmText": "RESTABLECER"
       },
       "connections": {

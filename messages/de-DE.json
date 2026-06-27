@@ -349,7 +349,7 @@
       "serviceUnavailable": "Dienst nicht verfügbar",
       "serviceUnavailableDesc": "Der Dienst ist vorübergehend nicht verfügbar. Bitte versuche es in ein paar Minuten erneut",
       "connectionError": "Verbindungsfehler",
-      "connectionErrorDesc": "Keine Verbindung zum Server möglich.<br>Überprüfe deine Internetverbindung und versuche es erneut",
+      "connectionErrorDesc": "Keine Verbindung zum Server möglich. Überprüfe deine Internetverbindung und versuche es erneut",
       "playerNotFound": "Spieler nicht gefunden",
       "playerNotFoundDesc": "Der Spieler nach dem du suchst existiert nicht",
       "mapNotFound": "Map nicht gefunden",

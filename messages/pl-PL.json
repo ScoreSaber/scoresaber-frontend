@@ -223,7 +223,7 @@
             "title": "Tylko Meta PC",
             "pcOnly": "Użyj tego, tylko jeśli <strong>aktywnie</strong> ustanawiasz wyniki z <strong>PC</strong> Meta Store wersji Beat Saber",
             "newPc": "Nowi gracze <strong>PC</strong> Meta powinni zainstalować ScoreSaber, otworzyć jakąkolwiek tablicę wyników, a następnie zalogować się tutaj",
-            "quest": "Nowi gracze <strong>Quest Standalone</strong> powinni najpierw stworzyć konto <signuplink>tutaj</signupLink>, a później podążać za instrukcjami instalacji"
+            "quest": "Nowi gracze <strong>Quest Standalone</strong> powinni najpierw stworzyć konto <signupLink>tutaj</signupLink>, a później podążać za instrukcjami instalacji"
          }
       },
       "password": {
@@ -1094,7 +1094,7 @@
          "countryResetFailed": "Reset kraju nie powiódł się",
          "resetCountryDialogDesc": "To działanie ustawia kraj Twojego konta na podstawie Twojego obecnego położenia. Po pomyślnym ustawieniu, funkcja resetu kraju zostanie zablokowana na {days} dni",
          "resetCountryHelper": "Korzystaj z tego tylko wtedy, kiedy jesteś w kraju, który chcesz wyświetlać na ScoreSaber. Upewnij się, że nie korzystasz z VPN lub proxy",
-         "resetCountryAvailableAt": "Już resetowałeś swój kraj. Możesz zresetować go ponownie {date}",
+         "resetCountryAvailableAt": "Już resetowałeś swój kraj. Możesz zresetować go ponownie <date></date>",
          "resetCountryConfirmText": "RESETUJ"
       },
       "connections": {

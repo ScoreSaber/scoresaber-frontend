@@ -1094,7 +1094,7 @@
          "countryResetFailed": "重置国家/地区失败",
          "resetCountryDialogDesc": "这将从您的当前位置重新推算您所在的国家/地区。操作成功后，{days} 天内不能再使用重置国家/地区功能",
          "resetCountryHelper": "使用时，请确保您当前位于您所希望在个人主页上展示的国家/地区，并确保未启用VPN或者代理",
-         "resetCountryAvailableAt": "您最近重置过您的国家/地区。您可在 {date} 再次重置",
+         "resetCountryAvailableAt": "您最近重置过您的国家/地区。您可在 <date></date> 再次重置",
          "resetCountryConfirmText": "重置"
       },
       "connections": {

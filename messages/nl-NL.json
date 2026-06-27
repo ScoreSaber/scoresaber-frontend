@@ -1094,7 +1094,7 @@
          "countryResetFailed": "Land resetten mislukt",
          "resetCountryDialogDesc": "Hiermee wordt je profielland opnieuw berekend op basis van je huidige locatie. Als dit lukt, wordt land resetten {days} dagen vergrendeld",
          "resetCountryHelper": "Gebruik dit alleen wanneer je in het land bent dat je op ScoreSaber wilt tonen, en zorg dat je geen VPN of proxy gebruikt",
-         "resetCountryAvailableAt": "Je hebt je land onlangs al gereset. Je kunt het opnieuw resetten op {date}",
+         "resetCountryAvailableAt": "Je hebt je land onlangs al gereset. Je kunt het opnieuw resetten op <date></date>",
          "resetCountryConfirmText": "HERSTEL"
       },
       "connections": {
