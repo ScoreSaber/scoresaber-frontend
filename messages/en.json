@@ -140,6 +140,28 @@
          "watchAction": "Watch on YouTube",
          "reweightsAction": "View reweights"
       },
+      "bswc": {
+         "description": "Catch the next match live, browse the tournament info, check the full schedule, or watch on Cube Community Twitch",
+         "liveNow": "Live Now!",
+         "nextUp": "Next up",
+         "versus": "vs",
+         "noMatch": "No upcoming match is scheduled yet",
+         "infoAction": "Tournament info",
+         "scheduleAction": "Schedule",
+         "twitchAction": "Watch on Twitch",
+         "twitchEmbedTitle": "Cube Community Twitch stream",
+         "poweredBy": "Powered by ScoreSaber Ludus Tournament Client",
+         "liveNotice": {
+            "watch": "Watch",
+            "dismiss": "Dismiss BSWC live notice"
+         },
+         "countdown": {
+            "days": "d",
+            "hours": "h",
+            "minutes": "m",
+            "seconds": "s"
+         }
+      },
       "install": {
          "title": "Ready to compete?",
          "description": "Get ScoreSaber installed on your platform and your scores start counting on leaderboards right away",

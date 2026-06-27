@@ -3,9 +3,12 @@ import { createServerFn } from '@tanstack/react-start';
 import { useTranslations } from 'use-intl';
 import { z } from 'zod';
 
+import type { HomeBswcPromo } from '@/modules/home/actions/bswc';
+import { getHomeBswcPromo } from '@/modules/home/actions/bswc.server';
 import type { HomeNewsFeed } from '@/modules/home/actions/news';
 import { getHomeNewsFeed } from '@/modules/home/actions/news.server';
 import { BeatSaberPageBackground } from '@/modules/home/beat-saber-background';
+import { BswcPromoSection } from '@/modules/home/bswc-promo-section';
 import { HeroSection } from '@/modules/home/hero-section';
 import { HomeColumn, HomeColumnLink } from '@/modules/home/home-column';
 import { HOME_TRENDING_MAP_SEARCH, TOP_PLAYER_COUNT, TRENDING_MAP_COUNT } from '@/modules/home/home-constants';
@@ -19,18 +22,22 @@ import { publicApi } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
 
+const optionalSearchString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
+
 const homeSearchSchema = z.object({
-   accountMergeChallengeId: z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional())
+   accountMergeChallengeId: optionalSearchString,
+   bswcLive: optionalSearchString
 });
 
 type HomePageData = {
    topPlayers: PlayerControllerGetPlayersDataItem[];
    trendingMaps: MapControllerGetMapListingsDataItem[];
    news: HomeNewsFeed;
+   bswc: HomeBswcPromo | null;
 };
 
 const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Promise<HomePageData> => {
-   const [playersResponse, mapsResponse, news] = await Promise.all([
+   const [playersResponse, mapsResponse, news, bswc] = await Promise.all([
       optionalApi(
          publicApi.player
             .playerControllerGetPlayers({
@@ -54,13 +61,15 @@ const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Prom
             })
             .then((response) => response.data)
       ),
-      getHomeNewsFeed()
+      getHomeNewsFeed(),
+      getHomeBswcPromo()
    ]);
 
    return {
       topPlayers: playersResponse?.data ?? [],
       trendingMaps: mapsResponse?.data ?? [],
-      news
+      news,
+      bswc
    };
 });
 
@@ -86,7 +95,9 @@ export const Route = createFileRoute('/')({
 
 function HomeRoute() {
    const data = Route.useLoaderData();
+   const search = Route.useSearch();
    const t = useTranslations('home');
+   const previewBswcLive = search.bswcLive === '1';
 
    return (
       <div className="dark bg-background text-foreground relative flex-1 overflow-hidden">
@@ -95,6 +106,10 @@ function HomeRoute() {
          <HeroSection />
 
          <div className="relative z-10 mx-auto flex w-full max-w-[1180px] flex-col gap-14 px-4 pt-0 pb-16 sm:px-6 lg:px-10">
+            <section>
+               <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
+            </section>
+
             <section className="grid items-stretch gap-4 lg:grid-cols-[minmax(18rem,1.45fr)_minmax(0,1fr)_minmax(19rem,1.08fr)]">
                <HomeColumn title={t('sections.news')} action={<NewsSocialLinks />}>
                   <NewsColumn posts={data.news.posts} />
