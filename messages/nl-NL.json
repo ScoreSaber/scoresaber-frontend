@@ -138,6 +138,29 @@
          "watchAction": "Bekijk op YouTube",
          "reweightsAction": ""
       },
+      "bswc": {
+         "description": "",
+         "liveNow": "",
+         "nextUp": "",
+         "versus": "",
+         "noMatch": "",
+         "infoAction": "",
+         "scheduleAction": "",
+         "twitchAction": "",
+         "twitchFollowAction": "",
+         "twitchEmbedTitle": "",
+         "poweredBy": "",
+         "liveNotice": {
+            "watch": "",
+            "dismiss": ""
+         },
+         "countdown": {
+            "days": "",
+            "hours": "",
+            "minutes": "",
+            "seconds": ""
+         }
+      },
       "install": {
          "title": "",
          "description": "",
@@ -238,7 +261,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": "Inloggen met Meta"
+      "metaProviderTooltip": ""
    },
    "sidebar": {
       "activeRealm": "Actieve realm",
@@ -263,7 +286,7 @@
    },
    "common": {
       "language": "Taal",
-      "scoreSaber": "ScoreSaber",
+      "scoreSaber": "",
       "cancel": "Annuleren",
       "back": "Terug",
       "confirm": "Bevestigen",
@@ -277,12 +300,12 @@
       "goHome": "Naar home",
       "searchPlaceholder": "Zoeken...",
       "clearSearch": "Zoekopdracht wissen",
-      "openInNewTab": "Open in nieuw tabblad",
+      "openInNewTab": "",
       "filters": "Filters",
       "hideFilters": "Filters verbergen",
       "showFilters": "Filters tonen",
-      "privacyPolicy": "Privacybeleid",
-      "cookiesPolicy": "Cookiebeleid",
+      "privacyPolicy": "",
+      "cookiesPolicy": "",
       "global": "Wereldwijd",
       "friends": "Vrienden",
       "aroundMe": "In de buurt",
@@ -299,9 +322,9 @@
       "unknownDate": "Datum onbekend",
       "justNow": "zojuist",
       "performancePoints": "Prestatie Punten",
-      "pp": "PP",
-      "accuracy": "Nauwkeurigheid",
-      "misses": "Gemist",
+      "pp": "",
+      "accuracy": "",
+      "misses": "",
       "totalPlays": "Totaal aantal plays",
       "actions": "Acties",
       "rankRequestActions": "Acties voor rankverzoeken",
@@ -312,10 +335,10 @@
       "copy": "Kopieer",
       "copyFailed": "",
       "providers": {
-         "STEAM": "Steam",
-         "OCULUS": "Meta",
-         "PATREON": "Patreon",
-         "DISCORD": "Discord"
+         "STEAM": "",
+         "OCULUS": "",
+         "PATREON": "",
+         "DISCORD": ""
       }
    },
    "error": {
@@ -1226,7 +1249,7 @@
          "necessaryTitle": "Noodzakelijke cookies",
          "necessaryDescription": "Nodig voor inloggen, beveiliging, snelheidslimieten, taal, thema, opgeslagen filters en kernfuncties van de site. Deze staan altijd aan."
       },
-      "lastUpdated": "Laatst bijgewerkt: {date}"
+      "lastUpdated": ""
    },
    "oauth": {
       "consent": {

@@ -138,6 +138,29 @@
          "watchAction": "在 Youtube上观看",
          "reweightsAction": "查看星级重评"
       },
+      "bswc": {
+         "description": "",
+         "liveNow": "",
+         "nextUp": "",
+         "versus": "",
+         "noMatch": "",
+         "infoAction": "",
+         "scheduleAction": "",
+         "twitchAction": "",
+         "twitchFollowAction": "",
+         "twitchEmbedTitle": "",
+         "poweredBy": "",
+         "liveNotice": {
+            "watch": "",
+            "dismiss": ""
+         },
+         "countdown": {
+            "days": "",
+            "hours": "",
+            "minutes": "",
+            "seconds": ""
+         }
+      },
       "install": {
          "title": "准备好当分奴了吗？",
          "description": "在您的平台上安装ScoreSaber后您的成绩将立刻计入到排行榜上",
@@ -238,7 +261,7 @@
          "emailCallToAction": "新用户注册"
       },
       "subtitle": "登录或创建一个ScoreSaber账户",
-      "metaProviderTooltip": "使用 Meta 登录"
+      "metaProviderTooltip": ""
    },
    "sidebar": {
       "activeRealm": "当前分区",
@@ -263,7 +286,7 @@
    },
    "common": {
       "language": "语言",
-      "scoreSaber": "ScoreSaber",
+      "scoreSaber": "",
       "cancel": "取消",
       "back": "返回",
       "confirm": "确认",
@@ -277,12 +300,12 @@
       "goHome": "返回首页",
       "searchPlaceholder": "搜索……",
       "clearSearch": "清空搜索内容",
-      "openInNewTab": "在新标签页中打开",
+      "openInNewTab": "",
       "filters": "筛选",
       "hideFilters": "隐藏筛选条件",
       "showFilters": "显示筛选条件",
-      "privacyPolicy": "隐私政策",
-      "cookiesPolicy": "Cookies政策",
+      "privacyPolicy": "",
+      "cookiesPolicy": "",
       "global": "全球",
       "friends": "我的好友",
       "aroundMe": "在我周围",
@@ -299,9 +322,9 @@
       "unknownDate": "未知日期",
       "justNow": "刚刚",
       "performancePoints": "PP点数",
-      "pp": "PP",
-      "accuracy": "精准度",
-      "misses": "未砍中",
+      "pp": "",
+      "accuracy": "",
+      "misses": "",
       "totalPlays": "总游玩次数",
       "actions": "操作",
       "rankRequestActions": "排名申请操作",
@@ -312,10 +335,10 @@
       "copy": "复制",
       "copyFailed": "",
       "providers": {
-         "STEAM": "Steam",
-         "OCULUS": "Meta",
-         "PATREON": "Patreon",
-         "DISCORD": "Discord"
+         "STEAM": "",
+         "OCULUS": "",
+         "PATREON": "",
+         "DISCORD": ""
       }
    },
    "error": {
@@ -1226,7 +1249,7 @@
          "necessaryTitle": "必需的Cookie",
          "necessaryDescription": "这些 Cookies 对于登录、安全、速率限制，语言、主题、筛选的设置，网站核心功能是必需的。它们永远是启用的。"
       },
-      "lastUpdated": "最后更新：{date}"
+      "lastUpdated": ""
    },
    "oauth": {
       "consent": {

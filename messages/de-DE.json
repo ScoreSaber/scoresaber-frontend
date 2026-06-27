@@ -138,6 +138,29 @@
          "watchAction": "Auf YouTube ansehen",
          "reweightsAction": "Neubewertungen ansehen"
       },
+      "bswc": {
+         "description": "",
+         "liveNow": "",
+         "nextUp": "",
+         "versus": "",
+         "noMatch": "",
+         "infoAction": "",
+         "scheduleAction": "",
+         "twitchAction": "",
+         "twitchFollowAction": "",
+         "twitchEmbedTitle": "",
+         "poweredBy": "",
+         "liveNotice": {
+            "watch": "",
+            "dismiss": ""
+         },
+         "countdown": {
+            "days": "",
+            "hours": "",
+            "minutes": "",
+            "seconds": ""
+         }
+      },
       "install": {
          "title": "Bereit zum Antreten?",
          "description": "Installiere ScoreSaber auf deiner Plattform und deine Scores werden sofort in den Bestenlisten gezählt",
@@ -238,7 +261,7 @@
          "emailCallToAction": "Neuen Account erstellen"
       },
       "subtitle": "Melde dich an oder erstelle einen Account bei ScoreSaber",
-      "metaProviderTooltip": "Anmelden mit Meta"
+      "metaProviderTooltip": ""
    },
    "sidebar": {
       "activeRealm": "Aktiver Realm",
@@ -263,7 +286,7 @@
    },
    "common": {
       "language": "Sprache",
-      "scoreSaber": "ScoreSaber",
+      "scoreSaber": "",
       "cancel": "Abbrechen",
       "back": "Zurück",
       "confirm": "Bestätigen",
@@ -277,12 +300,12 @@
       "goHome": "Zur Startseite",
       "searchPlaceholder": "Suchen...",
       "clearSearch": "Suche löschen",
-      "openInNewTab": "In neuem Tab öffnen",
+      "openInNewTab": "",
       "filters": "Filter",
       "hideFilters": "Filter ausblenden",
       "showFilters": "Filter anzeigen",
-      "privacyPolicy": "Datenschutzerklärung",
-      "cookiesPolicy": "Cookie-Richtlinie",
+      "privacyPolicy": "",
+      "cookiesPolicy": "",
       "global": "Global",
       "friends": "Freunde",
       "aroundMe": "In meiner Nähe",
@@ -299,9 +322,9 @@
       "unknownDate": "Unbekanntes Datum",
       "justNow": "Gerade eben",
       "performancePoints": "Performance-Punkte",
-      "pp": "PP",
-      "accuracy": "Accuracy",
-      "misses": "Misses",
+      "pp": "",
+      "accuracy": "",
+      "misses": "",
       "totalPlays": "Gesamtspielanzahl",
       "actions": "Aktionen",
       "rankRequestActions": "Rang-Anfrage-Aktionen",
@@ -312,10 +335,10 @@
       "copy": "Kopieren",
       "copyFailed": "",
       "providers": {
-         "STEAM": "Steam",
-         "OCULUS": "Meta",
-         "PATREON": "Patreon",
-         "DISCORD": "Discord"
+         "STEAM": "",
+         "OCULUS": "",
+         "PATREON": "",
+         "DISCORD": ""
       }
    },
    "error": {
@@ -1226,7 +1249,7 @@
          "necessaryTitle": "Erforderliche Cookies",
          "necessaryDescription": "Erforderlich für Anmeldung, Sicherheit, Begrenzung der Zugriffsanfragen, Sprache, Design, gespeicherte Filter und grundlegende Funktionen der Website. Diese sind immer aktiviert."
       },
-      "lastUpdated": "Zuletzt aktualisiert: {date}"
+      "lastUpdated": ""
    },
    "oauth": {
       "consent": {
