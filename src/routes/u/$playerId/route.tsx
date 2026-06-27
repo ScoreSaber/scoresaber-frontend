@@ -105,7 +105,7 @@ export const Route = createFileRoute('/u/$playerId')({
    params: {
       parse: (params) => validateRequest(playerParamsSchema, params)
    },
-   validateSearch: (search) => validateRequest(playerSearchSchema, search),
+   validateSearch: (search): PlayerProfileSearch => validateRequest(playerSearchSchema, search),
    loaderDeps: ({ search }) => search,
    loader: ({ params, deps }) =>
       getPlayerProfilePageData({
