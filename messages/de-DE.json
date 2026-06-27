@@ -1358,15 +1358,15 @@
    "legal": {
       "privacy": {
          "pageTitle": "Datenschutzerklärung",
-         "lastUpdated": "Zuletzt aktualisiert: 30. Mai 2026"
+         "lastUpdated": "Zuletzt aktualisiert: {date}"
       },
       "cookies": {
          "pageTitle": "Cookie-Richtlinie",
-         "lastUpdated": "Zuletzt aktualisiert: 30. Mai 2026"
+         "lastUpdated": "Zuletzt aktualisiert: {date}"
       },
       "copyright": {
          "pageTitle": "Urheberrechts-Entfernungsrichtlinie",
-         "lastUpdated": "Zuletzt aktualisiert: 30. Mai 2026"
+         "lastUpdated": "Zuletzt aktualisiert: {date}"
       },
       "consent": {
          "bannerTitle": "Hinweis zu Cookies",

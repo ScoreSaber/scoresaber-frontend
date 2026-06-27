@@ -1358,15 +1358,15 @@
    "legal": {
       "privacy": {
          "pageTitle": "隐私政策",
-         "lastUpdated": "最后更新：2026 年 5 月 30 日"
+         "lastUpdated": "最后更新：{date}"
       },
       "cookies": {
          "pageTitle": "Cookies政策",
-         "lastUpdated": "最后更新：2026 年 5 月 30 日"
+         "lastUpdated": "最后更新：{date}"
       },
       "copyright": {
          "pageTitle": "侵权投诉政策",
-         "lastUpdated": "最后更新：2026 年 5 月 30 日"
+         "lastUpdated": "最后更新：{date}"
       },
       "consent": {
          "bannerTitle": "Cookie 提醒",
