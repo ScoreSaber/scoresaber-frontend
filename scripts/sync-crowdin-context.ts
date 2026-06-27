@@ -92,7 +92,6 @@ const routeRules: Array<[string[], string]> = [
    [['/routes/login', '/modules/auth/'], `${siteUrl}/login`],
    [['/routes/settings/connections', '/modules/settings/sections/connections'], `${siteUrl}/settings/connections`],
    [['/routes/settings/perks/replays'], `${siteUrl}/settings/perks/replays`],
-   [['/routes/settings/perks/score-saber-2-badge'], `${siteUrl}/settings/perks/score-saber-2-badge`],
    [['/routes/settings/perks', '/modules/settings/'], `${siteUrl}/settings/account`],
    [['/routes/rankings', '/modules/rankings/'], `${siteUrl}/rankings`],
    [['/routes/ranking/', '/modules/rank-requests/'], `${siteUrl}/ranking/requests`],

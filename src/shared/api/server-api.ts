@@ -8,9 +8,12 @@ import { addVisitorRateLimitHeaders } from './visitor-rate-limit';
 import { VISITOR_COOKIE_MAX_AGE, VISITOR_COOKIE_NAME, VISITOR_HEADER_NAME } from './visitor-rate-limit-constants';
 
 import { env } from '@/env';
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
 
 const authenticatedFetchCache: RequestInit = { cache: 'no-store' };
 const publicFetchCache: RequestInit = {};
+const authenticatedCredentials: RequestCredentials = 'include';
+const publicCredentials: RequestCredentials = 'omit';
 
 class SessionCookieReadError extends TaggedError('SessionCookieReadError')<{
    message: string;
@@ -20,7 +23,7 @@ class SessionCookieReadError extends TaggedError('SessionCookieReadError')<{
 async function readSessionToken() {
    const result = await Result.tryPromise({
       try: async () => {
-         return getCookie('token') ?? null;
+         return readAuthCookie();
       },
       catch: (cause) =>
          new SessionCookieReadError({
@@ -81,32 +84,48 @@ function getDefaultFetchCache(init?: RequestInit) {
    return isAuthenticated || isVisitorScoped ? authenticatedFetchCache : publicFetchCache;
 }
 
-const customFetch = Object.assign(
-   (input: RequestInfo | URL, init?: RequestInit) => {
-      const headers = new Headers(init?.headers);
-      if (env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET) {
-         headers.set('CF-Access-Client-Id', env.CF_ACCESS_CLIENT_ID);
-         headers.set('CF-Access-Client-Secret', env.CF_ACCESS_CLIENT_SECRET);
-      }
+function createServerFetch(credentials: RequestCredentials) {
+   return Object.assign(
+      (input: RequestInfo | URL, init?: RequestInit) => {
+         const headers = new Headers(init?.headers);
+         if (env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET) {
+            headers.set('CF-Access-Client-Id', env.CF_ACCESS_CLIENT_ID);
+            headers.set('CF-Access-Client-Secret', env.CF_ACCESS_CLIENT_SECRET);
+         }
 
-      return fetch(input, {
-         ...init,
-         headers,
-         credentials: 'include',
-         ...getDefaultFetchCache(init)
-      });
+         return fetch(input, {
+            ...init,
+            headers,
+            credentials,
+            ...getDefaultFetchCache(init)
+         });
+      },
+      {
+         preconnect: (...args: Parameters<typeof fetch.preconnect>) => fetch.preconnect(...args)
+      }
+   );
+}
+
+const authenticatedFetch = createServerFetch(authenticatedCredentials);
+const publicFetch = createServerFetch(publicCredentials);
+
+export const publicApi = new Api({
+   baseUrl: env.API_URL,
+   baseApiParams: { secure: true, credentials: publicCredentials },
+   securityWorker: () => {
+      const publicHeaders: Record<string, string> = {};
+      const hasCloudflareAccessHeaders = addCloudflareAccessHeaders(publicHeaders);
+
+      return hasCloudflareAccessHeaders ? { headers: publicHeaders } : {};
    },
-   {
-      preconnect: (...args: Parameters<typeof fetch.preconnect>) => fetch.preconnect(...args)
-   }
-);
+   customFetch: publicFetch
+});
 
 export const api = new Api({
    baseUrl: env.API_URL,
-   baseApiParams: { secure: true, credentials: 'include' },
+   baseApiParams: { secure: true, credentials: authenticatedCredentials },
    securityWorker: async () => {
-      const token = await readSessionToken();
-      const visitorId = await readOrCreateVisitorId();
+      const [token, visitorId] = await Promise.all([readSessionToken(), readOrCreateVisitorId()]);
       const headers: Record<string, string> = {};
       const hasCloudflareAccessHeaders = addCloudflareAccessHeaders(headers);
       const hasVisitorRateLimitHeaders = addVisitorRateLimitHeaders(headers, visitorId);
@@ -121,5 +140,5 @@ export const api = new Api({
          credentials: 'include'
       };
    },
-   customFetch
+   customFetch: authenticatedFetch
 });

@@ -47,5 +47,6 @@ next-env.d.ts
 
 # generated
 orbis-openapi-processed.json
+.crowdin-translation-patch
 
 .legacy

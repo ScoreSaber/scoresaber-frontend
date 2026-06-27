@@ -12,6 +12,7 @@ import { DebouncedSearchInput } from '@/shared/components/debounced-search-input
 import { Icons } from '@/shared/components/icons';
 import { cn } from '@/shared/format/helpers';
 import { usePersistedParams } from '@/shared/url-state/persisted/use-persisted-params';
+import type { RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 
 type PlayerScoresSearch = SearchParamsRecord & {
@@ -20,14 +21,14 @@ type PlayerScoresSearch = SearchParamsRecord & {
    search?: string;
 };
 
-export function PlayerScoresToolbar({
+export function PlayerScoresToolbar<TLocation>({
    search,
-   buildHref,
+   buildLocation,
    parseSearch,
    className
 }: {
    search: PlayerScoresSearch;
-   buildHref: (search?: PlayerScoresSearch) => string;
+   buildLocation: RouteLocationBuilder<PlayerScoresSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => PlayerScoresSearch | null;
    className?: string;
 }) {
@@ -36,7 +37,7 @@ export function PlayerScoresToolbar({
    const { navigate, preload, cancelPreload } = usePersistedParams({
       storageKey: 'player-scores-toolbar',
       search,
-      buildHref,
+      buildLocation,
       parseSearch
    });
    const currentSort = search.sort ?? 'top';

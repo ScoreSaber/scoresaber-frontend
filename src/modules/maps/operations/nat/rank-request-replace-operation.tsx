@@ -22,6 +22,7 @@ import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import { MapCard } from '@/modules/maps/listing/map-card';
 import { getDisplayLeaderboards } from '@/modules/maps/map-leaderboards';
 import type { OperationAction } from '@/modules/maps/operations/operation-action';
+import { isMapSearchReady } from '@/modules/maps/shared/map-search';
 import { replaceRankRequest } from '@/modules/rank-requests/actions/nat';
 import { api } from '@/shared/api/ApiInstance';
 import type { MapControllerGetMapByIdResponse, MapControllerGetMapListingsDataItem } from '@/shared/api/generated/ApiParams';
@@ -36,7 +37,6 @@ type ReplacementMap = MapControllerGetMapByIdResponse | MapControllerGetMapListi
 type ReplacementSource = { kind: 'map' | 'leaderboard'; id: number };
 
 const positiveIntInput = z.coerce.number().int().gt(0);
-const mapSearchMinLength = 3;
 const mapSearchDebounceMs = 300;
 
 interface RankRequestReplaceOperationProps {
@@ -64,8 +64,8 @@ export function RankRequestReplaceOperation({ open, mapInfo, requestId, action, 
    const replacementInputTerm = replacementInput.trim();
    const replacementSearchTerm = debouncedReplacementInput.trim();
    const replacementSource = parseReplacementSource(replacementInputTerm);
-   const replacementSearchEnabled = open && replacementSource == null && replacementSearchTerm.length >= mapSearchMinLength;
-   const replacementInputIsSearch = open && replacementSource == null && replacementInputTerm.length >= mapSearchMinLength;
+   const replacementSearchEnabled = open && replacementSource == null && isMapSearchReady(replacementSearchTerm);
+   const replacementInputIsSearch = open && replacementSource == null && isMapSearchReady(replacementInputTerm);
    const replacementValid = replacementMap != null && replacementLeaderboardIds.length > 0 && !!description;
 
    const { data: replacementSearchResults = [], isFetching: replacementSearchLoading } = useQuery({

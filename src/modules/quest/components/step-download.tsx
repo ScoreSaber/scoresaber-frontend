@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi, linkOptions, useRouter } from '@tanstack/react-router';
 import { AlertTriangle, Download, ExternalLink, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'use-intl';
@@ -18,10 +18,10 @@ import { api } from '@/shared/api/ApiInstance';
 import { Time } from '@/shared/components/time';
 import { cn } from '@/shared/format/helpers';
 import { queryApiData } from '@/shared/result/api';
-import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { getRouteHref } from '@/shared/url-state/route-location';
 
 const DOWNLOAD_FILENAME = 'ScoreSaber_DO_NOT_SHARE.qmod';
-const AUTH_FILE = 'scoresaber_DO_NOT_SHARE.scary';
+const QUEST_KEY_FILENAME = 'scoresaber_DO_NOT_SHARE.scary';
 const privacyRoute = getRouteApi('/legal/privacy');
 
 type Props = {
@@ -34,12 +34,13 @@ type Props = {
 export function StepDownload({ releases, hasPrereleases, showPrereleases, onTogglePrereleases }: Props) {
    const t = useTranslations();
    const { user } = useAuth();
+   const router = useRouter();
 
    const downloadMutation = useMutation({
       mutationFn: async (tag: string) => {
          const [{ questKey }, qmodResponse, { default: JSZip }] = await Promise.all([
             queryApiData(api.user.userControllerGetQuestKey()),
-            fetch(`/quest/download${stringifyUrlSearch({ tag })}`),
+            fetch(getRouteHref(router, linkOptions({ to: '/quest/download', search: { tag } }))),
             import('jszip')
          ]);
          if (!qmodResponse.ok) {
@@ -47,7 +48,7 @@ export function StepDownload({ releases, hasPrereleases, showPrereleases, onTogg
          }
          const buffer = await qmodResponse.arrayBuffer();
          const zip = await JSZip.loadAsync(buffer);
-         zip.file(AUTH_FILE, `${questKey}:${user!.id}`);
+         zip.file(QUEST_KEY_FILENAME, `${questKey}:${user!.id}`);
          return zip.generateAsync({ type: 'blob', mimeType: 'application/qmod' });
       },
       onSuccess: (blob) => {

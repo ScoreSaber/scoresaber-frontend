@@ -80,7 +80,7 @@ export function MobileBottomBar() {
                      key={item.key}
                      route={item.route}
                      className={cn(
-                        'flex flex-col items-center gap-0.5 px-2 py-1 text-[10px] font-medium transition-colors',
+                        'flex touch-manipulation flex-col items-center gap-0.5 px-2 py-1 text-[10px] font-medium transition-colors',
                         active ? 'text-primary' : 'text-muted-foreground'
                      )}
                   >

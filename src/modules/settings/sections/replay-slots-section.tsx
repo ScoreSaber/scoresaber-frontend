@@ -56,7 +56,7 @@ export function ReplaySlotsSection({ replaySlots, scoreDetails }: ReplaySlotsSec
 
    if (!replaySlots) {
       return (
-         <Card className="bg-background/35 rounded-lg shadow-none">
+         <Card variant="settings">
             <CardContent className="text-muted-foreground px-5 py-8 text-sm">{t('settings.perks.replaySlots.loadFailed')}</CardContent>
          </Card>
       );
@@ -71,7 +71,7 @@ export function ReplaySlotsSection({ replaySlots, scoreDetails }: ReplaySlotsSec
    const showCta = !isPpFarmerOrStaff && (isSupporter || replaySlots.limit <= 25);
 
    return (
-      <Card className="bg-background/35 rounded-lg shadow-none">
+      <Card variant="settings">
          <CardHeader className="gap-4 px-5">
             <div className="min-w-0">
                <CardTitle className="text-xl">{t('settings.perks.replaySlots.title')}</CardTitle>

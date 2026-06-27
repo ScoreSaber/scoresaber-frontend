@@ -13,6 +13,11 @@ type _R<T extends (...args: never[]) => Promise<{ data: unknown }>> = Awaited<Re
 
 // ── Param enum arrays & types ────────────────────────────────────────────
 
+export const PLAYER_CONTROLLER_GET_PLAYERS_SCOPE = ['country', 'region'] as const satisfies readonly NonNullable<
+   ApiTypes.PlayerControllerGetPlayersParams['scope']
+>[];
+export type PlayerControllerGetPlayersScope = (typeof PLAYER_CONTROLLER_GET_PLAYERS_SCOPE)[number];
+
 export const PLAYER_CONTROLLER_GET_PLAYERS_SORT = [
    'rank',
    'countryRank',
@@ -134,6 +139,11 @@ export const AUTH_CONTROLLER_DISCORD_LOGIN_INTENT = ['login', 'link'] as const s
 >[];
 export type AuthControllerDiscordLoginIntent = (typeof AUTH_CONTROLLER_DISCORD_LOGIN_INTENT)[number];
 
+export const OAUTH_CONTROLLER_GET_AUTHORIZE_INFO_CODE_CHALLENGE_METHOD = ['S256'] as const satisfies readonly NonNullable<
+   ApiTypes.OAuthControllerGetAuthorizeInfoParams['code_challenge_method']
+>[];
+export type OauthControllerGetAuthorizeInfoCodeChallengeMethod = (typeof OAUTH_CONTROLLER_GET_AUTHORIZE_INFO_CODE_CHALLENGE_METHOD)[number];
+
 export const USER_CONTROLLER_REMOVE_CONNECTION_PROVIDER = ['STEAM', 'OCULUS', 'PATREON', 'DISCORD'] as const satisfies readonly NonNullable<
    ApiTypes.UserControllerRemoveConnectionParams['provider']
 >[];
@@ -145,15 +155,19 @@ type _Realm = _ApiInstance['realm'];
 type _Player = _ApiInstance['player'];
 type _PlayerAlias = _ApiInstance['playerAlias'];
 type _Leaderboard = _ApiInstance['leaderboard'];
+type _LivePlatform = _ApiInstance['livePlatform'];
 type _Map = _ApiInstance['map'];
 type _Auth = _ApiInstance['auth'];
+type _OAuth = _ApiInstance['oAuth'];
 type _Game = _ApiInstance['game'];
+type _GameUploadBuilds = _ApiInstance['gameUploadBuilds'];
 type _Ranking = _ApiInstance['ranking'];
 type _Score = _ApiInstance['score'];
 type _AdminBadge = _ApiInstance['adminBadge'];
 type _AdminLeaderboard = _ApiInstance['adminLeaderboard'];
 type _AdminPermission = _ApiInstance['adminPermission'];
 type _AdminScore = _ApiInstance['adminScore'];
+type _AdminUploadTrust = _ApiInstance['adminUploadTrust'];
 type _AdminUser = _ApiInstance['adminUser'];
 type _AdminVersion = _ApiInstance['adminVersion'];
 type _User = _ApiInstance['user'];
@@ -168,6 +182,8 @@ export type PlayerControllerGetPlayersDataItem = PlayerControllerGetPlayersRespo
 
 export type PlayerControllerGetPlayerCountResponse = _R<_Player['playerControllerGetPlayerCount']>;
 
+export type PlayerControllerGetPlayerByVanityResponse = _R<_Player['playerControllerGetPlayerByVanity']>;
+
 export type PlayerControllerGetPlayerResponse = _R<_Player['playerControllerGetPlayer']>;
 
 export type PlayerControllerGetPlayerBasicResponse = _R<_Player['playerControllerGetPlayerBasic']>;
@@ -177,6 +193,8 @@ export type PlayerControllerGetPlayerHistoryItem = PlayerControllerGetPlayerHist
 
 export type PlayerControllerGetGlobalPlayerHistoryResponse = _R<_Player['playerControllerGetGlobalPlayerHistory']>;
 export type PlayerControllerGetGlobalPlayerHistoryItem = PlayerControllerGetGlobalPlayerHistoryResponse[number];
+
+export type PlayerControllerGetPlayerScoreByHashResponse = _R<_Player['playerControllerGetPlayerScoreByHash']>;
 
 export type PlayerControllerGetPlayerScoresResponse = _R<_Player['playerControllerGetPlayerScores']>;
 export type PlayerControllerGetPlayerScoresDataItem = PlayerControllerGetPlayerScoresResponse['data'][number];
@@ -208,8 +226,83 @@ export type LeaderboardControllerGetLeaderboardByHashResponse = _R<_Leaderboard[
 export type LeaderboardControllerGetLeaderboardScoresByHashResponse = _R<_Leaderboard['leaderboardControllerGetLeaderboardScoresByHash']>;
 export type LeaderboardControllerGetLeaderboardScoresByHashDataItem = LeaderboardControllerGetLeaderboardScoresByHashResponse['data'][number];
 
+export type LiveTournamentControllerListTournamentsResponse = _R<_LivePlatform['liveTournamentControllerListTournaments']>;
+export type LiveTournamentControllerListTournamentsItem = LiveTournamentControllerListTournamentsResponse[number];
+
+export type LiveTournamentControllerCreateTournamentResponse = _R<_LivePlatform['liveTournamentControllerCreateTournament']>;
+
+export type LiveTournamentControllerGetWorkflowOptionsResponse = _R<_LivePlatform['liveTournamentControllerGetWorkflowOptions']>;
+
+export type LiveTournamentControllerGetSettingsResponse = _R<_LivePlatform['liveTournamentControllerGetSettings']>;
+
+export type LiveTournamentControllerUpsertSettingsResponse = _R<_LivePlatform['liveTournamentControllerUpsertSettings']>;
+
+export type LivePlayerControllerListPlayerTournamentsResponse = _R<_LivePlatform['livePlayerControllerListPlayerTournaments']>;
+export type LivePlayerControllerListPlayerTournamentsItem = LivePlayerControllerListPlayerTournamentsResponse[number];
+
+export type LivePlayerControllerListPlayerRoomsResponse = _R<_LivePlatform['livePlayerControllerListPlayerRooms']>;
+export type LivePlayerControllerListPlayerRoomsItem = LivePlayerControllerListPlayerRoomsResponse[number];
+
+export type LivePlayerControllerGetPlayerRoomResponse = _R<_LivePlatform['livePlayerControllerGetPlayerRoom']>;
+
+export type LivePlayerControllerGetPlayerRoomByInviteCodeResponse = _R<_LivePlatform['livePlayerControllerGetPlayerRoomByInviteCode']>;
+
+export type LiveTournamentRosterControllerListRolesResponse = _R<_LivePlatform['liveTournamentRosterControllerListRoles']>;
+export type LiveTournamentRosterControllerListRolesItem = LiveTournamentRosterControllerListRolesResponse[number];
+
+export type LiveTournamentRosterControllerUpsertRoleResponse = _R<_LivePlatform['liveTournamentRosterControllerUpsertRole']>;
+
+export type LiveTournamentRosterControllerDeleteRoleResponse = _R<_LivePlatform['liveTournamentRosterControllerDeleteRole']>;
+
+export type LiveTournamentRosterControllerAssignRoleResponse = _R<_LivePlatform['liveTournamentRosterControllerAssignRole']>;
+
+export type LiveTournamentRosterControllerUnassignRoleResponse = _R<_LivePlatform['liveTournamentRosterControllerUnassignRole']>;
+
+export type LiveTournamentRosterControllerListTeamsResponse = _R<_LivePlatform['liveTournamentRosterControllerListTeams']>;
+export type LiveTournamentRosterControllerListTeamsItem = LiveTournamentRosterControllerListTeamsResponse[number];
+
+export type LiveTournamentRosterControllerUpsertTeamResponse = _R<_LivePlatform['liveTournamentRosterControllerUpsertTeam']>;
+
+export type LiveTournamentRosterControllerDeleteTeamResponse = _R<_LivePlatform['liveTournamentRosterControllerDeleteTeam']>;
+
+export type LiveTournamentRosterControllerListAuthorizedPlayersResponse = _R<_LivePlatform['liveTournamentRosterControllerListAuthorizedPlayers']>;
+export type LiveTournamentRosterControllerListAuthorizedPlayersItem = LiveTournamentRosterControllerListAuthorizedPlayersResponse[number];
+
+export type LiveTournamentRosterControllerSyncAuthorizedPlayersResponse = _R<_LivePlatform['liveTournamentRosterControllerSyncAuthorizedPlayers']>;
+
+export type LiveMatchRoomControllerListRoomsResponse = _R<_LivePlatform['liveMatchRoomControllerListRooms']>;
+export type LiveMatchRoomControllerListRoomsItem = LiveMatchRoomControllerListRoomsResponse[number];
+
+export type LiveMatchRoomControllerUpsertRoomResponse = _R<_LivePlatform['liveMatchRoomControllerUpsertRoom']>;
+
+export type LiveMatchRoomControllerGetRoomsViewResponse = _R<_LivePlatform['liveMatchRoomControllerGetRoomsView']>;
+
+export type LiveMatchRoomControllerGetRoomViewResponse = _R<_LivePlatform['liveMatchRoomControllerGetRoomView']>;
+
+export type LiveMatchRoomControllerSetRoomMembersResponse = _R<_LivePlatform['liveMatchRoomControllerSetRoomMembers']>;
+
+export type LiveMatchRoomControllerSetRoomSongResponse = _R<_LivePlatform['liveMatchRoomControllerSetRoomSong']>;
+
+export type LiveMatchRoomControllerCloseRoomResponse = _R<_LivePlatform['liveMatchRoomControllerCloseRoom']>;
+
+export type LiveMatchRoomControllerDeleteRoomResponse = _R<_LivePlatform['liveMatchRoomControllerDeleteRoom']>;
+
+export type LiveMatchCommandControllerStartMapResponse = _R<_LivePlatform['liveMatchCommandControllerStartMap']>;
+
+export type LiveMatchCommandControllerReturnToMenuResponse = _R<_LivePlatform['liveMatchCommandControllerReturnToMenu']>;
+
+export type LiveMatchCommandControllerPromptResponse = _R<_LivePlatform['liveMatchCommandControllerPrompt']>;
+
+export type LiveMatchCommandControllerBottifyPlayerResponse = _R<_LivePlatform['liveMatchCommandControllerBottifyPlayer']>;
+
+export type LiveMatchCommandControllerUnbottifyPlayerResponse = _R<_LivePlatform['liveMatchCommandControllerUnbottifyPlayer']>;
+
+export type LiveMatchCommandControllerFollowRoomResponse = _R<_LivePlatform['liveMatchCommandControllerFollowRoom']>;
+
 export type MapControllerGetMapListingsResponse = _R<_Map['mapControllerGetMapListings']>;
 export type MapControllerGetMapListingsDataItem = MapControllerGetMapListingsResponse['data'][number];
+
+export type MapControllerGetMapByHashResponse = _R<_Map['mapControllerGetMapByHash']>;
 
 export type MapControllerGetMapByIdResponse = _R<_Map['mapControllerGetMapById']>;
 
@@ -225,11 +318,57 @@ export type AuthControllerStartEmailLoginResponse = _R<_Auth['authControllerStar
 
 export type AuthControllerLogoutResponse = _R<_Auth['authControllerLogout']>;
 
+export type PasswordAuthControllerStartSignupResponse = _R<_Auth['passwordAuthControllerStartSignup']>;
+
+export type PasswordAuthControllerStartPasswordResetResponse = _R<_Auth['passwordAuthControllerStartPasswordReset']>;
+
+export type PasswordAuthControllerGetPasswordCredentialResponse = _R<_Auth['passwordAuthControllerGetPasswordCredential']>;
+
+export type PasswordAuthControllerStartPasswordSetupResponse = _R<_Auth['passwordAuthControllerStartPasswordSetup']>;
+
+export type PasswordAuthControllerCompletePasswordSetupResponse = _R<_Auth['passwordAuthControllerCompletePasswordSetup']>;
+
+export type PasswordAuthControllerChangePasswordResponse = _R<_Auth['passwordAuthControllerChangePassword']>;
+
+export type PasskeyControllerVerifyRegistrationResponse = _R<_Auth['passkeyControllerVerifyRegistration']>;
+
+export type PasskeyControllerStartAuthenticationResponse = _R<_Auth['passkeyControllerStartAuthentication']>;
+
+export type PasskeyControllerListPasskeysResponse = _R<_Auth['passkeyControllerListPasskeys']>;
+
+export type PasskeyControllerRenamePasskeyResponse = _R<_Auth['passkeyControllerRenamePasskey']>;
+
+export type PasskeyControllerDeletePasskeyResponse = _R<_Auth['passkeyControllerDeletePasskey']>;
+
+export type DeviceCodeControllerStartDeviceLoginResponse = _R<_Auth['deviceCodeControllerStartDeviceLogin']>;
+
+export type DeviceCodeControllerGetDeviceLoginStatusResponse = _R<_Auth['deviceCodeControllerGetDeviceLoginStatus']>;
+
+export type OAuthControllerGetAuthorizeInfoResponse = _R<_OAuth['oAuthControllerGetAuthorizeInfo']>;
+
+export type OAuthControllerApproveAuthorizationResponse = _R<_OAuth['oAuthControllerApproveAuthorization']>;
+
+export type OAuthControllerTokenResponse = _R<_OAuth['oAuthControllerToken']>;
+
+export type OAuthControllerUserinfoResponse = _R<_OAuth['oAuthControllerUserinfo']>;
+
+export type OAuthClientControllerListClientsResponse = _R<_OAuth['oAuthClientControllerListClients']>;
+
+export type OAuthClientControllerCreateClientResponse = _R<_OAuth['oAuthClientControllerCreateClient']>;
+
+export type OAuthClientControllerUpdateClientResponse = _R<_OAuth['oAuthClientControllerUpdateClient']>;
+
+export type OAuthClientControllerRevokeClientResponse = _R<_OAuth['oAuthClientControllerRevokeClient']>;
+
+export type OAuthClientControllerRotateSecretResponse = _R<_OAuth['oAuthClientControllerRotateSecret']>;
+
 export type GameControllerAuthenticateResponse = _R<_Game['gameControllerAuthenticate']>;
 
 export type GameControllerUploadScoreResponse = _R<_Game['gameControllerUploadScore']>;
 
 export type GameControllerSetActiveRealmsResponse = _R<_Game['gameControllerSetActiveRealms']>;
+
+export type GameBuildControllerRegisterOfficialBuildResponse = _R<_GameUploadBuilds['gameBuildControllerRegisterOfficialBuild']>;
 
 export type RankingControllerGetRequestsResponse = _R<_Ranking['rankingControllerGetRequests']>;
 export type RankingControllerGetRequestsDataItem = RankingControllerGetRequestsResponse['data'][number];
@@ -301,6 +440,16 @@ export type AdminPermissionControllerListPermissionsItem = AdminPermissionContro
 
 export type AdminScoreControllerDeleteScoreResponse = _R<_AdminScore['adminScoreControllerDeleteScore']>;
 
+export type AdminUploadTrustControllerCreateDevelopmentCredentialResponse = _R<
+   _AdminUploadTrust['adminUploadTrustControllerCreateDevelopmentCredential']
+>;
+
+export type AdminUploadTrustControllerRevokeDevelopmentCredentialResponse = _R<
+   _AdminUploadTrust['adminUploadTrustControllerRevokeDevelopmentCredential']
+>;
+
+export type AdminUploadTrustControllerRevokeOfficialBuildResponse = _R<_AdminUploadTrust['adminUploadTrustControllerRevokeOfficialBuild']>;
+
 export type AdminUserControllerBanPlayerResponse = _R<_AdminUser['adminUserControllerBanPlayer']>;
 
 export type AdminUserControllerUnbanPlayerResponse = _R<_AdminUser['adminUserControllerUnbanPlayer']>;
@@ -328,6 +477,10 @@ export type AdminVersionControllerDeleteVersionResponse = _R<_AdminVersion['admi
 
 export type UserControllerGetMeResponse = _R<_User['userControllerGetMe']>;
 
+export type UserControllerGetVanityResponse = _R<_User['userControllerGetVanity']>;
+
+export type UserControllerClaimVanityResponse = _R<_User['userControllerClaimVanity']>;
+
 export type UserControllerGetMyInfoResponse = _R<_User['userControllerGetMyInfo']>;
 
 export type UserControllerGetQuestKeyResponse = _R<_User['userControllerGetQuestKey']>;
@@ -340,13 +493,13 @@ export type UserControllerUpdateBioResponse = _R<_User['userControllerUpdateBio'
 
 export type UserControllerUpdateNameResponse = _R<_User['userControllerUpdateName']>;
 
+export type UserControllerUpdateLiveSpectatingResponse = _R<_User['userControllerUpdateLiveSpectating']>;
+
 export type UserControllerUploadAvatarResponse = _R<_User['userControllerUploadAvatar']>;
 
 export type UserControllerGetReplaySlotsResponse = _R<_User['userControllerGetReplaySlots']>;
 
 export type UserControllerRefreshPatreonBenefitsResponse = _R<_User['userControllerRefreshPatreonBenefits']>;
-
-export type UserControllerRedeemScoreSaber2BadgeResponse = _R<_User['userControllerRedeemScoreSaber2Badge']>;
 
 export type UserControllerClaimReplaySlotResponse = _R<_User['userControllerClaimReplaySlot']>;
 

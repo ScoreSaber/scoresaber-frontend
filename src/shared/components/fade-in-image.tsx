@@ -12,6 +12,7 @@ import { cn } from '@/shared/format/helpers';
 // we render a plain <img> here. callers can still pass `fill`/`sizes` for api
 // compatibility -- sizes is ignored, fill maps to absolute positioning.
 type FadeInImageProps = Omit<ComponentProps<'img'>, 'ref'> & {
+   alt: string;
    fill?: boolean;
    sizes?: string;
    unoptimized?: boolean;
@@ -20,8 +21,20 @@ type FadeInImageProps = Omit<ComponentProps<'img'>, 'ref'> & {
 
 const FILL_STYLE: CSSProperties = { position: 'absolute', inset: 0, width: '100%', height: '100%' };
 
-function FadeInImageImpl({ className, onLoad, fill, sizes: _sizes, unoptimized: _unoptimized, priority, style, ...props }: FadeInImageProps) {
-   const [isLoaded, setIsLoaded] = useState(false);
+function FadeInImageImpl({
+   className,
+   onLoad,
+   fill,
+   sizes: _sizes,
+   unoptimized: _unoptimized,
+   priority,
+   style,
+   alt,
+   loading,
+   fetchPriority,
+   ...props
+}: FadeInImageProps) {
+   const [isLoaded, setIsLoaded] = useState(() => priority === true);
    const imgRef = useRef<HTMLImageElement>(null);
 
    // pull rounded-* classes so the skeleton matches
@@ -49,10 +62,12 @@ function FadeInImageImpl({ className, onLoad, fill, sizes: _sizes, unoptimized: 
          {/* oxlint-disable-next-line nextjs/no-img-element */}
          <img
             {...props}
+            alt={alt}
             ref={imgRef}
-            loading={priority ? 'eager' : undefined}
+            loading={priority ? 'eager' : loading}
+            fetchPriority={priority ? 'high' : fetchPriority}
             style={mergedStyle}
-            className={className}
+            className={cn(className, 'transition-opacity duration-300', isLoaded ? 'opacity-100' : 'opacity-0')}
             onLoad={(e) => {
                setIsLoaded(true);
                onLoad?.(e);

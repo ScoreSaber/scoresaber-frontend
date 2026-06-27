@@ -47,7 +47,7 @@ export const METRICS: Record<MetricKey, MetricConfig> = {
       cssVar: '--chart-metric-plays',
       getValue: (e) => e.totalSubmittedPlays,
       getPlayerStat: (s) => s.totalSubmittedPlays,
-      formatTick: (v) => v.toLocaleString()
+      formatTick: (v) => v.toLocaleString(undefined, { maximumFractionDigits: 1 })
    }
 };
 

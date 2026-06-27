@@ -259,7 +259,6 @@ function escapeHtmlAttr(value: string) {
 
 export {
    buildRichTextIframe,
-   hasRichTextContent,
    isAllowedRichTextIframe,
    isAllowedRichTextImage,
    isAllowedRichTextLink,

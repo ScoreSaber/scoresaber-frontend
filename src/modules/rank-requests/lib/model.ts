@@ -2,7 +2,6 @@ import { getDefaultLeaderboardId } from '@/modules/maps/map-leaderboards';
 import type { MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
 
 type RankRequest = NonNullable<MapControllerGetMapByIdResponse['rankRequest']>;
-type RankRequestDifficulty = RankRequest['difficulties'][number];
 type RankRequestStatus = RankRequest['approvalStatus'];
 type RankRequestTab = 'leaderboard' | 'rank-request';
 
@@ -92,11 +91,9 @@ function isRequestLessThanMonthOld(createdAt: string, now: number) {
    return now < queuedForOneMonthAt.getTime();
 }
 
-export type { RankRequest, RankRequestDifficulty, RankRequestStatus };
 export {
    getActiveRankRequestLeaderboardIds,
    getDefaultMapLeaderboardId,
-   getDefaultRankRequestLeaderboardId,
    getRankRequestDifficulty,
    getRankRequestDisplayStatus,
    getRankRequestStatusLabel,

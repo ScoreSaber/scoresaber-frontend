@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const THEME_STORAGE_KEY = 'theme';
 export const THEME_COOKIE_NAME = 'theme';
 export const THEME_MEDIA_QUERY = '(prefers-color-scheme: dark)';
-export const themeSchema = z.enum(['light', 'dark', 'system']);
+const themeSchema = z.enum(['light', 'dark', 'system']);
 export const themes = themeSchema.options;
 
 export type Theme = z.infer<typeof themeSchema>;

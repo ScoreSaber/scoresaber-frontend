@@ -43,12 +43,19 @@ export const env = createEnv({
       API_URL: serverUrlSchema.default('https://api.scoresaber.local'),
       CF_ACCESS_CLIENT_ID: z.string().optional(),
       CF_ACCESS_CLIENT_SECRET: z.string().optional(),
-      VISITOR_RATE_LIMIT_SECRET: z.string().optional()
+      VISITOR_RATE_LIMIT_SECRET: z.string().optional(),
+      HOME_NEWS_PATREON_ACCESS_TOKEN: z.string().optional(),
+      HOME_NEWS_PATREON_CAMPAIGN_ID: z.string().optional(),
+      HOME_NEWS_X_BEARER_TOKEN: z.string().optional(),
+      HOME_NEWS_X_USERNAME: z.string().default('ScoreSaber'),
+      HOME_NEWS_YOUTUBE_API_KEY: z.string().optional(),
+      HOME_NEWS_YOUTUBE_HANDLE: z.string().default('@ScoreSaberOfficial')
    },
    clientPrefix: 'NEXT_PUBLIC_',
    client: {
       NEXT_PUBLIC_API_URL: publicBrowserUrlSchema,
       NEXT_PUBLIC_ARCVIEWER_URL: publicBrowserUrlSchema,
+      NEXT_PUBLIC_LUDUS_URL: publicBrowserUrlSchema.default('https://ludus.scoresaber.local'),
       NEXT_PUBLIC_SITE_URL: publicBrowserUrlSchema.default('https://scoresaber.com')
    },
    runtimeEnvStrict: {
@@ -60,8 +67,15 @@ export const env = createEnv({
       CF_ACCESS_CLIENT_ID: readEnv('CF_ACCESS_CLIENT_ID'),
       CF_ACCESS_CLIENT_SECRET: readEnv('CF_ACCESS_CLIENT_SECRET'),
       VISITOR_RATE_LIMIT_SECRET: readEnv('VISITOR_RATE_LIMIT_SECRET'),
+      HOME_NEWS_PATREON_ACCESS_TOKEN: readEnv('HOME_NEWS_PATREON_ACCESS_TOKEN'),
+      HOME_NEWS_PATREON_CAMPAIGN_ID: readEnv('HOME_NEWS_PATREON_CAMPAIGN_ID'),
+      HOME_NEWS_X_BEARER_TOKEN: readEnv('HOME_NEWS_X_BEARER_TOKEN'),
+      HOME_NEWS_X_USERNAME: readEnv('HOME_NEWS_X_USERNAME'),
+      HOME_NEWS_YOUTUBE_API_KEY: readEnv('HOME_NEWS_YOUTUBE_API_KEY'),
+      HOME_NEWS_YOUTUBE_HANDLE: readEnv('HOME_NEWS_YOUTUBE_HANDLE'),
       NEXT_PUBLIC_API_URL: readEnv('NEXT_PUBLIC_API_URL'),
       NEXT_PUBLIC_ARCVIEWER_URL: readEnv('NEXT_PUBLIC_ARCVIEWER_URL'),
+      NEXT_PUBLIC_LUDUS_URL: readEnv('NEXT_PUBLIC_LUDUS_URL'),
       NEXT_PUBLIC_SITE_URL: readEnv('NEXT_PUBLIC_SITE_URL')
    },
    skipValidation: readEnv('SKIP_ENV_VALIDATION') === 'true',

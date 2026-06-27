@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useAuth } from '@/modules/auth';
+import { canUseLivePlatform } from '@/modules/live/lib/permissions';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { useOmniSearch } from '@/modules/search/search-provider';
 import { CountryImage } from '@/shared/components/country-image';
@@ -22,8 +23,8 @@ import { Image } from '@/shared/components/image';
 import { parseCountryRegionParam } from '@/shared/country-region';
 import { cn, formatNumber, rankToPage } from '@/shared/format/helpers';
 import { getPlayerRoleStyleAndTitle } from '@/shared/format/styling';
-import { isNavActive, navItems, secondaryItems, socialLinks, type AppNavRoute } from '@/shell/nav-data';
-import { NavLink as PersistedNavLink } from '@/shell/nav-link';
+import { isNavActive, navItems, secondaryItems, socialLinks } from '@/shell/nav-data';
+import { SidebarNavLink } from '@/shell/sidebar-nav-link';
 import { SidebarMoreMenu } from '@/shell/sidebar/sidebar-more-menu';
 
 const homeRoute = getRouteApi('/');
@@ -32,12 +33,10 @@ const playerRoute = getRouteApi('/u/$playerId');
 const rankingsRoute = getRouteApi('/rankings');
 
 const navLinkClass =
-   'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-[color,background-color,scale] duration-150 active:scale-[0.96]';
+   'flex touch-manipulation items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-[color,background-color,scale] duration-150 active:scale-[0.96]';
 const activeClass = 'bg-primary text-primary-foreground dark:bg-accent dark:text-primary';
 const inactiveClass = 'text-muted-foreground hover:bg-accent/50 hover:text-primary';
 const disabledClass = 'cursor-not-allowed text-muted-foreground/45';
-
-export { navLinkClass, activeClass, inactiveClass, disabledClass };
 
 const SidebarBrand = memo(function SidebarBrand({ alt, onNavigateAction }: { alt: string; onNavigateAction?: () => void }) {
    const router = useRouter();
@@ -46,7 +45,7 @@ const SidebarBrand = memo(function SidebarBrand({ alt, onNavigateAction }: { alt
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
       event.preventDefault();
       onNavigateAction?.();
-      void router.navigate({ href: '/' });
+      void router.navigate({ to: '/' });
    }
 
    return (
@@ -64,15 +63,14 @@ const SidebarBrand = memo(function SidebarBrand({ alt, onNavigateAction }: { alt
 export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void }) {
    const location = useLocation();
    const pathname = location.pathname;
-   const searchParams = new URLSearchParams(location.searchStr);
    const { user } = useAuth();
    const { setOpen: setSearchOpen } = useOmniSearch();
    const [mounted, setMounted] = useState(false);
    const [isMac, setIsMac] = useState(false);
    const t = useTranslations();
    const [playerNameClass] = getPlayerRoleStyleAndTitle(user);
-   const search = searchParams.toString();
-   const currentPath = search ? `${pathname}?${search}` : pathname;
+   const currentPath = location.href;
+   const visibleNavItems = navItems.filter((item) => item.route !== 'live' || canUseLivePlatform(user?.permissions));
 
    function navLabel(key: string) {
       return key === 'home'
@@ -91,11 +89,13 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                      ? t('nav.wiki')
                      : key === 'feedbackHub'
                        ? t('nav.feedbackHub')
-                       : key === 'questInstaller'
-                         ? t('nav.questInstaller')
-                         : key === 'team'
-                           ? t('nav.team')
-                           : t('nav.apiDocs');
+                       : key === 'livePlatform'
+                         ? t('nav.livePlatform')
+                         : key === 'questInstaller'
+                           ? t('nav.questInstaller')
+                           : key === 'team'
+                             ? t('nav.team')
+                             : t('nav.apiDocs');
    }
 
    const realmSwitcherTrigger = (
@@ -108,34 +108,6 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
       setMounted(true);
       setIsMac(/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent));
    }, []);
-
-   function NavLink({
-      route,
-      children,
-      className,
-      external,
-      href
-   }: {
-      route?: AppNavRoute;
-      children: React.ReactNode;
-      className: string;
-      external?: boolean;
-      href?: string;
-   }) {
-      if (external) {
-         return (
-            <a href={href ?? '#'} target="_blank" rel="noreferrer" className={className} onClick={onNavigateAction}>
-               {children}
-            </a>
-         );
-      }
-
-      return (
-         <PersistedNavLink route={route ?? 'home'} className={className} onClick={onNavigateAction}>
-            {children}
-         </PersistedNavLink>
-      );
-   }
 
    return (
       <div
@@ -222,7 +194,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
 
          {/* main nav */}
          <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
-            {navItems.map((item) => {
+            {visibleNavItems.map((item) => {
                if (item.disabled) {
                   return (
                      <Tooltip key={item.key}>
@@ -238,31 +210,33 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                }
 
                return (
-                  <NavLink
+                  <SidebarNavLink
                      key={item.key}
                      route={item.route}
                      className={cn(navLinkClass, isNavActive(pathname, item.route) ? activeClass : inactiveClass)}
+                     onNavigateAction={onNavigateAction}
                   >
                      {item.icon}
                      {navLabel(item.key)}
-                  </NavLink>
+                  </SidebarNavLink>
                );
             })}
 
             <Separator className="my-2" />
 
             {secondaryItems.map((item) => (
-               <NavLink
+               <SidebarNavLink
                   key={item.key}
                   route={item.external ? undefined : item.route}
                   href={item.external ? item.href : undefined}
                   className={cn(navLinkClass, !item.external && isNavActive(pathname, item.route) ? activeClass : inactiveClass)}
                   external={item.external}
+                  onNavigateAction={onNavigateAction}
                >
                   {item.icon}
                   <span className="flex-1">{navLabel(item.key)}</span>
                   {item.external && <ExternalLink data-icon className="ml-auto size-3" aria-hidden="true" />}
-               </NavLink>
+               </SidebarNavLink>
             ))}
          </nav>
 
@@ -274,15 +248,10 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                <div className="flex w-full items-center gap-1.5">
                   <div className="hover:bg-accent/40 min-w-0 flex-1 rounded-md px-2 py-1.5 transition-colors">
                      <div className="flex min-w-0 items-center gap-2">
-                        <playerRoute.Link
-                           params={{ playerId: user.id }}
-                           search={{ sort: 'top', page: 1 }}
-                           onClick={onNavigateAction}
-                           className="shrink-0 translate-y-1 self-center"
-                        >
+                        <playerRoute.Link params={{ playerId: user.id }} onClick={onNavigateAction} className="shrink-0 translate-y-1 self-center">
                            <PlayerAvatar
                               src={user.avatar}
-                              playerId={user.id}
+                              version={user.avatarVersion}
                               alt={user.name}
                               width={32}
                               height={32}
@@ -292,7 +261,6 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                         <div className="min-w-0 flex-1">
                            <playerRoute.Link
                               params={{ playerId: user.id }}
-                              search={{ sort: 'top', page: 1 }}
                               onClick={onNavigateAction}
                               className="text-foreground block min-w-0 overflow-hidden"
                            >
@@ -341,7 +309,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                </div>
             ) : (
                <Button asChild variant="ghost" className={cn(navLinkClass, inactiveClass, 'w-full cursor-pointer justify-start')}>
-                  <loginRoute.Link search={pathname === '/login' ? {} : { redirectTo: currentPath }} onClick={onNavigateAction}>
+                  <loginRoute.Link search={pathname === loginRoute.id ? {} : { redirectTo: currentPath }} onClick={onNavigateAction}>
                      <LogIn data-icon />
                      {t('sidebar.logIn')}
                   </loginRoute.Link>

@@ -23,12 +23,13 @@ import { Sidebar } from '@/shell/sidebar';
 import { SidebarProvider } from '@/shell/sidebar-provider';
 
 const OmniSearch = dynamic(() => import('@/modules/search/omni-search').then((mod) => mod.OmniSearch));
-const ScoreSaber2BadgePrompt = dynamic(() => import('@/modules/settings/score-saber-2-badge-prompt').then((mod) => mod.ScoreSaber2BadgePrompt));
 
 export function AppShell({
    initialUser,
    messages,
    visibleLocales,
+   initialSeenHome,
+   initialSidebarCollapsed,
    queryClient,
    debugBreakpoints,
    debugPageBackground,
@@ -37,6 +38,8 @@ export function AppShell({
    initialUser: UserControllerGetMeResponse | null;
    messages: TranslationMessages;
    visibleLocales: Locale[];
+   initialSeenHome: boolean;
+   initialSidebarCollapsed: boolean | null;
    queryClient: QueryClient;
    debugBreakpoints: boolean;
    debugPageBackground: boolean;
@@ -50,7 +53,11 @@ export function AppShell({
                <TooltipProvider>
                   <OmniSearchProvider>
                      <RouteTopLoader />
-                     <SidebarProvider visibleLocales={visibleLocales}>
+                     <SidebarProvider
+                        visibleLocales={visibleLocales}
+                        initialSeenHome={initialSeenHome}
+                        initialSidebarCollapsed={initialSidebarCollapsed}
+                     >
                         <Sidebar />
                         <MobileTopBar />
                         <TranslationContextHighlighter messages={messages} />
@@ -58,7 +65,6 @@ export function AppShell({
                         <MobileBottomBar />
                      </SidebarProvider>
                      <OmniSearch />
-                     <ScoreSaber2BadgePrompt />
                      <Toaster />
                   </OmniSearchProvider>
                </TooltipProvider>

@@ -14,7 +14,7 @@ interface EmailChallenge {
 
 interface UseEmailChallengeOptions<TChallenge extends EmailChallenge, TVerifyResult> {
    start: (email: string) => Promise<TChallenge>;
-   verify: (challengeId: string, code: string) => Promise<TVerifyResult>;
+   verify: (challengeId: string, code: string, email: string) => Promise<TVerifyResult>;
    missingChallengeMessage: string;
    onStartMutate?: () => void;
    onVerifyMutate?: () => void;
@@ -38,16 +38,21 @@ export function useEmailChallenge<TChallenge extends EmailChallenge, TVerifyResu
    const [email, setEmail] = useState('');
    const [code, setCode] = useState('');
    const [challenge, setChallenge] = useState<TChallenge | null>(null);
+   const [challengeEmail, setChallengeEmail] = useState('');
    const resendSeconds = useCountdownSeconds(challenge?.resendAvailableAt);
    const expirySeconds = useCountdownSeconds(challenge?.expiresAt);
 
    const startMutation = useMutation({
-      mutationFn: async () => start(email),
+      mutationFn: async () => {
+         const currentEmail = email;
+         return { challenge: await start(currentEmail), email: currentEmail };
+      },
       onMutate: onStartMutate,
       onSuccess: (value) => {
-         setChallenge(value);
+         setChallenge(value.challenge);
+         setChallengeEmail(value.email);
          setCode('');
-         onStarted?.(value);
+         onStarted?.(value.challenge);
       },
       onError: (error) => onStartError?.(error)
    });
@@ -55,7 +60,7 @@ export function useEmailChallenge<TChallenge extends EmailChallenge, TVerifyResu
    const verifyMutation = useMutation({
       mutationFn: async () => {
          if (!challenge) throw new Error(missingChallengeMessage);
-         return verify(challenge.challengeId, code);
+         return verify(challenge.challengeId, code, challengeEmail);
       },
       onMutate: onVerifyMutate,
       onSuccess: (value) => onVerified?.(value),
@@ -64,6 +69,7 @@ export function useEmailChallenge<TChallenge extends EmailChallenge, TVerifyResu
 
    function clearChallenge() {
       setChallenge(null);
+      setChallengeEmail('');
       setCode('');
    }
 

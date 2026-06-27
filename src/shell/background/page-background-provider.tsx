@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 interface BackgroundConfig {
    src: string;
@@ -15,7 +15,8 @@ const PageBackgroundContext = createContext<{
 export function PageBackgroundProvider({ children }: { children: React.ReactNode }) {
    const [config, setConfig] = useState<BackgroundConfig | null>(null);
    const set = useCallback((c: BackgroundConfig | null) => setConfig(c), []);
-   return <PageBackgroundContext.Provider value={{ config, set }}>{children}</PageBackgroundContext.Provider>;
+   const value = useMemo(() => ({ config, set }), [config, set]);
+   return <PageBackgroundContext.Provider value={value}>{children}</PageBackgroundContext.Provider>;
 }
 
 export function usePageBackgroundConfig() {

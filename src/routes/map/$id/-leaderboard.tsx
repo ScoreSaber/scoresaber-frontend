@@ -1,13 +1,14 @@
+import { linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getCookie } from '@tanstack/react-start/server';
 import { z } from 'zod';
 
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import { MapLeaderboardView } from '@/modules/maps/detail/map-leaderboard-view';
 import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
 import { getDisplayLeaderboards } from '@/modules/maps/map-leaderboards';
 import { getDefaultMapLeaderboardId, getRankRequestDisplayStatus, getRankRequestStatusLabel } from '@/modules/rank-requests/lib/model';
 import { LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT, type MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
-import { api } from '@/shared/api/server-api';
+import { api, publicApi } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { countryRegionSearchSchema, formatCountryRegionParam } from '@/shared/country-region';
 import { formatStars } from '@/shared/format/helpers';
@@ -18,7 +19,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isNumber, isPageNumber } from '@/shared/url-state/params';
 import { leaderboardFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
-import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 export const leaderboardSearchSchema = z.object({
@@ -46,19 +47,20 @@ export const getMapLeaderboardPageData = createServerFn({ method: 'GET' })
    .inputValidator((data: MapLeaderboardRouteInput) => data)
    .handler(async ({ data }) => {
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
-      const token = getCookie('token');
+      const token = readAuthCookie();
       const effectiveSearchParams = await applyPersistedSearchParams<LeaderboardSearchParams>({
          searchParams: rawSearchParams,
          parseSearch: parseLeaderboardSearch,
          storageKey: leaderboardFilterPreferences.storageKey,
          persistedKeys: leaderboardFilterPreferences.persistedKeys,
-         enabled: Boolean(token && token !== 'null')
+         enabled: Boolean(token)
       });
       const searchParams = leaderboardSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
       const result = await loadMapLeaderboardPageData({
          mapId: data.mapId,
          leaderboardId: data.leaderboardId,
-         searchParams
+         searchParams,
+         hasSession: Boolean(token)
       });
 
       return { result, searchParams };
@@ -77,8 +79,8 @@ export function MapLeaderboardRouteContent({
 
    const currentPage = searchParams.page ?? 1;
    const { mapInfo, leaderboardInfo, leaderboardScores, leaderboardId: activeLeaderboardId } = result.data;
-   const buildHref = (search?: LeaderboardSearchParams) =>
-      buildMapLeaderboardHref({ routeName: input.routeName, mapId: input.mapId, leaderboardId: activeLeaderboardId, search });
+   const buildLocation = (search?: LeaderboardSearchParams) =>
+      buildMapLeaderboardLocation({ routeName: input.routeName, mapId: input.mapId, leaderboardId: activeLeaderboardId, search });
 
    return (
       <div className="relative flex-1 overflow-hidden">
@@ -95,7 +97,7 @@ export function MapLeaderboardRouteContent({
                highlight={searchParams.highlight}
                rankRequest={mapInfo.rankRequest}
                defaultTab={searchParams.tab}
-               buildHref={buildHref}
+               buildLocation={buildLocation}
                parseSearch={parseLeaderboardSearch}
             />
          </div>
@@ -103,7 +105,7 @@ export function MapLeaderboardRouteContent({
    );
 }
 
-function buildMapLeaderboardHref({
+function buildMapLeaderboardLocation({
    routeName,
    mapId,
    leaderboardId,
@@ -114,8 +116,18 @@ function buildMapLeaderboardHref({
    leaderboardId: number;
    search?: LeaderboardSearchParams;
 }) {
-   const path = routeName === 'map' ? `/map/${mapId}` : `/map/${mapId}/difficulty/${leaderboardId}`;
-   return `${path}${stringifyUrlSearch(search ?? {})}`;
+   const routeSearch = normalizeMapLeaderboardLocationSearch(search);
+
+   if (routeName === 'map') {
+      return linkOptions({ to: '/map/$id', params: { id: mapId }, search: routeSearch });
+   }
+
+   return linkOptions({ to: '/map/$id/difficulty/$leaderboardId', params: { id: mapId, leaderboardId }, search: routeSearch });
+}
+
+function normalizeMapLeaderboardLocationSearch(search?: LeaderboardSearchParams) {
+   const { page = 1, ...rest } = search ?? {};
+   return { page, ...rest };
 }
 
 function parseLeaderboardSearch(search: Record<string, unknown>) {
@@ -145,14 +157,18 @@ export function buildMapLeaderboardHead(
 async function loadMapLeaderboardPageData({
    mapId,
    leaderboardId,
-   searchParams
+   searchParams,
+   hasSession
 }: {
    mapId: number;
    leaderboardId?: number;
    searchParams: MapLeaderboardSearch;
+   hasSession: boolean;
 }) {
    const page = searchParams.page ?? 1;
-   const mapResult = await pageApiData(api.map.mapControllerGetMapById({ id: mapId }));
+   const mapApi = hasSession ? api : publicApi;
+   const scoreApi = searchParams.pivot ? api : publicApi;
+   const mapResult = await pageApiData(mapApi.map.mapControllerGetMapById({ id: mapId }));
    if (!mapResult.ok) return mapResult;
 
    const mapInfo = mapResult.data;
@@ -160,10 +176,10 @@ async function loadMapLeaderboardPageData({
 
    const shouldLoadScores = searchParams.tab !== 'rank-request' || mapInfo.rankRequest == null;
    const [leaderboardInfoResult, leaderboardScores] = await Promise.all([
-      pageApiData(api.leaderboard.leaderboardControllerGetLeaderboardById({ id: activeLeaderboardId })),
+      pageApiData(publicApi.leaderboard.leaderboardControllerGetLeaderboardById({ id: activeLeaderboardId })),
       shouldLoadScores
          ? optionalApiData(
-              api.leaderboard.leaderboardControllerGetLeaderboardScoresById({
+              scoreApi.leaderboard.leaderboardControllerGetLeaderboardScoresById({
                  id: activeLeaderboardId,
                  page,
                  search: searchParams.search,

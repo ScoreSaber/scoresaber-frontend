@@ -1,4 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
+
+import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
@@ -6,39 +8,40 @@ import { z } from 'zod';
 
 import { Separator } from '@/components/ui/separator';
 
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-chart-lazy';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
 import { PlayerProfileHeader } from '@/modules/player/profile/player-profile-header';
 import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
 import { PlayerScoresToolbar } from '@/modules/player/profile/player-scores-toolbar';
+import { versionedAvatarUrl } from '@/modules/player/shared/player-avatar';
 import type { PlayerControllerGetPlayerScoresSort } from '@/shared/api/generated/ApiParams';
-import { api } from '@/shared/api/server-api';
+import { api, publicApi } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
 import { PageError } from '@/shared/components/error/page-error';
 import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
 import { optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
 import { buildSeoHead } from '@/shared/seo/metadata';
-import { isPageNumber, isPlayerId, ScoreEnum, toInt64PathParam, validateRequest } from '@/shared/url-state/params';
+import { isPageNumber, isPlayerId, isVanitySlug, ScoreEnum, validateRequest } from '@/shared/url-state/params';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
-import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const playerParamsSchema = z.object({
-   playerId: z.string().refine((value) => isPlayerId.safeParse(value).success)
+   playerId: z.string().refine((value) => isPlayerId.safeParse(value).success || isVanitySlug.safeParse(value.toLowerCase()).success)
 });
 
 const playerSearchSchema = z.object({
-   sort: ScoreEnum.default('top'),
-   page: isPageNumber,
+   sort: ScoreEnum.optional(),
+   page: isPageNumber.optional(),
    search: z.string().min(3).max(64).optional()
 });
 
 type PlayerProfileSearch = SearchParamsRecord & {
-   sort: PlayerControllerGetPlayerScoresSort;
-   page: number;
+   sort?: PlayerControllerGetPlayerScoresSort;
+   page?: number;
    search?: string;
 };
 
@@ -52,8 +55,12 @@ type ParsePlayerSearch = (search: Record<string, unknown>) => PlayerProfileSearc
 const getPlayerProfilePageData = createServerFn({ method: 'GET' })
    .inputValidator((data: PlayerProfileRouteInput) => data)
    .handler(async ({ data }) => {
-      const apiPlayerId = toInt64PathParam(data.playerId);
-      const playerResult = await pageApiData(api.player.playerControllerGetPlayer({ id: apiPlayerId }));
+      const numericId = isPlayerId.safeParse(data.playerId);
+      const token = readAuthCookie();
+      const aliasApi = token ? api : publicApi;
+      const playerResult = numericId.success
+         ? await pageApiData(publicApi.player.playerControllerGetPlayer({ id: numericId.data.toString() }))
+         : await pageApiData(publicApi.player.playerControllerGetPlayerByVanity({ slug: data.playerId.toLowerCase() }));
 
       if (!playerResult.ok) {
          return {
@@ -66,21 +73,22 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
          };
       }
 
+      const apiPlayerId = playerResult.data.id;
       const bio = playerResult.data.bio ?? '';
       const sanitizedBio = sanitizeRichTextHtml(bio);
 
       const [scores, history, aliases] = await Promise.all([
          optionalApiData(
-            api.player.playerControllerGetPlayerScores({
+            publicApi.player.playerControllerGetPlayerScores({
                id: apiPlayerId,
                limit: 8,
-               page: data.search.page,
-               sort: data.search.sort,
+               page: data.search.page ?? 1,
+               sort: data.search.sort ?? 'top',
                search: data.search.search
             })
          ),
-         optionalApiData(api.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
-         optionalApiData(api.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId }))
+         optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
+         optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId }))
       ]);
 
       return {
@@ -143,6 +151,8 @@ function PlayerProfileRouteContent({
 }) {
    const { result, scores, history, aliases, sanitizedBio, hasBioContent } = data;
 
+   useVanityBrowserUrl(result.ok ? result.data.vanity : null);
+
    if (!result.ok) return <PageError status={result.status} />;
 
    const player = result.data;
@@ -189,8 +199,8 @@ function PlayerProfileRouteContent({
                   <PlayerScoresSection
                      playerId={input.playerId}
                      scores={scores}
-                     page={input.search.page}
-                     sort={input.search.sort}
+                     page={input.search.page ?? 1}
+                     sort={input.search.sort ?? 'top'}
                      search={input.search.search}
                      hasScores={player.stats.totalSubmittedPlays > 0}
                      hasContentAbove={!player.inactive || hasBioContent}
@@ -208,22 +218,39 @@ export function buildPlayerProfileHead(loaderData: Awaited<ReturnType<typeof get
 
    const player = loaderData.result.data;
    const { stats } = player;
-   const globalRank = `Global #${formatNumber(stats.rank)}`;
-   const countryRank = `${player.country.toUpperCase()} #${formatNumber(stats.countryRank)}`;
+   const globalRank = `${String.fromCodePoint(0x1f30d)} #${formatNumber(stats.rank)} Global`;
+   const countryRank = `${getFlagEmoji(player.country)} #${formatNumber(stats.countryRank)} ${player.country.toUpperCase()}`;
 
    return playerProfileHead(`${player.name}'s Profile`, {
-      ogTitle: `${player.name}'s Profile`,
-      image: player.avatar,
+      ogTitle: `${player.name}'s profile`,
+      image: versionedAvatarUrl(player.avatar, player.avatarVersion),
       path: `/u/${player.id}`,
       noindex: player.banned,
       description: [
-         globalRank,
-         countryRank,
-         `${formatPP(stats.totalPP)}pp`,
-         `${formatAccuracy(stats.averageAccuracy)} average ranked accuracy`,
-         `${formatNumber(stats.totalReplayViews)} replay views`
+         `${globalRank} / ${countryRank}`,
+         `Performance Points: ${formatPP(stats.totalPP)}pp`,
+         `Average Ranked Accuracy: ${formatAccuracy(stats.averageAccuracy)}`,
+         `Replay Views: ${formatNumber(stats.totalReplayViews)}`
       ].join('\n')
    });
+}
+
+function getFlagEmoji(countryCode: string) {
+   return countryCode.toLowerCase().replace(/[a-z]/g, (char) => {
+      const codePoint = char.codePointAt(0);
+      return codePoint ? String.fromCodePoint(codePoint - 97 + 0x1f1e6) : '';
+   });
+}
+
+function useVanityBrowserUrl(vanity: string | null) {
+   useEffect(() => {
+      if (!vanity) return;
+
+      const nextPathname = `/u/${vanity}`;
+      if (window.location.pathname === nextPathname) return;
+
+      window.history.replaceState(window.history.state, '', `${nextPathname}${window.location.search}${window.location.hash}`);
+   }, [vanity]);
 }
 
 function PlayerScoresSection({
@@ -247,8 +274,8 @@ function PlayerScoresSection({
 }) {
    const t = useTranslations();
    const currentSearch: PlayerProfileSearch = { sort, page, search };
-   const buildHref = (nextSearch?: Partial<PlayerProfileSearch>) => buildPlayerHref(playerId, nextSearch);
-   const getPageHref = (nextPage: number) => buildHref(updateSearchParams(currentSearch, { page: nextPage > 1 ? nextPage : undefined }));
+   const buildLocation = (nextSearch?: Partial<PlayerProfileSearch>) => buildPlayerLocation(playerId, nextSearch);
+   const getPageLocation = (nextPage: number) => buildLocation(updateSearchParams(currentSearch, { page: nextPage > 1 ? nextPage : undefined }));
 
    const hasNoScoresAtAll = !hasScores;
 
@@ -257,7 +284,7 @@ function PlayerScoresSection({
          {hasContentAbove && <Separator variant="gradient" className="mb-4" />}
          {!hasNoScoresAtAll && (
             <div className="mb-4 flex justify-center">
-               <PlayerScoresToolbar search={currentSearch} buildHref={buildHref} parseSearch={parseSearch} />
+               <PlayerScoresToolbar search={currentSearch} buildLocation={buildLocation} parseSearch={parseSearch} />
             </div>
          )}
          {scores.data.length > 0 ? (
@@ -266,7 +293,7 @@ function PlayerScoresSection({
                totalItems={scores.metadata.totalItems}
                pageSize={scores.metadata.itemsPerPage}
                currentPage={page}
-               getPageHref={getPageHref}
+               getPageLocation={getPageLocation}
             />
          ) : (
             <div className="text-muted-foreground flex flex-col items-center gap-2 py-16">
@@ -279,8 +306,17 @@ function PlayerScoresSection({
    );
 }
 
-function buildPlayerHref(playerId: string, search?: Partial<PlayerProfileSearch>) {
-   return `/u/${playerId}${stringifyUrlSearch(search ?? {})}`;
+function buildPlayerLocation(playerId: string, search?: Partial<PlayerProfileSearch>) {
+   return linkOptions({ to: '/u/$playerId', params: { playerId }, search: normalizePlayerLocationSearch(search) });
+}
+
+function normalizePlayerLocationSearch(search?: Partial<PlayerProfileSearch>) {
+   const { sort = 'top', page = 1, ...rest } = search ?? {};
+   return {
+      sort: sort === 'top' ? undefined : sort,
+      page: page > 1 ? page : undefined,
+      ...rest
+   };
 }
 
 function playerProfileHead(

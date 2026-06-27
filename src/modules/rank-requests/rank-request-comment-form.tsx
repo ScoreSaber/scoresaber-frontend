@@ -45,7 +45,7 @@ export function RankRequestCommentForm({ difficultyId, groups }: RankRequestComm
    const avatar = user ? (
       <PlayerAvatar
          src={user.avatar}
-         playerId={user.id}
+         version={user.avatarVersion}
          alt={user.name}
          width={32}
          height={32}

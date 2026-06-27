@@ -1,1 +1,178 @@
-{}
+{
+   "common": {
+      "edit": "",
+      "copy": ""
+   },
+   "login": {
+      "password": {
+         "method": "",
+         "title": "",
+         "description": "",
+         "passwordLabel": "",
+         "submit": "",
+         "forgot": "",
+         "newPasswordLabel": "",
+         "passwordHelp": "",
+         "resetDescription": "",
+         "resetSubmit": "",
+         "backToLogin": "",
+         "failedToast": "",
+         "resetFailedToast": ""
+      },
+      "passkey": {
+         "method": "",
+         "failedToast": ""
+      },
+      "signup": {
+         "title": "",
+         "displayNameLabel": "",
+         "displayNameHelp": "",
+         "submit": "",
+         "failedToast": "",
+         "emailCallToAction": ""
+      },
+      "subtitle": "",
+      "providers": {
+         "SCORESABER": {
+            "label": ""
+         },
+         "STEAM": {
+            "label": ""
+         },
+         "OCULUS": {
+            "label": "",
+            "tooltip": ""
+         }
+      },
+      "email": {
+         "metaInfo": {
+            "title": "",
+            "pcOnly": "",
+            "newPc": "",
+            "quest": ""
+         }
+      }
+   },
+   "settings": {
+      "tabs": {
+         "developer": ""
+      },
+      "connections": {
+         "providers": {
+            "SCORESABER": {
+               "label": ""
+            }
+         },
+         "primaryHelper": "",
+         "setup": ""
+      },
+      "security": {
+         "title": "",
+         "changePassword": "",
+         "changePasswordHelper": "",
+         "currentPassword": "",
+         "newPassword": "",
+         "passwordSaved": "",
+         "passwordSaveFailed": "",
+         "passkeys": "",
+         "passkeysHelper": "",
+         "addPasskey": "",
+         "passkeyAdded": "",
+         "passkeyAddFailed": "",
+         "passkeyRenamed": "",
+         "passkeyRenameFailed": "",
+         "passkeyDeleted": "",
+         "passkeyDeleteFailed": "",
+         "renamePasskey": "",
+         "renamePasskeyDesc": "",
+         "passkeyLabel": "",
+         "deletePasskey": "",
+         "deletePasskeyDesc": "",
+         "passkeyLastUsed": "",
+         "passkeyCreated": "",
+         "deviceLogin": "",
+         "deviceLoginComingSoon": "",
+         "deviceLoginHelper": "",
+         "deviceLoginAction": "",
+         "deviceLoginInstructions": "",
+         "deviceLoginClaimed": "",
+         "deviceCodeExpired": "",
+         "deviceCodeNew": "",
+         "deviceCodeExpiresIn": "",
+         "deviceCodeFailed": "",
+         "setPassword": "",
+         "setPasswordHelper": "",
+         "setPasswordSubmit": "",
+         "passwordSetupSaved": "",
+         "passwordSetupFailed": "",
+         "forgotPassword": ""
+      },
+      "perks": {
+         "vanity": {
+            "title": "",
+            "description": "",
+            "loadFailed": "",
+            "current": "",
+            "changeLabel": "",
+            "claimLabel": "",
+            "placeholder": "",
+            "change": "",
+            "claim": "",
+            "claimed": "",
+            "claimFailed": "",
+            "cooldown": "",
+            "rules": ""
+         }
+      },
+      "developer": {
+         "title": "",
+         "description": "",
+         "noAccess": "",
+         "loadFailed": "",
+         "empty": "",
+         "create": "",
+         "createTitle": "",
+         "editTitle": "",
+         "formDescription": "",
+         "nameLabel": "",
+         "descriptionLabel": "",
+         "redirectUrisLabel": "",
+         "redirectUrisHelp": "",
+         "scopesLabel": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "created": "",
+         "createFailed": "",
+         "saved": "",
+         "saveFailed": "",
+         "rotate": "",
+         "rotated": "",
+         "rotateFailed": "",
+         "revoke": "",
+         "revokeDesc": "",
+         "revoked": "",
+         "revokeFailed": "",
+         "clientId": "",
+         "clientSecret": "",
+         "secretTitle": "",
+         "secretDescription": "",
+         "createdAt": "",
+         "redirectUris": ""
+      }
+   },
+   "oauth": {
+      "consent": {
+         "invalidTitle": "",
+         "invalidDescription": "",
+         "loginTitle": "",
+         "loginDescription": "",
+         "title": "",
+         "scopesIntro": "",
+         "scopeIdentity": "",
+         "scopeIdentityProviders": "",
+         "approveFailed": "",
+         "deny": "",
+         "approve": ""
+      }
+   }
+}

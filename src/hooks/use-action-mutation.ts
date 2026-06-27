@@ -10,7 +10,7 @@ import type { ActionResult } from '@/shared/result/action';
 import { unwrapAction } from '@/shared/result/action';
 
 // shared hook for server action mutations with router.refresh + toast feedback
-function useActionMutation<T = void>() {
+function useActionMutation<T = unknown>() {
    const router = useRouter();
    const [pendingKey, setPendingKey] = useState<string | null>(null);
    const mutation = useMutation<T, Error, () => Promise<ActionResult<T>>>({

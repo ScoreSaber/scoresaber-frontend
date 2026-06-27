@@ -1,10 +1,8 @@
 'use client';
 
 import { Result, TaggedError } from 'better-result';
-import { Copy } from 'lucide-react';
-import { toast } from 'sonner';
 
-import { Button } from '@/components/ui/button';
+import { CopyButton } from '@/shared/components/copy-button';
 
 class NoticeTemplateCopyError extends TaggedError('NoticeTemplateCopyError')<{
    message: string;
@@ -95,22 +93,10 @@ async function writeNoticeTemplate() {
 }
 
 export function CopyrightNoticeTemplate() {
-   async function handleCopy() {
-      const result = await writeNoticeTemplate();
-
-      Result.match(result, {
-         ok: () => toast.success('Copied'),
-         err: () => toast.error('Copy failed')
-      });
-   }
-
    return (
       <div className="space-y-3">
          <div className="flex justify-end print:hidden">
-            <Button type="button" variant="ghost" size="sm" className="cursor-pointer" onClick={handleCopy}>
-               <Copy data-icon />
-               Copy
-            </Button>
+            <CopyButton copyAction={writeNoticeTemplate} aria-label="Copy" title="Copy" errorMessage="Copy failed" />
          </div>
 
          <ul aria-label="Copyright takedown notice template">

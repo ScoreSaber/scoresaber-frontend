@@ -69,29 +69,6 @@ export function getVisibleLocales(): Locale[] {
    return locales.filter((locale) => locale === defaultLocale || hasMessages(localeMessages[locale]));
 }
 
-export async function getTranslations(namespace?: string) {
-   const messages = await getMessages();
-   const scoped = namespace ? getPath(messages, namespace) : messages;
-
-   return (key: string, values?: Record<string, unknown>) => {
-      const value = getPath(scoped, key);
-      if (typeof value !== 'string') return key;
-      if (!values) return value;
-
-      return Object.entries(values).reduce((next, [name, replacement]) => next.replaceAll(`{${name}}`, String(replacement)), value);
-   };
-}
-
-export function getRequestConfig<T>(callback: () => T) {
-   return callback;
-}
-
-function getPath(source: string | Messages | undefined, path: string) {
-   return path
-      .split('.')
-      .reduce<string | Messages | undefined>((current, segment) => (typeof current === 'string' ? undefined : current?.[segment]), source);
-}
-
 function mergeMessages(base: Messages, override: Messages): Messages {
    return Object.fromEntries(Object.entries(base).map(([key, value]) => [key, mergeMessage(value, override[key])]));
 }

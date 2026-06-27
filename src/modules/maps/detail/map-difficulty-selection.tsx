@@ -50,22 +50,6 @@ export function MapDifficultySelection({ mapInfo, activeLeaderboardId, activeGam
    const isLoading = pendingId !== activeLeaderboardId;
    const linkSearch = { ...linkSearchParams, page: linkSearchParams?.page ?? 1 };
 
-   function preloadLeaderboard(leaderboardId: number) {
-      void router.preloadRoute({
-         to: '/map/$id/difficulty/$leaderboardId',
-         params: { id: mapInfo.id, leaderboardId },
-         search: linkSearch
-      });
-   }
-
-   function handleOpenChange(open: boolean) {
-      if (!open) return;
-
-      for (const item of sortedItems) {
-         if (item.id !== activeLeaderboardId) preloadLeaderboard(item.id);
-      }
-   }
-
    function handleValueChange(value: string) {
       const result = selectLeaderboardId.safeParse(value);
       if (!result.success || result.data === activeLeaderboardId) return;
@@ -81,7 +65,7 @@ export function MapDifficultySelection({ mapInfo, activeLeaderboardId, activeGam
    }
 
    return (
-      <Select value={String(activeLeaderboardId)} onValueChange={handleValueChange} onOpenChange={handleOpenChange} disabled={isLoading}>
+      <Select value={String(activeLeaderboardId)} onValueChange={handleValueChange} disabled={isLoading}>
          <SelectTrigger
             size="compact"
             className={cn(
@@ -113,14 +97,7 @@ export function MapDifficultySelection({ mapInfo, activeLeaderboardId, activeGam
                   const isActive = item.id === activeLeaderboardId;
 
                   return (
-                     <SelectItem
-                        key={item.id}
-                        value={String(item.id)}
-                        textValue={getDifficultyLabel(item.difficulty)}
-                        onPointerMove={() => !isActive && preloadLeaderboard(item.id)}
-                        onFocus={() => !isActive && preloadLeaderboard(item.id)}
-                        className="cursor-pointer"
-                     >
+                     <SelectItem key={item.id} value={String(item.id)} textValue={getDifficultyLabel(item.difficulty)} className="cursor-pointer">
                         <DifficultyItemContent
                            item={item}
                            isActive={isActive}

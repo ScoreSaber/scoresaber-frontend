@@ -20,17 +20,18 @@ import { formatCountryRegionParam, parseCountryRegionParam, type CountryRegionFi
 import { cn } from '@/shared/format/helpers';
 import { leaderboardFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { usePersistedParams } from '@/shared/url-state/persisted/use-persisted-params';
+import type { RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 
 const QUICK_FILTER_BUTTON_CLASS = 'h-8 w-8 cursor-pointer p-0 sm:p-0';
 
-export function MapLeaderboardFilters({ currentSearch, search, buildHref, parseSearch }: MapLeaderboardFiltersProps) {
+export function MapLeaderboardFilters<TLocation>({ currentSearch, search, buildLocation, parseSearch }: MapLeaderboardFiltersProps<TLocation>) {
    const tc = useTranslations();
    const { user } = useAuth();
    const { navigate, preload, cancelPreload, saveStorage } = usePersistedParams({
       storageKey: leaderboardFilterPreferences.storageKey,
       search,
-      buildHref,
+      buildLocation,
       parseSearch,
       persistedKeys: user ? leaderboardFilterPreferences.persistedKeys : [],
       legacyStorageKeys: leaderboardFilterPreferences.legacyStorageKeys
@@ -234,9 +235,9 @@ function LeaderboardScopeNavigator({
    );
 }
 
-interface MapLeaderboardFiltersProps {
+interface MapLeaderboardFiltersProps<TLocation> {
    currentSearch?: string;
    search: LeaderboardSearchParams;
-   buildHref: (search?: LeaderboardSearchParams) => string;
+   buildLocation: RouteLocationBuilder<LeaderboardSearchParams, TLocation>;
    parseSearch: (search: SearchParamsRecord) => LeaderboardSearchParams | null;
 }

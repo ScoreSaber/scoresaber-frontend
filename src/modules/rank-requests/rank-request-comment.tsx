@@ -41,7 +41,7 @@ export function RankRequestComment({ comment, obfuscated, group, difficultyId }:
    ) : (
       <PlayerAvatar
          src={comment.player.avatar}
-         playerId={comment.player.id}
+         version={comment.player.avatarVersion}
          alt={comment.player.name}
          width={32}
          height={32}

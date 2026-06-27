@@ -71,7 +71,6 @@ function computeColors(resolvedTheme: 'light' | 'dark') {
 }
 
 export type ChartColors = ReturnType<typeof computeColors>;
-export type { ChartMetricKey };
 
 export function useChartColors() {
    const { resolvedTheme } = useTheme();

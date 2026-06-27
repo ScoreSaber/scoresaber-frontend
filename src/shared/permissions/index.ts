@@ -12,7 +12,9 @@ const permissions = {
    CCT: 1024,
    CCTHead: 2048,
    CAT: 4096,
-   RTR: 8192
+   RTR: 8192,
+   EXTERNAL_DEV: 16384,
+   TOURNAMENT_ORGANIZER: 32768
 };
 
 const group_permissions = {
@@ -28,7 +30,8 @@ const group_permissions = {
       permissions.CCT |
       permissions.CCTHead |
       permissions.CAT |
-      permissions.RTR,
+      permissions.RTR |
+      permissions.TOURNAMENT_ORGANIZER,
    ADMIN: permissions.RT | permissions.QAT | permissions.QATHead | permissions.NAT | permissions.ADMIN,
    NAT: permissions.RT | permissions.NAT,
    QATHead: permissions.QAT | permissions.QATHead,

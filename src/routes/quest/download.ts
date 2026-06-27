@@ -1,9 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Result } from 'better-result';
+import { z } from 'zod';
 
 import { fetchQuestReleases, type QuestRelease } from '@/modules/quest/lib/releases';
+import { publicCacheControl } from '@/shared/cache-control';
+
+const questDownloadSearchSchema = z.object({
+   tag: z.string().optional()
+});
 
 export const Route = createFileRoute('/quest/download')({
+   validateSearch: (search) => questDownloadSearchSchema.parse(search),
    server: {
       handlers: {
          GET: ({ request }) => downloadQuestRelease(request)
@@ -50,7 +57,7 @@ async function streamReleaseAsset(releases: QuestRelease[], tag: string) {
       headers: {
          'Content-Type': 'application/octet-stream',
          'Content-Length': assetResponse.headers.get('content-length') ?? '',
-         'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400'
+         'Cache-Control': publicCacheControl({ sMaxAge: 86400, staleWhileRevalidate: 86400 })
       }
    });
 }

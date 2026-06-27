@@ -14,27 +14,35 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Icons } from '@/shared/components/icons';
 import { generateNavigationOptions } from '@/shared/components/pagination-options';
 import { cn, formatNumber } from '@/shared/format/helpers';
+import { navigateToRoute, type RouteLocation } from '@/shared/url-state/route-location';
 import { useRouteHrefPreload } from '@/shared/url-state/use-route-href-preload';
 
-type PaginationProps = {
+type PaginationProps<TLocation> = {
    totalItems: number;
    pageSize: number;
    currentPage: number;
    limit?: number;
    anchor?: string;
    scroll?: boolean;
-   getPageHref: (page: number) => string;
+   getPageLocation: (page: number) => RouteLocation<TLocation>;
 };
 
-export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll = true, getPageHref: getBasePageHref }: PaginationProps) {
+export function Pagination<TLocation>({
+   totalItems,
+   pageSize,
+   currentPage,
+   anchor,
+   scroll = true,
+   getPageLocation: getBasePageLocation
+}: PaginationProps<TLocation>) {
    const router = useRouter();
-   const { schedulePreload, preloadNow, cancelPreload } = useRouteHrefPreload();
-   const getPageHref = useCallback(
+   const { getHref, schedulePreload, preloadNow, cancelPreload } = useRouteHrefPreload();
+   const getPageLocation = useCallback(
       (page: number) => {
-         const path = getBasePageHref(page);
-         return anchor ? `${path}#${anchor}` : path;
+         const location = getBasePageLocation(page);
+         return anchor ? { ...location, hash: anchor } : location;
       },
-      [getBasePageHref, anchor]
+      [getBasePageLocation, anchor]
    );
    const totalPages = Math.ceil(totalItems / pageSize);
    const [pendingPage, setPendingPage] = useState<{ value: number | undefined; type: string } | null>(null);
@@ -51,15 +59,16 @@ export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll =
 
    return (
       <div className="flex flex-row items-center gap-1">
-         {options.map((option, index) => {
+         {options.map((option) => {
             if (option.type === 'symbol' && option.symbol === 'ELLIPSIS') {
                return (
                   <EllipsisPageJump
-                     key={`ellipsis-${index}`}
+                     key={`ellipsis-${option.value}`}
                      totalPages={totalPages}
                      onNavigate={(page) => {
+                        const location = getPageLocation(page);
                         setPendingPage({ value: page, type: 'number' });
-                        router.navigate({ href: getPageHref(page), resetScroll: scroll });
+                        navigateToRoute(router, location, { resetScroll: scroll });
                      }}
                   />
                );
@@ -73,7 +82,8 @@ export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll =
             const label = option.type === 'number' ? formatNumber(option.value!) : option.symbol === 'PREVIOUS_PAGE' ? '<' : '>';
             const active = option.type === 'number' && option.value === currentPage;
             const loading = isLoading && pendingPage?.value === option.value && pendingPage?.type === option.type;
-            const href = getPageHref(option.value!);
+            const location = getPageLocation(option.value!);
+            const href = getHref(location);
 
             function handleClick(event: MouseEvent<HTMLAnchorElement>) {
                if (disabled) {
@@ -85,7 +95,7 @@ export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll =
 
                event.preventDefault();
                setPendingPage({ value: option.value, type: option.type });
-               void router.navigate({ href, resetScroll: scroll });
+               void navigateToRoute(router, location, { resetScroll: scroll });
             }
 
             return (
@@ -93,11 +103,11 @@ export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll =
                   key={key}
                   href={href}
                   onClick={handleClick}
-                  onMouseEnter={() => !disabled && schedulePreload(href)}
-                  onFocus={() => !disabled && schedulePreload(href)}
+                  onMouseEnter={() => !disabled && schedulePreload(location)}
+                  onFocus={() => !disabled && schedulePreload(location)}
                   onMouseLeave={cancelPreload}
                   onBlur={cancelPreload}
-                  onTouchStart={() => !disabled && preloadNow(href)}
+                  onTouchStart={() => !disabled && preloadNow(location)}
                   className={disabled ? 'pointer-events-none' : ''}
                >
                   <Button
@@ -114,11 +124,12 @@ export function Pagination({ totalItems, pageSize, currentPage, anchor, scroll =
    );
 }
 
-export function PaginationArrow({ direction, page, disabled, getPageHref }: PaginationArrowProps) {
+export function PaginationArrow<TLocation>({ direction, page, disabled, getPageLocation }: PaginationArrowProps<TLocation>) {
    const router = useRouter();
-   const { schedulePreload, preloadNow, cancelPreload } = useRouteHrefPreload();
+   const { getHref, schedulePreload, preloadNow, cancelPreload } = useRouteHrefPreload();
    const [pendingHref, setPendingHref] = useState<string | null>(null);
-   const href = getPageHref(page);
+   const location = getPageLocation(page);
+   const href = getHref(location);
    const Icon = direction === 'left' ? FaArrowLeft : FaArrowRight;
    const loading = pendingHref === href;
    const buttonDisabled = disabled || loading;
@@ -142,13 +153,13 @@ export function PaginationArrow({ direction, page, disabled, getPageHref }: Pagi
             if (!isRouterClick(event)) return;
             event.preventDefault();
             setPendingHref(href);
-            void router.navigate({ href, resetScroll: true });
+            void navigateToRoute(router, location, { resetScroll: true });
          }}
-         onMouseEnter={() => schedulePreload(href)}
-         onFocus={() => schedulePreload(href)}
+         onMouseEnter={() => schedulePreload(location)}
+         onFocus={() => schedulePreload(location)}
          onMouseLeave={cancelPreload}
          onBlur={cancelPreload}
-         onTouchStart={() => preloadNow(href)}
+         onTouchStart={() => preloadNow(location)}
          className={loading ? 'pointer-events-none' : ''}
       >
          <Button variant="secondary" size="icon" className="cursor-pointer">
@@ -158,11 +169,11 @@ export function PaginationArrow({ direction, page, disabled, getPageHref }: Pagi
    );
 }
 
-export function PaginationArrows({ currentPage, totalPages, getPageHref }: PaginationArrowsProps) {
+export function PaginationArrows<TLocation>({ currentPage, totalPages, getPageLocation }: PaginationArrowsProps<TLocation>) {
    return (
       <div className="flex items-center justify-between">
-         <PaginationArrow direction="left" page={currentPage - 1} disabled={currentPage <= 1} getPageHref={getPageHref} />
-         <PaginationArrow direction="right" page={currentPage + 1} disabled={currentPage >= totalPages} getPageHref={getPageHref} />
+         <PaginationArrow direction="left" page={currentPage - 1} disabled={currentPage <= 1} getPageLocation={getPageLocation} />
+         <PaginationArrow direction="right" page={currentPage + 1} disabled={currentPage >= totalPages} getPageLocation={getPageLocation} />
       </div>
    );
 }
@@ -214,17 +225,17 @@ function EllipsisPageJump({ totalPages, onNavigate }: { totalPages: number; onNa
    );
 }
 
-type PaginationArrowProps = {
+type PaginationArrowProps<TLocation> = {
    direction: 'left' | 'right';
    page: number;
    disabled: boolean;
-   getPageHref: (page: number) => string;
+   getPageLocation: (page: number) => RouteLocation<TLocation>;
 };
 
-type PaginationArrowsProps = {
+type PaginationArrowsProps<TLocation> = {
    currentPage: number;
    totalPages: number;
-   getPageHref: (page: number) => string;
+   getPageLocation: (page: number) => RouteLocation<TLocation>;
 };
 
 function isRouterClick(event: MouseEvent<HTMLAnchorElement>) {

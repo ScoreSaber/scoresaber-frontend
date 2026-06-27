@@ -9,6 +9,7 @@ import { PlayerHoverCard } from './player-hover-card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { buildPlayerSummary } from '@/modules/player/player-summary';
+import { PlayerListLivePresenceIndicator } from '@/modules/player/profile/player-live-presence-indicator';
 import { CountryImage } from '@/shared/components/country-image';
 import { cn } from '@/shared/format/helpers';
 import type { PlayerRoleSource } from '@/shared/format/styling';
@@ -20,13 +21,15 @@ type PlayerLinkProps = {
    outLink?: boolean;
    className?: string;
    withPFP?: boolean;
+   showLivePresence?: boolean;
    variant?: 'link' | 'inline';
    isInactive?: boolean;
 };
 
-export function PlayerLink({ player, outLink, className, withPFP, variant = 'link', isInactive }: PlayerLinkProps) {
+export function PlayerLink({ player, outLink, className, withPFP, showLivePresence, variant = 'link', isInactive }: PlayerLinkProps) {
    const t = useTranslations();
    const playerSummary = buildPlayerSummary(player);
+
    if (variant === 'inline') {
       return <PlayerName player={player} className={className} playerStyle={playerSummary.roleClassName} />;
    }
@@ -46,11 +49,7 @@ export function PlayerLink({ player, outLink, className, withPFP, variant = 'lin
          />
       </a>
    ) : (
-      <playerRoute.Link
-         className="group/link text-foreground flex items-center overflow-hidden font-semibold"
-         params={{ playerId: player.id }}
-         search={{ sort: 'top', page: 1 }}
-      >
+      <playerRoute.Link className="group/link text-foreground flex items-center overflow-hidden font-semibold" params={{ playerId: player.id }}>
          <CountryImage country={player.country} className="shrink-0" />
          <PlayerHoverCard playerId={player.id}>
             <PlayerName
@@ -65,14 +64,17 @@ export function PlayerLink({ player, outLink, className, withPFP, variant = 'lin
    return (
       <div className="flex min-w-0 items-center">
          {withPFP && (
-            <PlayerAvatar
-               src={player.avatar}
-               playerId={player.id}
-               alt={player.name}
-               width={32}
-               height={32}
-               className={cn('shrink-0 rounded-full', isInactive && 'opacity-50 grayscale')}
-            />
+            <span className="relative inline-flex shrink-0">
+               <PlayerAvatar
+                  src={player.avatar}
+                  version={player.avatarVersion}
+                  alt={player.name}
+                  width={32}
+                  height={32}
+                  className={cn('shrink-0 rounded-full', isInactive && 'opacity-50 grayscale')}
+               />
+               {showLivePresence && <PlayerListLivePresenceIndicator playerId={player.id} className="absolute -bottom-0.5 left-[70%] z-10" />}
+            </span>
          )}
          <div className={cn('flex min-w-0 overflow-hidden', withPFP && 'ml-2')}>{link}</div>
          {isInactive && (

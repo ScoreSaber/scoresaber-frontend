@@ -17,8 +17,8 @@ import type { SearchParamsRecord, SearchParamValue } from '@/shared/url-state/se
 import type { AppNavRoute } from '@/shell/nav-data';
 
 type MapsRouteSearch = SearchParamsRecord & {
-   page: number;
-   verified: 'true' | 'false';
+   page?: number;
+   verified?: 'true' | 'false';
    sortBy?: (typeof MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY)[number];
    sortDirection?: (typeof MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION)[number];
    status?: string;
@@ -36,10 +36,11 @@ type RankRequestsRouteSearch = SearchParamsRecord & {
    hideDownvoted?: true;
 };
 
-const defaultMapsSearch: MapsRouteSearch = { page: 1, verified: 'true' };
+const defaultMapsSearch: MapsRouteSearch = {};
 const defaultRankingsSearch: RankingsRouteSearch = { page: 1 };
 const defaultRankRequestsSearch: RankRequestsRouteSearch = { page: 1 };
 const homeRoute = getRouteApi('/');
+const liveRoute = getRouteApi('/live');
 const mapsRoute = getRouteApi('/maps');
 const questRoute = getRouteApi('/quest');
 const rankingsRoute = getRouteApi('/rankings');
@@ -75,6 +76,7 @@ export function NavLink({ route, ...props }: NavLinkProps) {
    if (route === 'maps') return <mapsRoute.Link {...props} search={mapsSearch} />;
    if (route === 'rankings') return <rankingsRoute.Link {...props} search={rankingsSearch} />;
    if (route === 'rankRequests') return <rankRequestsRoute.Link {...props} search={rankRequestsSearch} />;
+   if (route === 'live') return <liveRoute.Link {...props} />;
    if (route === 'questInstaller') return <questRoute.Link {...props} search={{ step: 1 }} />;
    if (route === 'team') return <teamRoute.Link {...props} />;
 
@@ -83,8 +85,8 @@ export function NavLink({ route, ...props }: NavLinkProps) {
 
 function parseMapsSearch(search: SearchParamsRecord): MapsRouteSearch {
    return {
-      page: 1,
-      verified: search.verified === 'false' ? 'false' : 'true',
+      page: typeof search.page === 'number' && search.page > 1 ? search.page : undefined,
+      verified: search.verified === 'false' ? 'false' : undefined,
       sortBy: isMapSortBy(search.sortBy) ? search.sortBy : undefined,
       sortDirection: isMapSortDirection(search.sortDirection) ? search.sortDirection : undefined,
       status: typeof search.status === 'string' ? search.status : undefined

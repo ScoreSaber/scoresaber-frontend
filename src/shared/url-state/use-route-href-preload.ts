@@ -4,13 +4,14 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useRouter } from '@tanstack/react-router';
 
-import { parseUrlSearch } from '@/shared/url-state/search-serializer';
+import { getRouteHref, preloadRouteLocation, type RouteLocation } from '@/shared/url-state/route-location';
 
 const ROUTE_PRELOAD_DELAY_MS = 30;
 
 export function useRouteHrefPreload() {
    const router = useRouter();
    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+   const getHref = useCallback(<const TLocation>(location: RouteLocation<TLocation>) => getRouteHref(router, location), [router]);
 
    const cancelPreload = useCallback(() => {
       if (timeoutRef.current === null) return;
@@ -20,24 +21,18 @@ export function useRouteHrefPreload() {
    }, []);
 
    const preloadNow = useCallback(
-      (href: string) => {
-         const url = new URL(href, window.location.href);
-
-         void router.preloadRoute({
-            to: url.pathname,
-            search: parseUrlSearch(url.search),
-            hash: url.hash ? url.hash.slice(1) : undefined
-         });
+      <const TLocation>(location: RouteLocation<TLocation>) => {
+         void preloadRouteLocation(router, location);
       },
       [router]
    );
 
    const schedulePreload = useCallback(
-      (href: string) => {
+      <const TLocation>(location: RouteLocation<TLocation>) => {
          cancelPreload();
          timeoutRef.current = setTimeout(() => {
             timeoutRef.current = null;
-            preloadNow(href);
+            preloadNow(location);
          }, ROUTE_PRELOAD_DELAY_MS);
       },
       [cancelPreload, preloadNow]
@@ -45,5 +40,5 @@ export function useRouteHrefPreload() {
 
    useEffect(() => cancelPreload, [cancelPreload]);
 
-   return { schedulePreload, preloadNow, cancelPreload };
+   return { getHref, schedulePreload, preloadNow, cancelPreload };
 }

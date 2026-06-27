@@ -11,16 +11,10 @@ const releaseReplaySlotFn = createServerFn({ method: 'POST' })
    .inputValidator((scoreId: number) => scoreId)
    .handler(({ data }) => actionApiVoid(api.user.userControllerReleaseReplaySlot({ scoreId: data })));
 
-const redeemScoreSaber2BadgeFn = createServerFn({ method: 'POST' }).handler(() => actionApiVoid(api.user.userControllerRedeemScoreSaber2Badge()));
-
 export async function claimReplaySlot(scoreId: number) {
    return claimReplaySlotFn({ data: scoreId });
 }
 
 export async function releaseReplaySlot(scoreId: number) {
    return releaseReplaySlotFn({ data: scoreId });
-}
-
-export async function redeemScoreSaber2Badge() {
-   return redeemScoreSaber2BadgeFn();
 }

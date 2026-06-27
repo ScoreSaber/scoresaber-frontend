@@ -7,7 +7,7 @@ import { getRouteApi } from '@tanstack/react-router';
 import { FaGlobe } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
-import { PlayerAvatar, usePlayerAvatarSrc } from './player-avatar';
+import { PlayerAvatar } from './player-avatar';
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
@@ -107,7 +107,6 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
    const t = useTranslations();
    const { stats, badges } = player;
    const playerSummary = buildPlayerSummary(player);
-   const avatarSrc = usePlayerAvatarSrc(player.avatar, player.id);
 
    const hasDevice = !!(stats?.device?.hmd || stats?.device?.controllerLeft || stats?.device?.controllerRight);
 
@@ -132,12 +131,7 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
    }, [badges]);
 
    const nameEl = (
-      <playerRoute.Link
-         params={{ playerId: player.id }}
-         search={{ sort: 'top', page: 1 }}
-         className="group/hovername min-w-0 text-sm font-semibold"
-         onClick={onClose}
-      >
+      <playerRoute.Link params={{ playerId: player.id }} className="group/hovername min-w-0 text-sm font-semibold" onClick={onClose}>
          <span className={cn(playerSummary.roleClassName, 'block truncate')}>{player.name}</span>
       </playerRoute.Link>
    );
@@ -146,7 +140,7 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
       <div className="relative">
          {/* blurred avatar background */}
          <div className="absolute inset-0 opacity-0 dark:opacity-25">
-            <FadeInImage src={avatarSrc} alt="" fill className={BLURRED_BG_IMAGE_CLASSES} sizes="320px" />
+            <FadeInImage src={player.avatar} alt="" fill className={BLURRED_BG_IMAGE_CLASSES} sizes="320px" />
          </div>
          <div className="from-popover/60 to-popover/60 absolute inset-0 hidden bg-linear-to-r via-transparent dark:block" />
 
@@ -155,7 +149,7 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
             <div className="flex items-center gap-2.5">
                <PlayerAvatar
                   src={player.avatar}
-                  playerId={player.id}
+                  version={player.avatarVersion}
                   alt={player.name}
                   width={44}
                   height={44}
@@ -252,7 +246,6 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
                      {visibleBadgeCount < badges.length && (
                         <playerRoute.Link
                            params={{ playerId: player.id }}
-                           search={{ sort: 'top', page: 1 }}
                            className="text-muted-foreground hover:text-foreground shrink-0 text-xs font-medium transition-colors"
                            onClick={onClose}
                         >

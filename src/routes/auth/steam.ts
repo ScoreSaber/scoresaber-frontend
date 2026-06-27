@@ -14,6 +14,7 @@ const steamLoginSearchSchema = z.object({
 });
 
 export const Route = createFileRoute('/auth/steam')({
+   validateSearch: (search) => steamLoginSearchSchema.parse(search),
    server: {
       handlers: {
          GET: ({ request }) => handleSteamLogin(request, steamLoginSearchSchema.parse(Object.fromEntries(new URL(request.url).searchParams)))

@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
+import { publicCacheControl } from '@/shared/cache-control';
 import { absoluteSiteUrl } from '@/shared/seo/metadata';
 
 export const Route = createFileRoute('/robots.txt')({
@@ -24,7 +25,7 @@ function getRobotsTxt() {
       {
          headers: {
             'Content-Type': 'text/plain; charset=utf-8',
-            'Cache-Control': 'public, max-age=3600'
+            'Cache-Control': publicCacheControl({ maxAge: 3600, sMaxAge: 3600, staleWhileRevalidate: 86400 })
          }
       }
    );

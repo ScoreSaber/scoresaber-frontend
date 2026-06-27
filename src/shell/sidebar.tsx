@@ -13,13 +13,14 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useAuth } from '@/modules/auth';
+import { canUseLivePlatform } from '@/modules/live/lib/permissions';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { useOmniSearch } from '@/modules/search/search-provider';
 import { Image } from '@/shared/components/image';
 import { cn } from '@/shared/format/helpers';
 import { isNavActive, navItems, secondaryItems } from '@/shell/nav-data';
 import { NavLink } from '@/shell/nav-link';
-import { activeClass, disabledClass, inactiveClass, navLinkClass, SidebarNav } from '@/shell/sidebar-nav';
+import { SidebarNav } from '@/shell/sidebar-nav';
 import { useSidebar } from '@/shell/sidebar-provider';
 import { SidebarMoreMenu } from '@/shell/sidebar/sidebar-more-menu';
 
@@ -27,18 +28,22 @@ const homeRoute = getRouteApi('/');
 const loginRoute = getRouteApi('/login');
 const playerRoute = getRouteApi('/u/$playerId');
 
+const navLinkClass =
+   'flex touch-manipulation items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-[color,background-color,scale] duration-150 active:scale-[0.96]';
+const activeClass = 'bg-primary text-primary-foreground dark:bg-accent dark:text-primary';
+const inactiveClass = 'text-muted-foreground hover:bg-accent/50 hover:text-primary';
+const disabledClass = 'cursor-not-allowed text-muted-foreground/45';
+
 function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
    const location = useLocation();
    const pathname = location.pathname;
-   const searchParams = new URLSearchParams(location.searchStr);
    const { user } = useAuth();
    const { setOpen: setSearchOpen } = useOmniSearch();
    const tNav = useTranslations();
    const tSidebar = useTranslations();
 
    const iconLink = cn(navLinkClass, inactiveClass, 'justify-center px-0');
-   const search = searchParams.toString();
-   const currentPath = search ? `${pathname}?${search}` : pathname;
+   const currentPath = location.href;
 
    function navLabel(key: string) {
       return key === 'home'
@@ -57,12 +62,16 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                      ? tNav('nav.wiki')
                      : key === 'feedbackHub'
                        ? tNav('nav.feedbackHub')
-                       : key === 'questInstaller'
-                         ? tNav('nav.questInstaller')
-                         : key === 'team'
-                           ? tNav('nav.team')
-                           : tNav('nav.apiDocs');
+                       : key === 'livePlatform'
+                         ? tNav('nav.livePlatform')
+                         : key === 'questInstaller'
+                           ? tNav('nav.questInstaller')
+                           : key === 'team'
+                             ? tNav('nav.team')
+                             : tNav('nav.apiDocs');
    }
+
+   const visibleNavItems = navItems.filter((item) => item.route !== 'live' || canUseLivePlatform(user?.permissions));
 
    return (
       <>
@@ -85,7 +94,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                </TooltipTrigger>
                <TooltipContent side="right">{tNav('nav.search')}</TooltipContent>
             </Tooltip>
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
                <Tooltip key={item.key}>
                   <TooltipTrigger asChild>
                      {item.disabled ? (
@@ -135,8 +144,15 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
             {user ? (
                <Tooltip>
                   <TooltipTrigger asChild>
-                     <playerRoute.Link params={{ playerId: user.id }} search={{ sort: 'top', page: 1 }} className={iconLink}>
-                        <PlayerAvatar src={user.avatar} playerId={user.id} alt={user.name} width={24} height={24} className="size-6 rounded-md" />
+                     <playerRoute.Link params={{ playerId: user.id }} className={iconLink}>
+                        <PlayerAvatar
+                           src={user.avatar}
+                           version={user.avatarVersion}
+                           alt={user.name}
+                           width={24}
+                           height={24}
+                           className="size-6 rounded-md"
+                        />
                      </playerRoute.Link>
                   </TooltipTrigger>
                   <TooltipContent side="right">{user.name}</TooltipContent>
@@ -145,7 +161,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                <Tooltip>
                   <TooltipTrigger asChild>
                      <Button variant="ghost" asChild className={cn(iconLink, 'cursor-pointer')}>
-                        <loginRoute.Link search={pathname === '/login' ? {} : { redirectTo: currentPath }}>
+                        <loginRoute.Link search={pathname === loginRoute.id ? {} : { redirectTo: currentPath }}>
                            <LogIn data-icon />
                         </loginRoute.Link>
                      </Button>

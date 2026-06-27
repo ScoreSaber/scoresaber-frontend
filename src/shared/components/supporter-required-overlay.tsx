@@ -1,15 +1,13 @@
 'use client';
 
-import { getRouteApi } from '@tanstack/react-router';
+import { linkOptions, useRouter } from '@tanstack/react-router';
 import { ExternalLink } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
 
 import { Icons } from '@/shared/components/icons';
-import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
-
-const patreonAuthRoute = getRouteApi('/auth/patreon');
+import { getRouteHref } from '@/shared/url-state/route-location';
 
 interface SupporterRequiredOverlayProps {
    patreonConnected: boolean;
@@ -17,6 +15,7 @@ interface SupporterRequiredOverlayProps {
 
 export function SupporterRequiredOverlay({ patreonConnected }: SupporterRequiredOverlayProps) {
    const t = useTranslations();
+   const router = useRouter();
 
    return (
       <div className="mx-auto flex max-w-sm flex-col items-center gap-3 text-center">
@@ -38,7 +37,7 @@ export function SupporterRequiredOverlay({ patreonConnected }: SupporterRequired
             </Button>
          ) : (
             <Button asChild className="cursor-pointer">
-               <a href={`${patreonAuthRoute.id}${stringifyUrlSearch({ intent: 'link' })}`}>
+               <a href={getRouteHref(router, linkOptions({ to: '/auth/patreon', search: { intent: 'link' } }))}>
                   <Icons.patreon data-icon="inline-start" className="fill-current" aria-hidden />
                   {t('supporterGate.connect')}
                </a>

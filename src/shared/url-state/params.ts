@@ -25,6 +25,9 @@ export const isPlayerId = z.preprocess((val) => {
    });
 }, z.bigint());
 
+// mirrors backend vanity rules: 3-32 chars, [a-z0-9-], no edge hyphens, must contain a letter
+export const isVanitySlug = z.string().regex(/^(?=.*[a-z])[a-z0-9][a-z0-9-]{1,30}[a-z0-9]$/);
+
 export function toInt64PathParam(value: string | number | bigint): string {
    const result = isPlayerId.safeParse(value);
    if (!result.success) {
@@ -42,11 +45,4 @@ export function validateRequest<Output>(schema: z.ZodType<Output>, request: unkn
       return result.data;
    }
    throw notFound();
-}
-
-export type RequestParams = Record<string, string | string[] | undefined>;
-
-export async function resolveRequestProps(props: { params?: Promise<RequestParams>; searchParams?: Promise<RequestParams> }) {
-   const [params, searchParams] = await Promise.all([props.params ?? Promise.resolve({}), props.searchParams ?? Promise.resolve({})]);
-   return { params, searchParams };
 }

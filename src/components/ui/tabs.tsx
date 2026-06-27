@@ -26,7 +26,7 @@ const tabsListVariants = cva(
          variant: {
             default: 'w-fit justify-center rounded-lg bg-muted p-0.75 group-data-[orientation=horizontal]/tabs:h-9',
             line: 'w-fit justify-center gap-1 rounded-lg bg-transparent p-0.75 group-data-[orientation=horizontal]/tabs:h-9',
-            pill: 'w-full flex-wrap gap-1.5 bg-transparent md:w-auto md:justify-start',
+            pill: 'w-full flex-wrap gap-1.5 bg-transparent',
             sidebar: 'w-full items-stretch gap-1.5 bg-transparent p-0'
          }
       },

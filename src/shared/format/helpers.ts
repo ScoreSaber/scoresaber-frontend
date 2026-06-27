@@ -1,7 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import { getLeaderboardsForGameMode, sortLeaderboardsByDifficulty } from '@/modules/maps/map-leaderboards';
 import type {
    LeaderboardControllerGetLeaderboardByIdResponse,
    LeaderboardControllerGetLeaderboardScoresByIdDataItem,
@@ -45,14 +44,6 @@ export function isLegacyAccuracyScore(timeSet: string | null | undefined) {
 
 export function isSteamPlayer(id: string) {
    return parseInt(id, 10) >= 70000000000000000;
-}
-
-export function filterByGameMode<T extends { rawDifficulty: string }>(leaderboards: T[], gameMode: string) {
-   return getLeaderboardsForGameMode(leaderboards, gameMode);
-}
-
-export function sortByDifficulty<T extends { difficulty: number }>(leaderboards: T[], ascending = true) {
-   return sortLeaderboardsByDifficulty(leaderboards, ascending);
 }
 
 const htmlEntities: Record<string, string> = {

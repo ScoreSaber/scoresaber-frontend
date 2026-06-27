@@ -1,43 +1,20 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { useRouter } from '@tanstack/react-router';
-import { Result } from 'better-result';
 
 import type { UserControllerGetMeResponse } from '@/shared/api/generated/ApiParams';
-import { readStorageValue, removeStorageValue, writeStorageValue } from '@/shared/result/storage';
 
 type AuthContextValue = {
    user: UserControllerGetMeResponse | null;
-   avatarCacheBust: string | null;
-   bustOwnAvatar: () => void;
 };
 
-const ownAvatarCacheBustKey = 'scoresaber-own-avatar-cache-bust';
-const ownAvatarCacheBustTtlMs = 60 * 60 * 1000;
-
-const AuthContext = createContext<AuthContextValue>({ user: null, avatarCacheBust: null, bustOwnAvatar: () => {} });
-
-function readStoredAvatarCacheBust() {
-   if (typeof window === 'undefined') {
-      return null;
-   }
-
-   const raw = Result.unwrapOr(readStorageValue(ownAvatarCacheBustKey), null);
-   const value = raw ? Number(raw) : NaN;
-   if (!Number.isFinite(value) || Date.now() - value > ownAvatarCacheBustTtlMs) {
-      removeStorageValue(ownAvatarCacheBustKey);
-      return null;
-   }
-
-   return raw;
-}
+const AuthContext = createContext<AuthContextValue>({ user: null });
 
 export function AuthProvider({ initialUser, children }: { initialUser: UserControllerGetMeResponse | null; children: React.ReactNode }) {
    const router = useRouter();
    const prevUser = useRef(initialUser);
-   const [avatarCacheBust, setAvatarCacheBust] = useState<string | null>(null);
 
    useEffect(() => {
       if (prevUser.current?.id !== initialUser?.id) {
@@ -46,17 +23,9 @@ export function AuthProvider({ initialUser, children }: { initialUser: UserContr
       prevUser.current = initialUser;
    }, [initialUser, router]);
 
-   useEffect(() => {
-      setAvatarCacheBust(readStoredAvatarCacheBust());
-   }, []);
+   const value = useMemo(() => ({ user: initialUser }), [initialUser]);
 
-   const bustOwnAvatar = useCallback(() => {
-      const value = Date.now().toString();
-      writeStorageValue(ownAvatarCacheBustKey, value);
-      setAvatarCacheBust(value);
-   }, []);
-
-   return <AuthContext value={{ user: initialUser, avatarCacheBust, bustOwnAvatar }}>{children}</AuthContext>;
+   return <AuthContext value={value}>{children}</AuthContext>;
 }
 
 export function useAuth() {

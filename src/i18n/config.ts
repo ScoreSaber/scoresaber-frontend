@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const localeSchema = z.enum([
+const localeSchema = z.enum([
    'en',
    'de-DE',
    'ja-JP',

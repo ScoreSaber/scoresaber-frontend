@@ -13,6 +13,7 @@ const discordLoginSearchSchema = z.object({
 });
 
 export const Route = createFileRoute('/auth/discord')({
+   validateSearch: (search) => discordLoginSearchSchema.parse(search),
    server: {
       handlers: {
          GET: ({ request }) => handleDiscordLogin(discordLoginSearchSchema.parse(Object.fromEntries(new URL(request.url).searchParams)))

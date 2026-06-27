@@ -24,10 +24,6 @@ export function apiResult<T>(promise: Promise<T>): Promise<ApiResult<T>> {
    });
 }
 
-export async function requiredApiData<T>(promise: Promise<ApiResponse<T>>) {
-   return (await requiredApi(promise)).data;
-}
-
 export async function pageApiData<T>(promise: Promise<ApiResponse<T>>): Promise<PageDataResult<T>> {
    const result = await pageApi(promise);
 
@@ -65,23 +61,6 @@ export async function queryApiData<T>(promise: Promise<ApiResponse<T>>) {
    throw result.error;
 }
 
-async function requiredApi<T>(promise: Promise<T>): Promise<T> {
-   const result = await apiResult(promise);
-
-   if (Result.isOk(result)) {
-      return result.value;
-   }
-
-   return matchError(result.error, {
-      ApiNotFoundError: () => {
-         throw notFound();
-      },
-      ApiRequestError: (error) => {
-         throw error;
-      }
-   });
-}
-
 export function pageDataOk<T>(data: T): PageDataResult<T> {
    return { ok: true, data };
 }
@@ -112,7 +91,7 @@ function toApiError(cause: unknown) {
 
    if (status === 404) {
       return new ApiNotFoundError({
-         message: 'resource not found',
+         message: getApiNotFoundMessage(cause),
          cause
       });
    }
@@ -127,6 +106,11 @@ function toApiError(cause: unknown) {
 function getApiStatus(cause: unknown) {
    if (typeof cause !== 'object' || cause == null || !('status' in cause)) return null;
    return typeof cause.status === 'number' ? cause.status : null;
+}
+
+function getApiNotFoundMessage(cause: unknown) {
+   const message = getApiMessage(cause);
+   return message === 'request failed' ? 'resource not found' : message;
 }
 
 function getApiMessage(cause: unknown) {
@@ -152,6 +136,10 @@ function getApiMessage(cause: unknown) {
 
 function getApiRequestMessage(cause: unknown, status: number | null) {
    const message = getApiMessage(cause);
+   if (message !== 'request failed') {
+      return message;
+   }
+
    const details = [getApiUrl(cause), getApiStatusText(cause)].filter(Boolean);
    const statusLabel = status == null ? 'unknown status' : String(status);
 

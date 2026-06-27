@@ -130,7 +130,7 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
             case 'averageAccuracy':
                return t('chartTooltipAcc', { acc: value.toFixed(3) });
             case 'totalSubmittedPlays':
-               return t('chartTooltipPlays', { plays: value.toLocaleString() });
+               return t('chartTooltipPlays', { plays: value.toLocaleString(undefined, { maximumFractionDigits: 1 }) });
          }
       },
       [t]
@@ -227,6 +227,7 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
       return buildPlayerChartDatasets({
          activeKeys,
          sortedHistory,
+         fullHistory,
          chartColors,
          isSingle,
          estimatedFlags,
@@ -236,7 +237,19 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
          nowTime,
          metricLabels
       });
-   }, [activeKeys, sortedHistory, chartColors, isSingle, estimatedFlags, isShowingEstimated, nowValues, chartPadding, nowTime, metricLabels]);
+   }, [
+      activeKeys,
+      sortedHistory,
+      fullHistory,
+      chartColors,
+      isSingle,
+      estimatedFlags,
+      isShowingEstimated,
+      nowValues,
+      chartPadding,
+      nowTime,
+      metricLabels
+   ]);
 
    const scales = useMemo(() => {
       const formatTick = (value: number) => (value === maxTime ? t('chartNow') : formatDaysAgo(t, getDaysAgo(new Date(value), now), isMobile));
@@ -259,11 +272,13 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
       return buildPlayerChartMetricStats({
          activeKeys,
          sortedHistory,
+         fullHistory,
          isShowingEstimated,
          nowValues,
+         nowTime,
          changeLabel: avgPerDayLabel
       });
-   }, [activeKeys, sortedHistory, isShowingEstimated, nowValues, avgPerDayLabel]);
+   }, [activeKeys, sortedHistory, fullHistory, isShowingEstimated, nowValues, nowTime, avgPerDayLabel]);
 
    const rankDataValues = useMemo(() => getRankDataValues(sortedHistory), [sortedHistory]);
 

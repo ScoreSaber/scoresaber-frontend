@@ -25,6 +25,7 @@ import { PlayerFollowButton } from '@/modules/player/operations/member/player-fo
 import { buildPlayerSummary } from '@/modules/player/player-summary';
 import { PlayerAliases } from '@/modules/player/profile/player-aliases';
 import { PlayerBadges } from '@/modules/player/profile/player-badges';
+import { PlayerLivePresenceIndicator } from '@/modules/player/profile/player-live-presence-indicator';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
 import type { PlayerAliasControllerGetAliasesItem, PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
@@ -65,7 +66,7 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                         height={96}
                         alt={player.name}
                         src={player.avatar}
-                        playerId={player.id}
+                        version={player.avatarVersion}
                         priority
                      />
                      {player.banned && (
@@ -73,6 +74,7 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                            <FaBan className="text-destructive/70 size-10" />
                         </div>
                      )}
+                     <PlayerLivePresenceIndicator playerId={player.id} className="absolute bottom-1.5 left-[72%] z-10" />
                   </div>
                   <div className="hidden sm:block">
                      <PlayerFollowButton playerId={player.id} />

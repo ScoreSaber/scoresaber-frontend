@@ -37,7 +37,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
    const [pending, startTransition] = useTransition();
    const tNav = useTranslations();
    const tSidebar = useTranslations();
-   const menuActionClass = 'text-muted-foreground h-8 w-full cursor-pointer justify-start rounded-md px-2.5 text-[13px]';
+   const menuActionClass = 'h-8 w-full cursor-pointer justify-start rounded-md px-2.5 text-[13px]';
 
    useEffect(() => {
       setMounted(true);
@@ -94,7 +94,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
 
                <Separator />
                <div className="flex flex-col gap-1">
-                  <Button asChild variant="ghost" size="sm" className={menuActionClass}>
+                  <Button asChild variant="menu" size="sm" className={menuActionClass}>
                      <a href="https://docs.scoresaber.com" target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
                         <span className="flex min-w-0 items-center gap-2">
                            <Book data-icon />
@@ -103,7 +103,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                         <ExternalLink data-icon className="ml-auto" aria-hidden="true" />
                      </a>
                   </Button>
-                  <Button asChild variant="ghost" size="sm" className={menuActionClass}>
+                  <Button asChild variant="menu" size="sm" className={menuActionClass}>
                      <a href={githubLink.href} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
                         <span className="flex min-w-0 items-center gap-2">
                            <githubLink.Icon data-icon className="fill-current" aria-hidden="true" />
@@ -114,7 +114,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                   </Button>
                   <Popover open={isLegalOpen} onOpenChange={setIsLegalOpen}>
                      <PopoverTrigger asChild>
-                        <Button variant="ghost" size="sm" className={cn(menuActionClass, 'cursor-default')}>
+                        <Button variant="menu" size="sm" className={cn(menuActionClass, 'cursor-default')}>
                            <Scale data-icon />
                            <span className="flex-1 text-left">{tSidebar('sidebar.legal')}</span>
                            <ChevronRight data-icon className="ml-auto" aria-hidden="true" />
@@ -122,7 +122,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                      </PopoverTrigger>
                      <PopoverContent side="right" align="start" collisionPadding={16} className="w-56 p-2">
                         <div className="flex flex-col gap-1">
-                           <Button asChild variant="ghost" size="sm" className={menuActionClass}>
+                           <Button asChild variant="menu" size="sm" className={menuActionClass}>
                               <privacyRoute.Link onClick={closeMenu}>
                                  <span className="flex min-w-0 items-center gap-2">
                                     <Shield data-icon />
@@ -130,7 +130,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                                  </span>
                               </privacyRoute.Link>
                            </Button>
-                           <Button asChild variant="ghost" size="sm" className={menuActionClass}>
+                           <Button asChild variant="menu" size="sm" className={menuActionClass}>
                               <cookiesPolicyRoute.Link onClick={closeMenu}>
                                  <span className="flex min-w-0 items-center gap-2">
                                     <Cookie data-icon />
@@ -138,7 +138,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                                  </span>
                               </cookiesPolicyRoute.Link>
                            </Button>
-                           <Button asChild variant="ghost" size="sm" className={menuActionClass}>
+                           <Button asChild variant="menu" size="sm" className={menuActionClass}>
                               <copyrightRoute.Link onClick={closeMenu}>
                                  <span className="flex min-w-0 items-center gap-2">
                                     <Copyright data-icon />
@@ -156,13 +156,13 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                <>
                   <Separator />
                   <div className="flex flex-col gap-1 p-2">
-                     <Button asChild variant="ghost" size="sm" className={menuActionClass}>
+                     <Button asChild variant="menu" size="sm" className={menuActionClass}>
                         <settingsAccountRoute.Link onClick={() => setOpen(false)}>
                            <Settings data-icon />
                            {tSidebar('sidebar.settings')}
                         </settingsAccountRoute.Link>
                      </Button>
-                     <Button variant="ghost" size="sm" onClick={handleLogout} disabled={pending} className={menuActionClass}>
+                     <Button variant="menu" size="sm" onClick={handleLogout} disabled={pending} className={menuActionClass}>
                         {pending ? <Loader2 data-icon className="animate-spin" /> : <LogOut data-icon />}
                         {tSidebar('sidebar.logOut')}
                      </Button>

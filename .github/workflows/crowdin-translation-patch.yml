@@ -1,0 +1,64 @@
+name: Crowdin Translation Patch
+
+on:
+   workflow_dispatch:
+      inputs:
+         base_ref:
+            description: 'ref to compare from'
+            required: true
+            default: 'origin/l10n/crowdin'
+            type: string
+         head_ref:
+            description: 'ref to upload translations from'
+            required: true
+            default: 'HEAD'
+            type: string
+
+permissions:
+   contents: read
+
+jobs:
+   upload:
+      name: upload changed translations
+      runs-on: ubuntu-latest
+
+      steps:
+         - name: checkout
+           uses: actions/checkout@v5
+           with:
+              fetch-depth: 0
+
+         - name: setup bun
+           uses: oven-sh/setup-bun@v2
+           with:
+              bun-version: 1.3.13
+
+         - name: fetch refs
+           run: git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune
+
+         - name: prepare changed translations
+           id: patch
+           run: >
+              bun scripts/prepare-crowdin-translation-patch.ts
+              --base "${{ inputs.base_ref }}"
+              --head "${{ inputs.head_ref }}"
+              --out .crowdin-translation-patch
+
+         - name: upload changed translations to Crowdin
+           if: steps.patch.outputs.has_changes == 'true'
+           uses: crowdin/github-action@v2
+           with:
+              config: .crowdin-translation-patch/crowdin.yml
+              upload_sources: false
+              upload_translations: true
+              download_translations: false
+              auto_approve_imported: true
+           env:
+              CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+              CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+         - name: summarize
+           run: >
+              echo "Prepared ${{ steps.patch.outputs.changed_strings }}
+              changed strings across ${{ steps.patch.outputs.changed_files }}
+              translation files."

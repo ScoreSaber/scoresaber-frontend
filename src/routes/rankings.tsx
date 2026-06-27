@@ -1,8 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { getCookie } from '@tanstack/react-start/server';
 import { z } from 'zod';
 
+import { readAuthCookie } from '@/modules/auth/actions/session.server';
+import { versionedAvatarUrl } from '@/modules/player/shared/player-avatar';
 import { RankingsFilters } from '@/modules/rankings/rankings-filters';
 import { RankingsTable } from '@/modules/rankings/rankings-table';
 import {
@@ -10,17 +11,17 @@ import {
    PLAYER_CONTROLLER_GET_PLAYERS_SORT,
    PLAYER_CONTROLLER_GET_PLAYERS_SORT_DIRECTION
 } from '@/shared/api/generated/ApiParams';
-import { api } from '@/shared/api/server-api';
+import { api, publicApi } from '@/shared/api/server-api';
 import { PageError } from '@/shared/components/error/page-error';
 import { PaginationArrows } from '@/shared/components/pagination';
 import { countryRegionSearchSchema, formatCountryRegionParam } from '@/shared/country-region';
 import { isSteamPlayer } from '@/shared/format/helpers';
-import { pageApiData } from '@/shared/result/api';
+import { optionalApiData, pageApiData } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankingFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams, readPersistedSearchStorage } from '@/shared/url-state/persisted-search';
-import { normalizeSearchRecord, stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
@@ -32,6 +33,7 @@ const rankingsSearchSchema = z.object({
    sortDirection: z.enum(PLAYER_CONTROLLER_GET_PLAYERS_SORT_DIRECTION).optional(),
    pivot: z.enum(PLAYER_CONTROLLER_GET_PLAYERS_PIVOT).optional(),
    includeInactive: z.enum(['true', 'false']).optional(),
+   live: z.enum(['true', 'false']).optional(),
    highlight: z.string().optional()
 });
 
@@ -45,29 +47,41 @@ type RankingsRouteInput = {
 const getRankingsPageData = createServerFn({ method: 'GET' })
    .inputValidator((data: RankingsRouteInput) => data)
    .handler(async ({ data }) => {
-      const token = getCookie('token');
+      const token = readAuthCookie();
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
-      const effectiveSearchParams = await applyPersistedSearchParams<RankingsSearchParams>({
-         searchParams: rawSearchParams,
-         parseSearch: parseRankingsSearch,
-         storageKey: rankingFilterPreferences.storageKey,
-         persistedKeys: token && token !== 'null' ? rankingFilterPreferences.authPersistedKeys : rankingFilterPreferences.persistedKeys
-      });
+      const [effectiveSearchParams, persistedStorage] = await Promise.all([
+         applyPersistedSearchParams<RankingsSearchParams>({
+            searchParams: rawSearchParams,
+            parseSearch: parseRankingsSearch,
+            storageKey: rankingFilterPreferences.storageKey,
+            persistedKeys: token ? rankingFilterPreferences.authPersistedKeys : rankingFilterPreferences.persistedKeys
+         }),
+         readPersistedSearchStorage(rankingFilterPreferences.storageKey)
+      ]);
       const searchParams = rankingsSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
-      const persistedStorage = await readPersistedSearchStorage(rankingFilterPreferences.storageKey);
-      const result = await pageApiData(
-         api.player.playerControllerGetPlayers({
-            page: searchParams.page,
-            search: searchParams.search,
-            countries: formatCountryRegionParam(searchParams.countries),
-            sort: searchParams.sort,
-            sortDirection: searchParams.sortDirection,
-            pivot: searchParams.pivot,
-            includeInactive: searchParams.includeInactive ?? 'false'
-         })
-      );
+      const apiClient = searchParams.pivot ? api : publicApi;
+      const playerQuery = {
+         page: searchParams.page,
+         search: searchParams.search,
+         countries: formatCountryRegionParam(searchParams.countries),
+         sort: searchParams.sort,
+         sortDirection: searchParams.sortDirection,
+         pivot: searchParams.pivot,
+         includeInactive: searchParams.includeInactive ?? 'false',
+         live: searchParams.live
+      };
+      const liveCountQuery = {
+         includeInactive: searchParams.includeInactive ?? 'false',
+         live: 'true'
+      };
+      const liveCountPromise =
+         searchParams.live === 'true'
+            ? Promise.resolve({ count: 1 })
+            : optionalApiData(publicApi.player.playerControllerGetPlayerCount(liveCountQuery));
+      const [result, liveCount] = await Promise.all([pageApiData(apiClient.player.playerControllerGetPlayers(playerQuery)), liveCountPromise]);
+      const liveAvailable = searchParams.live === 'true' || (liveCount?.count ?? 0) > 0;
 
-      return { result, searchParams, persistedStorage };
+      return { result, searchParams, persistedStorage, liveAvailable };
    });
 
 export const Route = createFileRoute('/rankings')({
@@ -85,15 +99,15 @@ export const Route = createFileRoute('/rankings')({
 
 function RankingsRoute() {
    const data = Route.useLoaderData();
-   const { result, searchParams, persistedStorage } = data;
+   const { result, searchParams, persistedStorage, liveAvailable } = data;
 
    if (!result.ok) return <PageError status={result.status} />;
 
    const response = result.data;
    const players = response.data;
    const meta = response.metadata;
-   const bgCandidates = players.filter((p) => isSteamPlayer(p.id)).map((p) => p.avatar);
-   const getPageHref = (page: number) => buildRankingsHref(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
+   const bgCandidates = players.filter((p) => isSteamPlayer(p.id)).map((p) => versionedAvatarUrl(p.avatar, p.avatarVersion));
+   const getPageLocation = (page: number) => buildRankingsLocation(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
 
    return (
       <div className="relative flex-1 overflow-hidden">
@@ -104,8 +118,10 @@ function RankingsRoute() {
                currentPage={searchParams.page}
                totalPages={meta.totalPages}
                includeInactive={searchParams.includeInactive === 'true'}
+               live={searchParams.live === 'true'}
+               showLiveFilter={liveAvailable}
                search={searchParams}
-               buildHref={buildRankingsHref}
+               buildLocation={buildRankingsLocation}
                parseSearch={parseRankingsSearch}
                initialFiltersOpen={persistedStorage.filtersOpen === 'true'}
             />
@@ -119,19 +135,24 @@ function RankingsRoute() {
                currentPivot={searchParams.pivot}
                highlight={searchParams.highlight}
                search={searchParams}
-               buildHref={buildRankingsHref}
+               buildLocation={buildRankingsLocation}
             />
 
             {meta.totalPages > 1 && searchParams.pivot !== 'player' && (
-               <PaginationArrows currentPage={searchParams.page} totalPages={meta.totalPages} getPageHref={getPageHref} />
+               <PaginationArrows currentPage={searchParams.page} totalPages={meta.totalPages} getPageLocation={getPageLocation} />
             )}
          </div>
       </div>
    );
 }
 
-function buildRankingsHref(search?: RankingsSearchParams) {
-   return `/rankings${stringifyUrlSearch(search ?? {})}`;
+function buildRankingsLocation(search?: RankingsSearchParams) {
+   return linkOptions({ to: '/rankings', search: normalizeRankingsLocationSearch(search) });
+}
+
+function normalizeRankingsLocationSearch(search?: RankingsSearchParams) {
+   const { page = 1, ...rest } = search ?? {};
+   return { page, ...rest };
 }
 
 function parseRankingsSearch(search: Record<string, unknown>) {

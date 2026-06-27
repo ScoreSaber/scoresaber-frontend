@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Clock, Hash, Info, Star, Target, X } from 'lucide-react';
+import { Check, Clock, Info, Star, Target, X } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -93,7 +93,7 @@ export function ScoreStats({
          <div className="flex items-center gap-2">
             <Tooltip>
                <TooltipTrigger asChild>
-                  <Stat icon={Hash} className="cursor-default">
+                  <Stat className="cursor-default">
                      <span className="inline-flex items-baseline gap-1.5">
                         {formatNumber(score.modifiedScore)}
                         {score.mods.length > 0 && <span className="text-muted-foreground text-[10px] font-semibold">{score.mods.join(', ')}</span>}

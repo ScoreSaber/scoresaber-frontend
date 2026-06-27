@@ -179,7 +179,7 @@ function WizardFooter() {
             <a
                href="https://patreon.com/scoresaber"
                target="_blank"
-               rel="external"
+               rel="external noreferrer"
                className="text-foreground hover:text-primary inline-flex items-center gap-2 font-medium transition-colors"
             >
                <Icons.patreon className="size-3.5 fill-current" aria-hidden />
@@ -188,7 +188,7 @@ function WizardFooter() {
             <a
                href="https://github.com/ScoreSaber/quest-mod"
                target="_blank"
-               rel="external"
+               rel="external noreferrer"
                className="text-foreground hover:text-primary inline-flex items-center gap-2 font-medium transition-colors"
             >
                <Icons.github className="size-3.5 fill-current" aria-hidden />

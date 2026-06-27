@@ -1,6 +1,6 @@
 'use client';
 
-import { getRouteApi } from '@tanstack/react-router';
+import { linkOptions, useRouter } from '@tanstack/react-router';
 import { ExternalLink } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
@@ -10,9 +10,7 @@ import { useAuth } from '@/modules/auth';
 import { ConditionalOverlay } from '@/shared/components/conditional-overlay';
 import { Icons } from '@/shared/components/icons';
 import Permissions from '@/shared/permissions';
-import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
-
-const patreonAuthRoute = getRouteApi('/auth/patreon');
+import { getRouteHref } from '@/shared/url-state/route-location';
 
 interface PerksAccessGateProps {
    children: React.ReactNode;
@@ -32,9 +30,9 @@ export function PerksAccessGate({ children, patreonConnected }: PerksAccessGateP
          shouldShow={() => !hasPerksAccess}
          component={PerksRequiredOverlay}
          componentProps={{ patreonConnected }}
-         className="min-h-112 overflow-visible rounded-lg"
+         className="min-h-112 overflow-visible rounded"
          contentClassName="min-h-[28rem]"
-         overlayClassName="min-h-[28rem] rounded-lg"
+         overlayClassName="min-h-[28rem]"
       >
          {children}
       </ConditionalOverlay>
@@ -43,6 +41,7 @@ export function PerksAccessGate({ children, patreonConnected }: PerksAccessGateP
 
 function PerksRequiredOverlay({ patreonConnected }: { patreonConnected: boolean }) {
    const t = useTranslations();
+   const router = useRouter();
 
    return (
       <div className="mx-auto flex max-w-sm flex-col items-center gap-3 text-center">
@@ -64,7 +63,7 @@ function PerksRequiredOverlay({ patreonConnected }: { patreonConnected: boolean 
             </Button>
          ) : (
             <Button asChild className="cursor-pointer">
-               <a href={`${patreonAuthRoute.id}${stringifyUrlSearch({ intent: 'link' })}`}>
+               <a href={getRouteHref(router, linkOptions({ to: '/auth/patreon', search: { intent: 'link' } }))}>
                   <Icons.patreon data-icon="inline-start" className="fill-current" aria-hidden />
                   {t('settings.perks.gate.connect')}
                </a>

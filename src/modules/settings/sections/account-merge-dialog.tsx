@@ -4,7 +4,7 @@ import type { SubmitEvent } from 'react';
 import { useEffect, useState } from 'react';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getRouteApi, useRouter } from '@tanstack/react-router';
+import { getRouteApi, linkOptions, useRouter } from '@tanstack/react-router';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { ArrowRight, CircleCheck, Loader2, Mail, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { toast } from 'sonner';
@@ -29,10 +29,9 @@ import {
 import type { UserControllerGetAccountMergeChallengeResponse, UserControllerGetConnectionsItem } from '@/shared/api/generated/ApiParams';
 import { Icons } from '@/shared/components/icons';
 import { unwrapAction } from '@/shared/result/action';
-import { stringifyUrlSearch } from '@/shared/url-state/search-serializer';
+import { getRouteHref } from '@/shared/url-state/route-location';
 
 const settingsConnectionsRoute = getRouteApi('/settings/connections');
-const steamAuthRoute = getRouteApi('/auth/steam');
 
 interface AccountMergeDialogProps {
    open: boolean;
@@ -56,6 +55,7 @@ type Feedback = FeedbackMessage | null;
 
 export function AccountMergeDialog({ open, onOpenChange, proofProvider, initialChallengeId, steamFailed, onMerged }: AccountMergeDialogProps) {
    const t = useTranslations();
+   const router = useRouter();
    const [mergeChallenge, setMergeChallenge] = useState<MergeChallenge | null>(null);
    const [feedback, setFeedback] = useState<Feedback>(null);
 
@@ -147,7 +147,12 @@ export function AccountMergeDialog({ open, onOpenChange, proofProvider, initialC
                   <OculusProofForm onChallenge={setMergeChallenge} onFeedback={setFeedback} />
                ) : proofProvider === 'STEAM' ? (
                   <Button asChild className="w-fit cursor-pointer">
-                     <a href={`${steamAuthRoute.id}${stringifyUrlSearch({ intent: 'merge', redirectTo: settingsConnectionsRoute.id })}`}>
+                     <a
+                        href={getRouteHref(
+                           router,
+                           linkOptions({ to: '/auth/steam', search: { intent: 'merge', redirectTo: settingsConnectionsRoute.id } })
+                        )}
+                     >
                         <ShieldCheck data-icon="inline-start" />
                         {t('settings.connections.merge.proveSteam')}
                      </a>
@@ -345,7 +350,7 @@ function MergePreview({
                         queryClient.clear();
                         toast.success(t('settings.connections.merge.mergeConfirmed', { publicPlayerId: result.publicPlayerId }));
                         onConfirmed();
-                        void router.navigate({ to: settingsConnectionsRoute.id, replace: true });
+                        void router.navigate({ to: '/settings/connections', replace: true });
                         void router.invalidate();
                      },
                      onError: (error) =>

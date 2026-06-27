@@ -6,6 +6,7 @@ import { FaGlobeAmericas } from 'react-icons/fa';
 
 import { Separator } from '@/components/ui/separator';
 
+import { PlayerListLivePresenceIndicator, PlayerLivePresenceProvider } from '@/modules/player/profile/player-live-presence-indicator';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
 import { ScoreCardActions } from '@/modules/scores/score-card-actions';
@@ -34,18 +35,20 @@ export function LeaderboardScoresTable({ scores, leaderboard, highlight, scopedP
    const isScoped = scopedPage != null && scopedPageSize != null;
 
    return (
-      <div className="flex flex-col gap-1.5">
-         {scores.map((score, index) => (
-            <LeaderboardScoreCard
-               key={score.id}
-               score={score}
-               isRanked={isRanked}
-               isHighlighted={highlight === score.id}
-               showAccuracy={leaderboard.maxScore > 0}
-               relativeRank={isScoped ? (scopedPage - 1) * scopedPageSize + index + 1 : undefined}
-            />
-         ))}
-      </div>
+      <PlayerLivePresenceProvider enabled={scores.length > 0}>
+         <div className="flex flex-col gap-1.5">
+            {scores.map((score, index) => (
+               <LeaderboardScoreCard
+                  key={score.id}
+                  score={score}
+                  isRanked={isRanked}
+                  isHighlighted={highlight === score.id}
+                  showAccuracy={leaderboard.maxScore > 0}
+                  relativeRank={isScoped ? (scopedPage - 1) * scopedPageSize + index + 1 : undefined}
+               />
+            ))}
+         </div>
+      </PlayerLivePresenceProvider>
    );
 }
 
@@ -102,14 +105,17 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
                      {rankDisplay}
                   </span>
                   <div className="flex items-center gap-2">
-                     <PlayerAvatar
-                        src={score.player.avatar}
-                        playerId={score.player.id}
-                        alt={score.player.name}
-                        width={28}
-                        height={28}
-                        className="shrink-0 rounded-full"
-                     />
+                     <span className="relative inline-flex shrink-0">
+                        <PlayerAvatar
+                           src={score.player.avatar}
+                           version={score.player.avatarVersion}
+                           alt={score.player.name}
+                           width={28}
+                           height={28}
+                           className="shrink-0 rounded-full"
+                        />
+                        <PlayerListLivePresenceIndicator playerId={score.player.id} className="absolute -bottom-0.5 left-[70%] z-10" />
+                     </span>
                      <PlayerLink player={score.player} />
                   </div>
                   {deviceIcons ?? <span />}
@@ -144,14 +150,17 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
                         />
                      </span>
                   </div>
-                  <PlayerAvatar
-                     src={score.player.avatar}
-                     playerId={score.player.id}
-                     alt={score.player.name}
-                     width={32}
-                     height={32}
-                     className="shrink-0 rounded-full"
-                  />
+                  <span className="relative inline-flex shrink-0">
+                     <PlayerAvatar
+                        src={score.player.avatar}
+                        version={score.player.avatarVersion}
+                        alt={score.player.name}
+                        width={32}
+                        height={32}
+                        className="shrink-0 rounded-full"
+                     />
+                     <PlayerListLivePresenceIndicator playerId={score.player.id} className="absolute -bottom-0.5 left-[70%] z-10" />
+                  </span>
                   <div className="min-w-0 flex-1">
                      <PlayerLink player={score.player} />
                      {deviceIcons && <div className="pt-0.5">{deviceIcons}</div>}
