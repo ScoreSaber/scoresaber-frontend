@@ -19,8 +19,9 @@ import { FadeInImage } from '@/shared/components/fade-in-image';
 import { cn } from '@/shared/format/helpers';
 import { readStorageValue, writeStorageValue } from '@/shared/result/storage';
 
+type CountdownPartKey = 'days' | 'hours' | 'minutes' | 'seconds';
 type CountdownPart = {
-   key: 'days' | 'hours' | 'minutes' | 'seconds';
+   key: CountdownPartKey;
    value: number;
 };
 
@@ -61,18 +62,8 @@ export function BswcPromoSection({ promo, previewLive = false }: { promo: HomeBs
             {featuredMatch ? (
                <div className="flex flex-col">
                   <Separator variant="fade" className="from-white/20 via-white/20" />
-                  <div
-                     className={
-                        live ? 'grid justify-items-center gap-3 py-2' : 'grid gap-3 py-2 md:grid-cols-[minmax(0,1fr)_auto_9rem] md:items-center'
-                     }
-                  >
-                     <div
-                        className={
-                           live
-                              ? 'flex min-w-0 flex-col items-center gap-2 text-center'
-                              : 'flex min-w-0 flex-col items-center gap-2 text-center md:items-start md:text-left'
-                        }
-                     >
+                  <div className={cn('grid gap-3 py-2', live ? 'justify-items-center' : 'md:grid-cols-[minmax(0,1fr)_auto_9rem] md:items-center')}>
+                     <div className={cn('flex min-w-0 flex-col items-center gap-2 text-center', !live && 'md:items-start md:text-left')}>
                         <div className="text-primary text-xs font-semibold tracking-[0.12em] uppercase">
                            {live ? t('bswc.liveNow') : t('bswc.nextUp')}
                         </div>
@@ -160,12 +151,7 @@ export function BswcLiveNotice({ promo, previewLive = false }: { promo: HomeBswc
                <BswcMatchupLine match={featuredMatch} />
             </div>
 
-            <Button
-               asChild
-               size="sm"
-               variant="menu-filled"
-               className="w-full cursor-pointer border-[#9146ff]/35 bg-[#9146ff]/10 text-[#bf94ff] hover:border-[#9146ff]/55 hover:bg-[#9146ff]/15 hover:text-[#d8c2ff]"
-            >
+            <Button asChild size="sm" variant="twitch" className="w-full">
                <a href={promo.twitchHref} target="_blank" rel="noreferrer">
                   <FaTwitch data-icon />
                   {t('bswc.liveNotice.watch')}
@@ -256,12 +242,7 @@ function BswcActions({ promo, live }: { promo: HomeBswcPromo; live: boolean }) {
                <ExternalLink data-icon />
             </a>
          </Button>
-         <Button
-            asChild
-            size="sm"
-            variant="menu-filled"
-            className="cursor-pointer border-[#9146ff]/35 bg-[#9146ff]/10 text-[#bf94ff] hover:border-[#9146ff]/55 hover:bg-[#9146ff]/15 hover:text-[#d8c2ff]"
-         >
+         <Button asChild size="sm" variant="twitch">
             <a href={promo.twitchHref} target="_blank" rel="noreferrer">
                <FaTwitch data-icon />
                {live ? t('bswc.twitchAction') : t('bswc.twitchFollowAction')}
@@ -319,37 +300,49 @@ function CountdownLine({ parts }: { parts: CountdownPart[] }) {
    const t = useTranslations('home');
    const locale = useLocale();
    const displayParts = parts[0].value === 0 ? parts.slice(1) : parts;
-   const formattedDuration = formatCountdownDuration(locale, displayParts);
+   const formattedParts = formatCountdownDurationParts(locale, displayParts);
 
    return (
-      <div className="text-primary flex flex-wrap items-baseline gap-x-1.5 gap-y-1 font-mono text-xs font-semibold" suppressHydrationWarning>
-         {formattedDuration ?? (
-            <NumberFlowGroup>
-               <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
-                  {displayParts.map((part) => (
-                     <span key={part.key} className="inline-flex items-baseline gap-0.5">
-                        <NumberFlow
-                           value={part.value}
-                           trend={-1}
-                           format={{ minimumIntegerDigits: 2 }}
-                           digits={part.key === 'minutes' || part.key === 'seconds' ? { 1: { max: 5 } } : undefined}
-                           className="tabular-nums"
-                        />
-                        <span className="font-sans">{t(`bswc.countdown.${part.key}`)}</span>
-                     </span>
-                  ))}
-               </span>
-            </NumberFlowGroup>
-         )}
+      <div
+         className="text-primary flex flex-wrap items-baseline gap-x-1.5 gap-y-1 font-mono text-xs font-semibold [--number-flow-mask-height:0em]"
+         suppressHydrationWarning
+      >
+         <NumberFlowGroup>
+            <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
+               {displayParts.map((part) => (
+                  <span key={part.key} className="inline-flex items-baseline gap-0.5">
+                     <NumberFlow
+                        value={part.value}
+                        locales={locale}
+                        trend={-1}
+                        format={{ minimumIntegerDigits: 2 }}
+                        digits={part.key === 'minutes' || part.key === 'seconds' ? { 1: { max: 5 } } : undefined}
+                        className="tabular-nums"
+                     />
+                     <span className="font-sans">{getCountdownUnitLabel(formattedParts, part.key) ?? t(`bswc.countdown.${part.key}`)}</span>
+                  </span>
+               ))}
+            </span>
+         </NumberFlowGroup>
       </div>
    );
 }
 
-function formatCountdownDuration(locale: string, parts: CountdownPart[]) {
+function formatCountdownDurationParts(locale: string, parts: CountdownPart[]) {
    const DurationFormat = getDurationFormat();
    if (!DurationFormat) return null;
 
-   return new DurationFormat(locale, { style: 'narrow' }).format(Object.fromEntries(parts.map((part) => [part.key, part.value])));
+   return new DurationFormat(locale, getDurationFormatOptions(parts)).formatToParts(Object.fromEntries(parts.map(({ key, value }) => [key, value])));
+}
+
+function getDurationFormatOptions(parts: CountdownPart[]) {
+   const options: DurationFormatOptions = { style: 'narrow' };
+   for (const { key } of parts) options[DURATION_DISPLAY_OPTIONS[key]] = 'always';
+   return options;
+}
+
+function getCountdownUnitLabel(parts: DurationFormatPart[] | null, key: CountdownPartKey) {
+   return parts?.find((part) => part.type === 'unit' && part.unit && DURATION_UNIT_KEYS[part.unit] === key)?.value;
 }
 
 function getDurationFormat() {
@@ -357,26 +350,42 @@ function getDurationFormat() {
    return intlWithDuration.DurationFormat ?? null;
 }
 
+const DURATION_UNIT_KEYS = {
+   day: 'days',
+   hour: 'hours',
+   minute: 'minutes',
+   second: 'seconds'
+} satisfies Record<string, CountdownPartKey>;
+
+const DURATION_DISPLAY_OPTIONS: Record<CountdownPartKey, DurationDisplayOption> = {
+   days: 'daysDisplay',
+   hours: 'hoursDisplay',
+   minutes: 'minutesDisplay',
+   seconds: 'secondsDisplay'
+};
+
 type DurationFormatConstructor = new (
    locale: string,
-   options: { style: 'long' | 'short' | 'narrow' }
+   options: DurationFormatOptions
 ) => {
-   format(duration: Partial<Record<CountdownPart['key'], number>>): string;
+   formatToParts(duration: Partial<Record<CountdownPartKey, number>>): DurationFormatPart[];
 };
+
+type DurationDisplayOption = `${CountdownPartKey}Display`;
+type DurationFormatOptions = { style: 'long' | 'short' | 'narrow' } & Partial<Record<DurationDisplayOption, 'auto' | 'always'>>;
+
+type DurationFormatUnit = keyof typeof DURATION_UNIT_KEYS;
+type DurationFormatPart = { type: string; value: string; unit?: DurationFormatUnit };
 
 function getCountdownParts(startsAt: string | undefined, now: number): CountdownPart[] {
    const startsAtMs = startsAt ? Date.parse(startsAt) : 0;
    const remaining = Math.max(0, Number.isFinite(startsAtMs) ? startsAtMs - now : 0);
-   const days = Math.floor(remaining / DAY_MS);
-   const hours = Math.floor((remaining % DAY_MS) / HOUR_MS);
-   const minutes = Math.floor((remaining % HOUR_MS) / MINUTE_MS);
-   const seconds = Math.floor((remaining % MINUTE_MS) / SECOND_MS);
 
    return [
-      { key: 'days', value: days },
-      { key: 'hours', value: hours },
-      { key: 'minutes', value: minutes },
-      { key: 'seconds', value: seconds }
+      { key: 'days', value: Math.floor(remaining / DAY_MS) },
+      { key: 'hours', value: Math.floor((remaining % DAY_MS) / HOUR_MS) },
+      { key: 'minutes', value: Math.floor((remaining % HOUR_MS) / MINUTE_MS) },
+      { key: 'seconds', value: Math.floor((remaining % MINUTE_MS) / SECOND_MS) }
    ];
 }
 
