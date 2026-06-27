@@ -138,6 +138,29 @@
          "watchAction": "",
          "reweightsAction": ""
       },
+      "bswc": {
+         "description": "",
+         "liveNow": "",
+         "nextUp": "",
+         "versus": "",
+         "noMatch": "",
+         "infoAction": "",
+         "scheduleAction": "",
+         "twitchAction": "",
+         "twitchFollowAction": "",
+         "twitchEmbedTitle": "",
+         "poweredBy": "",
+         "liveNotice": {
+            "watch": "",
+            "dismiss": ""
+         },
+         "countdown": {
+            "days": "",
+            "hours": "",
+            "minutes": "",
+            "seconds": ""
+         }
+      },
       "install": {
          "title": "",
          "description": "",
@@ -238,7 +261,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": "Meta로 로그인"
+      "metaProviderTooltip": ""
    },
    "sidebar": {
       "activeRealm": "활성 렐름",
@@ -263,7 +286,7 @@
    },
    "common": {
       "language": "언어",
-      "scoreSaber": "ScoreSaber",
+      "scoreSaber": "",
       "cancel": "취소",
       "back": "뒤로가기",
       "confirm": "확인",
@@ -277,12 +300,12 @@
       "goHome": "홈으로",
       "searchPlaceholder": "검색...",
       "clearSearch": "검색 초기화",
-      "openInNewTab": "새 탭에서 열기",
+      "openInNewTab": "",
       "filters": "필터",
       "hideFilters": "필터 숨기기",
       "showFilters": "필터 표시",
-      "privacyPolicy": "개인정보 처리방침",
-      "cookiesPolicy": "쿠키 정책",
+      "privacyPolicy": "",
+      "cookiesPolicy": "",
       "global": "전체",
       "friends": "친구",
       "aroundMe": "내 주변",
@@ -298,10 +321,10 @@
       "mappedBy": "mapped by",
       "unknownDate": "알 수 없는 날짜",
       "justNow": "방금",
-      "performancePoints": "퍼포먼스 포인트",
-      "pp": "PP",
-      "accuracy": "정확도",
-      "misses": "미스",
+      "performancePoints": "Performance Points",
+      "pp": "",
+      "accuracy": "",
+      "misses": "",
       "totalPlays": "총 플레이 수",
       "actions": "Actions",
       "rankRequestActions": "랭크 요청 작업",
@@ -312,10 +335,10 @@
       "copy": "",
       "copyFailed": "",
       "providers": {
-         "STEAM": "Steam",
-         "OCULUS": "Meta",
-         "PATREON": "Patreon",
-         "DISCORD": "Discord"
+         "STEAM": "",
+         "OCULUS": "",
+         "PATREON": "",
+         "DISCORD": ""
       }
    },
    "error": {
@@ -1226,7 +1249,7 @@
          "necessaryTitle": "필수 쿠키",
          "necessaryDescription": "로그인, 보안, 요청 제한, 언어, 테마, 저장된 필터 및 핵심 사이트 기능에 필요합니다. 이 항목은 항상 활성화되어 있습니다."
       },
-      "lastUpdated": "마지막 업데이트: {date}"
+      "lastUpdated": ""
    },
    "oauth": {
       "consent": {

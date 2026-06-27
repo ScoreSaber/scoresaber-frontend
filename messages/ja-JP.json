@@ -138,6 +138,29 @@
          "watchAction": "",
          "reweightsAction": ""
       },
+      "bswc": {
+         "description": "",
+         "liveNow": "",
+         "nextUp": "",
+         "versus": "",
+         "noMatch": "",
+         "infoAction": "",
+         "scheduleAction": "",
+         "twitchAction": "",
+         "twitchFollowAction": "",
+         "twitchEmbedTitle": "",
+         "poweredBy": "",
+         "liveNotice": {
+            "watch": "",
+            "dismiss": ""
+         },
+         "countdown": {
+            "days": "",
+            "hours": "",
+            "minutes": "",
+            "seconds": ""
+         }
+      },
       "install": {
          "title": "",
          "description": "",
@@ -238,7 +261,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": "Metaでサインイン"
+      "metaProviderTooltip": ""
    },
    "sidebar": {
       "activeRealm": "アクティブレルム",
@@ -263,7 +286,7 @@
    },
    "common": {
       "language": "言語",
-      "scoreSaber": "ScoreSaber",
+      "scoreSaber": "",
       "cancel": "キャンセル",
       "back": "戻る",
       "confirm": "確認",
@@ -277,12 +300,12 @@
       "goHome": "ホームに戻る",
       "searchPlaceholder": "検索…",
       "clearSearch": "検索をクリア",
-      "openInNewTab": "新しいタブでひらく",
+      "openInNewTab": "",
       "filters": "絞り込み",
       "hideFilters": "フィルターを非表示",
       "showFilters": "フィルターを表示",
-      "privacyPolicy": "プライバシーポリシー",
-      "cookiesPolicy": "Cookieポリシー",
+      "privacyPolicy": "",
+      "cookiesPolicy": "",
       "global": "グローバル",
       "friends": "フレンド",
       "aroundMe": "自分の周囲",
@@ -299,9 +322,9 @@
       "unknownDate": "日付不明",
       "justNow": "たった今",
       "performancePoints": "パフォーマンスポイント",
-      "pp": "PP",
-      "accuracy": "精度",
-      "misses": "ミス",
+      "pp": "",
+      "accuracy": "",
+      "misses": "",
       "totalPlays": "総プレイ回数",
       "actions": "操作",
       "rankRequestActions": "ランク申請の操作",
@@ -312,10 +335,10 @@
       "copy": "コピー",
       "copyFailed": "",
       "providers": {
-         "STEAM": "Steam",
-         "OCULUS": "Meta",
-         "PATREON": "Patreon",
-         "DISCORD": "Discord"
+         "STEAM": "",
+         "OCULUS": "",
+         "PATREON": "",
+         "DISCORD": ""
       }
    },
    "error": {
@@ -1226,7 +1249,7 @@
          "necessaryTitle": "",
          "necessaryDescription": ""
       },
-      "lastUpdated": "Last updated: {date}"
+      "lastUpdated": ""
    },
    "oauth": {
       "consent": {

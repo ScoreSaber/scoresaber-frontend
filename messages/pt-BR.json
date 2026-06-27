@@ -138,6 +138,29 @@
          "watchAction": "",
          "reweightsAction": ""
       },
+      "bswc": {
+         "description": "",
+         "liveNow": "",
+         "nextUp": "",
+         "versus": "",
+         "noMatch": "",
+         "infoAction": "",
+         "scheduleAction": "",
+         "twitchAction": "",
+         "twitchFollowAction": "",
+         "twitchEmbedTitle": "",
+         "poweredBy": "",
+         "liveNotice": {
+            "watch": "",
+            "dismiss": ""
+         },
+         "countdown": {
+            "days": "",
+            "hours": "",
+            "minutes": "",
+            "seconds": ""
+         }
+      },
       "install": {
          "title": "",
          "description": "",
@@ -238,7 +261,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": "Entrar com Meta"
+      "metaProviderTooltip": ""
    },
    "sidebar": {
       "activeRealm": "Realm ativo",
@@ -263,7 +286,7 @@
    },
    "common": {
       "language": "Idioma",
-      "scoreSaber": "ScoreSaber",
+      "scoreSaber": "",
       "cancel": "Cancelar",
       "back": "Voltar",
       "confirm": "Confirmar",
@@ -277,12 +300,12 @@
       "goHome": "Ir para a página inicial",
       "searchPlaceholder": "Pesquisar...",
       "clearSearch": "Limpar pesquisa",
-      "openInNewTab": "Abrir em uma nova aba",
+      "openInNewTab": "",
       "filters": "Filtros",
       "hideFilters": "Ocultar Filtros",
       "showFilters": "Mostrar filtros",
-      "privacyPolicy": "Política de Privacidade",
-      "cookiesPolicy": "Política de cookies",
+      "privacyPolicy": "",
+      "cookiesPolicy": "",
       "global": "Global",
       "friends": "Amigos",
       "aroundMe": "Ao Meu Redor",
@@ -299,9 +322,9 @@
       "unknownDate": "Data desconhecida",
       "justNow": "Agora mesmo",
       "performancePoints": "Pontos de Desempenho",
-      "pp": "PP",
-      "accuracy": "Precisão",
-      "misses": "Erros",
+      "pp": "",
+      "accuracy": "",
+      "misses": "",
       "totalPlays": "Jogadas totais",
       "actions": "Ações",
       "rankRequestActions": "Ações de pedido de classificação",
@@ -312,10 +335,10 @@
       "copy": "",
       "copyFailed": "",
       "providers": {
-         "STEAM": "Steam",
-         "OCULUS": "Meta",
-         "PATREON": "Patreon",
-         "DISCORD": "Discord"
+         "STEAM": "",
+         "OCULUS": "",
+         "PATREON": "",
+         "DISCORD": ""
       }
    },
    "error": {
@@ -1226,7 +1249,7 @@
          "necessaryTitle": "Cookies necessários",
          "necessaryDescription": "Necessário para iniciar sessão, segurança, limitação de taxas, idioma, tema, filtros salvos e recursos principais do site. Estes são sempre ativos."
       },
-      "lastUpdated": "Última atualização: {date}"
+      "lastUpdated": ""
    },
    "oauth": {
       "consent": {

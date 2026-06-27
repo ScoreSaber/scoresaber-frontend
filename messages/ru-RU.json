@@ -138,6 +138,29 @@
          "watchAction": "Смотреть на YouTube",
          "reweightsAction": "Посмотреть ревейты"
       },
+      "bswc": {
+         "description": "",
+         "liveNow": "",
+         "nextUp": "",
+         "versus": "",
+         "noMatch": "",
+         "infoAction": "",
+         "scheduleAction": "",
+         "twitchAction": "",
+         "twitchFollowAction": "",
+         "twitchEmbedTitle": "",
+         "poweredBy": "",
+         "liveNotice": {
+            "watch": "",
+            "dismiss": ""
+         },
+         "countdown": {
+            "days": "",
+            "hours": "",
+            "minutes": "",
+            "seconds": ""
+         }
+      },
       "install": {
          "title": "Готовы соревноваться?",
          "description": "Установите ScoreSaber на свою платформу и ваши рекорды начнут сразу загружаться на таблицы рекордов",
@@ -238,7 +261,7 @@
          "emailCallToAction": "Создать новую учётную запись"
       },
       "subtitle": "Войдите или создайте учётную запись с помощью ScoreSaber",
-      "metaProviderTooltip": "Войти через Meta"
+      "metaProviderTooltip": ""
    },
    "sidebar": {
       "activeRealm": "Активный реалм",
@@ -263,7 +286,7 @@
    },
    "common": {
       "language": "Язык",
-      "scoreSaber": "ScoreSaber",
+      "scoreSaber": "",
       "cancel": "Отменить",
       "back": "Назад",
       "confirm": "Подтвердить",
@@ -277,12 +300,12 @@
       "goHome": "Домой",
       "searchPlaceholder": "Поиск...",
       "clearSearch": "Очистить поиск",
-      "openInNewTab": "Открыть в новой вкладке",
+      "openInNewTab": "",
       "filters": "Фильтры",
       "hideFilters": "Скрыть фильтры",
       "showFilters": "Показать фильтры",
-      "privacyPolicy": "Политика конфиденциальности",
-      "cookiesPolicy": "Политика cookie-файлов",
+      "privacyPolicy": "",
+      "cookiesPolicy": "",
       "global": "Мир",
       "friends": "Друзья",
       "aroundMe": "Вокруг меня",
@@ -299,9 +322,9 @@
       "unknownDate": "Неизвестная дата",
       "justNow": "только что",
       "performancePoints": "Очки производительности",
-      "pp": "PP",
-      "accuracy": "Точность",
-      "misses": "Промахи",
+      "pp": "",
+      "accuracy": "",
+      "misses": "",
       "totalPlays": "Всего сыграно",
       "actions": "Действия",
       "rankRequestActions": "Действия по ранк реквесту",
@@ -312,10 +335,10 @@
       "copy": "Скопировать",
       "copyFailed": "Ошибка копирования",
       "providers": {
-         "STEAM": "Steam",
-         "OCULUS": "Meta",
-         "PATREON": "Patreon",
-         "DISCORD": "Discord"
+         "STEAM": "",
+         "OCULUS": "",
+         "PATREON": "",
+         "DISCORD": ""
       }
    },
    "error": {
@@ -733,7 +756,7 @@
       "playerAlreadyAuthorized": "Игрок уже авторизован",
       "removePlayer": "Исключить игрока",
       "playersSaved": "Игроки сохранены",
-      "playersSkippedMissing": "",
+      "playersSkippedMissing": "Пропущены {count, plural, one {# отсутствующий игрок} other {# отсутствующих игроков}}",
       "playersSaveFailed": "Не удалось сохранить игроков",
       "player": "Игрок",
       "unknownPlayer": "Неизвестный игрок",
@@ -780,7 +803,7 @@
       "roleUnassigned": "Роль убрана",
       "roleUnassignFailed": "Не удалось убрать роль",
       "removeRolePlayer": "Убрать роль",
-      "noRolePlayers": "",
+      "noRolePlayers": "Назначенные игроки отсутствуют",
       "noRoles": "Роли отсутствуют",
       "room": "Комната",
       "createRoom": "Создать комнату",
@@ -845,13 +868,13 @@
       "commandFailed": "Не удалось выполнить команду",
       "roomClosed": "Комната закрыта",
       "roomCloseFailed": "Не удалось закрыть комнату",
-      "prompt": "",
+      "prompt": "Вопрос, требующий ответа да / нет",
       "readyCheck": "Вопрос",
       "promptTarget": "Спросить",
       "allRoomPlayers": "Все в комнате",
-      "promptPlaceholder": "",
+      "promptPlaceholder": "Задать вопрос, требующий ответа да / нет",
       "sendPrompt": "Отправить вопрос",
-      "promptRequired": "",
+      "promptRequired": "Введите да / нет в ответе на вопрос",
       "promptSent": "Вопрос отправлен",
       "promptFailed": "Не удалось отправить вопрос",
       "lastPromptResponse": "Последний ответ",
@@ -883,7 +906,7 @@
       "recentResults": "Последние результаты",
       "syncingResults": "Синхронизация результатов",
       "roomChatAndLog": "Чат и логи комнаты",
-      "roomChatEmpty": "",
+      "roomChatEmpty": "Сообщений в чате или логах комнаты ещё нет",
       "roomChatLogBadge": "Лог",
       "roomChatSystemBadge": "Система",
       "roomChatUnknownSender": "Неизвестно",
@@ -894,20 +917,20 @@
       "playerActions": "Действия игрока",
       "watchLivePlayer": "Смотреть",
       "promptPlayer": "Задать вопрос",
-      "promptPlayerDescription": "",
+      "promptPlayerDescription": "Задайте {player} вопрос, требующий ответа да / нет",
       "promptPlayerMessage": "Вопрос",
-      "bottifyPlayer": "Ботифицировать",
+      "bottifyPlayer": "Сделать ботом",
       "bottifyPlayerDescription": "Превратить {player} в бота для тестирования",
-      "bottifyAllPlayers": "Ботифицировать всех",
+      "bottifyAllPlayers": "Сделать ботами всех",
       "bottifyAllPlayersDescription": "Сделать {count, plural, one {# игрока комнаты} other {# игроков комнаты}} ботами для тестирования",
       "bottifyAutoReady": "Авто-готовность",
-      "bottifyErratic": "",
+      "bottifyErratic": "Ошибочный тайминг",
       "bottifyQueued": "Режим бота добавлен в очередь",
       "bottifyFailed": "Не удалось включить режим бота",
       "bottifyAllQueued": "Режим бота добавлен в очередь",
       "bottifyAllFailed": "Не удалось включить режим бота",
       "noPlayersToBottify": "Игроки для ботифицирования отсутствуют",
-      "unbottifyPlayer": "",
+      "unbottifyPlayer": "Убрать бота",
       "unbottifyQueued": "Режим бота отключён",
       "unbottifyFailed": "Не удалось отключить режим бота",
       "removePlayerFromRoom": "Убрать",
@@ -1226,7 +1249,7 @@
          "necessaryTitle": "Необходимые cookies",
          "necessaryDescription": "Необходимо для входа, безопасности, ограничений по запросам, языка, темы, сохраненных фильтров и основных функций сайта. Это всегда включено."
       },
-      "lastUpdated": "Последнее обновление: {date}"
+      "lastUpdated": ""
    },
    "oauth": {
       "consent": {
