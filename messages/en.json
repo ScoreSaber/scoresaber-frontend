@@ -149,6 +149,7 @@
          "infoAction": "Tournament info",
          "scheduleAction": "Schedule",
          "twitchAction": "Watch on Twitch",
+         "twitchFollowAction": "Follow on Twitch",
          "twitchEmbedTitle": "Cube Community Twitch stream",
          "poweredBy": "Powered by ScoreSaber Ludus Tournament Client",
          "liveNotice": {

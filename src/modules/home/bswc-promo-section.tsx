@@ -99,7 +99,7 @@ export function BswcPromoSection({ promo, previewLive = false }: { promo: HomeBs
                <div className="text-muted-foreground text-sm">{t('bswc.noMatch')}</div>
             )}
 
-            <BswcActions promo={promo} />
+            <BswcActions promo={promo} live={live} />
 
             <div className="text-muted-foreground/45 absolute bottom-2 left-1/2 w-[calc(100%-1.5rem)] -translate-x-1/2 truncate text-center text-[10px] leading-none md:left-5 md:w-auto md:translate-x-0 md:text-left md:text-[11px] lg:left-6">
                {t('bswc.poweredBy')}
@@ -237,7 +237,7 @@ function TeamMatchup({ team }: { team: HomeBswcTeam }) {
    );
 }
 
-function BswcActions({ promo }: { promo: HomeBswcPromo }) {
+function BswcActions({ promo, live }: { promo: HomeBswcPromo; live: boolean }) {
    const t = useTranslations('home');
 
    return (
@@ -264,7 +264,7 @@ function BswcActions({ promo }: { promo: HomeBswcPromo }) {
          >
             <a href={promo.twitchHref} target="_blank" rel="noreferrer">
                <FaTwitch data-icon />
-               {t('bswc.twitchAction')}
+               {live ? t('bswc.twitchAction') : t('bswc.twitchFollowAction')}
                <ExternalLink data-icon />
             </a>
          </Button>
@@ -283,13 +283,21 @@ function getBswcPromoState(promo: HomeBswcPromo | null, previewLive: boolean) {
 
 function MatchStartDate({ startsAt }: { startsAt: string }) {
    const locale = useLocale();
+   const timeZone = useBrowserTimeZone();
    const date = new Date(startsAt);
+
+   if (!timeZone) {
+      return <span className="min-w-0 truncate text-xs font-semibold opacity-0">...</span>;
+   }
+
    const dateParts = new Intl.DateTimeFormat(locale, {
+      timeZone,
       weekday: 'short',
       day: 'numeric',
       month: 'short'
    }).formatToParts(date);
    const timeText = new Intl.DateTimeFormat(locale, {
+      timeZone,
       hour: 'numeric'
    }).format(date);
    const weekday = dateParts.find((part) => part.type === 'weekday')?.value;
@@ -301,6 +309,16 @@ function MatchStartDate({ startsAt }: { startsAt: string }) {
          {weekday} {day} {month}, {timeText}
       </span>
    );
+}
+
+function useBrowserTimeZone() {
+   const [timeZone, setTimeZone] = useState<string | null>(null);
+
+   useEffect(() => {
+      setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone ?? null);
+   }, []);
+
+   return timeZone;
 }
 
 function CountdownLine({ parts }: { parts: CountdownPart[] }) {
