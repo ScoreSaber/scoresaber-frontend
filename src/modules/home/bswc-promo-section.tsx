@@ -31,6 +31,7 @@ const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 const BSWC_PROMO_IMAGE_URL = '/images/bswc-2026-promo.webp';
 const BSWC_LIVE_NOTICE_DISMISSED_MATCH_STORAGE_KEY = 'scoresaber-bswc-live-notice-dismissed-match';
+const TWITCH_EMBED_WARMUP_MS = 15 * SECOND_MS;
 
 export function BswcPromoSection({ promo, previewLive = false }: { promo: HomeBswcPromo | null; previewLive?: boolean }) {
    const t = useTranslations('home');
@@ -166,22 +167,49 @@ export function BswcLiveNotice({ promo, previewLive = false }: { promo: HomeBswc
 function BswcMedia({ promo, live, className }: { promo: HomeBswcPromo; live: boolean; className?: string }) {
    const t = useTranslations('home');
    const [parent, setParent] = useState<string | null>(null);
+   const [showTwitch, setShowTwitch] = useState(false);
 
    useEffect(() => {
       setParent(window.location.hostname);
    }, []);
 
    const twitchSrc = parent ? twitchEmbedUrl(promo.twitchChannel, parent) : null;
+
+   useEffect(() => {
+      if (!live || !twitchSrc) {
+         setShowTwitch(false);
+         return;
+      }
+
+      setShowTwitch(false);
+      const timeoutId = window.setTimeout(() => setShowTwitch(true), TWITCH_EMBED_WARMUP_MS);
+      return () => window.clearTimeout(timeoutId);
+   }, [live, twitchSrc]);
+
    return (
-      <div className={cn('relative aspect-video shrink-0 overflow-hidden md:aspect-auto md:min-h-64 md:basis-[42%]', className)}>
+      <div
+         className={cn(
+            'relative aspect-video shrink-0 overflow-hidden md:aspect-auto md:basis-[42%]',
+            live ? 'min-h-[300px]' : 'md:min-h-64',
+            className
+         )}
+      >
          {live && twitchSrc ? (
-            <iframe
-               src={twitchSrc}
-               title={t('bswc.twitchEmbedTitle')}
-               allow="autoplay; fullscreen; picture-in-picture"
-               allowFullScreen
-               className="absolute inset-0 h-full w-full border-0"
-            />
+            <>
+               <iframe
+                  src={twitchSrc}
+                  title={t('bswc.twitchEmbedTitle')}
+                  width="100%"
+                  height="100%"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full border-0"
+               />
+               {!showTwitch && (
+                  <div className="absolute inset-0">
+                     <BswcPromoImage promo={promo} linked={false} />
+                  </div>
+               )}
+            </>
          ) : (
             <BswcPromoImage promo={promo} />
          )}
@@ -393,6 +421,7 @@ function twitchEmbedUrl(channel: string, parent: string) {
    const url = new URL('https://player.twitch.tv/');
    url.searchParams.set('channel', channel);
    url.searchParams.set('parent', parent);
+   url.searchParams.set('autoplay', 'true');
    url.searchParams.set('muted', 'true');
    return url.toString();
 }
