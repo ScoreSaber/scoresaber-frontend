@@ -53,9 +53,9 @@ function SettingsConnectionsRoute() {
    const steamFailed = params.steam === 'failed';
    const oauthStatus = getOAuthStatus(params);
    const oauthProviderLabels = {
-      steam: t('settings.connections.providers.STEAM.label'),
-      patreon: t('settings.connections.providers.PATREON.label'),
-      discord: t('settings.connections.providers.DISCORD.label')
+      steam: t('common.providers.STEAM'),
+      patreon: t('common.providers.PATREON'),
+      discord: t('common.providers.DISCORD')
    };
 
    return (

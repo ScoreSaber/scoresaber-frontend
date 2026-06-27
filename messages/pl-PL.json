@@ -55,7 +55,6 @@
             "togglePrereleases": "Pokaż wersje wstępne",
             "togglePrereleasesAria": "Przełącz wersje wstępne",
             "column": {
-               "modVersion": "ScoreSaber",
                "bsVersion": "Beat Saber",
                "published": "Wydano"
             },
@@ -130,8 +129,7 @@
          "browse": "Przeglądaj"
       },
       "news": {
-         "readMore": "Czytaj więcej...",
-         "openInNewTab": "Otwórz w nowej karcie"
+         "readMore": "Czytaj więcej..."
       },
       "rankedBatch": {
          "eyebrow": "Najnowszy pakiet rankingowy",
@@ -171,28 +169,9 @@
    },
    "login": {
       "titlePrefix": "Zaloguj się do",
-      "titleBrand": "ScoreSaber",
       "showOtherMethods": "Pokaż inne metody",
       "hideOtherMethods": "Ukryj inne metody",
       "secondaryDescription": "Z połączeń drugorzędnych, takich jak Discord i Patreon można korzystać tylko po połączeniu ich w ustawieniach konta",
-      "providers": {
-         "SCORESABER": {
-            "label": "ScoreSaber"
-         },
-         "STEAM": {
-            "label": "Steam"
-         },
-         "OCULUS": {
-            "label": "Meta",
-            "tooltip": "Zaloguj się przez Meta"
-         },
-         "PATREON": {
-            "label": "Patreon"
-         },
-         "DISCORD": {
-            "label": "Discord"
-         }
-      },
       "oauth": {
          "failedTitle": "Logowanie poprzez {provider} nie powiodło się",
          "failedDescription": "Dostawca nie ukończył procesu logowania. Spróbuj ponownie na tej stronie"
@@ -227,7 +206,6 @@
          }
       },
       "password": {
-         "method": "Zaloguj się z użyciem hasła",
          "title": "Zaloguj się z użyciem hasła",
          "description": "Wprowadź swój e-mail i hasło, aby się zalogować",
          "passwordLabel": "Hasło",
@@ -259,11 +237,10 @@
          "failedToast": "Rejestracja nie udana",
          "emailCallToAction": "Stwórz nowe konto"
       },
-      "subtitle": "Zaloguj się lub utwórz konto używając ScoreSaber"
+      "subtitle": "Zaloguj się lub utwórz konto używając ScoreSaber",
+      "metaProviderTooltip": "Zaloguj się przez Meta"
    },
    "sidebar": {
-      "scoreSaberLogoAlt": "Logo ScoreSabera",
-      "search": "Wyszukaj...",
       "activeRealm": "Aktywny realm",
       "comingSoon": "Już wkrótce...",
       "joinRealm": "Dołącz do realmu",
@@ -273,8 +250,6 @@
       "dark": "Ciemny",
       "system": "Systemowy",
       "legal": "Informacje prawne",
-      "privacyPolicy": "Polityka prywatności",
-      "cookiesPolicy": "Polityka cookies",
       "copyrightTakedowns": "Usuwanie treści",
       "logIn": "Logowanie",
       "logOut": "Wyloguj się",
@@ -288,6 +263,7 @@
    },
    "common": {
       "language": "Język",
+      "scoreSaber": "ScoreSaber",
       "cancel": "Anuluj",
       "back": "Powrót",
       "confirm": "Potwierdź",
@@ -301,9 +277,12 @@
       "goHome": "Wróć na stronę główną",
       "searchPlaceholder": "Wyszukaj...",
       "clearSearch": "Wyczyść wyszukiwanie",
+      "openInNewTab": "Otwórz w nowej karcie",
       "filters": "Filtry",
       "hideFilters": "Ukryj filtry",
       "showFilters": "Pokaż filtry",
+      "privacyPolicy": "Polityka prywatności",
+      "cookiesPolicy": "Polityka cookies",
       "global": "Globalnie",
       "friends": "Przyjaciele",
       "aroundMe": "W mojej okolicy",
@@ -320,6 +299,9 @@
       "unknownDate": "Nieznana data",
       "justNow": "przed chwilą",
       "performancePoints": "Punkty Performance'u",
+      "pp": "PP",
+      "accuracy": "Celność",
+      "misses": "Pudła",
       "totalPlays": "Liczba zagrań",
       "actions": "Działania",
       "rankRequestActions": "Działania żądań o rangę",
@@ -328,7 +310,13 @@
       "underConstruction": "w trakcie budowy",
       "edit": "Edytuj",
       "copy": "Kopiuj",
-      "copyFailed": ""
+      "copyFailed": "",
+      "providers": {
+         "STEAM": "Steam",
+         "OCULUS": "Meta",
+         "PATREON": "Patreon",
+         "DISCORD": "Discord"
+      }
    },
    "error": {
       "somethingWentWrong": "Coś poszło nie tak",
@@ -371,7 +359,6 @@
    },
    "rankings": {
       "searchPlayers": "Szukaj graczy",
-      "pp": "PP",
       "totalPlayCount": "Całkowita liczba zagrań",
       "plays": "Odtworzenia",
       "rankedPlayCount": "Liczba zagrań rankingowych",
@@ -381,7 +368,6 @@
       "live": ""
    },
    "score": {
-      "accuracy": "Celność",
       "legacyAccuracy": "Wynik został ustawiony, zanim najwyższy możliwy wynik został zmieniony",
       "weighted": "Zrównoważona wartość {weightedPercent}",
       "score": "Wynik",
@@ -394,10 +380,8 @@
       "collapseLeaderboard": "Zwiń tablicę wyników",
       "expandLeaderboard": "Rozwiń tablicę wyników",
       "replayViewer": "Odtwarzacz powtórek",
-      "openInNewTab": "Otwórz w nowej karcie",
       "openReplayNewTab": "Otwórz odtwarzacz powtórek w nowej karcie",
       "gridAccuracy": "Siatka celności",
-      "misses": "Pudła",
       "badCuts": "Złe cięcia",
       "bombs": "Bomby",
       "streak115": "Ciąg 115",
@@ -469,12 +453,9 @@
          "live": "",
          "online": "",
          "spectateCta": "",
-         "playingTooltip": "",
-         "menuTooltip": "",
          "openViewer": "",
          "viewerTitle": "",
          "openViewerNewTab": "",
-         "openInNewTab": "",
          "loading": ""
       },
       "inactiveTooltip": "Ten gracz nie ustawił ostatnio żadnych wyników",
@@ -560,8 +541,6 @@
       "chartEnableJs": "Proszę włączyć JavaScript, aby wyświetlić wykres",
       "chartMetricRank": "Globalna ranga",
       "chartMetricRankShort": "Ranga",
-      "chartMetricPP": "Punkty Performance'u",
-      "chartMetricPPShort": "PP",
       "chartMetricAcc": "Średnia celność",
       "chartMetricAccShort": "Celność",
       "chartMetricPlays": "Liczba zagrań",
@@ -715,59 +694,25 @@
    },
    "live": {
       "selectorTitle": "",
-      "selectorDescription": "",
       "createTournament": "",
-      "createTournamentDescription": "",
       "createTournamentDialogTitle": "",
-      "createTournamentDialogDescription": "",
       "tournamentNamePlaceholder": "",
-      "myTournaments": "",
-      "myTournamentsDescription": "",
       "noTournaments": "",
-      "noTournamentsDescription": "",
-      "openTournament": "",
       "createTournamentSuccess": "",
       "createTournamentFailed": "",
-      "tournamentId": "",
-      "tournamentIdPlaceholder": "",
-      "pageEyebrow": "",
-      "pageDescription": "",
-      "overview": "",
       "settings": "",
       "players": "",
       "teams": "",
       "roles": "",
       "rooms": "",
-      "viewer": "",
-      "overlay": "",
-      "liveServiceOnline": "",
-      "liveServiceOffline": "",
-      "liveServiceUnknown": "",
       "authorizedPlayers": "",
-      "openRooms": "",
-      "activePresence": "",
-      "downloadsInProgress": "",
-      "setupRequired": "",
-      "setupRequiredDescription": "",
-      "liveState": "",
-      "liveStateDescription": "",
-      "liveService": "",
-      "enabled": "",
-      "disabled": "",
-      "lastServerStatus": "",
-      "lastPlayerSync": "",
-      "matchRooms": "",
-      "persistedRealtimeGap": "",
-      "persistedRealtimeGapDescription": "",
       "tournamentSettings": "",
-      "tournamentSettingsDescription": "",
       "name": "",
       "status": "",
       "deniedMods": "",
       "deniedModsDescription": "",
       "deniedModsList": "",
       "deniedModsPlaceholder": "",
-      "saveSettings": "",
       "saveChanges": "",
       "settingsSaved": "",
       "settingsSaveFailed": "",
@@ -787,23 +732,13 @@
       "addAuthorizedPlayerDescription": "",
       "playerAlreadyAuthorized": "",
       "removePlayer": "",
-      "savePlayers": "",
       "playersSaved": "",
       "playersSkippedMissing": "",
       "playersSaveFailed": "",
-      "invalidPlayerRows": "",
-      "authorizedPlayersDescription": "",
       "player": "",
-      "publicPlayerId": "",
       "unknownPlayer": "",
-      "actions": "",
-      "platform": "",
-      "platformId": "",
-      "displayName": "",
-      "playerId": "",
       "team": "",
       "noTeam": "",
-      "selectTeam": "",
       "addTeam": "",
       "editTeam": "",
       "deleteTeam": "",
@@ -814,8 +749,6 @@
       "teamDeleted": "",
       "teamDeleteFailed": "",
       "noTeams": "",
-      "noTeamColor": "",
-      "unknownTeamName": "",
       "noTeamPlayers": "",
       "importCsv": "",
       "exportCsv": "",
@@ -825,13 +758,7 @@
       "roomCsvPlaceholder": "",
       "importPlayersCsv": "",
       "exportPlayersCsv": "",
-      "importRoomPlayersCsv": "",
-      "exportRoomPlayersCsv": "",
-      "sync": "",
       "noAuthorizedPlayers": "",
-      "roleEditor": "",
-      "roleEditorDescription": "",
-      "roleIdOptional": "",
       "color": "",
       "description": "",
       "saveRole": "",
@@ -839,9 +766,7 @@
       "roleSaved": "",
       "roleSaveFailed": "",
       "rolesAndAssignments": "",
-      "rolesAndAssignmentsDescription": "",
       "role": "",
-      "selectRole": "",
       "addRole": "",
       "editRole": "",
       "deleteRole": "",
@@ -849,11 +774,7 @@
       "roleDeleted": "",
       "roleDeleteFailed": "",
       "assignPlayer": "",
-      "assignPlayerDescription": "",
-      "cancel": "",
-      "assignRole": "",
       "permissions": "",
-      "invalidRoleAssignment": "",
       "roleAssigned": "",
       "roleAssignFailed": "",
       "roleUnassigned": "",
@@ -869,20 +790,11 @@
       "playerAlreadyInRoom": "",
       "noRoomPlayers": "",
       "addRoomPlayer": "",
-      "addRoomPlayerDescription": "",
       "addRoomTeam": "",
       "manageRoom": "",
-      "roomPlayers": "",
       "roomPlayersSaved": "",
-      "managePlayers": "",
-      "liveConnectedPlayers": "",
-      "noConnectedPlayers": "",
       "teamMode": "",
       "flatMode": "",
-      "authorizedRoster": "",
-      "addToRoom": "",
-      "inRoom": "",
-      "songSelection": "",
       "state": "",
       "connected": "",
       "notConnected": "",
@@ -897,30 +809,13 @@
       "deleteRoomDescription": "",
       "roomDeleted": "",
       "roomDeleteFailed": "",
-      "roomControls": "",
-      "createMatchRoom": "",
-      "createMatchRoomDescription": "",
-      "matchId": "",
-      "memberRows": "",
-      "memberRowsPlaceholder": "",
-      "saveRoom": "",
       "invalidRoom": "",
       "roomSaved": "",
       "roomSaveFailed": "",
       "noRooms": "",
-      "loaded": "",
-      "loading": "",
       "playerCount": "",
-      "membersAndRoles": "",
-      "saveMembers": "",
-      "invalidMemberRows": "",
-      "membersSaved": "",
       "membersSaveFailed": "",
-      "playState": "",
-      "downloadState": "",
-      "noMembers": "",
       "selectedSong": "",
-      "noSelectedSong": "",
       "changeSong": "",
       "selectSong": "",
       "songSearch": "",
@@ -932,21 +827,9 @@
       "noSongs": "",
       "songLookupFailed": "",
       "chooseDifficulty": "",
-      "loadState": "",
-      "mapHash": "",
-      "songName": "",
-      "difficulty": "",
-      "characteristic": "",
-      "leaderboardId": "",
-      "beatSaverKey": "",
-      "maxScore": "",
-      "loadSong": "",
-      "invalidSong": "",
       "songLoadQueued": "",
       "songLoadFailed": "",
-      "remoteCommands": "",
       "playSettings": "",
-      "startWithSync": "",
       "countdownSeconds": "",
       "countdownStatus": "",
       "forceImmediateStart": "",
@@ -956,7 +839,6 @@
       "startMapNotReadyPlayers": "",
       "startAnyway": "",
       "stopMap": "",
-      "returnToMenu": "",
       "closeRoom": "",
       "startCommandSent": "",
       "returnCommandSent": "",
@@ -972,8 +854,6 @@
       "promptRequired": "",
       "promptSent": "",
       "promptFailed": "",
-      "promptResponses": "",
-      "noPromptResponses": "",
       "lastPromptResponse": "",
       "promptResponseHistoryForPlayer": "",
       "promptResponseYes": "",
@@ -991,18 +871,8 @@
       "followRoom": "",
       "followRoomSent": "",
       "followRoomFailed": "",
-      "gameplayRestrictions": "",
-      "disablePause": "",
-      "disableFail": "",
-      "disableScoresaberSubmission": "",
-      "disableCustomNotesOnStream": "",
-      "showScoreboard": "",
-      "applyRestrictions": "",
-      "restrictionsSent": "",
       "signInRequired": "",
       "signInRequiredDescription": "",
-      "error": "",
-      "liveRoomStateError": "",
       "roomMenu": "",
       "roomTableSettings": "",
       "roomStatusPlaying": "",
@@ -1043,21 +913,15 @@
       "removePlayerFromRoom": "",
       "removePlayerFromRoomDescription": "",
       "playerRemovedFromRoom": "",
-      "scores": "",
       "rank": "",
       "score": "",
-      "accuracy": "",
       "combo": "",
-      "misses": "",
       "completion": "",
       "reportedAt": "",
       "noRecentResults": "",
       "unknownMap": "",
-      "songPosition": "",
-      "noScoresYet": "",
       "liveServiceUnavailableDescription": "",
       "liveSocketErrorDescription": "",
-      "backToTournament": "",
       "backToRooms": ""
    },
    "settings": {
@@ -1108,23 +972,6 @@
          "refreshFailed": "Odświeżanie korzyści Patreon nie powiodło się",
          "removed": "Usunięto połączenie",
          "removeFailed": "Usuwanie połączenia nie powiodło się",
-         "providers": {
-            "STEAM": {
-               "label": "Steam"
-            },
-            "OCULUS": {
-               "label": "Meta"
-            },
-            "PATREON": {
-               "label": "Patreon"
-            },
-            "DISCORD": {
-               "label": "Discord"
-            },
-            "SCORESABER": {
-               "label": "ScoreSaber"
-            }
-         },
          "oauth": {
             "connectedTitle": "Połączono {provider}",
             "connectedDescription": "Połączenie jest gotowe",
@@ -1203,7 +1050,6 @@
             "timeRemainingColumn": "Pozostały czas",
             "songColumn": "Utwór",
             "difficultyColumn": "Poziom trudności",
-            "ppColumn": "PP",
             "rankColumn": "Ranga",
             "actionColumn": "Działanie",
             "claimAction": "Zachowaj powtórkę",
@@ -1357,16 +1203,13 @@
    },
    "legal": {
       "privacy": {
-         "pageTitle": "Polityka prywatności",
-         "lastUpdated": "Ostatnia aktualizacja: {date}"
+         "pageTitle": "Polityka prywatności"
       },
       "cookies": {
-         "pageTitle": "Polityka cookies",
-         "lastUpdated": "Ostatnia aktualizacja: {date}"
+         "pageTitle": "Polityka cookies"
       },
       "copyright": {
-         "pageTitle": "Polityka usuwania treści",
-         "lastUpdated": "Ostatnia aktualizacja: {date}"
+         "pageTitle": "Polityka usuwania treści"
       },
       "consent": {
          "bannerTitle": "Powiadomienie o plikach cookie",
@@ -1381,10 +1224,9 @@
          "save": "Zapisz wybór",
          "close": "Zamknij",
          "necessaryTitle": "Wymagane pliki cookie",
-         "necessaryDescription": "Wymagane do logowania, bezpieczeństwa, ograniczania prędkości, zapamiętywania wyboru języka, motywu, zapisanych filtrów i podstawowych funkcji strony. Są zawsze włączone",
-         "privacyPolicy": "Polityka prywatności",
-         "cookiePolicy": "Polityka cookies"
-      }
+         "necessaryDescription": "Wymagane do logowania, bezpieczeństwa, ograniczania prędkości, zapamiętywania wyboru języka, motywu, zapisanych filtrów i podstawowych funkcji strony. Są zawsze włączone"
+      },
+      "lastUpdated": "Ostatnia aktualizacja: {date}"
    },
    "oauth": {
       "consent": {

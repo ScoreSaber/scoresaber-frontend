@@ -125,7 +125,7 @@ export function StepDownload({ releases, hasPrereleases, showPrereleases, onTogg
                <Table>
                   <TableHeader className="bg-muted/40 sticky top-0 z-10 backdrop-blur">
                      <TableRow className="hover:bg-transparent">
-                        <TableHead>{t('quest.step.3.column.modVersion')}</TableHead>
+                        <TableHead>{t('common.scoreSaber')}</TableHead>
                         <TableHead>{t('quest.step.3.column.bsVersion')}</TableHead>
                         <TableHead className="hidden sm:table-cell">{t('quest.step.3.column.published')}</TableHead>
                         <TableHead className="text-right" />

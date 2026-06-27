@@ -290,7 +290,7 @@ function ScoreAccuracyOverview({ stats, fullCombo }: { stats: ScoreControllerGet
 
          <div className="flex flex-wrap items-center justify-center gap-1.5">
             {stats.leftMiss + stats.rightMiss > 0 && (
-               <Stat icon={Target} label={t('score.misses')} className="gap-1.5 px-2 py-0.5 text-[11px]">
+               <Stat icon={Target} label={t('common.misses')} className="gap-1.5 px-2 py-0.5 text-[11px]">
                   {formatHandPair(stats.leftMiss, stats.rightMiss, leftLabel, rightLabel)}
                </Stat>
             )}

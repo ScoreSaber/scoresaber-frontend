@@ -75,6 +75,14 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
    const [mergeDialogOpen, setMergeDialogOpen] = useState(Boolean(initialMergeChallengeId || steamFailed));
    const byProvider = new Map(localConnections.map((connection) => [connection.provider, connection]));
    const hasMultiplePrimary = primaryProviders.filter((provider) => byProvider.has(provider)).length > 1;
+   const providerLabels = {
+      SCORESABER: t('common.scoreSaber'),
+      STEAM: t('common.providers.STEAM'),
+      OCULUS: t('common.providers.OCULUS'),
+      PATREON: t('common.providers.PATREON'),
+      DISCORD: t('common.providers.DISCORD')
+   } satisfies Record<ConnectionProvider, string>;
+
    useEffect(() => {
       if (!initialMergeChallengeId && !steamFailed) return;
 
@@ -146,15 +154,7 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
                         </span>
                         <div className="flex min-h-9 min-w-0 flex-col justify-center">
                            <h3 className="flex items-center gap-1.5 leading-5 font-semibold">
-                              {provider === 'SCORESABER'
-                                 ? t('settings.connections.providers.SCORESABER.label')
-                                 : provider === 'STEAM'
-                                   ? t('settings.connections.providers.STEAM.label')
-                                   : provider === 'OCULUS'
-                                     ? t('settings.connections.providers.OCULUS.label')
-                                     : provider === 'PATREON'
-                                       ? t('settings.connections.providers.PATREON.label')
-                                       : t('settings.connections.providers.DISCORD.label')}
+                              {providerLabels[provider]}
                               {connection?.isPrimary && <LockKeyhole className="text-muted-foreground size-3.5" />}
                               {connection?.isPrimary && <Badge variant="secondary">{t('settings.connections.merge.primaryBadge')}</Badge>}
                            </h3>
@@ -228,12 +228,7 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
                                        queryClient.clear();
                                        toast.success(
                                           t('settings.connections.merge.primarySwitched', {
-                                             provider:
-                                                result.provider === 'SCORESABER'
-                                                   ? t('settings.connections.providers.SCORESABER.label')
-                                                   : result.provider === 'STEAM'
-                                                     ? t('settings.connections.providers.STEAM.label')
-                                                     : t('settings.connections.providers.OCULUS.label'),
+                                             provider: providerLabels[result.provider],
                                              publicPlayerId: result.publicPlayerId
                                           })
                                        );

@@ -31,7 +31,7 @@ function BrowserStoragePolicyPage() {
             >
                <header className="space-y-1">
                   <h1>{t('pageTitle')}</h1>
-                  <LegalLastUpdated namespace="legal.cookies" />
+                  <LegalLastUpdated />
                </header>
 
                <p>

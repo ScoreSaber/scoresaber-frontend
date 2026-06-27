@@ -36,6 +36,7 @@ export function LiveSettingsPanel({
    options: LiveTournamentControllerGetWorkflowOptionsResponse;
 }) {
    const t = useTranslations('live');
+   const tc = useTranslations('common');
    const mutation = useActionMutation<LiveSettings>();
    const statusSchema = useMemo(() => createStatusSchema(options.tournamentStatuses), [options.tournamentStatuses]);
    const defaultStatus = options.tournamentStatuses[0]!;
@@ -151,7 +152,7 @@ export function LiveSettingsPanel({
                </FormField>
                <DialogFooter>
                   <Button type="button" variant="secondary" onClick={() => setDeniedModsOpen(false)} disabled={pending}>
-                     {t('cancel')}
+                     {tc('cancel')}
                   </Button>
                   <Button type="button" onClick={saveSettings} disabled={pending || !isDirty}>
                      {pending ? <Loader2 className="animate-spin" /> : <Save data-icon="inline-start" />}

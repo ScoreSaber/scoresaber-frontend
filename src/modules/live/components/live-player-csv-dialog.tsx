@@ -33,6 +33,7 @@ export function LivePlayerCsvImportDialog({
    onImportAction: (rows: LivePlayerCsvRow[]) => boolean | Promise<boolean>;
 }) {
    const t = useTranslations('live');
+   const tc = useTranslations('common');
    const [csv, setCsv] = useState('');
    const [pending, setPending] = useState(false);
 
@@ -76,7 +77,7 @@ export function LivePlayerCsvImportDialog({
             />
             <DialogFooter>
                <Button type="button" variant="secondary" onClick={() => onOpenChangeAction(false)} disabled={pending}>
-                  {t('cancel')}
+                  {tc('cancel')}
                </Button>
                <Button type="button" className="cursor-pointer" onClick={importRows} disabled={pending}>
                   <Upload data-icon="inline-start" />

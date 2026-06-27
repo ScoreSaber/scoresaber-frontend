@@ -62,7 +62,7 @@ export function ScoreStats({
                      </Stat>
                   </TooltipTrigger>
                   <TooltipContent>
-                     <p>{legacyAccuracy ? t('score.legacyAccuracy') : t('score.accuracy')}</p>
+                     <p>{legacyAccuracy ? t('score.legacyAccuracy') : tc('common.accuracy')}</p>
                   </TooltipContent>
                </Tooltip>
                {showPP && score.pp > 0 && (

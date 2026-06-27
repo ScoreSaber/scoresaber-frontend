@@ -55,7 +55,6 @@
             "togglePrereleases": "사전 릴리스 표시",
             "togglePrereleasesAria": "사전 릴리스 버전 표시",
             "column": {
-               "modVersion": "ScoreSaber",
                "bsVersion": "Beat Saber",
                "published": "릴리스됨"
             },
@@ -130,8 +129,7 @@
          "browse": ""
       },
       "news": {
-         "readMore": "",
-         "openInNewTab": ""
+         "readMore": ""
       },
       "rankedBatch": {
          "eyebrow": "",
@@ -171,28 +169,9 @@
    },
    "login": {
       "titlePrefix": "로그인하기",
-      "titleBrand": "ScoreSaber",
       "showOtherMethods": "다른 방법 보기",
       "hideOtherMethods": "다른 방법 숨기기",
       "secondaryDescription": "Discord 및 Patreon 같은 보조 연결은 계정 설정에서 연결한 후에만 사용할 수 있습니다",
-      "providers": {
-         "SCORESABER": {
-            "label": ""
-         },
-         "STEAM": {
-            "label": "Steam"
-         },
-         "OCULUS": {
-            "label": "Meta",
-            "tooltip": "Meta로 로그인"
-         },
-         "PATREON": {
-            "label": "Patreon"
-         },
-         "DISCORD": {
-            "label": "Discord"
-         }
-      },
       "oauth": {
          "failedTitle": "{provider}로 로그인할 수 없습니다",
          "failedDescription": "로그인이 완료되지 않았습니다. 이 페이지에서 다시 시도하세요"
@@ -227,7 +206,6 @@
          }
       },
       "password": {
-         "method": "",
          "title": "",
          "description": "",
          "passwordLabel": "",
@@ -259,11 +237,10 @@
          "failedToast": "",
          "emailCallToAction": ""
       },
-      "subtitle": ""
+      "subtitle": "",
+      "metaProviderTooltip": "Meta로 로그인"
    },
    "sidebar": {
-      "scoreSaberLogoAlt": "ScoreSaber 로고",
-      "search": "검색...",
       "activeRealm": "활성 렐름",
       "comingSoon": "준비 중...",
       "joinRealm": "렐름 참가",
@@ -273,8 +250,6 @@
       "dark": "다크",
       "system": "시스템",
       "legal": "법적 고지",
-      "privacyPolicy": "개인정보 처리방침",
-      "cookiesPolicy": "쿠키 정책",
       "copyrightTakedowns": "저작권 삭제 요청",
       "logIn": "로그인",
       "logOut": "로그아웃",
@@ -288,6 +263,7 @@
    },
    "common": {
       "language": "언어",
+      "scoreSaber": "ScoreSaber",
       "cancel": "취소",
       "back": "뒤로가기",
       "confirm": "확인",
@@ -301,9 +277,12 @@
       "goHome": "홈으로",
       "searchPlaceholder": "검색...",
       "clearSearch": "검색 초기화",
+      "openInNewTab": "새 탭에서 열기",
       "filters": "필터",
       "hideFilters": "필터 숨기기",
       "showFilters": "필터 표시",
+      "privacyPolicy": "개인정보 처리방침",
+      "cookiesPolicy": "쿠키 정책",
       "global": "전체",
       "friends": "친구",
       "aroundMe": "내 주변",
@@ -319,7 +298,10 @@
       "mappedBy": "mapped by",
       "unknownDate": "알 수 없는 날짜",
       "justNow": "방금",
-      "performancePoints": "Performance Points",
+      "performancePoints": "퍼포먼스 포인트",
+      "pp": "PP",
+      "accuracy": "정확도",
+      "misses": "미스",
       "totalPlays": "총 플레이 수",
       "actions": "Actions",
       "rankRequestActions": "랭크 요청 작업",
@@ -328,7 +310,13 @@
       "underConstruction": "준비 중",
       "edit": "",
       "copy": "",
-      "copyFailed": ""
+      "copyFailed": "",
+      "providers": {
+         "STEAM": "Steam",
+         "OCULUS": "Meta",
+         "PATREON": "Patreon",
+         "DISCORD": "Discord"
+      }
    },
    "error": {
       "somethingWentWrong": "문제가 발생했습니다",
@@ -371,7 +359,6 @@
    },
    "rankings": {
       "searchPlayers": "플레이어 검색",
-      "pp": "PP",
       "totalPlayCount": "총 플레이 수",
       "plays": "플레이 수",
       "rankedPlayCount": "랭크 맵 플레이 수",
@@ -381,7 +368,6 @@
       "live": ""
    },
    "score": {
-      "accuracy": "정확도",
       "legacyAccuracy": "최대 점수 변경 전에 등록된 점수입니다",
       "weighted": "가중치 {weightedPercent}",
       "score": "점수",
@@ -394,10 +380,8 @@
       "collapseLeaderboard": "리더보드 접기",
       "expandLeaderboard": "리더보드 펼치기",
       "replayViewer": "리플레이 뷰어",
-      "openInNewTab": "새 탭에서 열기",
       "openReplayNewTab": "리플레이 뷰어를 새 탭에서 열기",
       "gridAccuracy": "그리드 정확도",
-      "misses": "미스",
       "badCuts": "배드 컷",
       "bombs": "폭탄",
       "streak115": "115콤보",
@@ -469,12 +453,9 @@
          "live": "",
          "online": "",
          "spectateCta": "",
-         "playingTooltip": "",
-         "menuTooltip": "",
          "openViewer": "",
          "viewerTitle": "",
          "openViewerNewTab": "",
-         "openInNewTab": "",
          "loading": ""
       },
       "inactiveTooltip": "이 플레이어는 최근 기록한 점수가 없습니다",
@@ -560,8 +541,6 @@
       "chartEnableJs": "차트를 보려면 JavaScript를 활성화하세요",
       "chartMetricRank": "전 세계 순위",
       "chartMetricRankShort": "순위",
-      "chartMetricPP": "퍼포먼스 포인트",
-      "chartMetricPPShort": "PP",
       "chartMetricAcc": "평균 정확도",
       "chartMetricAccShort": "평균 정확도",
       "chartMetricPlays": "총 플레이 수",
@@ -715,59 +694,25 @@
    },
    "live": {
       "selectorTitle": "",
-      "selectorDescription": "",
       "createTournament": "",
-      "createTournamentDescription": "",
       "createTournamentDialogTitle": "",
-      "createTournamentDialogDescription": "",
       "tournamentNamePlaceholder": "",
-      "myTournaments": "",
-      "myTournamentsDescription": "",
       "noTournaments": "",
-      "noTournamentsDescription": "",
-      "openTournament": "",
       "createTournamentSuccess": "",
       "createTournamentFailed": "",
-      "tournamentId": "",
-      "tournamentIdPlaceholder": "",
-      "pageEyebrow": "",
-      "pageDescription": "",
-      "overview": "",
       "settings": "",
       "players": "",
       "teams": "",
       "roles": "",
       "rooms": "",
-      "viewer": "",
-      "overlay": "",
-      "liveServiceOnline": "",
-      "liveServiceOffline": "",
-      "liveServiceUnknown": "",
       "authorizedPlayers": "",
-      "openRooms": "",
-      "activePresence": "",
-      "downloadsInProgress": "",
-      "setupRequired": "",
-      "setupRequiredDescription": "",
-      "liveState": "",
-      "liveStateDescription": "",
-      "liveService": "",
-      "enabled": "",
-      "disabled": "",
-      "lastServerStatus": "",
-      "lastPlayerSync": "",
-      "matchRooms": "",
-      "persistedRealtimeGap": "",
-      "persistedRealtimeGapDescription": "",
       "tournamentSettings": "",
-      "tournamentSettingsDescription": "",
       "name": "",
       "status": "",
       "deniedMods": "",
       "deniedModsDescription": "",
       "deniedModsList": "",
       "deniedModsPlaceholder": "",
-      "saveSettings": "",
       "saveChanges": "",
       "settingsSaved": "",
       "settingsSaveFailed": "",
@@ -787,23 +732,13 @@
       "addAuthorizedPlayerDescription": "",
       "playerAlreadyAuthorized": "",
       "removePlayer": "",
-      "savePlayers": "",
       "playersSaved": "",
       "playersSkippedMissing": "",
       "playersSaveFailed": "",
-      "invalidPlayerRows": "",
-      "authorizedPlayersDescription": "",
       "player": "",
-      "publicPlayerId": "",
       "unknownPlayer": "",
-      "actions": "",
-      "platform": "",
-      "platformId": "",
-      "displayName": "",
-      "playerId": "",
       "team": "",
       "noTeam": "",
-      "selectTeam": "",
       "addTeam": "",
       "editTeam": "",
       "deleteTeam": "",
@@ -814,8 +749,6 @@
       "teamDeleted": "",
       "teamDeleteFailed": "",
       "noTeams": "",
-      "noTeamColor": "",
-      "unknownTeamName": "",
       "noTeamPlayers": "",
       "importCsv": "",
       "exportCsv": "",
@@ -825,13 +758,7 @@
       "roomCsvPlaceholder": "",
       "importPlayersCsv": "",
       "exportPlayersCsv": "",
-      "importRoomPlayersCsv": "",
-      "exportRoomPlayersCsv": "",
-      "sync": "",
       "noAuthorizedPlayers": "",
-      "roleEditor": "",
-      "roleEditorDescription": "",
-      "roleIdOptional": "",
       "color": "",
       "description": "",
       "saveRole": "",
@@ -839,9 +766,7 @@
       "roleSaved": "",
       "roleSaveFailed": "",
       "rolesAndAssignments": "",
-      "rolesAndAssignmentsDescription": "",
       "role": "",
-      "selectRole": "",
       "addRole": "",
       "editRole": "",
       "deleteRole": "",
@@ -849,11 +774,7 @@
       "roleDeleted": "",
       "roleDeleteFailed": "",
       "assignPlayer": "",
-      "assignPlayerDescription": "",
-      "cancel": "",
-      "assignRole": "",
       "permissions": "",
-      "invalidRoleAssignment": "",
       "roleAssigned": "",
       "roleAssignFailed": "",
       "roleUnassigned": "",
@@ -869,20 +790,11 @@
       "playerAlreadyInRoom": "",
       "noRoomPlayers": "",
       "addRoomPlayer": "",
-      "addRoomPlayerDescription": "",
       "addRoomTeam": "",
       "manageRoom": "",
-      "roomPlayers": "",
       "roomPlayersSaved": "",
-      "managePlayers": "",
-      "liveConnectedPlayers": "",
-      "noConnectedPlayers": "",
       "teamMode": "",
       "flatMode": "",
-      "authorizedRoster": "",
-      "addToRoom": "",
-      "inRoom": "",
-      "songSelection": "",
       "state": "",
       "connected": "",
       "notConnected": "",
@@ -897,30 +809,13 @@
       "deleteRoomDescription": "",
       "roomDeleted": "",
       "roomDeleteFailed": "",
-      "roomControls": "",
-      "createMatchRoom": "",
-      "createMatchRoomDescription": "",
-      "matchId": "",
-      "memberRows": "",
-      "memberRowsPlaceholder": "",
-      "saveRoom": "",
       "invalidRoom": "",
       "roomSaved": "",
       "roomSaveFailed": "",
       "noRooms": "",
-      "loaded": "",
-      "loading": "",
       "playerCount": "",
-      "membersAndRoles": "",
-      "saveMembers": "",
-      "invalidMemberRows": "",
-      "membersSaved": "",
       "membersSaveFailed": "",
-      "playState": "",
-      "downloadState": "",
-      "noMembers": "",
       "selectedSong": "",
-      "noSelectedSong": "",
       "changeSong": "",
       "selectSong": "",
       "songSearch": "",
@@ -932,21 +827,9 @@
       "noSongs": "",
       "songLookupFailed": "",
       "chooseDifficulty": "",
-      "loadState": "",
-      "mapHash": "",
-      "songName": "",
-      "difficulty": "",
-      "characteristic": "",
-      "leaderboardId": "",
-      "beatSaverKey": "",
-      "maxScore": "",
-      "loadSong": "",
-      "invalidSong": "",
       "songLoadQueued": "",
       "songLoadFailed": "",
-      "remoteCommands": "",
       "playSettings": "",
-      "startWithSync": "",
       "countdownSeconds": "",
       "countdownStatus": "",
       "forceImmediateStart": "",
@@ -956,7 +839,6 @@
       "startMapNotReadyPlayers": "",
       "startAnyway": "",
       "stopMap": "",
-      "returnToMenu": "",
       "closeRoom": "",
       "startCommandSent": "",
       "returnCommandSent": "",
@@ -972,8 +854,6 @@
       "promptRequired": "",
       "promptSent": "",
       "promptFailed": "",
-      "promptResponses": "",
-      "noPromptResponses": "",
       "lastPromptResponse": "",
       "promptResponseHistoryForPlayer": "",
       "promptResponseYes": "",
@@ -991,18 +871,8 @@
       "followRoom": "",
       "followRoomSent": "",
       "followRoomFailed": "",
-      "gameplayRestrictions": "",
-      "disablePause": "",
-      "disableFail": "",
-      "disableScoresaberSubmission": "",
-      "disableCustomNotesOnStream": "",
-      "showScoreboard": "",
-      "applyRestrictions": "",
-      "restrictionsSent": "",
       "signInRequired": "",
       "signInRequiredDescription": "",
-      "error": "",
-      "liveRoomStateError": "",
       "roomMenu": "",
       "roomTableSettings": "",
       "roomStatusPlaying": "",
@@ -1043,21 +913,15 @@
       "removePlayerFromRoom": "",
       "removePlayerFromRoomDescription": "",
       "playerRemovedFromRoom": "",
-      "scores": "",
       "rank": "",
       "score": "",
-      "accuracy": "",
       "combo": "",
-      "misses": "",
       "completion": "",
       "reportedAt": "",
       "noRecentResults": "",
       "unknownMap": "",
-      "songPosition": "",
-      "noScoresYet": "",
       "liveServiceUnavailableDescription": "",
       "liveSocketErrorDescription": "",
-      "backToTournament": "",
       "backToRooms": ""
    },
    "settings": {
@@ -1108,23 +972,6 @@
          "refreshFailed": "Patreon 혜택 새로고침에 실패했습니다",
          "removed": "연결 제거됨",
          "removeFailed": "연결 제거 실패",
-         "providers": {
-            "STEAM": {
-               "label": "Steam"
-            },
-            "OCULUS": {
-               "label": "Meta"
-            },
-            "PATREON": {
-               "label": "Patreon"
-            },
-            "DISCORD": {
-               "label": "Discord"
-            },
-            "SCORESABER": {
-               "label": ""
-            }
-         },
          "oauth": {
             "connectedTitle": "{provider} 연결됨",
             "connectedDescription": "연결을 사용할 준비가 되었습니다",
@@ -1203,7 +1050,6 @@
             "timeRemainingColumn": "남은 시간",
             "songColumn": "곡",
             "difficultyColumn": "난이도",
-            "ppColumn": "PP",
             "rankColumn": "순위",
             "actionColumn": "작업",
             "claimAction": "리플레이 보호",
@@ -1357,16 +1203,13 @@
    },
    "legal": {
       "privacy": {
-         "pageTitle": "개인정보 처리방침",
-         "lastUpdated": "마지막 업데이트: {date}"
+         "pageTitle": "개인정보 처리방침"
       },
       "cookies": {
-         "pageTitle": "쿠키 정책",
-         "lastUpdated": "마지막 업데이트: {date}"
+         "pageTitle": "쿠키 정책"
       },
       "copyright": {
-         "pageTitle": "저작권 삭제 요청 정책",
-         "lastUpdated": "마지막 업데이트: {date}"
+         "pageTitle": "저작권 삭제 요청 정책"
       },
       "consent": {
          "bannerTitle": "쿠키 안내",
@@ -1381,10 +1224,9 @@
          "save": "선택 사항 저장",
          "close": "닫기",
          "necessaryTitle": "필수 쿠키",
-         "necessaryDescription": "로그인, 보안, 요청 제한, 언어, 테마, 저장된 필터 및 핵심 사이트 기능에 필요합니다. 이 항목은 항상 활성화되어 있습니다.",
-         "privacyPolicy": "개인정보 처리방침",
-         "cookiePolicy": "쿠키 정책"
-      }
+         "necessaryDescription": "로그인, 보안, 요청 제한, 언어, 테마, 저장된 필터 및 핵심 사이트 기능에 필요합니다. 이 항목은 항상 활성화되어 있습니다."
+      },
+      "lastUpdated": "마지막 업데이트: {date}"
    },
    "oauth": {
       "consent": {

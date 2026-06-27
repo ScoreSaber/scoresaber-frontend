@@ -126,7 +126,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                               <privacyRoute.Link onClick={closeMenu}>
                                  <span className="flex min-w-0 items-center gap-2">
                                     <Shield data-icon />
-                                    <span className="truncate">{tSidebar('sidebar.privacyPolicy')}</span>
+                                    <span className="truncate">{tSidebar('common.privacyPolicy')}</span>
                                  </span>
                               </privacyRoute.Link>
                            </Button>
@@ -134,7 +134,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                               <cookiesPolicyRoute.Link onClick={closeMenu}>
                                  <span className="flex min-w-0 items-center gap-2">
                                     <Cookie data-icon />
-                                    <span className="truncate">{tSidebar('sidebar.cookiesPolicy')}</span>
+                                    <span className="truncate">{tSidebar('common.cookiesPolicy')}</span>
                                  </span>
                               </cookiesPolicyRoute.Link>
                            </Button>

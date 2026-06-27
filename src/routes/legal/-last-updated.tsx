@@ -8,14 +8,8 @@ const LEGAL_LAST_UPDATED_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
    timeZone: 'UTC'
 };
 
-type LegalLastUpdatedNamespace = 'legal.privacy' | 'legal.cookies' | 'legal.copyright';
-
-interface LegalLastUpdatedProps {
-   namespace: LegalLastUpdatedNamespace;
-}
-
-export function LegalLastUpdated({ namespace }: LegalLastUpdatedProps) {
-   const t = useTranslations(namespace);
+export function LegalLastUpdated() {
+   const t = useTranslations('legal');
    const locale = useLocale();
    const date = new Intl.DateTimeFormat(locale, LEGAL_LAST_UPDATED_FORMAT_OPTIONS).format(LEGAL_LAST_UPDATED_DATE);
 

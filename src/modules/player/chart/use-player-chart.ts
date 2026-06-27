@@ -87,6 +87,7 @@ function getDaysAgo(date: Date, now: Date) {
 
 export function usePlayerChart(playerId: string, stats: PlayerChartStats, history: PlayerControllerGetPlayerHistoryItem[]) {
    const t = useTranslations('player');
+   const tc = useTranslations('common');
    const initialPrefs = useRef(loadPrefs()).current;
    const [activeMetrics, setActiveMetrics] = useState<Set<MetricKey>>(() => new Set(initialPrefs.activeMetrics));
    const [isShowingEstimated, setIsShowingEstimated] = useState(initialPrefs.isShowingEstimated);
@@ -102,11 +103,11 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
    const metricLabels = useMemo<Record<MetricKey, MetricLabel>>(
       () => ({
          rank: { label: t('chartMetricRank'), shortLabel: t('chartMetricRankShort') },
-         totalPP: { label: t('chartMetricPP'), shortLabel: t('chartMetricPPShort') },
+         totalPP: { label: tc('performancePoints'), shortLabel: tc('pp') },
          averageAccuracy: { label: t('chartMetricAcc'), shortLabel: t('chartMetricAccShort') },
          totalSubmittedPlays: { label: t('chartMetricPlays'), shortLabel: t('chartMetricPlaysShort') }
       }),
-      [t]
+      [t, tc]
    );
 
    const timeRangeLabels = useMemo<Record<TimeRange, string>>(

@@ -117,7 +117,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
          {/* logo + realm switcher */}
          <div className="p-4">
             <div className="flex items-center gap-2.5">
-               <SidebarBrand alt={t('sidebar.scoreSaberLogoAlt')} onNavigateAction={onNavigateAction} />
+               <SidebarBrand alt={t('common.scoreSaberLogo')} onNavigateAction={onNavigateAction} />
                <div className="-mr-2 ml-auto flex shrink-0 items-center gap-0.5 xl:mr-0">
                   {/* avoid radix id drift on fresh loads:
                       https://github.com/radix-ui/primitives/issues/3700
@@ -187,7 +187,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                className="bg-secondary/50 text-muted-foreground hover:bg-secondary/80 hover:text-muted-foreground w-full justify-start gap-2 font-normal shadow-none"
             >
                <Search data-icon />
-               <span className="flex-1 text-left">{t('sidebar.search')}</span>
+               <span className="flex-1 text-left">{t('common.searchPlaceholder')}</span>
                <Kbd>{mounted ? (isMac ? '⌘K' : 'Ctrl+K') : '⌘K'}</Kbd>
             </Button>
          </div>

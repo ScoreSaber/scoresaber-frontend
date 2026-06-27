@@ -99,6 +99,7 @@ export function LiveRoomManagementPage({
    liveConnectionUrl: string | null;
 }) {
    const t = useTranslations('live');
+   const tc = useTranslations('common');
    const router = useRouter();
    const { user } = useAuth();
    const membersMutation = useActionMutation<LiveMatchRoomControllerSetRoomMembersResponse>();
@@ -209,11 +210,11 @@ export function LiveRoomManagementPage({
       role: t('role'),
       rank: t('rank'),
       score: t('score'),
-      accuracy: t('accuracy'),
+      accuracy: tc('accuracy'),
       combo: t('combo'),
-      misses: t('misses'),
+      misses: tc('misses'),
       lastPromptResponse: t('lastPromptResponse'),
-      actions: t('actions'),
+      actions: tc('actions'),
       noTeam: t('noTeam'),
       unknownPlayer: t('unknownPlayer'),
       connected: t('connected'),
@@ -807,8 +808,8 @@ export function LiveRoomManagementPage({
                      player: t('player'),
                      rank: t('rank'),
                      score: t('score'),
-                     accuracy: t('accuracy'),
-                     misses: t('misses'),
+                     accuracy: tc('accuracy'),
+                     misses: tc('misses'),
                      completion: t('completion'),
                      reportedAt: t('reportedAt'),
                      unknownMap: t('unknownMap'),
@@ -917,7 +918,7 @@ export function LiveRoomManagementPage({
                />
                <DialogFooter>
                   <Button type="button" variant="outline" onClick={() => setBottifyPlayerId(null)} disabled={bottifyMutation.isPending}>
-                     {t('cancel')}
+                     {tc('cancel')}
                   </Button>
                   <Button type="button" onClick={submitBottify} disabled={bottifyMutation.isPending}>
                      {bottifyMutation.isPending ? <Loader2 data-icon="inline-start" className="animate-spin" /> : null}
@@ -956,7 +957,7 @@ export function LiveRoomManagementPage({
                />
                <DialogFooter>
                   <Button type="button" variant="outline" onClick={() => setBottifyAllOpen(false)} disabled={bottifyAllMutation.isPending}>
-                     {t('cancel')}
+                     {tc('cancel')}
                   </Button>
                   <Button type="button" onClick={submitBottifyAll} disabled={bottifyAllMutation.isPending || bottifiablePlayerRows.length === 0}>
                      {bottifyAllMutation.isPending ? <Loader2 data-icon="inline-start" className="animate-spin" /> : null}

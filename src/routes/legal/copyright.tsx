@@ -31,7 +31,7 @@ function CopyrightTakedownPolicyPage() {
             >
                <header className="space-y-1">
                   <h1>{t('pageTitle')}</h1>
-                  <LegalLastUpdated namespace="legal.copyright" />
+                  <LegalLastUpdated />
                </header>
 
                <p>

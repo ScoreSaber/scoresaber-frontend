@@ -62,6 +62,7 @@ export function LiveRoomsPanel({
    liveConnectionUrl: string | null;
 }) {
    const t = useTranslations('live');
+   const tc = useTranslations('common');
    const router = useRouter();
    const { user } = useAuth();
    const mutation = useActionMutation<LiveMatchRoomControllerUpsertRoomResponse>();
@@ -219,7 +220,7 @@ export function LiveRoomsPanel({
                         <TableHead className="w-[18%] truncate">{t('connectedPlayers')}</TableHead>
                         <TableHead className="truncate">{t('selectedSong')}</TableHead>
                         <TableHead className="w-20 px-1 text-right">
-                           <LiveActionHeader label={t('actions')} />
+                           <LiveActionHeader label={tc('actions')} />
                         </TableHead>
                      </TableRow>
                   </TableHeader>
@@ -363,7 +364,7 @@ export function LiveRoomsPanel({
                                     <TableHead>{t('player')}</TableHead>
                                     <TableHead>{t('team')}</TableHead>
                                     <TableHead className="w-0 text-right">
-                                       <LiveActionHeader label={t('actions')} />
+                                       <LiveActionHeader label={tc('actions')} />
                                     </TableHead>
                                  </TableRow>
                               </TableHeader>
@@ -406,7 +407,7 @@ export function LiveRoomsPanel({
                   </div>
                   <DialogFooter className="bg-background border-t p-4 sm:p-6">
                      <Button type="button" variant="secondary" onClick={() => setCreateOpen(false)} disabled={pending}>
-                        {t('cancel')}
+                        {tc('cancel')}
                      </Button>
                      <Button type="submit" className="cursor-pointer" disabled={pending || !matchId.trim()}>
                         {pending ? <Loader2 className="animate-spin" /> : <Plus data-icon="inline-start" />}

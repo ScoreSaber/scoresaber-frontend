@@ -23,6 +23,7 @@ type TeamDraft = {
 
 export function LiveTeamsPanel({ tournamentId, teams }: { tournamentId: string; teams: LiveTournamentRosterControllerListTeamsItem[] }) {
    const t = useTranslations('live');
+   const tc = useTranslations('common');
    const mutation = useActionMutation<LiveTournamentRosterControllerUpsertTeamResponse>();
    const deleteMutation = useActionMutation();
    const [teamRows, setTeamRows] = useState(teams);
@@ -111,7 +112,7 @@ export function LiveTeamsPanel({ tournamentId, teams }: { tournamentId: string; 
                      <TableRow>
                         <TableHead>{t('name')}</TableHead>
                         <TableHead className="w-0 text-right">
-                           <LiveActionHeader label={t('actions')} />
+                           <LiveActionHeader label={tc('actions')} />
                         </TableHead>
                      </TableRow>
                   </TableHeader>
@@ -175,7 +176,7 @@ export function LiveTeamsPanel({ tournamentId, teams }: { tournamentId: string; 
                   </FormField>
                   <DialogFooter>
                      <Button type="button" variant="secondary" onClick={() => setDialogOpen(false)} disabled={pending}>
-                        {t('cancel')}
+                        {tc('cancel')}
                      </Button>
                      <Button type="submit" className="cursor-pointer" disabled={pending || !draft.name.trim()}>
                         {mutation.isPending ? <Loader2 className="animate-spin" /> : <Save data-icon="inline-start" />}

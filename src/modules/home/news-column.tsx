@@ -77,6 +77,7 @@ function useNewsScrollFade(itemCount: number) {
 
 function NewsCard({ post }: { post: HomeNewsPost }) {
    const t = useTranslations('home');
+   const tc = useTranslations('common');
    const Icon = SOURCE_ICONS[post.source];
    const { bodyRef, expanded, clamped, expand } = useBodyClamp(post.body);
    // image only posts show their images up front, others reveal them on expansion
@@ -103,7 +104,7 @@ function NewsCard({ post }: { post: HomeNewsPost }) {
                href={post.href}
                target="_blank"
                rel="noreferrer"
-               aria-label={t('news.openInNewTab')}
+               aria-label={tc('openInNewTab')}
                className="hover:text-primary ml-auto shrink-0 transition-colors"
             >
                <ExternalLink className="size-3.5" aria-hidden />

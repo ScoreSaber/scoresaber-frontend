@@ -375,6 +375,11 @@ function MergePreview({
 function MergePlayerCard({ title, player }: { title: string; player: MergeChallenge['targetPlayer'] }) {
    const t = useTranslations();
    const ProviderIcon = player.provider === 'STEAM' ? Icons.steam : Icons.meta;
+   const providerLabels = {
+      SCORESABER: t('common.scoreSaber'),
+      STEAM: t('common.providers.STEAM'),
+      OCULUS: t('common.providers.OCULUS')
+   };
 
    return (
       <div className="flex min-w-0 flex-col gap-3">
@@ -385,9 +390,7 @@ function MergePlayerCard({ title, player }: { title: string; player: MergeChalle
             <div className="min-w-0">
                <p className="text-muted-foreground text-xs font-medium">{title}</p>
                <h3 className="truncate text-sm font-semibold">{player.name}</h3>
-               <p className="text-muted-foreground truncate text-xs">
-                  {player.provider === 'STEAM' ? t('settings.connections.providers.STEAM.label') : t('settings.connections.providers.OCULUS.label')}
-               </p>
+               <p className="text-muted-foreground truncate text-xs">{providerLabels[player.provider]}</p>
             </div>
          </div>
          <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-xs">

@@ -1,11 +1,24 @@
 {
    "common": {
+      "scoreSaber": "ScoreSaber",
+      "openInNewTab": "Open in new tab",
+      "privacyPolicy": "Privacy Policy",
+      "cookiesPolicy": "Cookies Policy",
+      "performancePoints": "Performance Points",
+      "pp": "PP",
+      "accuracy": "Accuracy",
+      "misses": "Misses",
       "edit": "",
-      "copy": ""
+      "copy": "",
+      "providers": {
+         "STEAM": "Steam",
+         "OCULUS": "Meta",
+         "PATREON": "Patreon",
+         "DISCORD": "Discord"
+      }
    },
    "login": {
       "password": {
-         "method": "",
          "title": "",
          "description": "",
          "passwordLabel": "",
@@ -32,18 +45,6 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "providers": {
-         "SCORESABER": {
-            "label": ""
-         },
-         "STEAM": {
-            "label": ""
-         },
-         "OCULUS": {
-            "label": "",
-            "tooltip": ""
-         }
-      },
       "email": {
          "metaInfo": {
             "title": "",
@@ -51,18 +52,14 @@
             "newPc": "",
             "quest": ""
          }
-      }
+      },
+      "metaProviderTooltip": "Meta"
    },
    "settings": {
       "tabs": {
          "developer": ""
       },
       "connections": {
-         "providers": {
-            "SCORESABER": {
-               "label": ""
-            }
-         },
          "primaryHelper": "",
          "setup": ""
       },
@@ -174,5 +171,8 @@
          "deny": "",
          "approve": ""
       }
+   },
+   "legal": {
+      "lastUpdated": "Last updated: {date}"
    }
 }

@@ -147,7 +147,7 @@ export function RankingsTable<TLocation>({
                               onClick={() => handleSort(col.sortField)}
                            >
                               {col.sortField === 'totalPP'
-                                 ? t('rankings.pp')
+                                 ? t('common.pp')
                                  : col.sortField === 'totalSubmittedPlays'
                                    ? t('rankings.plays')
                                    : col.sortField === 'totalPlayedRankedLeaderboards'
@@ -201,7 +201,7 @@ export function RankingsTable<TLocation>({
                                  <span className="inline-flex items-center gap-1.5">
                                     <col.icon className="size-3" />
                                     {col.sortField === 'totalPP'
-                                       ? t('rankings.pp')
+                                       ? t('common.pp')
                                        : col.sortField === 'totalSubmittedPlays'
                                          ? t('rankings.totalPlayCount')
                                          : col.sortField === 'totalPlayedRankedLeaderboards'

@@ -164,7 +164,7 @@ function ConnectedPlayerLivePresenceIndicator({
                         </a>
                      </TooltipTrigger>
                      <TooltipContent>
-                        <p>{t('player.livePresence.openInNewTab')}</p>
+                        <p>{t('common.openInNewTab')}</p>
                      </TooltipContent>
                   </Tooltip>
                </DialogTitle>

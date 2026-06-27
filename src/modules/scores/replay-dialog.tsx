@@ -80,7 +80,7 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
                         </a>
                      </TooltipTrigger>
                      <TooltipContent>
-                        <p>{t('score.openInNewTab')}</p>
+                        <p>{t('common.openInNewTab')}</p>
                      </TooltipContent>
                   </Tooltip>
                </DialogTitle>

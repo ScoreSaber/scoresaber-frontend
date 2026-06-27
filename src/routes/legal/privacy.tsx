@@ -31,7 +31,7 @@ function PrivacyPolicyPage() {
             >
                <header className="space-y-1">
                   <h1>{t('pageTitle')}</h1>
-                  <LegalLastUpdated namespace="legal.privacy" />
+                  <LegalLastUpdated />
                </header>
 
                <p>

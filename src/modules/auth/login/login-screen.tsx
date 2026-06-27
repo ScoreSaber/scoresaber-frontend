@@ -31,6 +31,13 @@ export function LoginScreen({ params }: { params: LoginSearchParams }) {
    const initialPanel: LoginPanel = params.mode === 'password-reset' ? 'password' : 'providers';
    const [activePanel, setActivePanel] = useState<LoginPanel>(initialPanel);
    const showIntro = activePanel === 'providers';
+   const providerLabels = {
+      scoresaber: t('common.scoreSaber'),
+      steam: t('common.providers.STEAM'),
+      meta: t('common.providers.OCULUS'),
+      patreon: t('common.providers.PATREON'),
+      discord: t('common.providers.DISCORD')
+   };
 
    return (
       <div className="relative flex min-h-dvh flex-1 items-center justify-center overflow-hidden px-4 pt-10 pb-28">
@@ -40,7 +47,7 @@ export function LoginScreen({ params }: { params: LoginSearchParams }) {
                   <h1 className="text-2xl font-semibold text-balance">
                      {t('login.titlePrefix')}{' '}
                      <span className="font-pixel font-medium tracking-widest whitespace-nowrap [-webkit-text-stroke:0.8px_currentColor]">
-                        {t('login.titleBrand')}
+                        {t('common.scoreSaber')}
                      </span>
                   </h1>
                   <p className="text-muted-foreground text-sm text-pretty">{t('login.subtitle')}</p>
@@ -52,12 +59,7 @@ export function LoginScreen({ params }: { params: LoginSearchParams }) {
                   <TriangleAlert aria-hidden />
                   <AlertTitle>
                      {t('login.oauth.failedTitle', {
-                        provider:
-                           failedProvider === 'steam'
-                              ? t('login.providers.STEAM.label')
-                              : failedProvider === 'patreon'
-                                ? t('login.providers.PATREON.label')
-                                : t('login.providers.DISCORD.label')
+                        provider: providerLabels[failedProvider]
                      })}
                   </AlertTitle>
                   <AlertDescription>{t('login.oauth.failedDescription')}</AlertDescription>
@@ -72,14 +74,8 @@ export function LoginScreen({ params }: { params: LoginSearchParams }) {
                patreonHref={getRouteHref(router, linkOptions({ to: '/auth/patreon', search: { intent: 'login', redirectTo: absoluteRedirectTo } }))}
                discordHref={getRouteHref(router, linkOptions({ to: '/auth/discord', search: { intent: 'login', redirectTo: absoluteRedirectTo } }))}
                redirectTo={redirectTo}
-               labels={{
-                  scoresaber: t('login.providers.SCORESABER.label'),
-                  steam: t('login.providers.STEAM.label'),
-                  meta: t('login.providers.OCULUS.label'),
-                  patreon: t('login.providers.PATREON.label'),
-                  discord: t('login.providers.DISCORD.label')
-               }}
-               metaTooltip={t('login.providers.OCULUS.tooltip')}
+               labels={providerLabels}
+               metaTooltip={t('login.metaProviderTooltip')}
                showOtherMethodsLabel={t('login.showOtherMethods')}
                hideOtherMethodsLabel={t('login.hideOtherMethods')}
                secondaryDescription={t('login.secondaryDescription')}

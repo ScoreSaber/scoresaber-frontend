@@ -55,7 +55,6 @@
             "togglePrereleases": "Показать предрелизы",
             "togglePrereleasesAria": "Включить предрелизные версии",
             "column": {
-               "modVersion": "ScoreSaber",
                "bsVersion": "Beat Saber",
                "published": "Выпущено"
             },
@@ -130,8 +129,7 @@
          "browse": "Обзор"
       },
       "news": {
-         "readMore": "Узнать больше...",
-         "openInNewTab": "Открыть в новой вкладке"
+         "readMore": "Узнать больше..."
       },
       "rankedBatch": {
          "eyebrow": "Последний рейтинговый батч",
@@ -171,28 +169,9 @@
    },
    "login": {
       "titlePrefix": "Вход в",
-      "titleBrand": "ScoreSaber",
       "showOtherMethods": "Показать другие способы",
       "hideOtherMethods": "Скрыть другие способы",
       "secondaryDescription": "Дополнительные аккаунты, такие как Discord и Patreon, могут быть использованы только после того, как вы подключите их в настройках аккаунта",
-      "providers": {
-         "SCORESABER": {
-            "label": "ScoreSaber"
-         },
-         "STEAM": {
-            "label": "Steam"
-         },
-         "OCULUS": {
-            "label": "Meta",
-            "tooltip": "Войти через Meta"
-         },
-         "PATREON": {
-            "label": "Patreon"
-         },
-         "DISCORD": {
-            "label": "Discord"
-         }
-      },
       "oauth": {
          "failedTitle": "Не удалось войти через {provider}",
          "failedDescription": "Сервис авторизации не завершил вход. Попробуйте снова с этой страницы"
@@ -227,7 +206,6 @@
          }
       },
       "password": {
-         "method": "Войти с помощью пароля",
          "title": "Войти с помощью пароля",
          "description": "Введите ваш e-mail и пароль для входа",
          "passwordLabel": "Пароль",
@@ -259,11 +237,10 @@
          "failedToast": "Не удалось зарегистрироваться",
          "emailCallToAction": "Создать новую учётную запись"
       },
-      "subtitle": "Войдите или создайте учётную запись с помощью ScoreSaber"
+      "subtitle": "Войдите или создайте учётную запись с помощью ScoreSaber",
+      "metaProviderTooltip": "Войти через Meta"
    },
    "sidebar": {
-      "scoreSaberLogoAlt": "Лого ScoreSaber",
-      "search": "Поиск...",
       "activeRealm": "Активный реалм",
       "comingSoon": "Скоро...",
       "joinRealm": "Присоединиться к реалму",
@@ -273,8 +250,6 @@
       "dark": "Темная",
       "system": "Системная",
       "legal": "Правовая информация",
-      "privacyPolicy": "Политика конфиденциальности",
-      "cookiesPolicy": "Политика cookie-файлов",
       "copyrightTakedowns": "Удаление по запросу правообладателя",
       "logIn": "Войти",
       "logOut": "Выйти",
@@ -288,6 +263,7 @@
    },
    "common": {
       "language": "Язык",
+      "scoreSaber": "ScoreSaber",
       "cancel": "Отменить",
       "back": "Назад",
       "confirm": "Подтвердить",
@@ -301,9 +277,12 @@
       "goHome": "Домой",
       "searchPlaceholder": "Поиск...",
       "clearSearch": "Очистить поиск",
+      "openInNewTab": "Открыть в новой вкладке",
       "filters": "Фильтры",
       "hideFilters": "Скрыть фильтры",
       "showFilters": "Показать фильтры",
+      "privacyPolicy": "Политика конфиденциальности",
+      "cookiesPolicy": "Политика cookie-файлов",
       "global": "Мир",
       "friends": "Друзья",
       "aroundMe": "Вокруг меня",
@@ -320,6 +299,9 @@
       "unknownDate": "Неизвестная дата",
       "justNow": "только что",
       "performancePoints": "Очки производительности",
+      "pp": "PP",
+      "accuracy": "Точность",
+      "misses": "Промахи",
       "totalPlays": "Всего сыграно",
       "actions": "Действия",
       "rankRequestActions": "Действия по ранк реквесту",
@@ -328,7 +310,13 @@
       "underConstruction": "в разработке",
       "edit": "Изменить",
       "copy": "Скопировать",
-      "copyFailed": "Ошибка копирования"
+      "copyFailed": "Ошибка копирования",
+      "providers": {
+         "STEAM": "Steam",
+         "OCULUS": "Meta",
+         "PATREON": "Patreon",
+         "DISCORD": "Discord"
+      }
    },
    "error": {
       "somethingWentWrong": "Что-то пошло не так",
@@ -371,7 +359,6 @@
    },
    "rankings": {
       "searchPlayers": "Поиск игроков",
-      "pp": "PP",
       "totalPlayCount": "Всего игр",
       "plays": "Сыграно",
       "rankedPlayCount": "Всего рейтинговых игр",
@@ -381,7 +368,6 @@
       "live": "В эфире"
    },
    "score": {
-      "accuracy": "Точность",
       "legacyAccuracy": "Рекорд был поставлен до изменений максимальной точности",
       "weighted": "Взвешенный {weightedPercent}",
       "score": "Очки",
@@ -394,10 +380,8 @@
       "collapseLeaderboard": "Свернуть таблицу рекордов",
       "expandLeaderboard": "Развернуть таблицу рекордов",
       "replayViewer": "Просмотр повторов",
-      "openInNewTab": "Открыть в новой вкладке",
       "openReplayNewTab": "Открыть повтор в новой вкладке",
       "gridAccuracy": "Сетка точности",
-      "misses": "Промахи",
       "badCuts": "Неправ. разрезы",
       "bombs": "Бомбы",
       "streak115": "115 подряд",
@@ -469,12 +453,9 @@
          "live": "В игре",
          "online": "В меню",
          "spectateCta": "Наблюдать",
-         "playingTooltip": "Открыть в режиме наблюдателя",
-         "menuTooltip": "Открыть в режиме наблюдателя",
          "openViewer": "Открыть в режиме наблюдателя",
          "viewerTitle": "Просмотр эфира",
          "openViewerNewTab": "Открыть просмотр эфира в новой вкладке",
-         "openInNewTab": "Открыть в новой вкладке",
          "loading": "Загрузка просмотра эфира"
       },
       "inactiveTooltip": "Данный игроков не ставил никаких рекордов за последнее время",
@@ -560,8 +541,6 @@
       "chartEnableJs": "Пожалуйста, включите JavaScript для просмотра графика",
       "chartMetricRank": "Место в мире",
       "chartMetricRankShort": "Место",
-      "chartMetricPP": "Очки производительности",
-      "chartMetricPPShort": "PP",
       "chartMetricAcc": "Средн. точность",
       "chartMetricAccShort": "Средн. точн.",
       "chartMetricPlays": "Всего сыграно",
@@ -715,59 +694,25 @@
    },
    "live": {
       "selectorTitle": "В эфире",
-      "selectorDescription": "Создавайте турниры и открываете те, которые вы организовываете",
       "createTournament": "Создать турнир",
-      "createTournamentDescription": "",
       "createTournamentDialogTitle": "Создать турнир",
-      "createTournamentDialogDescription": "Назовите турнир и выберите функции, которые будут включены для вашего эфира",
       "tournamentNamePlaceholder": "Весенний чемпионат",
-      "myTournaments": "Мои турниры",
-      "myTournamentsDescription": "Турниры, где вы имеете роль организатора или сотрудника",
       "noTournaments": "Пока нет турниров онлайн",
-      "noTournamentsDescription": "Создайте турнир, чтобы настроить комнаты и персонал",
-      "openTournament": "Открыть турнир",
       "createTournamentSuccess": "Турнир создан",
       "createTournamentFailed": "Не удалось создать турнир",
-      "tournamentId": "ID турнира",
-      "tournamentIdPlaceholder": "весна-2026",
-      "pageEyebrow": "Онлайн платформа",
-      "pageDescription": "Оперируйте игроками, комнатами, рекордами и наблюдателями эфира",
-      "overview": "Обзор",
       "settings": "Настройки",
       "players": "Игроки",
       "teams": "Команды",
       "roles": "Роли",
       "rooms": "Комнаты",
-      "viewer": "Просмотр",
-      "overlay": "Оверлей",
-      "liveServiceOnline": "Онлайн сервис в сети",
-      "liveServiceOffline": "Онлайн сервис не в сети",
-      "liveServiceUnknown": "",
       "authorizedPlayers": "Авторизованные игроки",
-      "openRooms": "Открытые комнаты",
-      "activePresence": "",
-      "downloadsInProgress": "Активные загрузки",
-      "setupRequired": "Требуется настройка турнира",
-      "setupRequiredDescription": "Подробности о прямом эфире турнира пока недоступны",
-      "liveState": "Статус эфира",
-      "liveStateDescription": "",
-      "liveService": "Онлайн сервис",
-      "enabled": "Включено",
-      "disabled": "Отключено",
-      "lastServerStatus": "Последний статус сервера",
-      "lastPlayerSync": "Последняя синхронизация игрока",
-      "matchRooms": "Комнаты матчей",
-      "persistedRealtimeGap": "",
-      "persistedRealtimeGapDescription": "Данные о рекордах в реальном времени, окончательных рекордах и эфирах повторов сохраняются на сервере, но пока что не имеют HTTP-эндпоинты для их чтения",
       "tournamentSettings": "Настройки турнира",
-      "tournamentSettingsDescription": "Выберите, как должен проходить эфир данного турнира",
       "name": "Название",
       "status": "Статус",
       "deniedMods": "Запрещённые моды",
       "deniedModsDescription": "",
       "deniedModsList": "",
       "deniedModsPlaceholder": "камера какого-то мода*",
-      "saveSettings": "Сохранить настройки",
       "saveChanges": "Сохранить изменения",
       "settingsSaved": "Настройки сохранены",
       "settingsSaveFailed": "Не удалось сохранить настройки",
@@ -787,23 +732,13 @@
       "addAuthorizedPlayerDescription": "Выберите ScoreSaber игроков и добавьте их в этот турнир",
       "playerAlreadyAuthorized": "Игрок уже авторизован",
       "removePlayer": "Исключить игрока",
-      "savePlayers": "Сохранить игроков",
       "playersSaved": "Игроки сохранены",
       "playersSkippedMissing": "",
       "playersSaveFailed": "Не удалось сохранить игроков",
-      "invalidPlayerRows": "",
-      "authorizedPlayersDescription": "",
       "player": "Игрок",
-      "publicPlayerId": "ID игрока",
       "unknownPlayer": "Неизвестный игрок",
-      "actions": "Действия",
-      "platform": "Платформа",
-      "platformId": "ID платформы",
-      "displayName": "Отображаемое имя",
-      "playerId": "ID игрока",
       "team": "Команда",
       "noTeam": "Нет команды",
-      "selectTeam": "Выбрать команду",
       "addTeam": "Добавить команду",
       "editTeam": "Редактировать команду",
       "deleteTeam": "Удалить команду",
@@ -814,8 +749,6 @@
       "teamDeleted": "Команда удалена",
       "teamDeleteFailed": "Не удалось удалить команду",
       "noTeams": "Нет команд",
-      "noTeamColor": "Нет цвета",
-      "unknownTeamName": "Неизвестная команда: {name}",
       "noTeamPlayers": "Игроки в этой команде отсутствуют",
       "importCsv": "Импортировать CSV",
       "exportCsv": "Экспортировать CSV",
@@ -825,13 +758,7 @@
       "roomCsvPlaceholder": "ID игрока,имя игрока",
       "importPlayersCsv": "Импортировать CSV игрока",
       "exportPlayersCsv": "Экспортировать CSV игрока",
-      "importRoomPlayersCsv": "Импортировать игроков комнаты из CSV",
-      "exportRoomPlayersCsv": "Экспортировать игроков комнаты из CSV",
-      "sync": "Синхронизировать",
       "noAuthorizedPlayers": "Авторизованные игроки отсутствуют",
-      "roleEditor": "Редактор ролей",
-      "roleEditorDescription": "Создать роли для турнира и настроить права доступа",
-      "roleIdOptional": "ID роли (необязательно)",
       "color": "Цвет",
       "description": "Описание",
       "saveRole": "Сохранить роль",
@@ -839,9 +766,7 @@
       "roleSaved": "Роль сохранена",
       "roleSaveFailed": "Не удалось сохранить роль",
       "rolesAndAssignments": "Роли и назначения",
-      "rolesAndAssignmentsDescription": "",
       "role": "Роль",
-      "selectRole": "Выбрать роль",
       "addRole": "Добавить роль",
       "editRole": "Редактировать роль",
       "deleteRole": "Удалить роль",
@@ -849,11 +774,7 @@
       "roleDeleted": "Роль удалена",
       "roleDeleteFailed": "Не удалось удалить роль",
       "assignPlayer": "Назначить игрока",
-      "assignPlayerDescription": "Выберите игрока для назначения {role}",
-      "cancel": "Отменить",
-      "assignRole": "Присвоить роль",
       "permissions": "Разрешения",
-      "invalidRoleAssignment": "Недопустимое назначение роли",
       "roleAssigned": "Роль назначена",
       "roleAssignFailed": "Не удалось назначить роль",
       "roleUnassigned": "Роль убрана",
@@ -869,20 +790,11 @@
       "playerAlreadyInRoom": "Игрок уже в этой комнате",
       "noRoomPlayers": "Игроки не выбраны",
       "addRoomPlayer": "Добавить игрока в комнату",
-      "addRoomPlayerDescription": "",
       "addRoomTeam": "Добавить команду в комнату",
       "manageRoom": "Управление комнатой",
-      "roomPlayers": "Игроки в комнате",
       "roomPlayersSaved": "Игроки комнаты сохранены",
-      "managePlayers": "Управление игроками",
-      "liveConnectedPlayers": "Подключённые игроки",
-      "noConnectedPlayers": "Нет игроков, подключённых к этой комнате",
       "teamMode": "Командный режим",
       "flatMode": "Плоский режим",
-      "authorizedRoster": "Авторизованные игроки",
-      "addToRoom": "Добавить в комнату",
-      "inRoom": "В комнате",
-      "songSelection": "Выбор песни",
       "state": "Статус",
       "connected": "Подключен",
       "notConnected": "Не в сети",
@@ -897,30 +809,13 @@
       "deleteRoomDescription": "Удалить {room}? Это удалит комнату и список участников.",
       "roomDeleted": "Комната удалена",
       "roomDeleteFailed": "Не удалось удалить комнату",
-      "roomControls": "Управление комнатой",
-      "createMatchRoom": "Создать комнату матча",
-      "createMatchRoomDescription": "Создайте или перепроверьте комнату с матчем и желаемых участников",
-      "matchId": "ID матча",
-      "memberRows": "Строки участников",
-      "memberRowsPlaceholder": "76561198000000000,42,ИГРОК",
-      "saveRoom": "Сохранить комнату",
       "invalidRoom": "Некорректные данные комнаты",
       "roomSaved": "Комната сохранена",
       "roomSaveFailed": "Не в сети",
       "noRooms": "Комнаты с матчами отсутствуют",
-      "loaded": "Загружено",
-      "loading": "Загрузка",
       "playerCount": "{count, plural, one {# игрок} other {# игроков}}",
-      "membersAndRoles": "Участники и роли",
-      "saveMembers": "Сохранить участников",
-      "invalidMemberRows": "",
-      "membersSaved": "Участники сохранены",
       "membersSaveFailed": "Не удалость сохранить участников",
-      "playState": "Состояние игры",
-      "downloadState": "Состояние загрузки",
-      "noMembers": "Участники отсутствуют",
       "selectedSong": "Карта",
-      "noSelectedSong": "Выбранные песни отсутствуют",
       "changeSong": "Выбрать",
       "selectSong": "Выбрать песню",
       "songSearch": "Поиск песни",
@@ -932,21 +827,9 @@
       "noSongs": "Карты не найдены",
       "songLookupFailed": "Не удалось загрузить карту",
       "chooseDifficulty": "Выберите сложность",
-      "loadState": "Состояние загрузки",
-      "mapHash": "Хэш карты",
-      "songName": "Название песни",
-      "difficulty": "Сложность",
-      "characteristic": "Характеристика",
-      "leaderboardId": "ID таблицы рекордов",
-      "beatSaverKey": "Код BeatSaver",
-      "maxScore": "Макс. счёт",
-      "loadSong": "Загрузить песню",
-      "invalidSong": "Некорректные данные песни",
       "songLoadQueued": "Загрузка песни добавлена в очередь",
       "songLoadFailed": "Не удалось загрузить песню",
-      "remoteCommands": "Дистанционные команды",
       "playSettings": "Настройки воспроизведения",
-      "startWithSync": "Запустить с синхронизацией",
       "countdownSeconds": "Обратный отсчёт (в секундах)",
       "countdownStatus": "Обратный отсчёт: {count}сек.",
       "forceImmediateStart": "Принудительно начать",
@@ -956,7 +839,6 @@
       "startMapNotReadyPlayers": "Неготовые игроки",
       "startAnyway": "Всё равно запустить",
       "stopMap": "Остановить карту",
-      "returnToMenu": "Вернуться в меню",
       "closeRoom": "Закрыть комнату",
       "startCommandSent": "Команда старта отправлена",
       "returnCommandSent": "Команда возврата отправлена",
@@ -972,8 +854,6 @@
       "promptRequired": "",
       "promptSent": "Вопрос отправлен",
       "promptFailed": "Не удалось отправить вопрос",
-      "promptResponses": "Ответы на вопрос",
-      "noPromptResponses": "Ответов на вопрос ещё нет",
       "lastPromptResponse": "Последний ответ",
       "promptResponseHistoryForPlayer": "Ответ на вопрос от игрока {player}",
       "promptResponseYes": "ДА",
@@ -991,18 +871,8 @@
       "followRoom": "Следить за комнатой",
       "followRoomSent": "Команда отслеживания отправлена",
       "followRoomFailed": "Не удалось отслеживать комнату",
-      "gameplayRestrictions": "Ограничения геймплея",
-      "disablePause": "Отключить паузу",
-      "disableFail": "Отключить фейл",
-      "disableScoresaberSubmission": "Отключить отправку рекордов на ScoreSaber",
-      "disableCustomNotesOnStream": "Отключить пользовательские ноты в эфире",
-      "showScoreboard": "Показывать таблицу результатов",
-      "applyRestrictions": "Применить ограничения",
-      "restrictionsSent": "Ограничения отправлены",
       "signInRequired": "Требуется вход",
       "signInRequiredDescription": "Войдите, прежде чем смотреть прямой эфир комнаты",
-      "error": "Ошибка",
-      "liveRoomStateError": "Ошибка состояния комнаты",
       "roomMenu": "Меню комнаты",
       "roomTableSettings": "Настройка таблицы комнаты",
       "roomStatusPlaying": "играет",
@@ -1043,21 +913,15 @@
       "removePlayerFromRoom": "Убрать",
       "removePlayerFromRoomDescription": "Убрать игрока {player} из этой комнаты?",
       "playerRemovedFromRoom": "Игрок убран из комнаты",
-      "scores": "Рекорды",
       "rank": "Ранг",
       "score": "Счёт",
-      "accuracy": "Точность",
       "combo": "Комбо",
-      "misses": "Промахи",
       "completion": "Прогресс",
       "reportedAt": "Жалоба отправлена",
       "noRecentResults": "Результатов ещё нет",
       "unknownMap": "Неизвестная карта",
-      "songPosition": "Позиция песни",
-      "noScoresYet": "Рекордов ещё нет",
       "liveServiceUnavailableDescription": "",
       "liveSocketErrorDescription": "",
-      "backToTournament": "Назад",
       "backToRooms": "Назад"
    },
    "settings": {
@@ -1108,23 +972,6 @@
          "refreshFailed": "Не удалось обновить бонусы Patreon",
          "removed": "Аккаунт отвязан",
          "removeFailed": "Не удалось отвязать аккаунт",
-         "providers": {
-            "STEAM": {
-               "label": "Steam"
-            },
-            "OCULUS": {
-               "label": "Meta"
-            },
-            "PATREON": {
-               "label": "Patreon"
-            },
-            "DISCORD": {
-               "label": "Discord"
-            },
-            "SCORESABER": {
-               "label": "ScoreSaber"
-            }
-         },
          "oauth": {
             "connectedTitle": "{provider} привязан",
             "connectedDescription": "Привязка готова к использованию",
@@ -1203,7 +1050,6 @@
             "timeRemainingColumn": "Времени осталось",
             "songColumn": "Песня",
             "difficultyColumn": "Сложность",
-            "ppColumn": "PP",
             "rankColumn": "Место",
             "actionColumn": "Действие",
             "claimAction": "Защитить повтор",
@@ -1357,16 +1203,13 @@
    },
    "legal": {
       "privacy": {
-         "pageTitle": "Политика конфиденциальности",
-         "lastUpdated": "Последнее обновление: {date}"
+         "pageTitle": "Политика конфиденциальности"
       },
       "cookies": {
-         "pageTitle": "Политика cookie-файлов",
-         "lastUpdated": "Последнее обновление: {date}"
+         "pageTitle": "Политика cookie-файлов"
       },
       "copyright": {
-         "pageTitle": "Политика авторского права",
-         "lastUpdated": "Последнее обновление: {date}"
+         "pageTitle": "Политика авторского права"
       },
       "consent": {
          "bannerTitle": "Уведомление о cookie-файлах",
@@ -1381,10 +1224,9 @@
          "save": "Сохранить выбор",
          "close": "Закрыть",
          "necessaryTitle": "Необходимые cookies",
-         "necessaryDescription": "Необходимо для входа, безопасности, ограничений по запросам, языка, темы, сохраненных фильтров и основных функций сайта. Это всегда включено.",
-         "privacyPolicy": "Политика конфиденциальности",
-         "cookiePolicy": "Политика cookie-файлов"
-      }
+         "necessaryDescription": "Необходимо для входа, безопасности, ограничений по запросам, языка, темы, сохраненных фильтров и основных функций сайта. Это всегда включено."
+      },
+      "lastUpdated": "Последнее обновление: {date}"
    },
    "oauth": {
       "consent": {

@@ -44,6 +44,7 @@ export function LivePlayersPanel({
    teams: LiveTournamentRosterControllerListTeamsItem[];
 }) {
    const t = useTranslations('live');
+   const tc = useTranslations('common');
    const mutation = useActionMutation<LiveTournamentRosterControllerSyncAuthorizedPlayersResponse>();
    const [teamRows, setTeamRows] = useState(teams);
    const [savedPlayers, setSavedPlayers] = useState(() => authorizedPlayers.map(toDraftPlayer));
@@ -254,7 +255,7 @@ export function LivePlayersPanel({
                         <TableHead>{t('player')}</TableHead>
                         <TableHead>{t('team')}</TableHead>
                         <TableHead className="w-0 text-right">
-                           <LiveActionHeader label={t('actions')} />
+                           <LiveActionHeader label={tc('actions')} />
                         </TableHead>
                      </TableRow>
                   </TableHeader>

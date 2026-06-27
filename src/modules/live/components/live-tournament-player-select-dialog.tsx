@@ -29,6 +29,7 @@ export function LiveTournamentPlayerSelectDialog({
    disabledPlayerIds?: string[];
 }) {
    const t = useTranslations('live');
+   const tc = useTranslations('common');
    const [query, setQuery] = useState('');
    const disabledIds = useMemo(() => new Set(disabledPlayerIds), [disabledPlayerIds]);
    const filteredPlayers = players.filter((player) => {
@@ -67,7 +68,7 @@ export function LiveTournamentPlayerSelectDialog({
                            <TableHead>{t('player')}</TableHead>
                            <TableHead>{t('team')}</TableHead>
                            <TableHead className="w-0 text-right">
-                              <LiveActionHeader label={t('actions')} />
+                              <LiveActionHeader label={tc('actions')} />
                            </TableHead>
                         </TableRow>
                      </TableHeader>

@@ -122,6 +122,7 @@ function ConsentDescription({ description, privacyPolicy, cookiePolicy }: { desc
 export function ConsentManager({ children }: { children?: ReactNode }) {
    const locale = useLocale();
    const t = useTranslations('legal.consent');
+   const tc = useTranslations('common');
 
    const messages = useMemo<Record<string, Partial<Translations>>>(
       () => ({
@@ -148,19 +149,19 @@ export function ConsentManager({ children }: { children?: ReactNode }) {
                }
             },
             legalLinks: {
-               privacyPolicy: t('privacyPolicy'),
-               cookiePolicy: t('cookiePolicy')
+               privacyPolicy: tc('privacyPolicy'),
+               cookiePolicy: tc('cookiesPolicy')
             }
          }
       }),
-      [locale, t]
+      [locale, t, tc]
    );
 
    const bannerDescription = (
-      <ConsentDescription description={t('bannerDescription')} privacyPolicy={t('privacyPolicy')} cookiePolicy={t('cookiePolicy')} />
+      <ConsentDescription description={t('bannerDescription')} privacyPolicy={tc('privacyPolicy')} cookiePolicy={tc('cookiesPolicy')} />
    );
    const dialogDescription = (
-      <ConsentDescription description={t('dialogDescription')} privacyPolicy={t('privacyPolicy')} cookiePolicy={t('cookiePolicy')} />
+      <ConsentDescription description={t('dialogDescription')} privacyPolicy={tc('privacyPolicy')} cookiePolicy={tc('cookiesPolicy')} />
    );
 
    return (

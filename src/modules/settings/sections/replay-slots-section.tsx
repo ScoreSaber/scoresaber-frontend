@@ -190,7 +190,7 @@ function ReplayList({
                {showTimeRemaining && <span>{t('settings.perks.replaySlots.timeRemainingColumn')}</span>}
                <span>{t('settings.perks.replaySlots.songColumn')}</span>
                <span>{t('settings.perks.replaySlots.difficultyColumn')}</span>
-               <span>{t('settings.perks.replaySlots.ppColumn')}</span>
+               <span>{t('common.pp')}</span>
                <span>{t('settings.perks.replaySlots.rankColumn')}</span>
                <span className="sr-only">{t('settings.perks.replaySlots.actionColumn')}</span>
             </div>

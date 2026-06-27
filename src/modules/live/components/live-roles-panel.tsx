@@ -54,6 +54,7 @@ export function LiveRolesPanel({
    options: LiveTournamentControllerGetWorkflowOptionsResponse;
 }) {
    const t = useTranslations('live');
+   const tc = useTranslations('common');
    const mutation = useActionMutation();
    const emptyRoleForm = useMemo(() => createEmptyRoleForm(options.tournamentPermissions), [options.tournamentPermissions]);
    const rolePayloadSchema = useMemo(() => createRolePayloadSchema(options.tournamentPermissions), [options.tournamentPermissions]);
@@ -200,7 +201,7 @@ export function LiveRolesPanel({
                         <TableHead>{t('role')}</TableHead>
                         <TableHead>{t('permissions')}</TableHead>
                         <TableHead className="w-0 text-right">
-                           <LiveActionHeader label={t('actions')} />
+                           <LiveActionHeader label={tc('actions')} />
                         </TableHead>
                      </TableRow>
                   </TableHeader>
@@ -347,7 +348,7 @@ export function LiveRolesPanel({
                   </div>
                   <DialogFooter className="bg-background border-t p-4 sm:p-6">
                      <Button type="button" variant="secondary" onClick={() => setEditorOpen(false)} disabled={pending}>
-                        {t('cancel')}
+                        {tc('cancel')}
                      </Button>
                      <Button type="submit" className="cursor-pointer" disabled={pending}>
                         {pending ? <Loader2 className="animate-spin" /> : null}
