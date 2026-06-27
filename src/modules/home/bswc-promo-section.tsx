@@ -290,23 +290,17 @@ function MatchStartDate({ startsAt }: { startsAt: string }) {
       return <span className="min-w-0 truncate text-xs font-semibold opacity-0">...</span>;
    }
 
-   const dateParts = new Intl.DateTimeFormat(locale, {
+   const dateText = new Intl.DateTimeFormat(locale, {
       timeZone,
       weekday: 'short',
       day: 'numeric',
-      month: 'short'
-   }).formatToParts(date);
-   const timeText = new Intl.DateTimeFormat(locale, {
-      timeZone,
+      month: 'short',
       hour: 'numeric'
    }).format(date);
-   const weekday = dateParts.find((part) => part.type === 'weekday')?.value;
-   const day = dateParts.find((part) => part.type === 'day')?.value;
-   const month = dateParts.find((part) => part.type === 'month')?.value;
 
    return (
       <span className="min-w-0 truncate text-xs font-semibold" suppressHydrationWarning>
-         {weekday} {day} {month}, {timeText}
+         {dateText}
       </span>
    );
 }
@@ -323,29 +317,52 @@ function useBrowserTimeZone() {
 
 function CountdownLine({ parts }: { parts: CountdownPart[] }) {
    const t = useTranslations('home');
+   const locale = useLocale();
    const displayParts = parts[0].value === 0 ? parts.slice(1) : parts;
+   const formattedDuration = formatCountdownDuration(locale, displayParts);
 
    return (
       <div className="text-primary flex flex-wrap items-baseline gap-x-1.5 gap-y-1 font-mono text-xs font-semibold" suppressHydrationWarning>
-         <NumberFlowGroup>
-            <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
-               {displayParts.map((part) => (
-                  <span key={part.key} className="inline-flex items-baseline gap-0.5">
-                     <NumberFlow
-                        value={part.value}
-                        trend={-1}
-                        format={{ minimumIntegerDigits: 2 }}
-                        digits={part.key === 'minutes' || part.key === 'seconds' ? { 1: { max: 5 } } : undefined}
-                        className="tabular-nums"
-                     />
-                     <span className="font-sans">{t(`bswc.countdown.${part.key}`)}</span>
-                  </span>
-               ))}
-            </span>
-         </NumberFlowGroup>
+         {formattedDuration ?? (
+            <NumberFlowGroup>
+               <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
+                  {displayParts.map((part) => (
+                     <span key={part.key} className="inline-flex items-baseline gap-0.5">
+                        <NumberFlow
+                           value={part.value}
+                           trend={-1}
+                           format={{ minimumIntegerDigits: 2 }}
+                           digits={part.key === 'minutes' || part.key === 'seconds' ? { 1: { max: 5 } } : undefined}
+                           className="tabular-nums"
+                        />
+                        <span className="font-sans">{t(`bswc.countdown.${part.key}`)}</span>
+                     </span>
+                  ))}
+               </span>
+            </NumberFlowGroup>
+         )}
       </div>
    );
 }
+
+function formatCountdownDuration(locale: string, parts: CountdownPart[]) {
+   const DurationFormat = getDurationFormat();
+   if (!DurationFormat) return null;
+
+   return new DurationFormat(locale, { style: 'narrow' }).format(Object.fromEntries(parts.map((part) => [part.key, part.value])));
+}
+
+function getDurationFormat() {
+   const intlWithDuration = Intl as typeof Intl & { DurationFormat?: DurationFormatConstructor };
+   return intlWithDuration.DurationFormat ?? null;
+}
+
+type DurationFormatConstructor = new (
+   locale: string,
+   options: { style: 'long' | 'short' | 'narrow' }
+) => {
+   format(duration: Partial<Record<CountdownPart['key'], number>>): string;
+};
 
 function getCountdownParts(startsAt: string | undefined, now: number): CountdownPart[] {
    const startsAtMs = startsAt ? Date.parse(startsAt) : 0;
