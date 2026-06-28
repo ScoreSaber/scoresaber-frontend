@@ -4,7 +4,21 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Link, useRouter } from '@tanstack/react-router';
 import { Result } from 'better-result';
-import { ArrowLeft, Bot, Loader2, MessageSquare, MoreHorizontal, Play, RotateCcw, Settings, Trash2, UserPlus, Users } from 'lucide-react';
+import {
+   ArrowLeft,
+   Bot,
+   Loader2,
+   MessageSquare,
+   MoreHorizontal,
+   Play,
+   RotateCcw,
+   Settings,
+   Trash2,
+   UserCheck,
+   UserPlus,
+   Users,
+   UserX
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'use-intl';
 
@@ -75,6 +89,8 @@ type RoomRosterMode = LiveMatchRoomControllerListRoomsItem['rosterMode'];
 type RoomFinalScore = LiveMatchRoomControllerGetRoomViewResponse['finalScores'][number];
 type LiveWorkflowOptions = LiveMatchRoomControllerGetRoomViewResponse['options'];
 type LiveWorkflowAccess = LiveMatchRoomControllerGetRoomViewResponse['access'];
+type LiveRoomUpsertPayload = Parameters<typeof upsertLiveRoom>[1] & { activePlayerIds?: string[] };
+type LiveRoomMembersPayload = Parameters<typeof setLiveRoomMembers>[2] & { activePlayerIds?: string[] };
 type LudusPromptResponses = ReturnType<typeof useLudus>['promptResponses'];
 type LudusChatMessage = ReturnType<typeof useLudus>['chatMessages'][number];
 type LudusRoom = ReturnType<typeof useLudus>['rooms'][number];
@@ -175,8 +191,10 @@ export function LiveRoomManagementPage({
       () => getRoomPlayerRows(roomPlayers, room.members, ludusRoom, roomScores, t('connected'), roomCountdownLabel),
       [ludusRoom, room.members, roomCountdownLabel, roomPlayers, roomScores, t]
    );
-   const bottifiablePlayerRows = useMemo(() => managedPlayerRows.filter((player) => !player.isBot), [managedPlayerRows]);
-   const unreadyPlayerRows = useMemo(() => managedPlayerRows.filter((player) => player.readyState !== 'READY'), [managedPlayerRows]);
+   const activePlayerRows = useMemo(() => managedPlayerRows.filter((player) => player.active ?? true), [managedPlayerRows]);
+   const inactivePlayerRows = useMemo(() => managedPlayerRows.filter((player) => !(player.active ?? true)), [managedPlayerRows]);
+   const bottifiablePlayerRows = useMemo(() => activePlayerRows.filter((player) => !player.isBot), [activePlayerRows]);
+   const unreadyPlayerRows = useMemo(() => activePlayerRows.filter((player) => player.readyState !== 'READY'), [activePlayerRows]);
    const roomPlayback = useMemo(() => getRoomPlayback(ludusRoom, roomScores, nowMs), [ludusRoom, nowMs, roomScores]);
    const roomStatusLabel =
       ludus.error != null
@@ -208,6 +226,7 @@ export function LiveRoomManagementPage({
       state: t('state'),
       lastSeen: t('lastSeen'),
       role: t('role'),
+      participation: t('participation'),
       rank: t('rank'),
       score: t('score'),
       accuracy: tc('accuracy'),
@@ -219,6 +238,8 @@ export function LiveRoomManagementPage({
       unknownPlayer: t('unknownPlayer'),
       connected: t('connected'),
       notConnected: t('notConnected'),
+      active: t('active'),
+      inactive: t('inactive'),
       ready: t('ready'),
       notReady: t('notReady'),
       afk: t('afk')
@@ -326,7 +347,7 @@ export function LiveRoomManagementPage({
 
       const byId = new Map(roomPlayers.map((player) => [player.playerId, player]));
       for (const player of teamPlayers) {
-         byId.set(player.playerId, toRoomPlayerDraft(player));
+         if (!byId.has(player.playerId)) byId.set(player.playerId, toRoomPlayerDraft(player));
       }
 
       persistRoomPlayers([...byId.values()], rosterMode, t('roomPlayersSaved'), () => setTeamPickerOpen(false));
@@ -346,8 +367,9 @@ export function LiveRoomManagementPage({
          () =>
             setLiveRoomMembers(tournamentId, room.matchId, {
                members: toRoomMemberPayload(nextRoomPlayers, room.members),
+               activePlayerIds: getActivePlayerIds(nextRoomPlayers),
                rosterMode: nextRosterMode
-            }),
+            } satisfies LiveRoomMembersPayload),
          successLabel,
          t('membersSaveFailed'),
          (nextRoom) => {
@@ -406,8 +428,9 @@ export function LiveRoomManagementPage({
             upsertLiveRoom(tournamentId, {
                matchId: room.matchId,
                rosterMode,
-               members: toRoomMemberPayload(roomPlayers, room.members)
-            }),
+               members: toRoomMemberPayload(roomPlayers, room.members),
+               activePlayerIds: getActivePlayerIds(roomPlayers)
+            } satisfies LiveRoomUpsertPayload),
          t('roomReopened'),
          t('roomReopenFailed'),
          (nextRoom) => {
@@ -421,6 +444,14 @@ export function LiveRoomManagementPage({
       if (options.roomRosterModes.includes(value as RoomRosterMode) && value !== rosterMode) {
          persistRoomPlayers(roomPlayers, value as RoomRosterMode, t('roomPlayersSaved'));
       }
+   }
+
+   function setPlayerActive(playerId: string, active: boolean) {
+      persistRoomPlayers(
+         roomPlayers.map((player) => (player.playerId === playerId ? { ...player, active } : player)),
+         rosterMode,
+         active ? t('playerMarkedActive') : t('playerMarkedInactive')
+      );
    }
 
    function removeRoom() {
@@ -680,9 +711,15 @@ export function LiveRoomManagementPage({
          ) : null}
 
          <div className="flex items-center justify-between gap-3">
-            <p className="text-muted-foreground min-w-0 text-sm">
-               <span className="text-foreground font-medium">{t('status')}:</span>{' '}
-               <span className={cn(ludus.error != null && 'text-destructive')}>{roomStatusLabel}</span>
+            <p className="text-muted-foreground flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+               <span>
+                  <span className="text-foreground font-medium">{t('status')}:</span>{' '}
+                  <span className={cn(ludus.error != null && 'text-destructive')}>{roomStatusLabel}</span>
+               </span>
+               <span>
+                  <span className="text-foreground font-medium">{t('participation')}:</span>{' '}
+                  {t('activeInactiveSummary', { active: activePlayerRows.length, inactive: inactivePlayerRows.length })}
+               </span>
             </p>
             <DropdownMenu>
                <DropdownMenuTrigger asChild>
@@ -725,6 +762,7 @@ export function LiveRoomManagementPage({
                emptyLabel={t('noRoomPlayers')}
                maxHeightClassName="shrink-0 min-h-[34rem] max-h-[72dvh]"
                showState
+               showParticipation
                showLastSeen
                showAccuracy
                showLastPromptResponse
@@ -770,6 +808,15 @@ export function LiveRoomManagementPage({
                                          <DropdownMenuItem onClick={() => openBottifyForPlayer(player.playerId)} disabled={pending}>
                                             <Bot />
                                             {t('bottifyPlayer')}
+                                         </DropdownMenuItem>
+                                      ) : null}
+                                      {canManageRoomPlayers ? (
+                                         <DropdownMenuItem
+                                            onClick={() => setPlayerActive(player.playerId, !(player.active ?? true))}
+                                            disabled={pending}
+                                         >
+                                            {(player.active ?? true) ? <UserX /> : <UserCheck />}
+                                            {(player.active ?? true) ? t('markPlayerInactive') : t('markPlayerActive')}
                                          </DropdownMenuItem>
                                       ) : null}
                                       {canManageRoomPlayers ? (
@@ -1042,7 +1089,8 @@ function getRoomPlayerDrafts(members: RoomMember[], authorizedPlayers: LiveTourn
             playerId: member.playerId,
             player: authorizedPlayer?.player ?? null,
             teamName: authorizedPlayer?.teamName ?? null,
-            role: 'PLAYER'
+            role: 'PLAYER',
+            active: member.active ?? true
          }
       ];
    });
@@ -1060,7 +1108,8 @@ function toRoomPlayerDraft(player: LiveTournamentRosterControllerListAuthorizedP
       playerId: player.playerId,
       player: player.player,
       teamName: player.teamName,
-      role: 'PLAYER'
+      role: 'PLAYER',
+      active: true
    };
 }
 
@@ -1083,6 +1132,10 @@ function toRoomMemberPayload(players: RoomPlayerDraft[], currentMembers: RoomMem
          ];
       })
    ];
+}
+
+function getActivePlayerIds(players: RoomPlayerDraft[]) {
+   return players.flatMap((player) => (player.active ? [player.playerId] : []));
 }
 
 function getAddedTeamIds(

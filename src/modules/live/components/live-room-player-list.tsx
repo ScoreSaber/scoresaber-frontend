@@ -2,6 +2,7 @@
 
 import { Fragment, type ReactNode } from 'react';
 
+import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 import { LiveTableShell } from '@/modules/live/components/live-ui';
@@ -24,6 +25,7 @@ export type LiveRoomPlayerListRow = {
    teamName: string | null;
    role?: string;
    member?: LiveRoomMember | null;
+   active?: boolean;
    stateLabel?: string;
    playState?: LiveRoomPlayerDisplayPlayState;
    downloadState?: LiveRoomMember['downloadState'];
@@ -76,6 +78,7 @@ export function LiveRoomPlayerList({
    showState,
    showLastSeen,
    showRole,
+   showParticipation,
    showAccuracy,
    showLastPromptResponse,
    showExtraInfo,
@@ -90,6 +93,7 @@ export function LiveRoomPlayerList({
       state: string;
       lastSeen: string;
       role: string;
+      participation: string;
       rank: string;
       score: string;
       accuracy: string;
@@ -101,6 +105,8 @@ export function LiveRoomPlayerList({
       unknownPlayer: string;
       connected: string;
       notConnected: string;
+      active: string;
+      inactive: string;
       ready: string;
       notReady: string;
       afk: string;
@@ -110,6 +116,7 @@ export function LiveRoomPlayerList({
    showState?: boolean;
    showLastSeen?: boolean;
    showRole?: boolean;
+   showParticipation?: boolean;
    showAccuracy?: boolean;
    showLastPromptResponse?: boolean;
    showExtraInfo?: boolean;
@@ -126,6 +133,7 @@ export function LiveRoomPlayerList({
       Number(showAccuracy) +
       (showExtraInfo ? 3 : 0) +
       Number(showRole) +
+      Number(showParticipation) +
       Number(showLastPromptResponse) +
       Number(showLastSeen);
 
@@ -146,6 +154,7 @@ export function LiveRoomPlayerList({
                   {showExtraInfo ? <TableHead>{labels.combo}</TableHead> : null}
                   {showExtraInfo ? <TableHead>{labels.misses}</TableHead> : null}
                   {showRole ? <TableHead>{labels.role}</TableHead> : null}
+                  {showParticipation ? <TableHead>{labels.participation}</TableHead> : null}
                   {showLastPromptResponse ? <TableHead>{labels.lastPromptResponse}</TableHead> : null}
                   {showLastSeen ? <TableHead>{labels.lastSeen}</TableHead> : null}
                </TableRow>
@@ -205,6 +214,11 @@ export function LiveRoomPlayerList({
                                  {showExtraInfo ? <TableCell>{row.score?.combo == null ? '-' : formatNumber(row.score.combo)}</TableCell> : null}
                                  {showExtraInfo ? <TableCell>{row.score ? formatNumber(row.score.notesMissed) : '-'}</TableCell> : null}
                                  {showRole ? <TableCell>{row.role ?? '-'}</TableCell> : null}
+                                 {showParticipation ? (
+                                    <TableCell>
+                                       <ParticipationBadge active={row.active ?? true} labels={labels} />
+                                    </TableCell>
+                                 ) : null}
                                  {showLastPromptResponse ? <TableCell>{renderLastPromptResponse?.(row) ?? '-'}</TableCell> : null}
                                  {showLastSeen ? <TableCell>{formatLastSeen(row.member ?? null)}</TableCell> : null}
                               </TableRow>
@@ -223,6 +237,10 @@ export function LiveRoomPlayerList({
          </Table>
       </LiveTableShell>
    );
+}
+
+function ParticipationBadge({ active, labels }: { active: boolean; labels: { active: string; inactive: string } }) {
+   return <Badge variant={active ? 'stat-success' : 'secondary'}>{active ? labels.active : labels.inactive}</Badge>;
 }
 
 function groupRows(

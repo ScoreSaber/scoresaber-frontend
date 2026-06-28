@@ -2,13 +2,14 @@ import type { LiveRoomPlayerListRow } from '@/modules/live/components/live-room-
 import type { useLudus } from '@/modules/live/ludus/use-ludus';
 import type { LiveTournamentRosterControllerListAuthorizedPlayersItem, LiveMatchRoomControllerListRoomsItem } from '@/shared/api/generated/ApiParams';
 
-export type RoomMember = LiveMatchRoomControllerListRoomsItem['members'][number] & { isBot?: boolean };
+export type RoomMember = LiveMatchRoomControllerListRoomsItem['members'][number] & { active?: boolean; isBot?: boolean };
 
 export type RoomPlayerDraft = {
    playerId: string;
    player: NonNullable<LiveTournamentRosterControllerListAuthorizedPlayersItem['player']> | null;
    teamName: string | null;
    role: 'PLAYER';
+   active: boolean;
 };
 
 type LiveLudusRoom = ReturnType<typeof useLudus>['rooms'][number];
@@ -42,6 +43,7 @@ export function getRoomPlayerRows(
          teamName: player.teamName,
          role: player.role,
          member: member ? { ...member, connected } : null,
+         active: member?.active ?? player.active,
          isBot,
          stateLabel: countdownLabel ?? (connected && !member ? connectedLabel : undefined),
          playState: playerState?.playState ?? (hasLiveRoomState ? 'IDLE' : member?.playState),

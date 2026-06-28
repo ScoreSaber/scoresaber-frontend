@@ -16,6 +16,9 @@ import {
 import { api } from '@/shared/api/server-api';
 import { actionApiData, actionFailure, actionSuccess } from '@/shared/result/action';
 
+type LiveRoomUpsertPayload = LiveMatchRoomControllerUpsertRoomPayload & { activePlayerIds?: string[] };
+type LiveRoomMembersPayload = LiveMatchRoomControllerSetRoomMembersPayload & { activePlayerIds?: string[] };
+
 const createLiveTournamentFn = createServerFn({ method: 'POST' })
    .inputValidator((data: LiveTournamentControllerCreateTournamentPayload) => data)
    .handler(({ data }) => actionApiData(api.livePlatform.liveTournamentControllerCreateTournament(data)));
@@ -78,11 +81,11 @@ const syncLiveAuthorizedPlayersFn = createServerFn({ method: 'POST' })
    );
 
 const upsertLiveRoomFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; payload: LiveMatchRoomControllerUpsertRoomPayload }) => data)
+   .inputValidator((data: { tournamentId: string; payload: LiveRoomUpsertPayload }) => data)
    .handler(({ data }) => actionApiData(api.livePlatform.liveMatchRoomControllerUpsertRoom({ tournamentId: data.tournamentId }, data.payload)));
 
 const setLiveRoomMembersFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string; payload: LiveMatchRoomControllerSetRoomMembersPayload }) => data)
+   .inputValidator((data: { tournamentId: string; matchId: string; payload: LiveRoomMembersPayload }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveMatchRoomControllerSetRoomMembers({ tournamentId: data.tournamentId, matchId: data.matchId }, data.payload))
    );
@@ -212,11 +215,11 @@ export async function syncLiveAuthorizedPlayers(tournamentId: string, payload: L
    return syncLiveAuthorizedPlayersFn({ data: { tournamentId, payload } });
 }
 
-export async function upsertLiveRoom(tournamentId: string, payload: LiveMatchRoomControllerUpsertRoomPayload) {
+export async function upsertLiveRoom(tournamentId: string, payload: LiveRoomUpsertPayload) {
    return upsertLiveRoomFn({ data: { tournamentId, payload } });
 }
 
-export async function setLiveRoomMembers(tournamentId: string, matchId: string, payload: LiveMatchRoomControllerSetRoomMembersPayload) {
+export async function setLiveRoomMembers(tournamentId: string, matchId: string, payload: LiveRoomMembersPayload) {
    return setLiveRoomMembersFn({ data: { tournamentId, matchId, payload } });
 }
 
