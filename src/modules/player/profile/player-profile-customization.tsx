@@ -50,7 +50,7 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
    const isOwnProfile = user?.id === player.id;
    const canUsePinnedScores = Permissions.isPPFarmer(userPerms);
    const canShowCustomization = isOwnProfile && !player.banned;
-   const savedDraftItems = useMemo(() => createDraftItems(player.pinnedScores), [player.pinnedScores]);
+   const savedDraftItems = useMemo(() => createDraftItems(player.pinnedScores ?? []), [player.pinnedScores]);
    const savedPayload = useMemo(() => toPinnedScorePayload(savedDraftItems), [savedDraftItems]);
    const savedScoreIds = useMemo(() => new Set(savedDraftItems.map((item) => item.score.score.id)), [savedDraftItems]);
    const [open, setOpen] = useState(false);

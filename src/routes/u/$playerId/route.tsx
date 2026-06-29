@@ -208,7 +208,7 @@ function PlayerProfileRouteContent({
                         <PlayerBioSection bio={player.bio ?? ''} sanitizedBio={sanitizedBio} hasBioContent={hasBioContent} playerId={player.id} />
                      )}
 
-                     {!player.banned && <PlayerPinnedScoresSection pinnedScores={player.pinnedScores} />}
+                     {!player.banned && <PlayerPinnedScoresSection pinnedScores={player.pinnedScores ?? []} />}
 
                      {!player.banned && scores && (
                         <PlayerScoresSection
@@ -218,7 +218,7 @@ function PlayerProfileRouteContent({
                            sort={input.search.sort ?? 'top'}
                            search={input.search.search}
                            hasScores={player.stats.totalSubmittedPlays > 0}
-                           hasContentAbove={player.pinnedScores.length === 0 && (!player.inactive || hasBioContent)}
+                           hasContentAbove={(player.pinnedScores?.length ?? 0) === 0 && (!player.inactive || hasBioContent)}
                            parseSearch={parseSearch}
                            renderScoreAction={renderScoreAction}
                         />
