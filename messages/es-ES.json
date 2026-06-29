@@ -188,7 +188,10 @@
       "connectDescription": "Conecta Patreon para usar ventajas de perfíl como biografías personalizadas",
       "subscribeDescription": "Suscríbete en Patreon para desbloquear ventajas de perfíl como biografías personalizadas",
       "connect": "Conectar Patreon",
-      "subscribe": "Suscribirse en Patreon"
+      "subscribe": "Suscribirse en Patreon",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "Iniciar sesión en",
@@ -952,7 +955,6 @@
       "tabs": {
          "account": "Cuenta",
          "connections": "Conexiones",
-         "perks": "Ventajas",
          "developer": "Desarrollador"
       },
       "account": {
@@ -1046,17 +1048,6 @@
          "setup": "Configurar"
       },
       "perks": {
-         "tabs": {
-            "overview": "Resumen",
-            "replays": "Repeticiones"
-         },
-         "gate": {
-            "title": "Las ventajas requieren acceso de supporter",
-            "connectDescription": "Conecta Patreon para comprobar tu estado de supporter y desbloquear ventajas",
-            "subscribeDescription": "Suscríbete en Patreon para desbloquear ventajas de ScoreSaber",
-            "connect": "Conectar Patreon",
-            "subscribe": "Suscribirse en Patreon"
-         },
          "replaySlots": {
             "title": "Espacios de repeticiones",
             "description": "Mantén ciertas repeticiones protegidas",

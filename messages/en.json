@@ -185,10 +185,13 @@
    },
    "supporterGate": {
       "title": "Supporter perk",
-      "connectDescription": "Connect Patreon to use profile perks like custom bios",
-      "subscribeDescription": "Subscribe on Patreon to unlock profile perks like custom bios",
+      "connectDescription": "Support ScoreSaber on Patreon to unlock profile customization perks",
+      "subscribeDescription": "Support ScoreSaber on Patreon to unlock profile customization perks",
       "connect": "Connect Patreon",
-      "subscribe": "Subscribe on Patreon"
+      "subscribe": "Subscribe on Patreon",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "Sign into",
@@ -394,6 +397,7 @@
       "legacyAccuracy": "Score was set before the max score change",
       "weighted": "Weighted {weightedPercent}",
       "score": "Score",
+      "mods": "Mods",
       "watchReplay": "Watch Replay",
       "noReplayAvailable": "No replay available",
       "hideDetails": "Hide details",
@@ -590,7 +594,43 @@
       "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "Avg Acc: {acc}%",
       "chartTooltipPlays": "Plays/day: {plays}",
-      "chartTimeRange": "Time range"
+      "chartTimeRange": "Time range",
+      "customization": {
+         "title": "Profile customization",
+         "description": "Manage profile settings and featured score perks",
+         "open": "Customize profile",
+         "tabs": {
+            "account": "Account",
+            "pinnedScores": "Pinned scores",
+            "moreSoon": "More soon..."
+         },
+         "account": {
+            "title": "Account settings",
+            "description": "Profile picture, bio, display name, and vanity URL can be managed from Account settings",
+            "open": "Open account settings"
+         },
+         "pinnedScores": {
+            "title": "Pinned scores",
+            "profileTitle": "Pinned scores",
+            "description": "Choose up to {max} scores to feature on your profile",
+            "lockTitle": "PP Farmer perk",
+            "lockDescription": "Join the PP Farmer tier on Patreon to unlock pinned scores",
+            "selected": "Selected scores",
+            "selectedCount": "{count}/{max} selected",
+            "emptySelected": "Use the pin on a score to add it here",
+            "pinScore": "Pin score",
+            "editPinnedScore": "Edit pinned score",
+            "commentPlaceholder": "Pinned score comment",
+            "commentLabel": "Comment for {score}",
+            "commentCount": "{count}/{max}",
+            "moveUp": "Move up",
+            "moveDown": "Move down",
+            "unsaved": "Unsaved changes",
+            "noChanges": "No changes",
+            "saved": "Pinned scores saved",
+            "saveFailed": "Failed to save pinned scores"
+         }
+      }
    },
    "comments": {
       "edited": "(edited)",
@@ -960,7 +1000,6 @@
       "tabs": {
          "account": "Account",
          "connections": "Connections",
-         "perks": "Perks",
          "developer": "Developer"
       },
       "account": {
@@ -1054,17 +1093,6 @@
          "setup": "Set up"
       },
       "perks": {
-         "tabs": {
-            "overview": "Overview",
-            "replays": "Replays"
-         },
-         "gate": {
-            "title": "Perks require supporter access",
-            "connectDescription": "Connect Patreon to check your supporter status and unlock perks",
-            "subscribeDescription": "Subscribe on Patreon to unlock ScoreSaber perks",
-            "connect": "Connect Patreon",
-            "subscribe": "Subscribe on Patreon"
-         },
          "replaySlots": {
             "title": "Replay slots",
             "description": "Keep selected replays protected",
@@ -1098,19 +1126,20 @@
             "loadFailed": "Replay slots could not be loaded"
          },
          "vanity": {
-            "title": "Your Profile URL",
-            "description": "Claim a personalized profile URL",
+            "title": "Custom URL",
             "loadFailed": "Couldn't load your vanity URL",
             "current": "Your profile URL",
             "changeLabel": "New vanity URL",
             "claimLabel": "Choose a vanity URL",
             "placeholder": "your-name",
             "change": "Change URL",
-            "claim": "Claim URL",
+            "claim": "Claim",
             "claimed": "Vanity URL claimed",
             "claimFailed": "Failed to claim vanity URL",
             "cooldown": "You can change your vanity URL again on <date></date>",
-            "rules": "3-32 characters: lowercase letters, numbers, and hyphens. Must contain a letter. Changeable once every 180 days"
+            "rules": "3-32 characters: lowercase letters, numbers, and hyphens. Must contain a letter. Changeable once every 180 days",
+            "lockTitle": "Custom URL is a supporter perk",
+            "lockDescription": "Support ScoreSaber on Patreon to unlock a custom profile URL"
          }
       },
       "security": {

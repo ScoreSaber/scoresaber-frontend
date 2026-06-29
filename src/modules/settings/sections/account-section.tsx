@@ -1,10 +1,10 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { ReactNode, SubmitEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import { getRouteApi, useRouter } from '@tanstack/react-router';
-import { ChevronRight, FileText, ImageUp, Loader2, LogIn, RotateCcw, Save, UserRound } from 'lucide-react';
+import { AtSign, ChevronRight, FileText, ImageUp, Loader2, LogIn, RotateCcw, Save, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'use-intl';
 
@@ -18,10 +18,12 @@ import { useActionMutation } from '@/hooks/use-action-mutation';
 import { useAuth } from '@/modules/auth';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { requestCountryReset, updateBio, updateName, uploadAvatar } from '@/modules/settings/actions/account';
-import type { UserControllerCanResetCountryResponse } from '@/shared/api/generated/ApiParams';
+import { claimVanity } from '@/modules/settings/actions/vanity';
+import type { UserControllerCanResetCountryResponse, UserControllerGetVanityResponse } from '@/shared/api/generated/ApiParams';
 import { ConditionalOverlay } from '@/shared/components/conditional-overlay';
 import { ConfirmDialog } from '@/shared/components/confirm-dialog';
 import { dynamic } from '@/shared/components/dynamic';
+import { SupporterFeatureLock } from '@/shared/components/supporter-feature-lock';
 import { SupporterRequiredOverlay } from '@/shared/components/supporter-required-overlay';
 import { Time } from '@/shared/components/time';
 import { cn } from '@/shared/format/helpers';
@@ -29,6 +31,7 @@ import Permissions from '@/shared/permissions';
 
 interface AccountSectionProps {
    countryReset: UserControllerCanResetCountryResponse | null;
+   vanity: UserControllerGetVanityResponse | null;
    patreonConnected: boolean;
    beforeActions?: ReactNode;
 }
@@ -39,9 +42,10 @@ const avatarMaxSize = 10 * 1024 * 1024;
 const iconClass = 'border-border/60 bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full border';
 const loginRoute = getRouteApi('/login');
 const settingsAccountRoute = getRouteApi('/settings/account');
+const playerRoute = getRouteApi('/u/$playerId');
 const BioEditorForm = dynamic(() => import('@/shared/components/bio-editor-form').then((mod) => mod.BioEditorForm));
 
-export function AccountSection({ countryReset, patreonConnected, beforeActions }: AccountSectionProps) {
+export function AccountSection({ countryReset, vanity, patreonConnected, beforeActions }: AccountSectionProps) {
    const t = useTranslations();
    const tSidebar = useTranslations();
    const router = useRouter();
@@ -49,6 +53,7 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
    const mutation = useActionMutation();
    const avatarInputRef = useRef<HTMLInputElement>(null);
    const [name, setName] = useState(user?.name ?? '');
+   const [vanitySlug, setVanitySlug] = useState('');
    const [bio, setBio] = useState(user?.bio ?? '');
    const [avatarFile, setAvatarFile] = useState<File | null>(null);
    const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
@@ -85,6 +90,13 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
    const nameChanged = trimmedName.length > 0 && trimmedName !== user.name;
    const nameSaveDisabled = mutation.isPending || !nameChanged;
    const nameSavePending = mutation.isPendingKey('name');
+   const vanitySavePending = mutation.isPendingKey('vanity');
+   const vanityCanChangeAt = vanity?.canChangeAt;
+   const vanityCooldownActive = vanityCanChangeAt ? Date.parse(vanityCanChangeAt) > Date.now() : false;
+   const canChangeVanity = !!vanity && !vanityCooldownActive;
+   const trimmedVanitySlug = vanitySlug.trim().toLowerCase();
+   const vanityChanged = trimmedVanitySlug.length > 0 && trimmedVanitySlug !== vanity?.slug;
+   const vanitySaveDisabled = mutation.isPending || !canChangeVanity || trimmedVanitySlug.length < 3 || !vanityChanged;
    const bioChanged = bio !== (user.bio ?? '');
    const bioInvalid = bio.length > bioMaxLength;
    const bioSavePending = mutation.isPendingKey('bio');
@@ -93,16 +105,32 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
    const avatarSaveDisabled = mutation.isPending || !avatarFile;
    const countryResetPending = mutation.isPendingKey('country-reset');
    const countryResetAvailableAt = getCountryResetAvailableAt(countryReset?.lastReset);
-   const canEditBio =
-      Permissions.checkPermissionNumber(user.permissions, Permissions.security.SUPPORTER) ||
-      Permissions.checkPermissionNumber(user.permissions, Permissions.security.PPFARMER) ||
-      Permissions.checkPermissionNumber(user.permissions, Permissions.groups.ALL_STAFF);
+   const canUseProfilePerks = Permissions.isSupporter(user.permissions);
+   const canEditBio = canUseProfilePerks;
    const saveName = () => {
       if (nameSaveDisabled) {
          return;
       }
 
       mutation.runKeyed('name', () => updateName(trimmedName), t('settings.account.nameSaved'), t('settings.account.nameSaveFailed'));
+   };
+   const saveVanity = (event: SubmitEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      if (vanitySaveDisabled) {
+         return;
+      }
+
+      mutation.runKeyed(
+         'vanity',
+         () => claimVanity(trimmedVanitySlug),
+         t('settings.perks.vanity.claimed'),
+         t('settings.perks.vanity.claimFailed'),
+         () => {
+            setVanitySlug('');
+            void router.invalidate();
+         }
+      );
    };
    const saveAvatar = () => {
       if (avatarSaveDisabled || !avatarFile) {
@@ -276,6 +304,94 @@ export function AccountSection({ countryReset, patreonConnected, beforeActions }
                         </Button>
                      </div>
                   </div>
+
+                  <SupporterFeatureLock
+                     locked={!canUseProfilePerks}
+                     patreonConnected={patreonConnected}
+                     variant="field"
+                     className="border-border/70 border-b"
+                     contentClassName="py-5"
+                     title={t('settings.perks.vanity.lockTitle')}
+                     description={t('settings.perks.vanity.lockDescription')}
+                  >
+                     <form
+                        className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(12rem,1fr)_minmax(18rem,42rem)] lg:items-start"
+                        onSubmit={saveVanity}
+                     >
+                        <div className="flex min-w-0 gap-4">
+                           <span className={iconClass}>
+                              <AtSign className="size-5" aria-hidden />
+                           </span>
+                           <div className="flex min-h-10 min-w-0 flex-col justify-center gap-1">
+                              <label htmlFor="account-vanity-slug" className="leading-5 font-semibold">
+                                 {t('settings.perks.vanity.title')}
+                              </label>
+                              {vanity?.slug ? (
+                                 <p className="text-muted-foreground text-sm">
+                                    {t('settings.perks.vanity.current')}{' '}
+                                    <playerRoute.Link
+                                       params={{ playerId: vanity.slug }}
+                                       className="text-primary font-medium underline-offset-4 hover:underline"
+                                    >
+                                       /u/{vanity.slug}
+                                    </playerRoute.Link>
+                                 </p>
+                              ) : !vanity ? (
+                                 <p className="text-muted-foreground text-sm text-pretty">{t('settings.perks.vanity.loadFailed')}</p>
+                              ) : null}
+                              {vanityCooldownActive && vanityCanChangeAt && (
+                                 <p className="text-muted-foreground text-sm text-pretty">
+                                    {t.rich('settings.perks.vanity.cooldown', { date: () => <Time date={vanityCanChangeAt} dateStyle="long" /> })}
+                                 </p>
+                              )}
+                           </div>
+                        </div>
+
+                        {vanity && (
+                           <div className="flex min-w-0 flex-col gap-2">
+                              <div className="flex min-w-0 flex-col gap-2 sm:flex-row">
+                                 <InputGroup
+                                    data-disabled={!canUseProfilePerks || !canChangeVanity || mutation.isPending || undefined}
+                                    className="min-w-0 flex-1"
+                                 >
+                                    <InputGroupAddon align="inline-start">/u/</InputGroupAddon>
+                                    <InputGroupInput
+                                       id="account-vanity-slug"
+                                       value={vanitySlug}
+                                       minLength={3}
+                                       maxLength={32}
+                                       placeholder={vanity.slug || t('settings.perks.vanity.placeholder')}
+                                       disabled={!canUseProfilePerks || !canChangeVanity || mutation.isPending}
+                                       autoComplete="off"
+                                       spellCheck={false}
+                                       onChange={(event) => setVanitySlug(event.target.value)}
+                                    />
+                                    <InputGroupAddon align="inline-end">
+                                       <InputGroupButton
+                                          variant="ghost-icon"
+                                          size="icon-xs"
+                                          disabled={!vanitySlug}
+                                          onClick={() => setVanitySlug('')}
+                                          aria-label={t('settings.account.reset')}
+                                          className="cursor-pointer rounded-full"
+                                       >
+                                          <RotateCcw />
+                                       </InputGroupButton>
+                                    </InputGroupAddon>
+                                 </InputGroup>
+                                 <Button type="submit" disabled={vanitySaveDisabled || !canUseProfilePerks} className="cursor-pointer sm:w-24">
+                                    {vanitySavePending ? (
+                                       <Loader2 data-icon="inline-start" className="animate-spin" />
+                                    ) : (
+                                       <Save data-icon="inline-start" />
+                                    )}
+                                    {vanity.slug ? t('settings.perks.vanity.change') : t('settings.perks.vanity.claim')}
+                                 </Button>
+                              </div>
+                           </div>
+                        )}
+                     </form>
+                  </SupporterFeatureLock>
 
                   <Collapsible open={bioOpen} onOpenChange={changeBioOpen}>
                      <CollapsibleTrigger asChild>

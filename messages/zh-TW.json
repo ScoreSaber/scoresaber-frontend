@@ -188,7 +188,10 @@
       "connectDescription": "",
       "subscribeDescription": "",
       "connect": "",
-      "subscribe": ""
+      "subscribe": "",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "",
@@ -952,7 +955,6 @@
       "tabs": {
          "account": "",
          "connections": "",
-         "perks": "",
          "developer": ""
       },
       "account": {
@@ -1046,17 +1048,6 @@
          "setup": ""
       },
       "perks": {
-         "tabs": {
-            "overview": "",
-            "replays": ""
-         },
-         "gate": {
-            "title": "",
-            "connectDescription": "",
-            "subscribeDescription": "",
-            "connect": "",
-            "subscribe": ""
-         },
          "replaySlots": {
             "title": "",
             "description": "",

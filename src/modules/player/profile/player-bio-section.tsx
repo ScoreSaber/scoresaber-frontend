@@ -18,10 +18,7 @@ export function PlayerBioSection({ bio, sanitizedBio, hasBioContent, playerId }:
    const { user } = useAuth();
    const isOwnProfile = user?.id === playerId;
    const userPerms = user?.permissions ?? 0;
-   const isStaffOrSupporter =
-      Permissions.checkPermissionNumber(userPerms, Permissions.groups.ALL_STAFF) ||
-      Permissions.checkPermissionNumber(userPerms, Permissions.security.SUPPORTER);
-   const canEditBio = isOwnProfile && isStaffOrSupporter;
+   const canEditBio = isOwnProfile && Permissions.isSupporter(userPerms);
 
    if (!hasBioContent && !canEditBio) return null;
 

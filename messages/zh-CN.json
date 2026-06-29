@@ -188,7 +188,10 @@
       "connectDescription": "绑定您的 Patreon 账号，以使用个人主页特权，例如自定义自我介绍",
       "subscribeDescription": "在 Patreon 上支持我们，即可解锁个人主页特权，例如自定义自我介绍",
       "connect": "绑定 Patreon",
-      "subscribe": "在Patreon上订阅"
+      "subscribe": "在Patreon上订阅",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "登录",
@@ -952,7 +955,6 @@
       "tabs": {
          "account": "账号",
          "connections": "绑定账号",
-         "perks": "特权",
          "developer": "开发者"
       },
       "account": {
@@ -1046,17 +1048,6 @@
          "setup": "账户设置"
       },
       "perks": {
-         "tabs": {
-            "overview": "概览",
-            "replays": "回放"
-         },
-         "gate": {
-            "title": "需要成为支持者才能解锁特权",
-            "connectDescription": "绑定你的Pateron账号，以检测你的支持者状态并解锁特权",
-            "subscribeDescription": "在 Pateron 上订阅我们以解锁 ScoreSaber 特权",
-            "connect": "关联Patreon",
-            "subscribe": "在Patreon上订阅"
-         },
          "replaySlots": {
             "title": "回放槽位",
             "description": "保护所选的回放",

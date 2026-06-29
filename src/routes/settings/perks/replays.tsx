@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 
-import { PerksSubNav } from '@/modules/settings/perks-sub-nav';
 import { ReplaySlotsSection } from '@/modules/settings/sections/replay-slots-section';
 import { SettingsShell } from '@/modules/settings/settings-shell';
 import type { ScoreControllerGetScoreResponse } from '@/shared/api/generated/ApiParams';
@@ -36,9 +35,7 @@ function SettingsPerksReplaysRoute() {
       <>
          <SetPageBackground src="/images/banner.jpg" />
          <SettingsShell activeTab="perks">
-            <PerksSubNav activeSubTab="replays">
-               <ReplaySlotsSection replaySlots={data.replaySlots} scoreDetails={data.scoreDetails} />
-            </PerksSubNav>
+            <ReplaySlotsSection replaySlots={data.replaySlots} scoreDetails={data.scoreDetails} />
          </SettingsShell>
       </>
    );

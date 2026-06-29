@@ -481,6 +481,8 @@ export type UserControllerGetVanityResponse = _R<_User['userControllerGetVanity'
 
 export type UserControllerClaimVanityResponse = _R<_User['userControllerClaimVanity']>;
 
+export type UserControllerUpdatePinnedScoresResponse = _R<_User['userControllerUpdatePinnedScores']>;
+
 export type UserControllerGetMyInfoResponse = _R<_User['userControllerGetMyInfo']>;
 
 export type UserControllerGetQuestKeyResponse = _R<_User['userControllerGetQuestKey']>;

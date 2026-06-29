@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, type ReactNode } from 'react';
 
 import { Loader2 } from 'lucide-react';
 
@@ -27,9 +27,10 @@ type Panel = 'details' | 'leaderboard' | null;
 interface ScoreCardProps {
    playerScore: PlayerControllerGetPlayerScoresDataItem;
    className?: string;
+   overlayAction?: ReactNode;
 }
 
-export function ScoreCard({ playerScore, className }: ScoreCardProps) {
+export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardProps) {
    const { score, leaderboard } = playerScore;
    const isRanked = isLeaderboardRanked(leaderboard);
    const weightedPP = formatPP(score.pp * score.weight);
@@ -68,9 +69,10 @@ export function ScoreCard({ playerScore, className }: ScoreCardProps) {
    return (
       <div>
          <div className="relative">
+            {overlayAction && <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden rounded">{overlayAction}</div>}
             <ScoreCardSurface
                coverUrl={leaderboard.map.coverUrl}
-               className={cn(className, 'pb-9 lg:pr-16 lg:pb-3')}
+               className={cn(className, 'pb-9 lg:pr-16 lg:pb-3', overlayAction && 'pl-6 lg:pl-7')}
                imageSizes="(min-width: 1024px) 800px, 100vw"
             >
                <div className="flex flex-col flex-wrap items-center justify-between gap-0.5 lg:flex-row lg:flex-nowrap lg:gap-0">

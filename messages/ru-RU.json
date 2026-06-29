@@ -188,7 +188,10 @@
       "connectDescription": "Добавьте аккаунт Patreon для бонусов по типу раздела \"обо мне\"",
       "subscribeDescription": "Подпишитесь на Patreon, чтобы открыть данную функцию",
       "connect": "Привязать Patreon",
-      "subscribe": "Подписаться на Patreon"
+      "subscribe": "Подписаться на Patreon",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "Вход в",
@@ -952,7 +955,6 @@
       "tabs": {
          "account": "Аккаунт",
          "connections": "Подключенные аккаунты",
-         "perks": "Бонусы",
          "developer": "Разработчик"
       },
       "account": {
@@ -1046,17 +1048,6 @@
          "setup": "Настроить"
       },
       "perks": {
-         "tabs": {
-            "overview": "Обзор",
-            "replays": "Повторы"
-         },
-         "gate": {
-            "title": "Для доступа к бонусам вам требуется роль \"Supporter\"",
-            "connectDescription": "Подключите свой аккаунт Patreon, чтобы проверить свой статус и разблокировать бонусы",
-            "subscribeDescription": "Подпишитесь на ScoreSaber на Patreon для получения бонусов",
-            "connect": "Привязать Patreon",
-            "subscribe": "Подписаться на Patreon"
-         },
          "replaySlots": {
             "title": "Слоты повторов",
             "description": "Оставить выбранные повторы защищёнными",

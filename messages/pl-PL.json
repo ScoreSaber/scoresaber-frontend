@@ -188,7 +188,10 @@
       "connectDescription": "Połącz konto Patreon, aby cieszyć się z korzyści na swoim profilu, takich jak własny opis profilu",
       "subscribeDescription": "Wykup subskrypcję na Patreon, aby odblokować korzyści na swoim profilu, takie jak własny opis profilu",
       "connect": "Połącz konto Patreon",
-      "subscribe": "Subskrybuj na Patreon"
+      "subscribe": "Subskrybuj na Patreon",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "Zaloguj się do",
@@ -952,7 +955,6 @@
       "tabs": {
          "account": "Konto",
          "connections": "Połączenia",
-         "perks": "Korzyści",
          "developer": "Deweloper"
       },
       "account": {
@@ -1046,17 +1048,6 @@
          "setup": "Konfiguracja"
       },
       "perks": {
-         "tabs": {
-            "overview": "Przegląd",
-            "replays": "Powtórki"
-         },
-         "gate": {
-            "title": "Korzyści wymagają uprawnień wspierającego",
-            "connectDescription": "Połącz konto Patreon, aby sprawdzić status wspierającego i odblokować korzyści",
-            "subscribeDescription": "Subskrybuj Patreon, aby odblokować korzyści ScoreSaber",
-            "connect": "Połącz Patreon",
-            "subscribe": "Subskrybuj na Patreon"
-         },
          "replaySlots": {
             "title": "Miejsca na powtórki",
             "description": "Zachowaj wybrane powtórki",

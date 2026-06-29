@@ -188,7 +188,10 @@
       "connectDescription": "Koppel Patreon om profielvoordelen zoals aangepaste bio's te gebruiken",
       "subscribeDescription": "Abonneer je op Patreon om profielvoordelen zoals aangepaste bio's te ontgrendelen",
       "connect": "Patreon koppelen",
-      "subscribe": "Abonneren op Patreon"
+      "subscribe": "Abonneren op Patreon",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "Inloggen bij",
@@ -952,7 +955,6 @@
       "tabs": {
          "account": "Account",
          "connections": "Koppelingen",
-         "perks": "Voordelen",
          "developer": "Ontwikkelaar"
       },
       "account": {
@@ -1046,17 +1048,6 @@
          "setup": ""
       },
       "perks": {
-         "tabs": {
-            "overview": "Overzicht",
-            "replays": "Replays"
-         },
-         "gate": {
-            "title": "Voordelen vereisen supportertoegang",
-            "connectDescription": "Koppel Patreon om je supporterstatus te controleren en voordelen te ontgrendelen",
-            "subscribeDescription": "Abonneer je op Patreon om ScoreSaber-voordelen te ontgrendelen",
-            "connect": "Patreon koppelen",
-            "subscribe": "Abonneren op Patreon"
-         },
          "replaySlots": {
             "title": "Replay vakjes",
             "description": "Houd geselecteerde replays beschermd",

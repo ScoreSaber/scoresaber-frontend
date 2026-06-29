@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 
 import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
@@ -12,16 +12,18 @@ import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-chart-lazy';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
+import { PlayerPinnedScoresSection } from '@/modules/player/profile/player-pinned-scores-section';
+import { PlayerProfileCustomization } from '@/modules/player/profile/player-profile-customization';
 import { PlayerProfileHeader } from '@/modules/player/profile/player-profile-header';
 import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
 import { PlayerScoresToolbar } from '@/modules/player/profile/player-scores-toolbar';
 import { versionedAvatarUrl } from '@/modules/player/shared/player-avatar';
-import type { PlayerControllerGetPlayerScoresSort } from '@/shared/api/generated/ApiParams';
+import type { PlayerControllerGetPlayerScoresDataItem, PlayerControllerGetPlayerScoresSort } from '@/shared/api/generated/ApiParams';
 import { api, publicApi } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
 import { PageError } from '@/shared/components/error/page-error';
 import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
-import { optionalApiData, pageApiData } from '@/shared/result/api';
+import { optionalApi, optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
 import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber, isPlayerId, isVanitySlug, ScoreEnum, validateRequest } from '@/shared/url-state/params';
@@ -68,6 +70,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
             scores: null,
             history: null,
             aliases: [],
+            patreonConnected: false,
             sanitizedBio: '',
             hasBioContent: false
          };
@@ -77,7 +80,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
       const bio = playerResult.data.bio ?? '';
       const sanitizedBio = sanitizeRichTextHtml(bio);
 
-      const [scores, history, aliases] = await Promise.all([
+      const [scores, history, aliases, connections] = await Promise.all([
          optionalApiData(
             publicApi.player.playerControllerGetPlayerScores({
                id: apiPlayerId,
@@ -88,7 +91,8 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
             })
          ),
          optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
-         optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId }))
+         optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId })),
+         token ? optionalApi(api.user.userControllerGetConnections().then((r) => r.data)) : null
       ]);
 
       return {
@@ -96,6 +100,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
          scores,
          history,
          aliases: aliases ?? [],
+         patreonConnected: connections?.some((connection) => connection.provider === 'PATREON' && connection.state === 'CONNECTED') ?? false,
          sanitizedBio,
          hasBioContent: hasRichTextContent(sanitizedBio)
       };
@@ -149,7 +154,7 @@ function PlayerProfileRouteContent({
    parseSearch: ParsePlayerSearch;
    data: Awaited<ReturnType<typeof getPlayerProfilePageData>>;
 }) {
-   const { result, scores, history, aliases, sanitizedBio, hasBioContent } = data;
+   const { result, scores, history, aliases, patreonConnected, sanitizedBio, hasBioContent } = data;
 
    useVanityBrowserUrl(result.ok ? result.data.vanity : null);
 
@@ -161,53 +166,66 @@ function PlayerProfileRouteContent({
       <div className="relative flex-1 overflow-hidden">
          <SetPageBackground src={player.avatar} />
          <div className="app-container relative z-10 p-4 md:p-8">
-            <PlayerProfileHeader
-               player={player}
-               aliases={aliases}
-               actions={
-                  <PlayerActions playerId={player.id} playerBanned={player.banned} playerPermissions={player.permissions} playerRole={player.role} />
-               }
-            >
-               {player.banned ? (
-                  <div className="py-6 text-center">
-                     <Separator variant="gradient" className="via-destructive/15 mb-4" />
-                     <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
-                  </div>
-               ) : null}
+            <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
+               {({ extraActions, renderScoreAction }) => (
+                  <PlayerProfileHeader
+                     player={player}
+                     aliases={aliases}
+                     actions={
+                        <PlayerActions
+                           playerId={player.id}
+                           playerBanned={player.banned}
+                           playerPermissions={player.permissions}
+                           playerRole={player.role}
+                           extraActions={extraActions}
+                        />
+                     }
+                  >
+                     {player.banned ? (
+                        <div className="py-6 text-center">
+                           <Separator variant="gradient" className="via-destructive/15 mb-4" />
+                           <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
+                        </div>
+                     ) : null}
 
-               {!player.banned && !player.inactive && history && history.length > 0 && (
-                  <div className="py-4">
-                     <Separator variant="gradient" className="mb-4" />
-                     <PlayerChart
-                        playerId={player.id}
-                        stats={{
-                           rank: player.stats.rank,
-                           totalPP: player.stats.totalPP,
-                           averageAccuracy: player.stats.averageAccuracy,
-                           totalSubmittedPlays: player.stats.totalSubmittedPlays
-                        }}
-                        history={history}
-                     />
-                  </div>
-               )}
+                     {!player.banned && !player.inactive && history && history.length > 0 && (
+                        <div className="py-4">
+                           <Separator variant="gradient" className="mb-4" />
+                           <PlayerChart
+                              playerId={player.id}
+                              stats={{
+                                 rank: player.stats.rank,
+                                 totalPP: player.stats.totalPP,
+                                 averageAccuracy: player.stats.averageAccuracy,
+                                 totalSubmittedPlays: player.stats.totalSubmittedPlays
+                              }}
+                              history={history}
+                           />
+                        </div>
+                     )}
 
-               {!player.banned && (
-                  <PlayerBioSection bio={player.bio ?? ''} sanitizedBio={sanitizedBio} hasBioContent={hasBioContent} playerId={player.id} />
-               )}
+                     {!player.banned && (
+                        <PlayerBioSection bio={player.bio ?? ''} sanitizedBio={sanitizedBio} hasBioContent={hasBioContent} playerId={player.id} />
+                     )}
 
-               {!player.banned && scores && (
-                  <PlayerScoresSection
-                     playerId={input.playerId}
-                     scores={scores}
-                     page={input.search.page ?? 1}
-                     sort={input.search.sort ?? 'top'}
-                     search={input.search.search}
-                     hasScores={player.stats.totalSubmittedPlays > 0}
-                     hasContentAbove={!player.inactive || hasBioContent}
-                     parseSearch={parseSearch}
-                  />
+                     {!player.banned && <PlayerPinnedScoresSection pinnedScores={player.pinnedScores} />}
+
+                     {!player.banned && scores && (
+                        <PlayerScoresSection
+                           playerId={input.playerId}
+                           scores={scores}
+                           page={input.search.page ?? 1}
+                           sort={input.search.sort ?? 'top'}
+                           search={input.search.search}
+                           hasScores={player.stats.totalSubmittedPlays > 0}
+                           hasContentAbove={player.pinnedScores.length === 0 && (!player.inactive || hasBioContent)}
+                           parseSearch={parseSearch}
+                           renderScoreAction={renderScoreAction}
+                        />
+                     )}
+                  </PlayerProfileHeader>
                )}
-            </PlayerProfileHeader>
+            </PlayerProfileCustomization>
          </div>
       </div>
    );
@@ -261,7 +279,8 @@ function PlayerScoresSection({
    search,
    hasScores,
    hasContentAbove,
-   parseSearch
+   parseSearch,
+   renderScoreAction
 }: {
    playerId: string;
    scores: NonNullable<Awaited<ReturnType<typeof getPlayerProfilePageData>>['scores']>;
@@ -271,6 +290,7 @@ function PlayerScoresSection({
    hasScores: boolean;
    hasContentAbove: boolean;
    parseSearch: ParsePlayerSearch;
+   renderScoreAction?: (score: PlayerControllerGetPlayerScoresDataItem) => ReactNode;
 }) {
    const t = useTranslations();
    const currentSearch: PlayerProfileSearch = { sort, page, search };
@@ -294,6 +314,7 @@ function PlayerScoresSection({
                pageSize={scores.metadata.itemsPerPage}
                currentPage={page}
                getPageLocation={getPageLocation}
+               renderScoreAction={renderScoreAction}
             />
          ) : (
             <div className="text-muted-foreground flex flex-col items-center gap-2 py-16">
