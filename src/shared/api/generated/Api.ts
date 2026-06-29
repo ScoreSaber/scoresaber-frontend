@@ -50,6 +50,11 @@ export interface PlayerControllerGetPlayersParams {
     */
    includeInactive?: string;
    /**
+    * Only include players currently visible in public live presence
+    * @default false
+    */
+   live?: string;
+   /**
     * Sort field
     * @default "totalPP"
     */
@@ -83,6 +88,11 @@ export interface PlayerControllerGetPlayerCountParams {
     * @default false
     */
    includeInactive?: string;
+   /**
+    * Only count players currently visible in public live presence
+    * @default false
+    */
+   live?: string;
 }
 
 export interface PlayerControllerGetPlayerByVanityParams {
@@ -462,6 +472,8 @@ export interface LiveTournamentControllerUpsertSettingsPayload {
     */
    name?: string;
    status?: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+   /** @maxItems 256 */
+   deniedMods?: string[];
 }
 
 export interface LiveTournamentControllerUpsertSettingsParams {
@@ -661,6 +673,7 @@ export interface LiveMatchRoomControllerUpsertRoomPayload {
       playerId: string;
       role?: 'PLAYER' | 'VIEWER';
    }[];
+   activePlayerIds?: string[];
 }
 
 export interface LiveMatchRoomControllerUpsertRoomParams {
@@ -701,6 +714,7 @@ export interface LiveMatchRoomControllerSetRoomMembersPayload {
       playerId: string;
       role?: 'PLAYER' | 'VIEWER';
    }[];
+   activePlayerIds?: string[];
    rosterMode?: 'TEAM' | 'FLAT';
 }
 
@@ -928,8 +942,8 @@ export interface MapControllerGetMapListingsParams {
     */
    maxStars?: number;
    /**
-    * Search by song name, author, or mapper (min 3 chars)
-    * @minLength 3
+    * Search by song name, author, mapper, map hash, or map identifier
+    * @minLength 1
     * @maxLength 64
     */
    search?: string;
@@ -2153,6 +2167,19 @@ export interface UserControllerClaimVanityPayload {
    slug: string;
 }
 
+export interface UserControllerUpdatePinnedScoresPayload {
+   /** @maxItems 6 */
+   pinnedScores: {
+      /** @exclusiveMin true */
+      scoreId: number;
+      /**
+       * @maxLength 512
+       * @default ""
+       */
+      comment?: string;
+   }[];
+}
+
 export interface UserControllerUpdateBioPayload {
    /**
     * Player bio
@@ -2780,6 +2807,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 },
 
 }` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
  */
       playerControllerGetPlayers: (query: PlayerControllerGetPlayersParams, params: RequestParams = {}) =>
          this.request<
@@ -2876,6 +2930,32 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                     id?: string | number;
                  };
               }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
          >({
             path: `/api/v2/players`,
             method: 'GET',
@@ -2952,6 +3032,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 },
 
 }` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
  */
       playerControllerGetPlayerCount: (query: PlayerControllerGetPlayerCountParams, params: RequestParams = {}) =>
          this.request<
@@ -3009,6 +3116,32 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                     id?: string | number;
                  };
               }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
          >({
             path: `/api/v2/players/count`,
             method: 'GET',
@@ -3066,6 +3199,91 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     id: number,
     image: string,
     description: string,
+
+})[],
+    pinnedScores: ({
+    score: {
+    score: {
+    id: number,
+    rank: number,
+    unmodifiedScore: number,
+    modifiedScore: number,
+    accuracy: number,
+    pp: number,
+    weight: number,
+    mods: (string)[],
+    badCuts: number,
+    missedNotes: number,
+    maxCombo: number,
+    fullCombo: boolean,
+    hasReplay: boolean,
+    personalBest: boolean,
+    legacyHmdId: number | null,
+    version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
+    createdAt: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+},
+    device: {
+    hmd: string | null,
+    controllerLeft: string | null,
+    controllerRight: string | null,
+
+} | null,
+
+},
+    leaderboard: {
+    id: number,
+    map: {
+    id: number,
+    hash: string,
+    bsid: string | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    coverUrl: string,
+    verified: boolean,
+
+},
+    difficulty: {
+    id: number,
+    difficulty: number,
+    rawDifficulty: string,
+    gameMode: string,
+
+},
+    maxScore: number,
+    totalScores: number,
+    dailyScores: number,
+    createdAt: string,
+    realm: {
+    realmId: number,
+    realmName: string,
+    leaderboardStatus: "UNRANKED" | "RANKED" | "QUALIFIED" | "LOVED",
+    positiveModifiers: boolean,
+    stars: number,
+    rankedAt: string | null,
+    qualifiedAt: string | null,
+    lovedAt: string | null,
+
+},
+
+},
+
+},
+    comment: string,
 
 })[],
     followers: number,
@@ -3174,6 +3392,82 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   id: number;
                   image: string;
                   description: string;
+               }[];
+               pinnedScores: {
+                  score: {
+                     score: {
+                        id: number;
+                        rank: number;
+                        unmodifiedScore: number;
+                        modifiedScore: number;
+                        accuracy: number;
+                        pp: number;
+                        weight: number;
+                        mods: string[];
+                        badCuts: number;
+                        missedNotes: number;
+                        maxCombo: number;
+                        fullCombo: boolean;
+                        hasReplay: boolean;
+                        personalBest: boolean;
+                        legacyHmdId: number | null;
+                        version: string | null;
+                        playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                        playOutcomeTime: number | null;
+                        createdAt: string;
+                        player: {
+                           id: string;
+                           name: string;
+                           playerNameInGame: string;
+                           country: string;
+                           role: string | null;
+                           avatar: string;
+                           avatarVersion: number;
+                           permissions: number;
+                        };
+                        device: {
+                           hmd: string | null;
+                           controllerLeft: string | null;
+                           controllerRight: string | null;
+                        } | null;
+                     };
+                     leaderboard: {
+                        id: number;
+                        map: {
+                           id: number;
+                           hash: string;
+                           bsid: string | null;
+                           songName: string;
+                           songSubName: string;
+                           songAuthorName: string;
+                           levelAuthorName: string;
+                           bpm: number;
+                           coverUrl: string;
+                           verified: boolean;
+                        };
+                        difficulty: {
+                           id: number;
+                           difficulty: number;
+                           rawDifficulty: string;
+                           gameMode: string;
+                        };
+                        maxScore: number;
+                        totalScores: number;
+                        dailyScores: number;
+                        createdAt: string;
+                        realm: {
+                           realmId: number;
+                           realmName: string;
+                           leaderboardStatus: 'UNRANKED' | 'RANKED' | 'QUALIFIED' | 'LOVED';
+                           positiveModifiers: boolean;
+                           stars: number;
+                           rankedAt: string | null;
+                           qualifiedAt: string | null;
+                           lovedAt: string | null;
+                        };
+                     };
+                  };
+                  comment: string;
                }[];
                followers: number;
                following: number;
@@ -3288,6 +3582,91 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     description: string,
 
 })[],
+    pinnedScores: ({
+    score: {
+    score: {
+    id: number,
+    rank: number,
+    unmodifiedScore: number,
+    modifiedScore: number,
+    accuracy: number,
+    pp: number,
+    weight: number,
+    mods: (string)[],
+    badCuts: number,
+    missedNotes: number,
+    maxCombo: number,
+    fullCombo: boolean,
+    hasReplay: boolean,
+    personalBest: boolean,
+    legacyHmdId: number | null,
+    version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
+    createdAt: string,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+},
+    device: {
+    hmd: string | null,
+    controllerLeft: string | null,
+    controllerRight: string | null,
+
+} | null,
+
+},
+    leaderboard: {
+    id: number,
+    map: {
+    id: number,
+    hash: string,
+    bsid: string | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    coverUrl: string,
+    verified: boolean,
+
+},
+    difficulty: {
+    id: number,
+    difficulty: number,
+    rawDifficulty: string,
+    gameMode: string,
+
+},
+    maxScore: number,
+    totalScores: number,
+    dailyScores: number,
+    createdAt: string,
+    realm: {
+    realmId: number,
+    realmName: string,
+    leaderboardStatus: "UNRANKED" | "RANKED" | "QUALIFIED" | "LOVED",
+    positiveModifiers: boolean,
+    stars: number,
+    rankedAt: string | null,
+    qualifiedAt: string | null,
+    lovedAt: string | null,
+
+},
+
+},
+
+},
+    comment: string,
+
+})[],
     followers: number,
     following: number,
 
@@ -3394,6 +3773,82 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   id: number;
                   image: string;
                   description: string;
+               }[];
+               pinnedScores: {
+                  score: {
+                     score: {
+                        id: number;
+                        rank: number;
+                        unmodifiedScore: number;
+                        modifiedScore: number;
+                        accuracy: number;
+                        pp: number;
+                        weight: number;
+                        mods: string[];
+                        badCuts: number;
+                        missedNotes: number;
+                        maxCombo: number;
+                        fullCombo: boolean;
+                        hasReplay: boolean;
+                        personalBest: boolean;
+                        legacyHmdId: number | null;
+                        version: string | null;
+                        playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                        playOutcomeTime: number | null;
+                        createdAt: string;
+                        player: {
+                           id: string;
+                           name: string;
+                           playerNameInGame: string;
+                           country: string;
+                           role: string | null;
+                           avatar: string;
+                           avatarVersion: number;
+                           permissions: number;
+                        };
+                        device: {
+                           hmd: string | null;
+                           controllerLeft: string | null;
+                           controllerRight: string | null;
+                        } | null;
+                     };
+                     leaderboard: {
+                        id: number;
+                        map: {
+                           id: number;
+                           hash: string;
+                           bsid: string | null;
+                           songName: string;
+                           songSubName: string;
+                           songAuthorName: string;
+                           levelAuthorName: string;
+                           bpm: number;
+                           coverUrl: string;
+                           verified: boolean;
+                        };
+                        difficulty: {
+                           id: number;
+                           difficulty: number;
+                           rawDifficulty: string;
+                           gameMode: string;
+                        };
+                        maxScore: number;
+                        totalScores: number;
+                        dailyScores: number;
+                        createdAt: string;
+                        realm: {
+                           realmId: number;
+                           realmName: string;
+                           leaderboardStatus: 'UNRANKED' | 'RANKED' | 'QUALIFIED' | 'LOVED';
+                           positiveModifiers: boolean;
+                           stars: number;
+                           rankedAt: string | null;
+                           qualifiedAt: string | null;
+                           lovedAt: string | null;
+                        };
+                     };
+                  };
+                  comment: string;
                }[];
                followers: number;
                following: number;
@@ -6704,6 +7159,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     tournamentId: string,
     name: string,
     status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    deniedMods: (string)[],
     liveConnectionUrl: string | null,
     createdAt: string,
     updatedAt: string,
@@ -6789,6 +7245,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                tournamentId: string;
                name: string;
                status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+               deniedMods: string[];
                liveConnectionUrl: string | null;
                createdAt: string;
                updatedAt: string;
@@ -6877,6 +7334,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     tournamentId: string,
     name: string,
     status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    deniedMods: (string)[],
     liveConnectionUrl: string | null,
     createdAt: string,
     updatedAt: string,
@@ -6928,6 +7386,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     message: string,
 
 }` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
  * @response `500` `({
     statusCode: 500,
     error: "Internal Server Error",
@@ -6966,6 +7447,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                tournamentId: string;
                name: string;
                status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+               deniedMods: string[];
                liveConnectionUrl: string | null;
                createdAt: string;
                updatedAt: string;
@@ -7010,6 +7492,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                  error: 'Unauthorized';
                  code: 'UNAUTHORIZED';
                  message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
               }
             | (
                  | {
@@ -7351,6 +7852,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     connected: boolean,
     isBot: boolean,
     role: "PLAYER" | "VIEWER",
+    active: boolean,
     playState: "IN_MENU" | "PAUSED" | "IN_GAME",
     downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
     joinedAt: string,
@@ -7469,6 +7971,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   connected: boolean;
                   isBot: boolean;
                   role: 'PLAYER' | 'VIEWER';
+                  active: boolean;
                   playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
                   downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
                   joinedAt: string;
@@ -7590,6 +8093,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     connected: boolean,
     isBot: boolean,
     role: "PLAYER" | "VIEWER",
+    active: boolean,
     playState: "IN_MENU" | "PAUSED" | "IN_GAME",
     downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
     joinedAt: string,
@@ -7711,6 +8215,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   connected: boolean;
                   isBot: boolean;
                   role: 'PLAYER' | 'VIEWER';
+                  active: boolean;
                   playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
                   downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
                   joinedAt: string;
@@ -9710,12 +10215,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     connected: boolean,
     isBot: boolean,
     role: "PLAYER" | "VIEWER",
+    active: boolean,
     playState: "IN_MENU" | "PAUSED" | "IN_GAME",
     downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
     joinedAt: string,
     lastSeenAt: string,
 
 })[],
+    activePlayerIds?: (string)[],
     createdAt: string,
     updatedAt: string,
     closedAt: string | null,
@@ -9806,11 +10313,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   connected: boolean;
                   isBot: boolean;
                   role: 'PLAYER' | 'VIEWER';
+                  active: boolean;
                   playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
                   downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
                   joinedAt: string;
                   lastSeenAt: string;
                }[];
+               activePlayerIds?: string[];
                createdAt: string;
                updatedAt: string;
                closedAt: string | null;
@@ -9906,12 +10415,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     connected: boolean,
     isBot: boolean,
     role: "PLAYER" | "VIEWER",
+    active: boolean,
     playState: "IN_MENU" | "PAUSED" | "IN_GAME",
     downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
     joinedAt: string,
     lastSeenAt: string,
 
 })[],
+    activePlayerIds?: (string)[],
     createdAt: string,
     updatedAt: string,
     closedAt: string | null,
@@ -10056,11 +10567,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   connected: boolean;
                   isBot: boolean;
                   role: 'PLAYER' | 'VIEWER';
+                  active: boolean;
                   playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
                   downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
                   joinedAt: string;
                   lastSeenAt: string;
                }[];
+               activePlayerIds?: string[];
                createdAt: string;
                updatedAt: string;
                closedAt: string | null;
@@ -10171,6 +10684,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     tournamentId: string,
     name: string,
     status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    deniedMods: (string)[],
     liveConnectionUrl: string | null,
     createdAt: string,
     updatedAt: string,
@@ -10219,12 +10733,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     connected: boolean,
     isBot: boolean,
     role: "PLAYER" | "VIEWER",
+    active: boolean,
     playState: "IN_MENU" | "PAUSED" | "IN_GAME",
     downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
     joinedAt: string,
     lastSeenAt: string,
 
 })[],
+    activePlayerIds?: (string)[],
     createdAt: string,
     updatedAt: string,
     closedAt: string | null,
@@ -10354,6 +10870,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   tournamentId: string;
                   name: string;
                   status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+                  deniedMods: string[];
                   liveConnectionUrl: string | null;
                   createdAt: string;
                   updatedAt: string;
@@ -10408,11 +10925,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      connected: boolean;
                      isBot: boolean;
                      role: 'PLAYER' | 'VIEWER';
+                     active: boolean;
                      playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
                      downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
                      joinedAt: string;
                      lastSeenAt: string;
                   }[];
+                  activePlayerIds?: string[];
                   createdAt: string;
                   updatedAt: string;
                   closedAt: string | null;
@@ -10549,6 +11068,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     tournamentId: string,
     name: string,
     status: "DRAFT" | "ACTIVE" | "ARCHIVED",
+    deniedMods: (string)[],
     liveConnectionUrl: string | null,
     createdAt: string,
     updatedAt: string,
@@ -10597,12 +11117,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     connected: boolean,
     isBot: boolean,
     role: "PLAYER" | "VIEWER",
+    active: boolean,
     playState: "IN_MENU" | "PAUSED" | "IN_GAME",
     downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
     joinedAt: string,
     lastSeenAt: string,
 
 })[],
+    activePlayerIds?: (string)[],
     createdAt: string,
     updatedAt: string,
     closedAt: string | null,
@@ -10809,6 +11331,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   tournamentId: string;
                   name: string;
                   status: 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+                  deniedMods: string[];
                   liveConnectionUrl: string | null;
                   createdAt: string;
                   updatedAt: string;
@@ -10863,11 +11386,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      connected: boolean;
                      isBot: boolean;
                      role: 'PLAYER' | 'VIEWER';
+                     active: boolean;
                      playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
                      downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
                      joinedAt: string;
                      lastSeenAt: string;
                   }[];
+                  activePlayerIds?: string[];
                   createdAt: string;
                   updatedAt: string;
                   closedAt: string | null;
@@ -11106,12 +11631,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     connected: boolean,
     isBot: boolean,
     role: "PLAYER" | "VIEWER",
+    active: boolean,
     playState: "IN_MENU" | "PAUSED" | "IN_GAME",
     downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
     joinedAt: string,
     lastSeenAt: string,
 
 })[],
+    activePlayerIds?: (string)[],
     createdAt: string,
     updatedAt: string,
     closedAt: string | null,
@@ -11256,11 +11783,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   connected: boolean;
                   isBot: boolean;
                   role: 'PLAYER' | 'VIEWER';
+                  active: boolean;
                   playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
                   downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
                   joinedAt: string;
                   lastSeenAt: string;
                }[];
+               activePlayerIds?: string[];
                createdAt: string;
                updatedAt: string;
                closedAt: string | null;
@@ -11404,12 +11933,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     connected: boolean,
     isBot: boolean,
     role: "PLAYER" | "VIEWER",
+    active: boolean,
     playState: "IN_MENU" | "PAUSED" | "IN_GAME",
     downloadState: "NONE" | "DOWNLOADING" | "DOWNLOADED" | "ERROR",
     joinedAt: string,
     lastSeenAt: string,
 
 })[],
+    activePlayerIds?: (string)[],
     createdAt: string,
     updatedAt: string,
     closedAt: string | null,
@@ -11580,11 +12111,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      connected: boolean;
                      isBot: boolean;
                      role: 'PLAYER' | 'VIEWER';
+                     active: boolean;
                      playState: 'IN_MENU' | 'PAUSED' | 'IN_GAME';
                      downloadState: 'NONE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR';
                      joinedAt: string;
                      lastSeenAt: string;
                   }[];
+                  activePlayerIds?: string[];
                   createdAt: string;
                   updatedAt: string;
                   closedAt: string | null;
@@ -29213,6 +29746,213 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
               )
          >({
             path: `/api/v2/user/@me/vanity`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags User
+ * @name UserControllerUpdatePinnedScores
+ * @request PUT:/api/v2/user/@me/pinned-scores
+ * @response `200` `{
+    success: boolean,
+
+}` Pinned scores update result
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      userControllerUpdatePinnedScores: (data: UserControllerUpdatePinnedScoresPayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/user/@me/pinned-scores`,
             method: 'PUT',
             body: data,
             type: ContentType.Json,

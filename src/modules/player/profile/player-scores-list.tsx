@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import { ScoreCard } from '@/modules/scores/score-card';
 import type { PlayerControllerGetPlayerScoresDataItem } from '@/shared/api/generated/ApiParams';
 import { Pagination } from '@/shared/components/pagination';
@@ -9,14 +11,22 @@ interface PlayerScoresListProps<TLocation> {
    pageSize: number;
    currentPage: number;
    getPageLocation: (page: number) => RouteLocation<TLocation>;
+   renderScoreAction?: (score: PlayerControllerGetPlayerScoresDataItem) => ReactNode;
 }
 
-export function PlayerScoresList<TLocation>({ playerScores, totalItems, pageSize, currentPage, getPageLocation }: PlayerScoresListProps<TLocation>) {
+export function PlayerScoresList<TLocation>({
+   playerScores,
+   totalItems,
+   pageSize,
+   currentPage,
+   getPageLocation,
+   renderScoreAction
+}: PlayerScoresListProps<TLocation>) {
    return (
       <div>
          <div className="flex flex-col gap-2">
             {playerScores.map((score) => (
-               <ScoreCard key={score.score.id} className="p-3" playerScore={score} />
+               <ScoreCard key={score.score.id} className="p-3" playerScore={score} overlayAction={renderScoreAction?.(score)} />
             ))}
          </div>
          {totalItems > pageSize && (

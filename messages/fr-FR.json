@@ -188,7 +188,10 @@
       "connectDescription": "Liez votre compte Patreon pour profiter des avantages comme les bios personnalisées",
       "subscribeDescription": "Abonnez-vous sur Patreon pour déverrouiller des avantages comme les bios personnalisées",
       "connect": "Lier votre Patreon",
-      "subscribe": "Soutenir sur Patreon"
+      "subscribe": "Soutenir sur Patreon",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "Se connecter à",
@@ -952,7 +955,6 @@
       "tabs": {
          "account": "Compte",
          "connections": "Connexions",
-         "perks": "Avantages",
          "developer": ""
       },
       "account": {
@@ -1046,17 +1048,6 @@
          "setup": ""
       },
       "perks": {
-         "tabs": {
-            "overview": "Aperçu",
-            "replays": "Replays"
-         },
-         "gate": {
-            "title": "Les avantages sont réservés aux supporters",
-            "connectDescription": "Liez votre compte Patreon pour vérifier votre statut de supporter et débloquer les avantages",
-            "subscribeDescription": "Abonnez-vous sur Patreon pour débloquer les avantages de ScoreSaber",
-            "connect": "Lier votre Patreon",
-            "subscribe": "Soutenir sur Patreon"
-         },
          "replaySlots": {
             "title": "Emplacements de replay",
             "description": "Protégez les replays sélectionnés",

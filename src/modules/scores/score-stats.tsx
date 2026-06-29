@@ -24,6 +24,8 @@ interface ScoreStatsProps {
    legacyAccuracy?: boolean;
    className?: string;
    timeSet?: string | Date;
+   size?: 'default' | 'compact';
+   scoreStatMode?: 'scoreAndMods' | 'modsOnly';
 }
 
 export function ScoreStats({
@@ -34,51 +36,71 @@ export function ScoreStats({
    showPP = true,
    legacyAccuracy = false,
    className,
-   timeSet
+   timeSet,
+   size = 'default',
+   scoreStatMode = 'scoreAndMods'
 }: ScoreStatsProps) {
    const t = useTranslations();
-   const tc = useTranslations();
    const accuracy = formatAccuracy(score.accuracy * 100);
    const missedTotal = score.missedNotes + score.badCuts;
+   const isCompact = size === 'compact';
+   const statClassName = isCompact ? 'gap-1 rounded px-1.5 py-0.5 text-[10px]' : undefined;
+   const iconClassName = isCompact ? 'h-2.5 w-2.5' : undefined;
+   const hasMods = score.mods.length > 0;
+   const showScoreStat = scoreStatMode === 'scoreAndMods' || hasMods;
 
    return (
-      <div className={cn('text-foreground flex cursor-default flex-col flex-wrap items-center justify-center gap-1 text-sm lg:items-end', className)}>
+      <div
+         className={cn(
+            'text-foreground flex cursor-default flex-wrap items-center justify-center gap-1',
+            isCompact ? 'text-[10px]' : 'flex-col text-sm lg:items-end',
+            className
+         )}
+      >
          {showAccuracy && (
-            <div className="flex gap-2 lg:mb-1">
+            <div className={cn('flex', isCompact ? 'gap-1' : 'gap-2 lg:mb-1')}>
                <Tooltip>
                   <TooltipTrigger asChild>
                      <Stat
                         icon={Target}
                         className={cn(
+                           statClassName,
                            'cursor-default',
                            legacyAccuracy ? 'border-muted-foreground/30 bg-muted/40' : 'border-status-warning/40 bg-status-warning/10'
                         )}
                         valueClassName={legacyAccuracy ? 'text-muted-foreground' : 'text-score-accuracy-good'}
+                        iconClassName={iconClassName}
                      >
                         <span className="inline-flex items-center gap-1">
                            {accuracy}
-                           {legacyAccuracy && <Info className="size-3 opacity-70" />}
+                           {legacyAccuracy && <Info className={cn('opacity-70', isCompact ? 'size-2.5' : 'size-3')} />}
                         </span>
                      </Stat>
                   </TooltipTrigger>
                   <TooltipContent>
-                     <p>{legacyAccuracy ? t('score.legacyAccuracy') : tc('common.accuracy')}</p>
+                     <p>{legacyAccuracy ? t('score.legacyAccuracy') : t('common.accuracy')}</p>
                   </TooltipContent>
                </Tooltip>
                {showPP && score.pp > 0 && (
-                  <Stat icon={Star} className="border-score-pp bg-score-pp/10" iconClassName="text-score-pp">
+                  <Stat
+                     icon={Star}
+                     className={cn(statClassName, 'border-score-pp bg-score-pp/10')}
+                     iconClassName={cn(iconClassName, 'text-score-pp')}
+                  >
                      <Tooltip>
                         <TooltipTrigger asChild>
                            <span className="cursor-default">{formatPP(score.pp)}pp</span>
                         </TooltipTrigger>
                         <TooltipContent>
-                           <p>{tc('common.performancePoints')}</p>
+                           <p>{t('common.performancePoints')}</p>
                         </TooltipContent>
                      </Tooltip>
                      {weightedPP && weightedPercent && (
                         <Tooltip>
                            <TooltipTrigger asChild>
-                              <span className="ml-1.5 cursor-default text-[10px] opacity-70">[{weightedPP}pp]</span>
+                              <span className={cn('cursor-default opacity-70', isCompact ? 'ml-1 text-[9px]' : 'ml-1.5 text-[10px]')}>
+                                 [{weightedPP}pp]
+                              </span>
                            </TooltipTrigger>
                            <TooltipContent>
                               <p>{t('score.weighted', { weightedPercent })}</p>
@@ -90,36 +112,43 @@ export function ScoreStats({
             </div>
          )}
 
-         <div className="flex items-center gap-2">
-            <Tooltip>
-               <TooltipTrigger asChild>
-                  <Stat className="cursor-default">
-                     <span className="inline-flex items-baseline gap-1.5">
-                        {formatNumber(score.modifiedScore)}
-                        {score.mods.length > 0 && <span className="text-muted-foreground text-[10px] font-semibold">{score.mods.join(', ')}</span>}
-                     </span>
-                  </Stat>
-               </TooltipTrigger>
-               <TooltipContent>
-                  <p>{t('score.score')}</p>
-               </TooltipContent>
-            </Tooltip>
+         <div className={cn('flex items-center', isCompact ? 'gap-1' : 'gap-2')}>
+            {showScoreStat && (
+               <Tooltip>
+                  <TooltipTrigger asChild>
+                     <Stat className={cn(statClassName, 'cursor-default')}>
+                        {scoreStatMode === 'modsOnly' ? (
+                           <span className="font-semibold">{score.mods.join(', ')}</span>
+                        ) : (
+                           <span className="inline-flex items-baseline gap-1.5">
+                              {formatNumber(score.modifiedScore)}
+                              {hasMods && <span className="text-muted-foreground text-[10px] font-semibold">{score.mods.join(', ')}</span>}
+                           </span>
+                        )}
+                     </Stat>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                     <p>{scoreStatMode === 'modsOnly' ? t('score.mods') : t('score.score')}</p>
+                  </TooltipContent>
+               </Tooltip>
+            )}
             <Stat
                icon={score.fullCombo ? Check : X}
                className={cn(
+                  statClassName,
                   score.fullCombo
                      ? 'border-score-combo-full bg-score-combo-full/10 text-score-combo-full'
                      : 'border-score-combo-broken bg-score-combo-broken/10 text-score-combo-broken'
                )}
                valueClassName={score.fullCombo ? 'text-score-combo-full' : 'text-score-combo-broken'}
-               iconClassName={score.fullCombo ? 'text-score-combo-full' : 'text-score-combo-broken'}
+               iconClassName={cn(iconClassName, score.fullCombo ? 'text-score-combo-full' : 'text-score-combo-broken')}
             >
                {score.fullCombo ? 'FC' : missedTotal === 0 ? 'FC' : missedTotal}
             </Stat>
          </div>
 
          {timeSet && (
-            <Stat icon={Clock} className="cursor-default">
+            <Stat icon={Clock} className={cn(statClassName, 'cursor-default')} iconClassName={iconClassName}>
                <Time short date={timeSet} />
             </Stat>
          )}

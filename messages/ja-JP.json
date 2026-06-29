@@ -188,7 +188,10 @@
       "connectDescription": "Patreon を連携すると、カスタム Bio などのプロフィール特典を利用できます",
       "subscribeDescription": "Patreon での登録により、カスタム Bio などのプロフィール特典をアンロックできます",
       "connect": "Patreon を連携",
-      "subscribe": "Patreon に登録"
+      "subscribe": "Patreon に登録",
+      "supportUs": "Support us on Patreon",
+      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
+      "connectSupporterLink": "here"
    },
    "login": {
       "titlePrefix": "サインイン",
@@ -952,7 +955,6 @@
       "tabs": {
          "account": "アカウント",
          "connections": "接続",
-         "perks": "特典",
          "developer": ""
       },
       "account": {
@@ -1046,17 +1048,6 @@
          "setup": ""
       },
       "perks": {
-         "tabs": {
-            "overview": "",
-            "replays": ""
-         },
-         "gate": {
-            "title": "",
-            "connectDescription": "",
-            "subscribeDescription": "",
-            "connect": "Patreonと連携",
-            "subscribe": "Patreonで支援"
-         },
          "replaySlots": {
             "title": "",
             "description": "",

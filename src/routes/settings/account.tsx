@@ -19,17 +19,19 @@ const accountSettingsSearchSchema = z.object({
 });
 
 const getAccountSettingsData = createServerFn({ method: 'GET' }).handler(async () => {
-   const [countryReset, connections, passkeys, credential] = await Promise.all([
+   const [countryReset, connections, passkeys, credential, vanity] = await Promise.all([
       optionalApi(api.user.userControllerCanResetCountry().then((r) => r.data)),
       optionalApi(api.user.userControllerGetConnections().then((r) => r.data)),
       optionalApi(api.auth.passkeyControllerListPasskeys().then((r) => r.data.passkeys)),
-      optionalApi(api.auth.passwordAuthControllerGetPasswordCredential().then((r) => r.data))
+      optionalApi(api.auth.passwordAuthControllerGetPasswordCredential().then((r) => r.data)),
+      optionalApi(api.user.userControllerGetVanity({ cache: 'no-store' }).then((r) => r.data))
    ]);
 
    return {
       countryReset,
       passkeys,
       credential,
+      vanity,
       patreonConnected: connections?.some((connection) => connection.provider === 'PATREON' && connection.state === 'CONNECTED') ?? false
    };
 });
@@ -51,6 +53,7 @@ function SettingsAccountRoute() {
          <SettingsShell activeTab="account">
             <AccountSection
                countryReset={data.countryReset}
+               vanity={data.vanity}
                patreonConnected={data.patreonConnected}
                beforeActions={<SecuritySection passkeys={data.passkeys} credential={data.credential} openPasswordSetup={search.setupPassword} />}
             />

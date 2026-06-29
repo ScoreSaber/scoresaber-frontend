@@ -40,13 +40,22 @@ const group_permissions = {
 };
 
 function checkPermissionNumber(userPermissions: number, permission: number) {
-   if (userPermissions === undefined) return false;
    if ((userPermissions & permissions.PANDA) !== 0) return permission !== 0;
    return (userPermissions & permission) !== 0;
+}
+
+function isSupporter(userPermissions: number) {
+   return checkPermissionNumber(userPermissions, permissions.SUPPORTER) || isPPFarmer(userPermissions);
+}
+
+function isPPFarmer(userPermissions: number) {
+   return checkPermissionNumber(userPermissions, permissions.PPFARMER) || checkPermissionNumber(userPermissions, group_permissions.ALL_STAFF);
 }
 
 export default {
    security: permissions,
    groups: group_permissions,
-   checkPermissionNumber
+   checkPermissionNumber,
+   isSupporter,
+   isPPFarmer
 };

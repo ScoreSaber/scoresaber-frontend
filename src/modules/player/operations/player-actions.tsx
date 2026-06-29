@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import type { IconType } from 'react-icons';
 import { FaBan, FaGlobe, FaIdBadge, FaLock, FaUndoAlt, FaUsersCog } from 'react-icons/fa';
@@ -24,15 +24,24 @@ interface PlayerOperationDescriptor {
    label: string;
 }
 
+export interface PlayerExtraAction {
+   id: string;
+   label: string;
+   icon?: ReactNode;
+   visible?: boolean;
+   onSelect: () => void;
+}
+
 interface PlayerActionsProps {
    playerId: string;
    playerBanned: boolean;
    playerPermissions: number;
    playerRole: string | null;
    compact?: boolean;
+   extraActions?: PlayerExtraAction[];
 }
 
-export function PlayerActions({ playerId, playerBanned, playerPermissions, playerRole, compact = false }: PlayerActionsProps) {
+export function PlayerActions({ playerId, playerBanned, playerPermissions, playerRole, compact = false, extraActions = [] }: PlayerActionsProps) {
    const t = useTranslations();
    const { user } = useAuth();
    const isOwnProfile = user?.id === playerId;
@@ -90,13 +99,20 @@ export function PlayerActions({ playerId, playerBanned, playerPermissions, playe
       }
    ];
    const visibleOperations = operations.filter((operation) => operation.visible);
+   const visibleExtraActions = extraActions.filter((extraAction) => extraAction.visible ?? true);
    const primaryOperations = visibleOperations.filter((operation) => operation.group === 'primary');
    const countryOperations = visibleOperations.filter((operation) => operation.group === 'country');
-   const hasAnyAction = visibleOperations.length > 0;
+   const hasAnyAction = visibleOperations.length > 0 || visibleExtraActions.length > 0;
    if (!hasAnyAction) return null;
 
    function handlePlayerAction(value: string) {
       setActionSelectKey((prev) => prev + 1);
+      const extraAction = visibleExtraActions.find((item) => item.id === value);
+      if (extraAction) {
+         extraAction.onSelect();
+         return;
+      }
+
       const operation = visibleOperations.find((item) => item.id === value);
       if (operation) setActiveDialog(operation.id);
    }
@@ -112,6 +128,10 @@ export function PlayerActions({ playerId, playerBanned, playerPermissions, playe
                <SelectContent align="end" position="popper">
                   <SelectGroup>
                      <SelectLabel>{t('player.playerActions')}</SelectLabel>
+                     {visibleExtraActions.map((extraAction) => (
+                        <PlayerActionItem key={extraAction.id} value={extraAction.id} icon={extraAction.icon} label={extraAction.label} />
+                     ))}
+                     {visibleExtraActions.length > 0 && visibleOperations.length > 0 && <SelectSeparator />}
                      {primaryOperations.map((operation) => (
                         <PlayerOperationItem key={operation.id} operation={operation} />
                      ))}
@@ -142,10 +162,14 @@ export function PlayerActions({ playerId, playerBanned, playerPermissions, playe
 function PlayerOperationItem({ operation }: { operation: PlayerOperationDescriptor }) {
    const Icon = operation.icon;
 
+   return <PlayerActionItem value={operation.id} icon={<Icon data-icon="inline-start" />} label={operation.label} />;
+}
+
+function PlayerActionItem({ value, icon, label }: { value: string; icon?: ReactNode; label: string }) {
    return (
-      <SelectItem value={operation.id}>
-         <Icon data-icon="inline-start" />
-         {operation.label}
+      <SelectItem value={value}>
+         {icon}
+         {label}
       </SelectItem>
    );
 }

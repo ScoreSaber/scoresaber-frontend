@@ -186,7 +186,7 @@ function resolvePlayerRole(player: PlayerRoleSource): [RoleKey, string | null] {
    if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.CCT)) {
       return ['cct', 'Content Creation Team'];
    }
-   if (Permissions.checkPermissionNumber(player.permissions, Permissions.security.SUPPORTER)) {
+   if (Permissions.isSupporter(player.permissions)) {
       return ['supporter', 'ScoreSaber Supporter'];
    }
 

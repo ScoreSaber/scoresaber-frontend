@@ -10,13 +10,22 @@ interface DifficultyPillProps {
    difficultyValue: number;
    difficultyName: string;
    starValue?: number;
+   size?: 'default' | 'compact';
    className?: string;
 }
 
-export function DifficultyPill({ difficultyValue, difficultyName, starValue, className }: DifficultyPillProps) {
+export function DifficultyPill({ difficultyValue, difficultyName, starValue, size = 'default', className }: DifficultyPillProps) {
    const displayValue = starValue ? `${starValue.toFixed(2)}★` : difficultyName;
    const badge = (
-      <Badge variant="difficulty" className={cn(starValue && 'cursor-help', getDifficultyBgClass(difficultyValue), className)}>
+      <Badge
+         variant="difficulty"
+         className={cn(
+            starValue && 'cursor-help',
+            size === 'compact' && 'h-4 max-w-10 rounded-sm px-1 py-0 text-[9px] leading-none',
+            getDifficultyBgClass(difficultyValue),
+            className
+         )}
+      >
          {displayValue}
       </Badge>
    );

@@ -1,7 +1,7 @@
 'use client';
 
 import { Link } from '@tanstack/react-router';
-import { CodeXml, Plug, Sparkles, UserCircle2 } from 'lucide-react';
+import { CodeXml, Database, Plug, UserCircle2 } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,7 +13,7 @@ import Permissions from '@/shared/permissions';
 const TAB_ICONS: Record<SettingsTab, React.ReactNode> = {
    account: <UserCircle2 className="size-3" />,
    connections: <Plug className="size-3" />,
-   perks: <Sparkles className="size-3" />,
+   perks: <Database className="size-3" />,
    developer: <CodeXml className="size-3" />
 };
 
@@ -36,7 +36,7 @@ export function SettingsNav({ activeTab }: { activeTab: SettingsTab }) {
                         : tab === 'connections'
                           ? t('settings.tabs.connections')
                           : tab === 'perks'
-                            ? t('settings.tabs.perks')
+                            ? t('settings.perks.replaySlots.title')
                             : t('settings.tabs.developer')}
                   </Link>
                </TabsTrigger>

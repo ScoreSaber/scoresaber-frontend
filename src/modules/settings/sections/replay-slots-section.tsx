@@ -64,11 +64,9 @@ export function ReplaySlotsSection({ replaySlots, scoreDetails }: ReplaySlotsSec
 
    const isAtLimit = replaySlots.used >= replaySlots.limit;
    const permissions = user.permissions;
-   const isPpFarmerOrStaff =
-      Permissions.checkPermissionNumber(permissions, Permissions.security.PPFARMER) ||
-      Permissions.checkPermissionNumber(permissions, Permissions.groups.ALL_STAFF);
-   const isSupporter = Permissions.checkPermissionNumber(permissions, Permissions.security.SUPPORTER);
-   const showCta = !isPpFarmerOrStaff && (isSupporter || replaySlots.limit <= 25);
+   const isPPFarmer = Permissions.isPPFarmer(permissions);
+   const isSupporter = Permissions.isSupporter(permissions);
+   const showCta = !isPPFarmer && (isSupporter || replaySlots.limit <= 25);
 
    return (
       <Card variant="settings">
