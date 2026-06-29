@@ -243,7 +243,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
                                  <RotateCcw data-icon="inline-start" />
                                  {t('settings.account.reset')}
                               </Button>
-                              <Button type="button" disabled={avatarSaveDisabled} onClick={saveAvatar} className="cursor-pointer sm:w-24">
+                              <Button type="button" disabled={avatarSaveDisabled} onClick={saveAvatar} className="cursor-pointer sm:min-w-24">
                                  {avatarSavePending ? (
                                     <Loader2 data-icon="inline-start" className="animate-spin" />
                                  ) : (
@@ -298,7 +298,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
                               </InputGroupButton>
                            </InputGroupAddon>
                         </InputGroup>
-                        <Button type="button" disabled={nameSaveDisabled} onClick={saveName} className="cursor-pointer sm:w-24">
+                        <Button type="button" disabled={nameSaveDisabled} onClick={saveName} className="cursor-pointer sm:min-w-24">
                            {nameSavePending ? <Loader2 data-icon="inline-start" className="animate-spin" /> : <Save data-icon="inline-start" />}
                            {t('common.save')}
                         </Button>
@@ -379,7 +379,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
                                        </InputGroupButton>
                                     </InputGroupAddon>
                                  </InputGroup>
-                                 <Button type="submit" disabled={vanitySaveDisabled || !canUseProfilePerks} className="cursor-pointer sm:w-24">
+                                 <Button type="submit" disabled={vanitySaveDisabled || !canUseProfilePerks} className="cursor-pointer sm:min-w-24">
                                     {vanitySavePending ? (
                                        <Loader2 data-icon="inline-start" className="animate-spin" />
                                     ) : (

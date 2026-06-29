@@ -106,7 +106,7 @@ export function PlayerProfileCustomizationPinnedScoresTab({
             <p className={cn('text-muted-foreground text-xs', dirty && 'text-foreground')}>
                {dirty ? t('player.customization.pinnedScores.unsaved') : t('player.customization.pinnedScores.noChanges')}
             </p>
-            <Button type="button" disabled={saveDisabled} onClick={onSaveAction} className="cursor-pointer sm:w-24">
+            <Button type="button" disabled={saveDisabled} onClick={onSaveAction} className="cursor-pointer sm:min-w-24">
                {savePending ? <Loader2 data-icon="inline-start" className="animate-spin" /> : <Save data-icon="inline-start" />}
                {t('common.save')}
             </Button>
