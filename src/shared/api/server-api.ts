@@ -1,6 +1,6 @@
 import '@tanstack/react-start/server-only';
 
-import { getCookie, setCookie } from '@tanstack/react-start/server';
+import { getCookie, getRequest, setCookie } from '@tanstack/react-start/server';
 import { Result, TaggedError } from 'better-result';
 
 import { Api } from './generated/Api';
@@ -14,6 +14,8 @@ const authenticatedFetchCache: RequestInit = { cache: 'no-store' };
 const publicFetchCache: RequestInit = {};
 const authenticatedCredentials: RequestCredentials = 'include';
 const publicCredentials: RequestCredentials = 'omit';
+const requestVisitorIds = new WeakMap<Request, string>();
+const VISITOR_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 class SessionCookieReadError extends TaggedError('SessionCookieReadError')<{
    message: string;
@@ -52,9 +54,14 @@ async function readVisitorIdCookie() {
 
 async function readOrCreateVisitorId() {
    const existingVisitorId = await readVisitorIdCookie();
-   if (existingVisitorId) return existingVisitorId;
+   if (existingVisitorId && VISITOR_ID_PATTERN.test(existingVisitorId)) return existingVisitorId;
+
+   const request = getRequest();
+   const requestVisitorId = requestVisitorIds.get(request);
+   if (requestVisitorId) return requestVisitorId;
 
    const visitorId = crypto.randomUUID();
+   requestVisitorIds.set(request, visitorId);
    setCookie(VISITOR_COOKIE_NAME, visitorId, {
       httpOnly: true,
       sameSite: 'lax',
@@ -112,11 +119,13 @@ const publicFetch = createServerFetch(publicCredentials);
 export const publicApi = new Api({
    baseUrl: env.API_URL,
    baseApiParams: { secure: true, credentials: publicCredentials },
-   securityWorker: () => {
+   securityWorker: async () => {
       const publicHeaders: Record<string, string> = {};
       const hasCloudflareAccessHeaders = addCloudflareAccessHeaders(publicHeaders);
+      const visitorId = await readOrCreateVisitorId();
+      const hasVisitorRateLimitHeaders = addVisitorRateLimitHeaders(publicHeaders, visitorId);
 
-      return hasCloudflareAccessHeaders ? { headers: publicHeaders } : {};
+      return hasCloudflareAccessHeaders || hasVisitorRateLimitHeaders ? { headers: publicHeaders } : {};
    },
    customFetch: publicFetch
 });

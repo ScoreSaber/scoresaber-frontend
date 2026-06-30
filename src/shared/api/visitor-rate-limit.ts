@@ -4,20 +4,14 @@ import { env } from '@/env';
 
 import { createHmac } from 'node:crypto';
 
-function getVisitorRateLimitSecret() {
-   return env.VISITOR_RATE_LIMIT_SECRET ?? null;
-}
-
 function signVisitorId(visitorId: string) {
-   const secret = getVisitorRateLimitSecret();
+   const secret = env.VISITOR_RATE_LIMIT_SECRET;
    if (!secret) return null;
 
    return createHmac('sha256', secret).update(visitorId).digest('hex');
 }
 
-export function addVisitorRateLimitHeaders(headers: Record<string, string>, visitorId: string | null | undefined) {
-   if (!visitorId) return false;
-
+export function addVisitorRateLimitHeaders(headers: Record<string, string>, visitorId: string) {
    const signature = signVisitorId(visitorId);
    if (!signature) return false;
 
