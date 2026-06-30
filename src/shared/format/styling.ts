@@ -120,6 +120,17 @@ const ROLE_CLASS_MAP: Record<RolePrefix, Record<RoleKey, string>> = {
    }
 };
 
+const PLAYER_OVERRIDE_CLASS_MAP: Record<RolePrefix, Record<string, string>> = {
+   text: {
+      '76561198041178440': 'team-rainbow-text', // qwasyx
+      '76561198182060577': 'team-rainbow-text' // williums
+   },
+   bg: {
+      '76561198041178440': 'bg-role-admin', // qwasyx
+      '76561198182060577': 'bg-role-default' // williums
+   }
+};
+
 const ROLE_TEXT_PRIORITY: { key: RoleKey; title: string; labels: string[] }[] = [
    { key: 'owner', title: 'Owner of ScoreSaber', labels: ['Owner'] },
    { key: 'admin', title: 'ScoreSaber Admin', labels: ['Admin'] },
@@ -208,5 +219,7 @@ export function getPlayerRoleStyleAndTitle(player: PlayerRoleSource | null, pref
    }
 
    const [roleKey, title] = resolvePlayerRole(player);
-   return [ROLE_CLASS_MAP[prefix][roleKey], title];
+   var clsName = PLAYER_OVERRIDE_CLASS_MAP[prefix][player.id] ?? ROLE_CLASS_MAP[prefix][roleKey];
+
+   return [clsName, title];
 }
