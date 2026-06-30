@@ -2,19 +2,40 @@ import type { CSSProperties } from 'react';
 
 import type { PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
 
-export type PlayerProfileCustomizationStyle = PlayerControllerGetPlayerResponse['profileCustomization'];
+export type PlayerProfileCustomizationStyle = NonNullable<PlayerControllerGetPlayerResponse['profileCustomization']>;
+
+export const DEFAULT_PROFILE_CUSTOMIZATION_STYLE: PlayerProfileCustomizationStyle = {
+   accentColor: null,
+   accentForegroundColor: null,
+   supporterNameColorEnabled: true
+};
 
 type ProfileAccentProperties = CSSProperties & {
    '--profile-accent': string;
    '--profile-accent-foreground': string;
 };
 
-export function getProfileAccentProperties(customization: PlayerProfileCustomizationStyle | null | undefined): ProfileAccentProperties | undefined {
-   if (!customization?.accentColor) return undefined;
+export function normalizeProfileCustomizationStyle(
+   customization: PlayerProfileCustomizationStyle | null | undefined
+): PlayerProfileCustomizationStyle {
+   if (!customization) return DEFAULT_PROFILE_CUSTOMIZATION_STYLE;
+
+   const accentColor = customization?.accentColor ?? null;
 
    return {
-      '--profile-accent': customization.accentColor,
-      '--profile-accent-foreground': customization.accentForegroundColor ?? getReadableProfileAccentForeground(customization.accentColor)
+      accentColor,
+      accentForegroundColor: accentColor ? (customization?.accentForegroundColor ?? null) : null,
+      supporterNameColorEnabled: customization?.supporterNameColorEnabled ?? true
+   };
+}
+
+export function getProfileAccentProperties(customization: PlayerProfileCustomizationStyle | null | undefined): ProfileAccentProperties | undefined {
+   const style = normalizeProfileCustomizationStyle(customization);
+   if (!style.accentColor) return undefined;
+
+   return {
+      '--profile-accent': style.accentColor,
+      '--profile-accent-foreground': style.accentForegroundColor ?? getReadableProfileAccentForeground(style.accentColor)
    };
 }
 

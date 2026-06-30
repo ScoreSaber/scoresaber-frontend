@@ -5,7 +5,7 @@ import { useEffect, type ReactNode } from 'react';
 import { getProfileAccentProperties, type PlayerProfileCustomizationStyle } from '@/modules/player/profile/player-profile-accent';
 
 interface PlayerProfileAccentScopeProps {
-   customization: PlayerProfileCustomizationStyle;
+   customization: PlayerProfileCustomizationStyle | null | undefined;
    children: ReactNode;
 }
 

@@ -12,7 +12,7 @@ import { useActionMutation } from '@/hooks/use-action-mutation';
 import { useAuth } from '@/modules/auth';
 import { updatePinnedScores, updateProfileCustomizationStyle } from '@/modules/player/actions/user/profile-customization';
 import type { PlayerExtraAction } from '@/modules/player/operations/player-actions';
-import type { PlayerProfileCustomizationStyle } from '@/modules/player/profile/player-profile-accent';
+import { normalizeProfileCustomizationStyle, type PlayerProfileCustomizationStyle } from '@/modules/player/profile/player-profile-accent';
 import { PlayerProfileCustomizationAccountTab } from '@/modules/player/profile/player-profile-customization-account-tab';
 import {
    MAX_PINNED_SCORES,
@@ -56,7 +56,11 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
    const canToggleSupporterNameColor = canUseStyle && !isStaffProfile;
    const canUsePinnedScores = Permissions.isPPFarmer(userPerms);
    const canShowCustomization = isOwnProfile && !player.banned;
-   const initialStyle = player.profileCustomization;
+   const rawStyle = player.profileCustomization;
+   const initialStyle = useMemo(
+      () => normalizeProfileCustomizationStyle(rawStyle),
+      [rawStyle?.accentColor, rawStyle?.accentForegroundColor, rawStyle?.supporterNameColorEnabled]
+   );
    const [savedStyle, setSavedStyle] = useState(initialStyle);
    const [draftStyle, setDraftStyle] = useState(initialStyle);
    const savedDraftItems = useMemo(() => createDraftItems(player.pinnedScores ?? []), [player.pinnedScores]);
@@ -86,7 +90,7 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
    if (!canShowCustomization) {
       return children({
          extraActions: [],
-         profileCustomization: player.profileCustomization,
+         profileCustomization: initialStyle,
          renderScoreAction: () => null
       });
    }
@@ -136,8 +140,9 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
          t('player.customization.style.saved'),
          t('player.customization.style.saveFailed'),
          (style) => {
-            setSavedStyle(style);
-            setDraftStyle(style);
+            const normalizedStyle = normalizeProfileCustomizationStyle(style);
+            setSavedStyle(normalizedStyle);
+            setDraftStyle(normalizedStyle);
             setOpen(false);
          }
       );
@@ -310,9 +315,12 @@ function arePinnedScorePayloadsEqual(a: PinnedScorePayloadItem[], b: PinnedScore
 }
 
 function areProfileCustomizationStylesEqual(a: PlayerProfileCustomizationStyle, b: PlayerProfileCustomizationStyle) {
+   const left = normalizeProfileCustomizationStyle(a);
+   const right = normalizeProfileCustomizationStyle(b);
+
    return (
-      a.accentColor === b.accentColor &&
-      a.accentForegroundColor === b.accentForegroundColor &&
-      a.supporterNameColorEnabled === b.supporterNameColorEnabled
+      left.accentColor === right.accentColor &&
+      left.accentForegroundColor === right.accentForegroundColor &&
+      left.supporterNameColorEnabled === right.supporterNameColorEnabled
    );
 }

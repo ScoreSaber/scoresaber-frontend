@@ -46,6 +46,10 @@ const ppBadgeClass =
 const ppUnitClass = 'text-[10px] font-medium uppercase';
 const rankPillBaseClass = 'inline-flex items-center gap-2 rounded-md border-l-2 px-2.5 py-1 transition-colors';
 const rankPillClass = cn(rankPillBaseClass, 'border-primary/60 bg-primary/5 hover:bg-primary/10');
+const rankPillAccentClass = cn(
+   rankPillBaseClass,
+   'bg-[color:color-mix(in_srgb,var(--profile-accent)_9%,transparent)] hover:bg-[color:color-mix(in_srgb,var(--profile-accent)_16%,transparent)]'
+);
 
 export function PlayerProfileHeader({ player, aliases, actions, customization, children }: PlayerProfileHeaderProps) {
    const t = useTranslations();
@@ -75,8 +79,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, c
       : undefined;
    const rankPillStyle = hasCustomAccent
       ? {
-           borderLeftColor: `color-mix(in srgb, ${accentColor} 65%, transparent)`,
-           backgroundColor: `color-mix(in srgb, ${accentColor} 9%, transparent)`
+           borderLeftColor: `color-mix(in srgb, ${accentColor} 65%, transparent)`
         }
       : undefined;
    const playerNameClassName = cn('truncate text-xl font-bold', playerNameColorClass);
@@ -195,7 +198,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, c
                            <rankingsRoute.Link
                               key={label}
                               search={search}
-                              className={hasCustomAccent ? rankPillBaseClass : rankPillClass}
+                              className={hasCustomAccent ? rankPillAccentClass : rankPillClass}
                               style={rankPillStyle}
                            >
                               {icon}
