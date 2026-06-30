@@ -52,8 +52,9 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
    const userPerms = user?.permissions ?? 0;
    const isOwnProfile = user?.id === player.id;
    const isStaffProfile = Permissions.checkPermissionNumber(userPerms, Permissions.groups.ALL_STAFF);
-   const canUseStyle = Permissions.isSupporter(userPerms);
-   const canToggleSupporterNameColor = canUseStyle && !isStaffProfile;
+   const canUseAccentStyle = Permissions.isPPFarmer(userPerms);
+   const canToggleSupporterNameColor = Permissions.isSupporter(userPerms) && !isStaffProfile;
+   const canUseStyle = canUseAccentStyle || canToggleSupporterNameColor;
    const canUsePinnedScores = Permissions.isPPFarmer(userPerms);
    const canShowCustomization = isOwnProfile && !player.banned;
    const rawStyle = player.profileCustomization;
@@ -133,8 +134,8 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
          'profile-style',
          () =>
             updateProfileCustomizationStyle({
-               accentColor: draftStyle.accentColor,
-               accentForegroundColor: draftStyle.accentForegroundColor,
+               accentColor: canUseAccentStyle ? draftStyle.accentColor : savedStyle.accentColor,
+               accentForegroundColor: canUseAccentStyle ? draftStyle.accentForegroundColor : savedStyle.accentForegroundColor,
                supporterNameColorEnabled: canToggleSupporterNameColor ? draftStyle.supporterNameColorEnabled : true
             }),
          t('player.customization.style.saved'),
@@ -168,7 +169,7 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
          body: (
             <PlayerProfileCustomizationStyleTab
                draftStyle={draftStyle}
-               canUseStyle={canUseStyle}
+               canUseAccentStyle={canUseAccentStyle}
                canToggleSupporterNameColor={canToggleSupporterNameColor}
                patreonConnected={patreonConnected}
                dirty={styleDirty}

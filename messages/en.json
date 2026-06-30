@@ -632,8 +632,8 @@
             "saveFailed": "Failed to save pinned scores"
          },
          "style": {
-            "lockTitle": "Supporter perk",
-            "lockDescription": "Join Patreon as a supporter to unlock profile styling",
+            "accentLockTitle": "PP Farmer perk",
+            "accentLockDescription": "Join the PP Farmer tier on Patreon to unlock accent colours",
             "accentColor": "Accent colour",
             "accentForeground": "Accent foreground",
             "accentDescription": "Presets:",

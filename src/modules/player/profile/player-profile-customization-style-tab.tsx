@@ -22,7 +22,7 @@ const ACCENT_SWATCHES = [defaultAccentColor, '#2dd4bf', '#fb7185', '#60a5fa', '#
 
 interface PlayerProfileCustomizationStyleTabProps {
    draftStyle: PlayerProfileCustomizationStyle;
-   canUseStyle: boolean;
+   canUseAccentStyle: boolean;
    canToggleSupporterNameColor: boolean;
    patreonConnected: boolean;
    dirty: boolean;
@@ -34,7 +34,7 @@ interface PlayerProfileCustomizationStyleTabProps {
 
 export function PlayerProfileCustomizationStyleTab({
    draftStyle,
-   canUseStyle,
+   canUseAccentStyle,
    canToggleSupporterNameColor,
    patreonConnected,
    dirty,
@@ -66,78 +66,81 @@ export function PlayerProfileCustomizationStyleTab({
    }
 
    return (
-      <ConditionalOverlay
-         shouldShow={() => !canUseStyle}
-         component={SupporterRequiredOverlay}
-         componentProps={{
-            patreonConnected,
-            title: t('player.customization.style.lockTitle'),
-            description: t('player.customization.style.lockDescription')
-         }}
-         className="flex min-h-0 flex-1 flex-col rounded-none"
-         contentClassName="flex min-h-0 flex-1 flex-col"
-         overlayClassName="min-h-80"
-      >
+      <div className="flex min-h-0 flex-1 flex-col">
          <ScrollArea className="min-h-0 flex-1">
             <div className="flex flex-col gap-5 px-5 py-4">
-               <section className="flex flex-col gap-3">
-                  <div className="flex flex-col gap-1">
-                     <h3 className="text-sm font-semibold">{t('player.customization.style.accentColor')}</h3>
-                     <p className="text-muted-foreground text-xs">{t('player.customization.style.accentDescription')}</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                     {ACCENT_SWATCHES.map((color) => (
-                        <Tooltip key={color}>
-                           <TooltipTrigger asChild>
-                              <button
-                                 type="button"
-                                 className={cn(
-                                    'border-border size-8 rounded-md border shadow-xs',
-                                    accentColor === color && 'ring-ring ring-2 ring-offset-2 ring-offset-background'
-                                 )}
-                                 style={{ backgroundColor: color }}
-                                 aria-label={t('player.customization.style.useAccent', { color })}
-                                 onClick={() => setAccentColor(color)}
-                              />
-                           </TooltipTrigger>
-                           <TooltipContent>{color}</TooltipContent>
-                        </Tooltip>
-                     ))}
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
-                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="profile-accent-color">{t('player.customization.style.accentColor')}</Label>
-                        <Input
-                           id="profile-accent-color"
-                           type="color"
-                           value={accentColor}
-                           aria-label={t('player.customization.style.accentColor')}
-                           onChange={(event) => setAccentColor(event.target.value)}
-                           className="h-9 w-full p-1"
-                        />
+               <ConditionalOverlay
+                  shouldShow={() => !canUseAccentStyle}
+                  component={SupporterRequiredOverlay}
+                  componentProps={{
+                     patreonConnected,
+                     title: t('player.customization.style.accentLockTitle'),
+                     description: t('player.customization.style.accentLockDescription')
+                  }}
+                  className="rounded-md"
+               >
+                  <section className="flex flex-col gap-3">
+                     <div className="flex flex-col gap-1">
+                        <h3 className="text-sm font-semibold">{t('player.customization.style.accentColor')}</h3>
+                        <p className="text-muted-foreground text-xs">{t('player.customization.style.accentDescription')}</p>
                      </div>
-                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="profile-accent-foreground">{t('player.customization.style.accentForeground')}</Label>
-                        <Input
-                           id="profile-accent-foreground"
-                           type="color"
-                           value={accentForegroundColor}
-                           aria-label={t('player.customization.style.accentForeground')}
-                           onChange={(event) =>
-                              updateStyle({
-                                 accentColor: draftStyle.accentColor ?? defaultAccentColor,
-                                 accentForegroundColor: event.target.value
-                              })
-                           }
-                           className="h-9 w-full p-1"
-                        />
+                     <div className="flex flex-wrap gap-2">
+                        {ACCENT_SWATCHES.map((color) => (
+                           <Tooltip key={color}>
+                              <TooltipTrigger asChild>
+                                 <button
+                                    type="button"
+                                    disabled={!canUseAccentStyle}
+                                    className={cn(
+                                       'border-border size-8 rounded-md border shadow-xs disabled:cursor-default',
+                                       accentColor === color && 'ring-ring ring-2 ring-offset-2 ring-offset-background'
+                                    )}
+                                    style={{ backgroundColor: color }}
+                                    aria-label={t('player.customization.style.useAccent', { color })}
+                                    onClick={() => setAccentColor(color)}
+                                 />
+                              </TooltipTrigger>
+                              <TooltipContent>{color}</TooltipContent>
+                           </Tooltip>
+                        ))}
                      </div>
-                     <Button type="button" variant="outline" onClick={resetAccent} className="cursor-pointer">
-                        <RotateCcw data-icon="inline-start" />
-                        {t('player.customization.style.resetAccent')}
-                     </Button>
-                  </div>
-               </section>
+                     <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                        <div className="flex flex-col gap-2">
+                           <Label htmlFor="profile-accent-color">{t('player.customization.style.accentColor')}</Label>
+                           <Input
+                              id="profile-accent-color"
+                              type="color"
+                              value={accentColor}
+                              disabled={!canUseAccentStyle}
+                              aria-label={t('player.customization.style.accentColor')}
+                              onChange={(event) => setAccentColor(event.target.value)}
+                              className="h-9 w-full p-1"
+                           />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                           <Label htmlFor="profile-accent-foreground">{t('player.customization.style.accentForeground')}</Label>
+                           <Input
+                              id="profile-accent-foreground"
+                              type="color"
+                              value={accentForegroundColor}
+                              disabled={!canUseAccentStyle}
+                              aria-label={t('player.customization.style.accentForeground')}
+                              onChange={(event) =>
+                                 updateStyle({
+                                    accentColor: draftStyle.accentColor ?? defaultAccentColor,
+                                    accentForegroundColor: event.target.value
+                                 })
+                              }
+                              className="h-9 w-full p-1"
+                           />
+                        </div>
+                        <Button type="button" variant="outline" disabled={!canUseAccentStyle} onClick={resetAccent} className="cursor-pointer">
+                           <RotateCcw data-icon="inline-start" />
+                           {t('player.customization.style.resetAccent')}
+                        </Button>
+                     </div>
+                  </section>
+               </ConditionalOverlay>
 
                {canToggleSupporterNameColor && (
                   <section className="flex flex-col gap-3">
@@ -172,7 +175,7 @@ export function PlayerProfileCustomizationStyleTab({
                {t('common.save')}
             </Button>
          </SheetFooter>
-      </ConditionalOverlay>
+      </div>
    );
 }
 
