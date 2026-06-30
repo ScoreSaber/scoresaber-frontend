@@ -4,7 +4,7 @@ import type { ReactNode, SubmitEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import { getRouteApi, useRouter } from '@tanstack/react-router';
-import { AtSign, ChevronRight, FileText, ImageUp, Loader2, LogIn, RotateCcw, Save, UserRound } from 'lucide-react';
+import { AtSign, ChevronRight, FileText, ImageUp, Info, Loader2, LogIn, RotateCcw, Save, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'use-intl';
 
@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useActionMutation } from '@/hooks/use-action-mutation';
 import { useAuth } from '@/modules/auth';
@@ -60,6 +61,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
    const [countryResetOpen, setCountryResetOpen] = useState(false);
    const [bioOpen, setBioOpen] = useState(false);
    const [bioEditorMounted, setBioEditorMounted] = useState(false);
+   const [vanityInfoOpen, setVanityInfoOpen] = useState(false);
 
    useEffect(() => {
       if (!avatarFile) {
@@ -323,27 +325,50 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
                               <AtSign className="size-5" aria-hidden />
                            </span>
                            <div className="flex min-h-10 min-w-0 flex-col justify-center gap-1">
-                              <label htmlFor="account-vanity-slug" className="leading-5 font-semibold">
-                                 {t('settings.perks.vanity.title')}
-                              </label>
-                              {vanity?.slug ? (
-                                 <p className="text-muted-foreground text-sm">
-                                    {t('settings.perks.vanity.current')}{' '}
-                                    <playerRoute.Link
-                                       params={{ playerId: vanity.slug }}
-                                       className="text-primary font-medium underline-offset-4 hover:underline"
-                                    >
-                                       /u/{vanity.slug}
-                                    </playerRoute.Link>
-                                 </p>
-                              ) : !vanity ? (
-                                 <p className="text-muted-foreground text-sm text-pretty">{t('settings.perks.vanity.loadFailed')}</p>
-                              ) : null}
-                              {vanityCooldownActive && vanityCanChangeAt && (
-                                 <p className="text-muted-foreground text-sm text-pretty">
-                                    {t.rich('settings.perks.vanity.cooldown', { date: () => <Time date={vanityCanChangeAt} dateStyle="long" /> })}
-                                 </p>
-                              )}
+                              <div className="flex items-center gap-1.5">
+                                 <label htmlFor="account-vanity-slug" className="leading-5 font-semibold">
+                                    {t('settings.perks.vanity.title')}
+                                 </label>
+                                 {vanity && (vanity.slug || (vanityCooldownActive && vanityCanChangeAt)) && (
+                                    <Tooltip open={vanityInfoOpen} onOpenChange={setVanityInfoOpen}>
+                                       <TooltipTrigger asChild>
+                                          <Button
+                                             type="button"
+                                             variant="ghost"
+                                             size="icon-xs"
+                                             aria-label={t('settings.perks.vanity.infoLabel')}
+                                             className="text-muted-foreground/60 hover:text-muted-foreground cursor-help hover:bg-transparent"
+                                             onClick={() => setVanityInfoOpen((open) => !open)}
+                                          >
+                                             <Info data-icon className="size-3.5" aria-hidden />
+                                          </Button>
+                                       </TooltipTrigger>
+                                       <TooltipContent side="right" align="start" className="pointer-events-auto max-w-72">
+                                          <div className="flex flex-col gap-1">
+                                             {vanity.slug && (
+                                                <p>
+                                                   {t('settings.perks.vanity.current')}{' '}
+                                                   <playerRoute.Link
+                                                      params={{ playerId: vanity.slug }}
+                                                      className="font-semibold underline underline-offset-2"
+                                                   >
+                                                      /u/{vanity.slug}
+                                                   </playerRoute.Link>
+                                                </p>
+                                             )}
+                                             {vanityCooldownActive && vanityCanChangeAt && (
+                                                <p>
+                                                   {t.rich('settings.perks.vanity.cooldown', {
+                                                      date: () => <Time date={vanityCanChangeAt} dateStyle="long" />
+                                                   })}
+                                                </p>
+                                             )}
+                                          </div>
+                                       </TooltipContent>
+                                    </Tooltip>
+                                 )}
+                              </div>
+                              {!vanity ? <p className="text-muted-foreground text-sm text-pretty">{t('settings.perks.vanity.loadFailed')}</p> : null}
                            </div>
                         </div>
 
