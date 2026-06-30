@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 
 import { Loader2 } from 'lucide-react';
 import { FaUserCheck, FaUserFriends, FaUserPlus } from 'react-icons/fa';
@@ -67,6 +67,17 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
           ? t('player.followingStatus')
           : t('player.follow');
    const compactIconClass = compact ? 'size-2.5' : undefined;
+   const accentSolidStyle: CSSProperties = {
+      borderColor: 'var(--profile-accent, var(--primary))',
+      backgroundColor: 'var(--profile-accent, var(--primary))',
+      color: 'var(--profile-accent-foreground, var(--primary-foreground))'
+   };
+   const accentSubtleStyle: CSSProperties = {
+      borderColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 35%, transparent)',
+      backgroundColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 12%, transparent)',
+      color: 'var(--profile-accent, var(--primary))'
+   };
+   const accentStyle = showUnfollow ? undefined : isFollowing ? accentSubtleStyle : accentSolidStyle;
 
    const icon = pending ? (
       <Loader2 className={cn('animate-spin', compactIconClass)} />
@@ -88,11 +99,8 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
                <Button
                   variant={compact ? 'outline' : 'secondary'}
                   size={compact ? 'icon' : 'xs'}
-                  className={cn(
-                     'cursor-not-allowed opacity-70',
-                     compact && 'rounded-full',
-                     state === 'mutual' && 'border-primary/20 bg-primary/10 text-primary'
-                  )}
+                  className={cn('cursor-not-allowed opacity-70', compact && 'rounded-full')}
+                  style={accentSubtleStyle}
                   disabled
                >
                   {state === 'mutual' ? <FaUserFriends className={compactIconClass} /> : <FaUserCheck className={compactIconClass} />}
@@ -113,9 +121,9 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
          className={cn(
             'cursor-pointer transition-[background-color,color,border-color]',
             compact && 'rounded-full',
-            isFollowing && !showUnfollow && 'border-primary/20 bg-primary/10 text-primary hover:bg-primary/15',
             showUnfollow && 'border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive/15'
          )}
+         style={accentStyle}
          disabled={pending}
          onClick={handleClick}
          onMouseEnter={() => setHovered(true)}

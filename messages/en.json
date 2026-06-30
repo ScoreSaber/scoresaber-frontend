@@ -601,6 +601,7 @@
          "open": "Customize profile",
          "tabs": {
             "account": "Account",
+            "style": "Style",
             "pinnedScores": "Pinned scores",
             "moreSoon": "More soon..."
          },
@@ -629,6 +630,23 @@
             "noChanges": "No changes",
             "saved": "Pinned scores saved",
             "saveFailed": "Failed to save pinned scores"
+         },
+         "style": {
+            "lockTitle": "Supporter perk",
+            "lockDescription": "Join Patreon as a supporter to unlock profile styling",
+            "accentColor": "Accent colour",
+            "accentForeground": "Accent foreground",
+            "accentDescription": "Presets:",
+            "useAccent": "Use {color} as profile accent",
+            "resetAccent": "Reset accent",
+            "nameColor": "Name colour",
+            "nameColorDescription": "Choose whether supporter name colours override your profile accent",
+            "supporterNameColor": "Use supporter name colour",
+            "moreSoon": "Also adding more stuff here soon... 👀",
+            "unsaved": "Unsaved changes",
+            "noChanges": "No changes",
+            "saved": "Profile style saved",
+            "saveFailed": "Failed to save profile style"
          }
       }
    },
@@ -1129,6 +1147,7 @@
             "title": "Custom URL",
             "loadFailed": "Couldn't load your vanity URL",
             "current": "Your profile URL",
+            "infoLabel": "Custom URL details",
             "changeLabel": "New vanity URL",
             "claimLabel": "Choose a vanity URL",
             "placeholder": "your-name",

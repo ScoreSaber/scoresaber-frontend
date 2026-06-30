@@ -2180,6 +2180,12 @@ export interface UserControllerUpdatePinnedScoresPayload {
    }[];
 }
 
+export interface UserControllerUpdateProfileCustomizationStylePayload {
+   accentColor: string | null;
+   accentForegroundColor: string | null;
+   supporterNameColorEnabled: boolean;
+}
+
 export interface UserControllerUpdateBioPayload {
    /**
     * Player bio
@@ -3386,6 +3392,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                };
                bio: string | null;
                vanity: string | null;
+               profileCustomization: {
+                  accentColor: string | null;
+                  accentForegroundColor: string | null;
+                  supporterNameColorEnabled: boolean;
+               };
                createdAt: string;
                lastSeenAt: string;
                badges: {
@@ -3767,6 +3778,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                };
                bio: string | null;
                vanity: string | null;
+               profileCustomization: {
+                  accentColor: string | null;
+                  accentForegroundColor: string | null;
+                  supporterNameColorEnabled: boolean;
+               };
                createdAt: string;
                lastSeenAt: string;
                badges: {
@@ -29953,6 +29969,106 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
               )
          >({
             path: `/api/v2/user/@me/pinned-scores`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+       * No description
+       *
+       * @tags User
+       * @name UserControllerUpdateProfileCustomizationStyle
+       * @request PUT:/api/v2/user/@me/profile-customization/style
+       */
+      userControllerUpdateProfileCustomizationStyle: (data: UserControllerUpdateProfileCustomizationStylePayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               accentColor: string | null;
+               accentForegroundColor: string | null;
+               supporterNameColorEnabled: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/user/@me/profile-customization/style`,
             method: 'PUT',
             body: data,
             type: ContentType.Json,

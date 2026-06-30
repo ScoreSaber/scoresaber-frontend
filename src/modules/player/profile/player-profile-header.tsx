@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
 import {
@@ -26,6 +26,7 @@ import { buildPlayerSummary } from '@/modules/player/player-summary';
 import { PlayerAliases } from '@/modules/player/profile/player-aliases';
 import { PlayerBadges } from '@/modules/player/profile/player-badges';
 import { PlayerLivePresenceIndicator } from '@/modules/player/profile/player-live-presence-indicator';
+import { getProfileAccentProperties } from '@/modules/player/profile/player-profile-accent';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
 import type { PlayerAliasControllerGetAliasesItem, PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
@@ -36,23 +37,51 @@ import { Time } from '@/shared/components/time';
 import { parseCountryRegionParam } from '@/shared/country-region';
 import { cn, formatAccuracy, formatNumber, formatPP, rankToPage } from '@/shared/format/helpers';
 import { normalizePlayerRoleText } from '@/shared/format/styling';
+import Permissions from '@/shared/permissions';
 
 const rankingsRoute = getRouteApi('/rankings');
 
 const ppBadgeClass =
    'border-primary/25 bg-primary/15 text-primary-foreground dark:text-primary rounded-full border px-2.5 py-0.5 text-sm font-semibold tabular-nums';
-const ppUnitClass = 'text-primary-foreground/70 dark:text-primary/70 text-[10px] font-medium uppercase';
-const rankPillClass =
-   'inline-flex items-center gap-2 rounded-md border-l-2 border-primary/60 bg-primary/5 px-2.5 py-1 transition-colors hover:bg-primary/10';
+const ppUnitClass = 'text-[10px] font-medium uppercase';
+const rankPillBaseClass = 'inline-flex items-center gap-2 rounded-md border-l-2 px-2.5 py-1 transition-colors';
+const rankPillClass = cn(rankPillBaseClass, 'border-primary/60 bg-primary/5 hover:bg-primary/10');
 
-export function PlayerProfileHeader({ player, aliases, actions, children }: PlayerProfileHeaderProps) {
+export function PlayerProfileHeader({ player, aliases, actions, customization, children }: PlayerProfileHeaderProps) {
    const t = useTranslations();
    const { stats } = player;
    const playerSummary = buildPlayerSummary(player, 'text');
    const isActive = !player.inactive && !player.banned;
-
+   const profileAccentStyle = getProfileAccentProperties(customization);
+   const hasCustomAccent = profileAccentStyle !== undefined;
+   const accentColor = 'var(--profile-accent)';
+   const accentTextClass = hasCustomAccent ? 'text-[color:var(--profile-accent)]' : 'text-primary-foreground dark:text-primary';
+   const accentSubtleTextClass = hasCustomAccent
+      ? 'text-[color:var(--profile-accent)] opacity-70'
+      : 'text-primary-foreground/70 dark:text-primary/70';
+   const canApplySupporterNameColorToggle = !Permissions.checkPermissionNumber(player.permissions, Permissions.groups.ALL_STAFF);
+   const playerNameColorClass =
+      customization?.supporterNameColorEnabled === false && canApplySupporterNameColorToggle
+         ? hasCustomAccent
+            ? 'text-[color:var(--profile-accent)]'
+            : 'text-foreground'
+         : undefined;
+   const accentSurfaceStyle = hasCustomAccent
+      ? {
+           borderColor: `color-mix(in srgb, ${accentColor} 45%, transparent)`,
+           backgroundColor: `color-mix(in srgb, ${accentColor} 13%, transparent)`,
+           color: accentColor
+        }
+      : undefined;
+   const rankPillStyle = hasCustomAccent
+      ? {
+           borderLeftColor: `color-mix(in srgb, ${accentColor} 65%, transparent)`,
+           backgroundColor: `color-mix(in srgb, ${accentColor} 9%, transparent)`
+        }
+      : undefined;
+   const playerNameClassName = cn('truncate text-xl font-bold', playerNameColorClass);
    return (
-      <div className="relative z-10">
+      <div className="relative z-10" style={profileAccentStyle}>
          <div className="relative flex items-start">
             <div className="flex min-w-0 flex-1 flex-col items-center gap-3 sm:flex-row sm:items-start sm:gap-5">
                <div className="flex shrink-0 flex-col items-center gap-2">
@@ -98,7 +127,7 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                      <div className="flex min-w-0 items-center gap-1.5">
                         <CountryImage country={player.country} size={18} />
                         <h1 className="min-w-0">
-                           <PlayerLink player={player} variant="inline" className="truncate text-xl font-bold" />
+                           <PlayerLink player={player} variant="inline" className={playerNameClassName} />
                         </h1>
                         {playerSummary.steamHref && (
                            <a
@@ -115,9 +144,9 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                      </div>
 
                      {!player.banned && (
-                        <StatusBadge tooltip={t('common.performancePoints')} className={ppBadgeClass}>
+                        <StatusBadge tooltip={t('common.performancePoints')} className={ppBadgeClass} style={accentSurfaceStyle}>
                            {formatPP(stats.totalPP)}
-                           <span className={ppUnitClass}>pp</span>
+                           <span className={cn(ppUnitClass, accentSubtleTextClass)}>pp</span>
                         </StatusBadge>
                      )}
 
@@ -163,12 +192,15 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                               label: t('player.countryRank')
                            }
                         ].map(({ search, icon, value, label }) => (
-                           <rankingsRoute.Link key={label} search={search} className={rankPillClass}>
+                           <rankingsRoute.Link
+                              key={label}
+                              search={search}
+                              className={hasCustomAccent ? rankPillBaseClass : rankPillClass}
+                              style={rankPillStyle}
+                           >
                               {icon}
                               <div>
-                                 <div className="text-primary-foreground dark:text-primary text-sm font-bold tabular-nums">
-                                    #{formatNumber(value)}
-                                 </div>
+                                 <div className={cn(accentTextClass, 'text-sm font-bold tabular-nums')}>#{formatNumber(value)}</div>
                                  <div className="text-muted-foreground text-[9px] tracking-wider uppercase">{label}</div>
                               </div>
                            </rankingsRoute.Link>
@@ -192,24 +224,24 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
                            <Stat
                               icon={FaTrophy}
                               label={t('player.rankedPlays')}
-                              labelClassName="text-primary-foreground/70 dark:text-primary/70"
-                              valueClassName="text-primary-foreground dark:text-primary tabular-nums"
+                              labelClassName={accentSubtleTextClass}
+                              valueClassName={cn('tabular-nums', accentTextClass)}
                            >
                               {formatNumber(stats.totalPlayedRankedLeaderboards)}
                            </Stat>
                            <Stat
                               icon={FaStar}
                               label={t('player.rankedScore')}
-                              labelClassName="text-primary-foreground/70 dark:text-primary/70"
-                              valueClassName="text-primary-foreground dark:text-primary tabular-nums"
+                              labelClassName={accentSubtleTextClass}
+                              valueClassName={cn('tabular-nums', accentTextClass)}
                            >
                               {formatNumber(Number(stats.totalRankedScore))}
                            </Stat>
                            <Stat
                               icon={FaBullseye}
                               label={t('player.rankedAcc')}
-                              labelClassName="text-primary-foreground/70 dark:text-primary/70"
-                              valueClassName="text-primary-foreground dark:text-primary tabular-nums"
+                              labelClassName={accentSubtleTextClass}
+                              valueClassName={cn('tabular-nums', accentTextClass)}
                            >
                               {formatAccuracy(stats.averageAccuracy)}
                            </Stat>
@@ -253,11 +285,13 @@ export function PlayerProfileHeader({ player, aliases, actions, children }: Play
    );
 }
 
-function StatusBadge({ tooltip, className, children }: { tooltip: string; className: string; children: ReactNode }) {
+function StatusBadge({ tooltip, className, style, children }: { tooltip: string; className: string; style?: CSSProperties; children: ReactNode }) {
    return (
       <Tooltip>
          <TooltipTrigger asChild>
-            <span className={cn('inline-flex cursor-help items-center gap-1', className)}>{children}</span>
+            <span className={cn('inline-flex cursor-help items-center gap-1', className)} style={style}>
+               {children}
+            </span>
          </TooltipTrigger>
          <TooltipContent>
             <p>{tooltip}</p>
@@ -270,5 +304,6 @@ interface PlayerProfileHeaderProps {
    player: PlayerControllerGetPlayerResponse;
    aliases?: PlayerAliasControllerGetAliasesItem[];
    actions?: ReactNode;
+   customization?: PlayerControllerGetPlayerResponse['profileCustomization'];
    children?: ReactNode;
 }

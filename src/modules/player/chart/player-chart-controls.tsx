@@ -133,6 +133,14 @@ export function PlayerChartControls() {
                         aria-label={isShowingEstimated ? t('player.hideEstimatedData') : t('player.showEstimatedData')}
                         aria-pressed={isShowingEstimated}
                         onClick={() => setIsShowingEstimated((prev) => !prev)}
+                        style={
+                           isShowingEstimated
+                              ? {
+                                   backgroundColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 18%, transparent)',
+                                   color: 'var(--profile-accent, var(--primary))'
+                                }
+                              : undefined
+                        }
                         className={cn(
                            'size-auto border p-1.5',
                            isShowingEstimated
