@@ -640,7 +640,7 @@
             "useAccent": "Use {color} as profile accent",
             "resetAccent": "Reset accent",
             "nameColor": "Name colour",
-            "nameColorDescription": "Choose whether supporter name colours override your profile accent",
+            "nameColorDescription": "Choose whether your supporter colour is shown on your name",
             "supporterNameColor": "Use supporter name colour",
             "moreSoon": "Also adding more stuff here soon... 👀",
             "unsaved": "Unsaved changes",

@@ -77,7 +77,8 @@ export function PlayerProfileCustomizationStyleTab({
                      title: t('player.customization.style.accentLockTitle'),
                      description: t('player.customization.style.accentLockDescription')
                   }}
-                  className="rounded-md"
+                  className={cn('rounded-md', !canUseAccentStyle && 'min-h-80')}
+                  overlayClassName="min-h-80"
                >
                   <section className="flex flex-col gap-3">
                      <div className="flex flex-col gap-1">
