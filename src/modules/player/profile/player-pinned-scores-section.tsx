@@ -58,7 +58,7 @@ export function PlayerPinnedScoresSection({ pinnedScores }: PlayerPinnedScoresSe
       <div className="py-4">
          <Separator variant="gradient" className="mb-4" />
          <div className="mb-3 flex min-w-0 items-center justify-center gap-2 text-center">
-            <Pin className="text-primary size-4" aria-hidden />
+            <Pin className="size-4 text-[color:var(--profile-accent,var(--primary))]" aria-hidden />
             <h2 className="truncate text-sm font-semibold">{t('player.customization.pinnedScores.profileTitle')}</h2>
          </div>
          <div className="grid grid-cols-1 gap-2 md:grid-cols-6">
@@ -130,7 +130,9 @@ function PinnedScoreCard({
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
                      <div className="flex min-w-0 items-center gap-1.5">
-                        <span className="text-primary shrink-0 text-xs font-semibold tabular-nums">#{formatNumber(score.rank)}</span>
+                        <span className="shrink-0 text-xs font-semibold text-[color:var(--profile-accent,var(--primary))] tabular-nums">
+                           #{formatNumber(score.rank)}
+                        </span>
                         <span className="text-muted-foreground shrink-0 text-[10px]">
                            <Time short date={score.createdAt} />
                         </span>

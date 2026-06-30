@@ -77,10 +77,10 @@ export function PlayerProfileCustomizationStyleTab({
                      title: t('player.customization.style.accentLockTitle'),
                      description: t('player.customization.style.accentLockDescription')
                   }}
-                  className={cn('rounded-md', !canUseAccentStyle && 'min-h-80')}
+                  className={cn('rounded-md', canUseAccentStyle && 'overflow-visible', !canUseAccentStyle && 'min-h-80')}
                   overlayClassName="min-h-80"
                >
-                  <section className="flex flex-col gap-3">
+                  <section className="flex min-w-0 flex-col gap-3">
                      <div className="flex flex-col gap-1">
                         <h3 className="text-sm font-semibold">{t('player.customization.style.accentColor')}</h3>
                         <p className="text-muted-foreground text-xs">{t('player.customization.style.accentDescription')}</p>
@@ -105,8 +105,8 @@ export function PlayerProfileCustomizationStyleTab({
                            </Tooltip>
                         ))}
                      </div>
-                     <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
-                        <div className="flex flex-col gap-2">
+                     <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
+                        <div className="flex min-w-0 flex-col gap-2">
                            <Label htmlFor="profile-accent-color">{t('player.customization.style.accentColor')}</Label>
                            <Input
                               id="profile-accent-color"
@@ -115,10 +115,10 @@ export function PlayerProfileCustomizationStyleTab({
                               disabled={!canUseAccentStyle}
                               aria-label={t('player.customization.style.accentColor')}
                               onChange={(event) => setAccentColor(event.target.value)}
-                              className="h-9 w-full p-1"
+                              className="h-9 w-full min-w-0 p-1"
                            />
                         </div>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex min-w-0 flex-col gap-2">
                            <Label htmlFor="profile-accent-foreground">{t('player.customization.style.accentForeground')}</Label>
                            <Input
                               id="profile-accent-foreground"
@@ -132,7 +132,7 @@ export function PlayerProfileCustomizationStyleTab({
                                     accentForegroundColor: event.target.value
                                  })
                               }
-                              className="h-9 w-full p-1"
+                              className="h-9 w-full min-w-0 p-1"
                            />
                         </div>
                         <Button type="button" variant="outline" disabled={!canUseAccentStyle} onClick={resetAccent} className="cursor-pointer">
