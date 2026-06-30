@@ -29,6 +29,13 @@
             "script": "dev"
          }
       },
+      "local-dev": {
+         "executor": "nx:run-commands",
+         "continuous": true,
+         "options": {
+            "command": "bun scripts/dev-env.ts service website"
+         }
+      },
       "start": {
          "executor": "nx:run-script",
          "continuous": true,

@@ -31,6 +31,9 @@ function readEnv(key: string) {
    return processValue ?? importMetaValue;
 }
 
+const isProduction = readEnv('NODE_ENV') === 'production';
+const localDefault = <T>(schema: z.ZodType<T>, defaultValue: Exclude<T, undefined>) => (isProduction ? schema : schema.default(defaultValue));
+
 export const env = createEnv({
    isServer: typeof window === 'undefined',
    shared: {
@@ -40,7 +43,7 @@ export const env = createEnv({
       DEBUG_REACT_SCAN: booleanFlagSchema,
       DEBUG_BREAKPOINTS: booleanFlagSchema,
       DEBUG_PAGE_BACKGROUND: booleanFlagSchema,
-      API_URL: serverUrlSchema.default('https://api.scoresaber.local'),
+      API_URL: localDefault(serverUrlSchema, 'https://scoresaber.com'),
       CF_ACCESS_CLIENT_ID: z.string().optional(),
       CF_ACCESS_CLIENT_SECRET: z.string().optional(),
       VISITOR_RATE_LIMIT_SECRET: z.string().optional(),
@@ -53,10 +56,10 @@ export const env = createEnv({
    },
    clientPrefix: 'NEXT_PUBLIC_',
    client: {
-      NEXT_PUBLIC_API_URL: publicBrowserUrlSchema,
-      NEXT_PUBLIC_ARCVIEWER_URL: publicBrowserUrlSchema,
-      NEXT_PUBLIC_LUDUS_URL: publicBrowserUrlSchema.default('https://ludus.scoresaber.local'),
-      NEXT_PUBLIC_SITE_URL: publicBrowserUrlSchema.default('https://scoresaber.com')
+      NEXT_PUBLIC_API_URL: localDefault(publicBrowserUrlSchema, 'https://scoresaber.com'),
+      NEXT_PUBLIC_ARCVIEWER_URL: localDefault(publicBrowserUrlSchema, 'https://watch.scoresaber.com'),
+      NEXT_PUBLIC_LUDUS_URL: localDefault(publicBrowserUrlSchema, 'https://ludus-1.scoresaber.com'),
+      NEXT_PUBLIC_SITE_URL: localDefault(publicBrowserUrlSchema, 'https://scoresaber.local')
    },
    runtimeEnvStrict: {
       NODE_ENV: readEnv('NODE_ENV'),

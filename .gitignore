@@ -29,7 +29,8 @@ yarn-error.log*
 
 # local env files
 .env*
-!.env.example
+!.env.example.local
+!.env.example.prod
 
 # local keys and certs
 *.key

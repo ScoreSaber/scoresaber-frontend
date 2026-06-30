@@ -37,13 +37,13 @@ nvm use
 
 ## Environment
 
-Create `.env.local`:
+Create `.env` only when overriding the local defaults:
 
 ```sh
-cp .env.example .env.local
+cp .env.example.local .env
 ```
 
-The expected contributor env is:
+By default, the website runs locally while using production API and replay viewer services:
 
 ```sh
 API_URL=https://scoresaber.com
@@ -130,7 +130,7 @@ For `api:regen`, start the API from the platform repo first:
 bun run api:dev
 ```
 
-Then point `.env.local` at the local API:
+Then point `.env` at the local API:
 
 ```sh
 API_URL=https://api.scoresaber.local
