@@ -48,6 +48,11 @@ export function PlayerScoresToolbar<TLocation>({
    const loading = newSort !== currentSort;
    const topLoading = loading && newSort === 'top';
    const recentLoading = loading && newSort === 'recent';
+   const activeSortStyle = {
+      backgroundColor: 'var(--profile-accent, var(--primary))',
+      borderColor: 'var(--profile-accent, var(--primary))',
+      color: 'var(--profile-accent-foreground, var(--primary-foreground))'
+   };
 
    function handleSearch(value: string | undefined) {
       navigate({ search: value }, { scroll: false });
@@ -69,8 +74,9 @@ export function PlayerScoresToolbar<TLocation>({
                onBlur={cancelPreload}
                onClick={() => handleSort('top')}
                size="sm"
-               variant={currentSort === 'top' ? 'default' : 'secondary'}
+               variant={currentSort === 'top' || topLoading ? 'default' : 'secondary'}
                className="cursor-pointer"
+               style={currentSort === 'top' || topLoading ? activeSortStyle : undefined}
             >
                {!topLoading ? <FaTrophy data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
                {t('player.topScores')}
@@ -84,8 +90,9 @@ export function PlayerScoresToolbar<TLocation>({
                onBlur={cancelPreload}
                onClick={() => handleSort('recent')}
                size="sm"
-               variant={currentSort === 'recent' ? 'default' : 'secondary'}
+               variant={currentSort === 'recent' || recentLoading ? 'default' : 'secondary'}
                className="cursor-pointer"
+               style={currentSort === 'recent' || recentLoading ? activeSortStyle : undefined}
             >
                {!recentLoading ? <FaClock data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
                {t('player.recentScores')}

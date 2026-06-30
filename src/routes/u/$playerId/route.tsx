@@ -13,6 +13,7 @@ import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-ch
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
 import { PlayerPinnedScoresSection } from '@/modules/player/profile/player-pinned-scores-section';
+import { PlayerProfileAccentScope } from '@/modules/player/profile/player-profile-accent-scope';
 import { PlayerProfileCustomization } from '@/modules/player/profile/player-profile-customization';
 import { PlayerProfileHeader } from '@/modules/player/profile/player-profile-header';
 import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
@@ -167,63 +168,66 @@ function PlayerProfileRouteContent({
          <SetPageBackground src={player.avatar} />
          <div className="app-container relative z-10 p-4 md:p-8">
             <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
-               {({ extraActions, renderScoreAction }) => (
-                  <PlayerProfileHeader
-                     player={player}
-                     aliases={aliases}
-                     actions={
-                        <PlayerActions
-                           playerId={player.id}
-                           playerBanned={player.banned}
-                           playerPermissions={player.permissions}
-                           playerRole={player.role}
-                           extraActions={extraActions}
-                        />
-                     }
-                  >
-                     {player.banned ? (
-                        <div className="py-6 text-center">
-                           <Separator variant="gradient" className="via-destructive/15 mb-4" />
-                           <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
-                        </div>
-                     ) : null}
-
-                     {!player.banned && !player.inactive && history && history.length > 0 && (
-                        <div className="py-4">
-                           <Separator variant="gradient" className="mb-4" />
-                           <PlayerChart
+               {({ extraActions, profileCustomization, renderScoreAction }) => (
+                  <PlayerProfileAccentScope customization={profileCustomization}>
+                     <PlayerProfileHeader
+                        player={player}
+                        aliases={aliases}
+                        customization={profileCustomization}
+                        actions={
+                           <PlayerActions
                               playerId={player.id}
-                              stats={{
-                                 rank: player.stats.rank,
-                                 totalPP: player.stats.totalPP,
-                                 averageAccuracy: player.stats.averageAccuracy,
-                                 totalSubmittedPlays: player.stats.totalSubmittedPlays
-                              }}
-                              history={history}
+                              playerBanned={player.banned}
+                              playerPermissions={player.permissions}
+                              playerRole={player.role}
+                              extraActions={extraActions}
                            />
-                        </div>
-                     )}
+                        }
+                     >
+                        {player.banned ? (
+                           <div className="py-6 text-center">
+                              <Separator variant="gradient" className="via-destructive/15 mb-4" />
+                              <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
+                           </div>
+                        ) : null}
 
-                     {!player.banned && (
-                        <PlayerBioSection bio={player.bio ?? ''} sanitizedBio={sanitizedBio} hasBioContent={hasBioContent} playerId={player.id} />
-                     )}
+                        {!player.banned && !player.inactive && history && history.length > 0 && (
+                           <div className="py-4">
+                              <Separator variant="gradient" className="mb-4" />
+                              <PlayerChart
+                                 playerId={player.id}
+                                 stats={{
+                                    rank: player.stats.rank,
+                                    totalPP: player.stats.totalPP,
+                                    averageAccuracy: player.stats.averageAccuracy,
+                                    totalSubmittedPlays: player.stats.totalSubmittedPlays
+                                 }}
+                                 history={history}
+                              />
+                           </div>
+                        )}
 
-                     {!player.banned && <PlayerPinnedScoresSection pinnedScores={player.pinnedScores ?? []} />}
+                        {!player.banned && (
+                           <PlayerBioSection bio={player.bio ?? ''} sanitizedBio={sanitizedBio} hasBioContent={hasBioContent} playerId={player.id} />
+                        )}
 
-                     {!player.banned && scores && (
-                        <PlayerScoresSection
-                           playerId={input.playerId}
-                           scores={scores}
-                           page={input.search.page ?? 1}
-                           sort={input.search.sort ?? 'top'}
-                           search={input.search.search}
-                           hasScores={player.stats.totalSubmittedPlays > 0}
-                           hasContentAbove={(player.pinnedScores?.length ?? 0) === 0 && (!player.inactive || hasBioContent)}
-                           parseSearch={parseSearch}
-                           renderScoreAction={renderScoreAction}
-                        />
-                     )}
-                  </PlayerProfileHeader>
+                        {!player.banned && <PlayerPinnedScoresSection pinnedScores={player.pinnedScores ?? []} />}
+
+                        {!player.banned && scores && (
+                           <PlayerScoresSection
+                              playerId={input.playerId}
+                              scores={scores}
+                              page={input.search.page ?? 1}
+                              sort={input.search.sort ?? 'top'}
+                              search={input.search.search}
+                              hasScores={player.stats.totalSubmittedPlays > 0}
+                              hasContentAbove={(player.pinnedScores?.length ?? 0) === 0 && (!player.inactive || hasBioContent)}
+                              parseSearch={parseSearch}
+                              renderScoreAction={renderScoreAction}
+                           />
+                        )}
+                     </PlayerProfileHeader>
+                  </PlayerProfileAccentScope>
                )}
             </PlayerProfileCustomization>
          </div>

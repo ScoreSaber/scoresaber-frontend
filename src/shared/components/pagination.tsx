@@ -84,6 +84,14 @@ export function Pagination<TLocation>({
             const loading = isLoading && pendingPage?.value === option.value && pendingPage?.type === option.type;
             const location = getPageLocation(option.value!);
             const href = getHref(location);
+            const activeStyle =
+               active || loading
+                  ? {
+                       borderColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 85%, transparent)',
+                       backgroundColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 12%, transparent)',
+                       color: 'var(--profile-accent, var(--primary))'
+                    }
+                  : undefined;
 
             function handleClick(event: MouseEvent<HTMLAnchorElement>) {
                if (disabled) {
@@ -113,7 +121,8 @@ export function Pagination<TLocation>({
                   <Button
                      disabled={disabled}
                      variant="secondary"
-                     className={cn('min-w-8 cursor-pointer items-center border p-1', active && 'border-primary/85 bg-card')}
+                     className={cn('min-w-8 cursor-pointer items-center border p-1', (active || loading) && 'border-primary/85 bg-card')}
+                     style={activeStyle}
                   >
                      {loading ? <Icons.spinner data-icon className="size-4 animate-spin" /> : label}
                   </Button>

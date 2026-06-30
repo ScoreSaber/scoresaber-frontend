@@ -10,8 +10,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 import { useActionMutation } from '@/hooks/use-action-mutation';
 import { useAuth } from '@/modules/auth';
-import { updatePinnedScores } from '@/modules/player/actions/user/profile-customization';
+import { updatePinnedScores, updateProfileCustomizationStyle } from '@/modules/player/actions/user/profile-customization';
 import type { PlayerExtraAction } from '@/modules/player/operations/player-actions';
+import { normalizeProfileCustomizationStyle, type PlayerProfileCustomizationStyle } from '@/modules/player/profile/player-profile-accent';
 import { PlayerProfileCustomizationAccountTab } from '@/modules/player/profile/player-profile-customization-account-tab';
 import {
    MAX_PINNED_SCORES,
@@ -23,11 +24,12 @@ import {
    PlayerProfileCustomizationSheet,
    type PlayerProfileCustomizationSheetTab
 } from '@/modules/player/profile/player-profile-customization-sheet';
+import { PlayerProfileCustomizationStyleTab } from '@/modules/player/profile/player-profile-customization-style-tab';
 import type { PlayerControllerGetPlayerResponse, PlayerControllerGetPlayerScoresDataItem } from '@/shared/api/generated/ApiParams';
 import { cn } from '@/shared/format/helpers';
 import Permissions from '@/shared/permissions';
 
-type ProfileCustomizationTab = 'account' | 'pinned-scores' | 'more-soon';
+type ProfileCustomizationTab = 'account' | 'style' | 'pinned-scores' | 'more-soon';
 
 interface PinnedScorePayloadItem {
    scoreId: number;
@@ -39,6 +41,7 @@ interface PlayerProfileCustomizationProps {
    patreonConnected: boolean;
    children: (props: {
       extraActions: PlayerExtraAction[];
+      profileCustomization: PlayerProfileCustomizationStyle;
       renderScoreAction: (score: PlayerControllerGetPlayerScoresDataItem) => ReactNode;
    }) => ReactNode;
 }
@@ -48,8 +51,18 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
    const { user } = useAuth();
    const userPerms = user?.permissions ?? 0;
    const isOwnProfile = user?.id === player.id;
+   const isStaffProfile = Permissions.checkPermissionNumber(userPerms, Permissions.groups.ALL_STAFF);
+   const canUseStyle = Permissions.isSupporter(userPerms);
+   const canToggleSupporterNameColor = canUseStyle && !isStaffProfile;
    const canUsePinnedScores = Permissions.isPPFarmer(userPerms);
    const canShowCustomization = isOwnProfile && !player.banned;
+   const rawStyle = player.profileCustomization;
+   const initialStyle = useMemo(
+      () => normalizeProfileCustomizationStyle(rawStyle),
+      [rawStyle?.accentColor, rawStyle?.accentForegroundColor, rawStyle?.supporterNameColorEnabled]
+   );
+   const [savedStyle, setSavedStyle] = useState(initialStyle);
+   const [draftStyle, setDraftStyle] = useState(initialStyle);
    const savedDraftItems = useMemo(() => createDraftItems(player.pinnedScores ?? []), [player.pinnedScores]);
    const savedPayload = useMemo(() => toPinnedScorePayload(savedDraftItems), [savedDraftItems]);
    const savedScoreIds = useMemo(() => new Set(savedDraftItems.map((item) => item.score.score.id)), [savedDraftItems]);
@@ -57,39 +70,81 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
    const [activeTab, setActiveTab] = useState<ProfileCustomizationTab>('account');
    const [draftItems, setDraftItems] = useState(savedDraftItems);
    const draftPayload = useMemo(() => toPinnedScorePayload(draftItems), [draftItems]);
-   const mutation = useActionMutation();
-   const dirty = !arePinnedScorePayloadsEqual(savedPayload, draftPayload);
-   const saveDisabled = !canUsePinnedScores || !dirty || mutation.isPending;
+   const pinnedMutation = useActionMutation();
+   const styleMutation = useActionMutation<PlayerProfileCustomizationStyle>();
+   const pinnedDirty = !arePinnedScorePayloadsEqual(savedPayload, draftPayload);
+   const styleDirty = !areProfileCustomizationStylesEqual(savedStyle, draftStyle);
+   const pinnedSaveDisabled = !canUsePinnedScores || !pinnedDirty || pinnedMutation.isPending;
+   const styleSaveDisabled = !canUseStyle || !styleDirty || styleMutation.isPending;
+   const profileCustomization = open ? draftStyle : savedStyle;
 
    useEffect(() => {
       setDraftItems(savedDraftItems);
    }, [savedDraftItems]);
 
+   useEffect(() => {
+      setSavedStyle(initialStyle);
+      setDraftStyle(initialStyle);
+   }, [initialStyle]);
+
    if (!canShowCustomization) {
       return children({
          extraActions: [],
+         profileCustomization: initialStyle,
          renderScoreAction: () => null
       });
    }
 
+   function changeOpen(nextOpen: boolean) {
+      if (!nextOpen) {
+         setDraftStyle(savedStyle);
+      }
+      setOpen(nextOpen);
+   }
+
    function openCustomization() {
+      setDraftStyle(savedStyle);
       setActiveTab('account');
       setOpen(true);
    }
 
    function openWithScore(score: PlayerControllerGetPlayerScoresDataItem) {
+      setDraftStyle(savedStyle);
       setDraftItems((current) => addDraftScore(current, score));
       setActiveTab('pinned-scores');
       setOpen(true);
    }
 
    function savePinnedScores() {
-      mutation.runKeyed(
+      pinnedMutation.runKeyed(
          'pinned-scores',
          () => updatePinnedScores({ pinnedScores: draftPayload }),
          t('player.customization.pinnedScores.saved'),
          t('player.customization.pinnedScores.saveFailed'),
-         () => setOpen(false)
+         () => {
+            setDraftStyle(savedStyle);
+            setOpen(false);
+         }
+      );
+   }
+
+   function saveProfileStyle() {
+      styleMutation.runKeyed(
+         'profile-style',
+         () =>
+            updateProfileCustomizationStyle({
+               accentColor: draftStyle.accentColor,
+               accentForegroundColor: draftStyle.accentForegroundColor,
+               supporterNameColorEnabled: canToggleSupporterNameColor ? draftStyle.supporterNameColorEnabled : true
+            }),
+         t('player.customization.style.saved'),
+         t('player.customization.style.saveFailed'),
+         (style) => {
+            const normalizedStyle = normalizeProfileCustomizationStyle(style);
+            setSavedStyle(normalizedStyle);
+            setDraftStyle(normalizedStyle);
+            setOpen(false);
+         }
       );
    }
 
@@ -108,6 +163,23 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
          body: <PlayerProfileCustomizationAccountTab />
       },
       {
+         value: 'style',
+         label: t('player.customization.tabs.style'),
+         body: (
+            <PlayerProfileCustomizationStyleTab
+               draftStyle={draftStyle}
+               canUseStyle={canUseStyle}
+               canToggleSupporterNameColor={canToggleSupporterNameColor}
+               patreonConnected={patreonConnected}
+               dirty={styleDirty}
+               saveDisabled={styleSaveDisabled}
+               savePending={styleMutation.isPending}
+               onUpdateStyleAction={setDraftStyle}
+               onSaveAction={saveProfileStyle}
+            />
+         )
+      },
+      {
          value: 'pinned-scores',
          label: t('player.customization.tabs.pinnedScores'),
          body: (
@@ -115,9 +187,9 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
                draftItems={draftItems}
                canUsePinnedScores={canUsePinnedScores}
                patreonConnected={patreonConnected}
-               dirty={dirty}
-               saveDisabled={saveDisabled}
-               savePending={mutation.isPending}
+               dirty={pinnedDirty}
+               saveDisabled={pinnedSaveDisabled}
+               savePending={pinnedMutation.isPending}
                onToggleScoreAction={(score, checked) => setDraftItems((current) => toggleDraftScore(current, score, checked))}
                onUpdateCommentAction={(scoreId, comment) => setDraftItems((current) => updateDraftComment(current, scoreId, comment))}
                onMoveScoreAction={(scoreId, direction) => setDraftItems((current) => moveDraftScore(current, scoreId, direction))}
@@ -137,7 +209,7 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
       <>
          <PlayerProfileCustomizationSheet
             open={open}
-            onOpenChange={setOpen}
+            onOpenChange={changeOpen}
             activeTab={activeTab}
             onActiveTabChange={setActiveTab}
             title={t('player.customization.title')}
@@ -146,6 +218,7 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
          />
          {children({
             extraActions,
+            profileCustomization,
             renderScoreAction: (score) => (
                <PinnedScoreButton selected={savedScoreIds.has(score.score.id)} onClickAction={() => openWithScore(score)} />
             )
@@ -156,6 +229,13 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
 
 function PinnedScoreButton({ selected, onClickAction }: { selected: boolean; onClickAction: () => void }) {
    const t = useTranslations();
+   const [hovered, setHovered] = useState(false);
+   const highlighted = selected || hovered;
+   const pinStyle = highlighted
+      ? {
+           color: 'var(--profile-accent, var(--primary))'
+        }
+      : undefined;
 
    return (
       <Tooltip>
@@ -166,13 +246,16 @@ function PinnedScoreButton({ selected, onClickAction }: { selected: boolean; onC
                size="icon-lg"
                className={cn(
                   'border-border/70 bg-background/85 hover:bg-background pointer-events-auto absolute -top-3 -left-3 z-30 size-9 overflow-hidden rounded-full border shadow-xs backdrop-blur',
-                  'text-muted-foreground/70 hover:text-primary',
-                  selected && 'border-primary/40 text-primary'
+                  'text-muted-foreground/70'
                )}
                aria-label={selected ? t('player.customization.pinnedScores.editPinnedScore') : t('player.customization.pinnedScores.pinScore')}
                onClick={onClickAction}
+               onPointerEnter={() => setHovered(true)}
+               onPointerLeave={() => setHovered(false)}
+               onFocus={() => setHovered(true)}
+               onBlur={() => setHovered(false)}
             >
-               <Pin data-icon className={cn('absolute right-2 bottom-2 size-2.5 -rotate-[42deg]', selected && 'fill-current')} />
+               <Pin data-icon className={cn('absolute right-2 bottom-2 size-2.5 -rotate-[42deg]', selected && 'fill-current')} style={pinStyle} />
             </Button>
          </TooltipTrigger>
          <TooltipContent side="right" align="start">
@@ -229,4 +312,15 @@ function arePinnedScorePayloadsEqual(a: PinnedScorePayloadItem[], b: PinnedScore
    if (a.length !== b.length) return false;
 
    return a.every((item, index) => item.scoreId === b[index].scoreId && item.comment === b[index].comment);
+}
+
+function areProfileCustomizationStylesEqual(a: PlayerProfileCustomizationStyle, b: PlayerProfileCustomizationStyle) {
+   const left = normalizeProfileCustomizationStyle(a);
+   const right = normalizeProfileCustomizationStyle(b);
+
+   return (
+      left.accentColor === right.accentColor &&
+      left.accentForegroundColor === right.accentForegroundColor &&
+      left.supporterNameColorEnabled === right.supporterNameColorEnabled
+   );
 }
