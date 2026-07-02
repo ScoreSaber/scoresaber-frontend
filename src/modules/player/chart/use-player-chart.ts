@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 
 import { Result } from 'better-result';
 import type { Chart } from 'chart.js';
-import { useTranslations } from 'use-intl';
+import { useLocale, useTranslations } from 'use-intl';
 import { z } from 'zod';
 
 import type { MetricKey, MetricLabel, PlayerChartStats, TimeRange } from '@/modules/player/chart/chart-types';
@@ -65,27 +65,30 @@ function getIsMobile() {
    return mobileQuery?.matches ?? false;
 }
 
-type Translator = ReturnType<typeof useTranslations<'player'>>;
-
-function formatDaysAgo(t: Translator, daysAgo: number, short: boolean) {
-   if (daysAgo === 0) return t('chartToday');
+function formatDaysAgo(formatters: ChartDateFormatters, daysAgo: number, short: boolean) {
+   if (daysAgo < 7) return formatters[short ? 'short' : 'long'].format(-daysAgo, 'day');
    if (short) {
-      if (daysAgo < 7) return t('chartDaysAgoShort', { days: daysAgo });
-      if (daysAgo < 30) return t('chartWeeksAgoShort', { weeks: Math.round(daysAgo / 7) });
-      return t('chartMonthsAgoShort', { months: Math.round(daysAgo / 30) });
+      if (daysAgo < 30) return formatters.short.format(-Math.round(daysAgo / 7), 'week');
+      return formatters.short.format(-Math.round(daysAgo / 30), 'month');
    }
-   if (daysAgo === 1) return t('chartYesterday');
-   if (daysAgo === 7) return t('chartOneWeekAgo');
-   if (daysAgo === 14) return t('chartTwoWeeksAgo');
-   if (daysAgo === 30) return t('chartOneMonthAgo');
-   return t('chartDaysAgo', { days: daysAgo });
+   return formatters.long.format(-daysAgo, 'day');
 }
 
 function getDaysAgo(date: Date, now: Date) {
    return Math.max(0, Math.round((now.getTime() - date.getTime()) / DAY_MS));
 }
 
+type ChartDateFormatters = ReturnType<typeof createChartDateFormatters>;
+
+function createChartDateFormatters(locale: string) {
+   return {
+      long: new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' }),
+      short: new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'narrow' })
+   };
+}
+
 export function usePlayerChart(playerId: string, stats: PlayerChartStats, history: PlayerControllerGetPlayerHistoryItem[]) {
+   const locale = useLocale();
    const t = useTranslations('player');
    const tc = useTranslations('common');
    const initialPrefs = useRef(loadPrefs()).current;
@@ -189,6 +192,7 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
    const visibleDays = useMemo(() => getVisibleChartDayCount(sortedHistory, now), [sortedHistory, now]);
    const minTime = sortedHistory.length > 0 ? new Date(sortedHistory[0].createdAt).getTime() : nowTime;
    const maxTime = nowTime;
+   const chartDateFormatters = useMemo(() => createChartDateFormatters(locale), [locale]);
 
    const chartPadding = useMemo(() => getPlayerChartPadding(sortedHistory.length + 1), [sortedHistory.length]);
 
@@ -253,7 +257,8 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
    ]);
 
    const scales = useMemo(() => {
-      const formatTick = (value: number) => (value === maxTime ? t('chartNow') : formatDaysAgo(t, getDaysAgo(new Date(value), now), isMobile));
+      const formatTick = (value: number) =>
+         value === maxTime ? t('chartNow') : formatDaysAgo(chartDateFormatters, getDaysAgo(new Date(value), now), isMobile);
       return buildPlayerChartScales({
          activeKeys,
          chartColors,
@@ -265,7 +270,7 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
          maxTime,
          formatTick
       });
-   }, [activeKeys, chartColors, isSingle, isMobile, t, metricLabels, visibleDays, minTime, maxTime, now]);
+   }, [activeKeys, chartColors, isSingle, isMobile, t, metricLabels, visibleDays, minTime, maxTime, now, chartDateFormatters]);
 
    const avgPerDayLabel = t('chartAvgPerDay');
 
@@ -293,7 +298,7 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
             const x = context[0]?.parsed.x;
             if (x == null) return '';
             if (x === nowTime) return t('chartNow');
-            return formatDaysAgo(t, getDaysAgo(new Date(x), now), false);
+            return formatDaysAgo(chartDateFormatters, getDaysAgo(new Date(x), now), false);
          },
          label: (context: { datasetIndex: number; dataIndex: number; parsed: { y: number | null } }) => {
             const key = activeKeys[context.datasetIndex];
@@ -309,7 +314,7 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
             return { borderColor: color, backgroundColor: color };
          }
       }),
-      [activeKeys, chartPadding, estimatedFlags, chartColors.metricBorder, formatTooltipValue, t, now, nowTime]
+      [activeKeys, chartPadding, estimatedFlags, chartColors.metricBorder, formatTooltipValue, t, now, nowTime, chartDateFormatters]
    );
 
    return {
