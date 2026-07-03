@@ -29,7 +29,7 @@ import type {
 import { api, publicApi } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
 import { PageError } from '@/shared/components/error/page-error';
-import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
+import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
 import { calculateRawPPForTotalPPGain } from '@/shared/format/weighted-pp';
 import { optionalApi, optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
@@ -461,7 +461,7 @@ function PlayerScoresSection({
    const hasNoScoresAtAll = !hasScores;
 
    return (
-      <div className="pb-3">
+      <div className={cn('pb-3', !showSeparator && 'pt-4')}>
          {showSeparator && <Separator variant="gradient" className="mb-4" />}
          {!hasNoScoresAtAll && (
             <div className="mb-4 flex justify-center">

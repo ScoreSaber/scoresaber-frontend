@@ -80,7 +80,13 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
             {overlayAction && <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden rounded">{overlayAction}</div>}
             <ScoreCardSurface
                coverUrl={leaderboard.map.coverUrl}
-               className={cn(className, 'pb-9 lg:pr-16 lg:pb-3', overlayAction && 'pl-6 lg:pl-7')}
+               className={cn(
+                  className,
+                  'pb-9 lg:pr-16 lg:pb-3',
+                  // cut a hole in the card behind the pin button so it reads as a notch, not a blob
+                  overlayAction &&
+                     'pl-6 lg:pl-7 [-webkit-mask-image:radial-gradient(circle_at_6px_6px,transparent_17.5px,black_18.5px)] [mask-image:radial-gradient(circle_at_6px_6px,transparent_17.5px,black_18.5px)]'
+               )}
                imageSizes="(min-width: 1024px) 800px, 100vw"
             >
                <div className="flex flex-col flex-wrap items-center justify-between gap-0.5 lg:flex-row lg:flex-nowrap lg:gap-0">

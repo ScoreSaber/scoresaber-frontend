@@ -14,18 +14,20 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { getReadableProfileAccentForeground, type PlayerProfileCustomizationStyle } from '@/modules/player/profile/player-profile-accent';
+import {
+   DEFAULT_PROFILE_ACCENT_ACTIVE_FOREGROUND_COLOR,
+   DEFAULT_PROFILE_ACCENT_COLOR,
+   DEFAULT_PROFILE_ACCENT_FOREGROUND_COLOR,
+   type PlayerProfileCustomizationStyle
+} from '@/modules/player/profile/player-profile-accent';
 import { versionedImageUrl } from '@/modules/player/shared/player-avatar';
 import { ConditionalOverlay } from '@/shared/components/conditional-overlay';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { SupporterRequiredOverlay } from '@/shared/components/supporter-required-overlay';
 import { cn } from '@/shared/format/helpers';
 
-const defaultAccentColor = '#facc15';
-const defaultAccentForegroundColor = '#422006';
-const defaultAccentForegroundActiveColor = '#422006';
 const backgroundMaxSize = 10 * 1024 * 1024;
-const ACCENT_SWATCHES = [defaultAccentColor, '#2dd4bf', '#fb7185', '#60a5fa', '#a3e635', '#f97316'];
+const ACCENT_SWATCHES = [DEFAULT_PROFILE_ACCENT_COLOR, '#2dd4bf', '#fb7185', '#60a5fa', '#a3e635', '#f97316'];
 
 interface PlayerProfileCustomizationStyleTabProps {
    draftStyle: PlayerProfileCustomizationStyle;
@@ -54,9 +56,9 @@ export function PlayerProfileCustomizationStyleTab({
    const backgroundInputRef = useRef<HTMLInputElement | null>(null);
    const backgroundImage = draftStyle.backgroundImage ?? '';
    const previewBackgroundImage = backgroundImage ? versionedImageUrl(backgroundImage, draftStyle.backgroundImageVersion) : '';
-   const accentColor = draftStyle.accentColor ?? defaultAccentColor;
-   const accentForegroundColor = draftStyle.accentForegroundColor ?? getDefaultAccentForeground(accentColor);
-   const accentForegroundActiveColor = draftStyle.accentForegroundActiveColor ?? getDefaultAccentActiveForeground(accentColor);
+   const accentColor = draftStyle.accentColor ?? DEFAULT_PROFILE_ACCENT_COLOR;
+   const accentForegroundColor = draftStyle.accentForegroundColor ?? DEFAULT_PROFILE_ACCENT_FOREGROUND_COLOR;
+   const accentForegroundActiveColor = draftStyle.accentForegroundActiveColor ?? DEFAULT_PROFILE_ACCENT_ACTIVE_FOREGROUND_COLOR;
 
    function updateStyle(values: Partial<PlayerProfileCustomizationStyle>) {
       onUpdateStyleAction({ ...draftStyle, ...values });
@@ -64,9 +66,7 @@ export function PlayerProfileCustomizationStyleTab({
 
    function setAccentColor(color: string) {
       updateStyle({
-         accentColor: color,
-         accentForegroundColor: getDefaultAccentForeground(color),
-         accentForegroundActiveColor: getDefaultAccentActiveForeground(color)
+         accentColor: color
       });
    }
 
@@ -225,7 +225,7 @@ export function PlayerProfileCustomizationStyleTab({
                               aria-label={t('player.customization.style.accentForeground')}
                               onChange={(event) =>
                                  updateStyle({
-                                    accentColor: draftStyle.accentColor ?? defaultAccentColor,
+                                    accentColor: draftStyle.accentColor ?? DEFAULT_PROFILE_ACCENT_COLOR,
                                     accentForegroundColor: event.target.value
                                  })
                               }
@@ -242,7 +242,7 @@ export function PlayerProfileCustomizationStyleTab({
                               aria-label={t('player.customization.style.accentForegroundActive')}
                               onChange={(event) =>
                                  updateStyle({
-                                    accentColor: draftStyle.accentColor ?? defaultAccentColor,
+                                    accentColor: draftStyle.accentColor ?? DEFAULT_PROFILE_ACCENT_COLOR,
                                     accentForegroundActiveColor: event.target.value
                                  })
                               }
@@ -279,12 +279,4 @@ export function PlayerProfileCustomizationStyleTab({
          </ScrollArea>
       </div>
    );
-}
-
-function getDefaultAccentForeground(color: string) {
-   return color.toLowerCase() === defaultAccentColor ? defaultAccentForegroundColor : getReadableProfileAccentForeground(color);
-}
-
-function getDefaultAccentActiveForeground(color: string) {
-   return color.toLowerCase() === defaultAccentColor ? defaultAccentForegroundActiveColor : getReadableProfileAccentForeground(color);
 }

@@ -103,7 +103,7 @@ function TooltipContent({ className, sideOffset = 0, children, style, ...props }
             )}
             style={{
                backgroundColor: 'var(--profile-accent, var(--primary))',
-               color: 'var(--profile-accent-foreground, var(--primary-foreground))',
+               color: 'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))',
                ...style
             }}
             {...props}

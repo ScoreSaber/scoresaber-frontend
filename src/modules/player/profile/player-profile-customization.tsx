@@ -20,7 +20,8 @@ import {
 import type { MetricKey } from '@/modules/player/chart/chart-types';
 import type { PlayerExtraAction } from '@/modules/player/operations/player-actions';
 import {
-   getReadableProfileAccentForeground,
+   DEFAULT_PROFILE_ACCENT_ACTIVE_FOREGROUND_COLOR,
+   DEFAULT_PROFILE_ACCENT_FOREGROUND_COLOR,
    normalizeProfileCustomizationStyle,
    type PlayerProfileCustomizationStyle
 } from '@/modules/player/profile/player-profile-accent';
@@ -502,7 +503,7 @@ function PinnedScoreButton({ selected, onClickAction }: { selected: boolean; onC
                variant="ghost-icon"
                size="icon-lg"
                className={cn(
-                  'border-border/70 bg-background/85 hover:bg-background pointer-events-auto absolute -top-3 -left-3 z-30 size-9 overflow-hidden rounded-full border shadow-xs backdrop-blur',
+                  'border-border/70 pointer-events-auto absolute -top-3 -left-3 z-30 size-9 overflow-hidden rounded-full border',
                   'text-muted-foreground/70'
                )}
                aria-label={selected ? t('player.customization.pinnedScores.editPinnedScore') : t('player.customization.pinnedScores.pinScore')}
@@ -663,11 +664,10 @@ function materializeProfileCustomizationStyle(style: PlayerProfileCustomizationS
    const normalized = normalizeProfileCustomizationStyle(style);
    if (!normalized.accentColor) return normalized;
 
-   const readableForeground = getReadableProfileAccentForeground(normalized.accentColor);
    return {
       ...normalized,
-      accentForegroundColor: normalized.accentForegroundColor ?? readableForeground,
-      accentForegroundActiveColor: normalized.accentForegroundActiveColor ?? readableForeground
+      accentForegroundColor: normalized.accentForegroundColor ?? DEFAULT_PROFILE_ACCENT_FOREGROUND_COLOR,
+      accentForegroundActiveColor: normalized.accentForegroundActiveColor ?? DEFAULT_PROFILE_ACCENT_ACTIVE_FOREGROUND_COLOR
    };
 }
 
@@ -680,12 +680,13 @@ function normalizeProfileCustomizationSaveResult(
 
    const fallbackStyle = normalizeProfileCustomizationStyle(fallback);
    const fallbackForegrounds = fallbackStyle.accentColor === normalized.accentColor ? materializeProfileCustomizationStyle(fallbackStyle) : null;
-   const readableForeground = getReadableProfileAccentForeground(normalized.accentColor);
 
    return {
       ...normalized,
-      accentForegroundColor: normalized.accentForegroundColor ?? fallbackForegrounds?.accentForegroundColor ?? readableForeground,
-      accentForegroundActiveColor: normalized.accentForegroundActiveColor ?? fallbackForegrounds?.accentForegroundActiveColor ?? readableForeground
+      accentForegroundColor:
+         normalized.accentForegroundColor ?? fallbackForegrounds?.accentForegroundColor ?? DEFAULT_PROFILE_ACCENT_FOREGROUND_COLOR,
+      accentForegroundActiveColor:
+         normalized.accentForegroundActiveColor ?? fallbackForegrounds?.accentForegroundActiveColor ?? DEFAULT_PROFILE_ACCENT_ACTIVE_FOREGROUND_COLOR
    };
 }
 

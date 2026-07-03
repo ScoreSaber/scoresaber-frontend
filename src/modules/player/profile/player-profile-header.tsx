@@ -3,7 +3,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
-import { ChevronDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { IconType } from 'react-icons';
 import {
    FaBan,
@@ -194,7 +194,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
             aria-label={statsToggleLabel}
             onClick={() => setStatsExpanded((expanded) => !expanded)}
          >
-            <ChevronDown className={cn('transition-transform duration-200', statsExpanded && 'rotate-180')} />
+            {statsExpanded ? <ChevronLeft data-icon /> : <ChevronRight data-icon />}
          </Button>
       ) : null;
    const accentSurfaceStyle = hasCustomAccent
@@ -382,7 +382,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                                        aria-label={statsToggleLabel}
                                        onClick={() => setStatsExpanded((expanded) => !expanded)}
                                     >
-                                       <ChevronDown data-icon className={cn('transition-transform duration-200', statsExpanded && 'rotate-180')} />
+                                       {statsExpanded ? <ChevronLeft data-icon /> : <ChevronRight data-icon />}
                                     </Button>
                                  </div>
                               )}
