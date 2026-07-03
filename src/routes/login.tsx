@@ -15,7 +15,7 @@ const loginSearchSchema = z.object({
    steam: optionalSearchParamEnum(['failed']),
    patreon: optionalSearchParamEnum(['failed']),
    discord: optionalSearchParamEnum(['failed']),
-   mode: optionalSearchParamEnum(['password-reset']),
+   mode: optionalSearchParamEnum(['password-reset', 'signup']),
    redirectTo: searchParamString
 });
 

@@ -86,6 +86,16 @@
          "patreon": "Please consider supporting ScoreSaber on Patreon ❤️",
          "patreonPerks": "You can get custom profile bios, a fancy leaderboard colour, badge and role",
          "sourceCode": "Source Code"
+      },
+      "pairing": {
+         "title": "Pair ScoreSaber on Quest Standalone",
+         "signedOutDescription": "Sign in or create an account, then we'll bring you straight back here with a pairing code",
+         "signedInDescription": "Signed in as {name}. Enter this code in Beat Saber on Quest Standalone",
+         "loginAction": "Log in",
+         "signupAction": "Create account",
+         "loading": "Getting your pairing code",
+         "copied": "Copied",
+         "claimedDescription": "You can return to Beat Saber now"
       }
    },
    "nav": {
@@ -1190,8 +1200,8 @@
          "deletePasskeyDesc": "This will remove \"{label}\". You will no longer be able to sign in with it",
          "passkeyLastUsed": "Last used <date></date>",
          "passkeyCreated": "Added <date></date>",
-         "deviceLogin": "Sign In on Beat Saber for Quest",
-         "deviceLoginComingSoon": "(coming soon with the quest mod refresh)",
+         "deviceLogin": "Sign In on Beat Saber for Quest Standalone",
+         "deviceLoginComingSoon": "(coming soon with the Quest Standalone mod refresh)",
          "deviceLoginHelper": "Get a one-time code to sign in inside the game",
          "deviceLoginAction": "Get code",
          "deviceLoginInstructions": "Enter this code in Beat Saber to sign in there",
