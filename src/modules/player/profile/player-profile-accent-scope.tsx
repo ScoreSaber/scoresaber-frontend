@@ -13,18 +13,22 @@ export function PlayerProfileAccentScope({ customization, children }: PlayerProf
    const accentProperties = getProfileAccentProperties(customization);
    const accentColor = accentProperties?.['--profile-accent'];
    const accentForegroundColor = accentProperties?.['--profile-accent-foreground'];
+   const accentForegroundActiveColor = accentProperties?.['--profile-accent-active-foreground'];
 
    useEffect(() => {
       const root = document.documentElement;
       const previousAccent = root.style.getPropertyValue('--profile-accent');
       const previousAccentForeground = root.style.getPropertyValue('--profile-accent-foreground');
+      const previousAccentActiveForeground = root.style.getPropertyValue('--profile-accent-active-foreground');
 
-      if (accentColor && accentForegroundColor) {
+      if (accentColor && accentForegroundColor && accentForegroundActiveColor) {
          root.style.setProperty('--profile-accent', accentColor);
          root.style.setProperty('--profile-accent-foreground', accentForegroundColor);
+         root.style.setProperty('--profile-accent-active-foreground', accentForegroundActiveColor);
       } else {
          root.style.removeProperty('--profile-accent');
          root.style.removeProperty('--profile-accent-foreground');
+         root.style.removeProperty('--profile-accent-active-foreground');
       }
 
       return () => {
@@ -39,8 +43,14 @@ export function PlayerProfileAccentScope({ customization, children }: PlayerProf
          } else {
             root.style.removeProperty('--profile-accent-foreground');
          }
+
+         if (previousAccentActiveForeground) {
+            root.style.setProperty('--profile-accent-active-foreground', previousAccentActiveForeground);
+         } else {
+            root.style.removeProperty('--profile-accent-active-foreground');
+         }
       };
-   }, [accentColor, accentForegroundColor]);
+   }, [accentColor, accentForegroundColor, accentForegroundActiveColor]);
 
    return (
       <div className="contents" style={accentProperties}>

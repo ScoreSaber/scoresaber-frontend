@@ -30,9 +30,10 @@ const InlineLeaderboard = dynamic(() => import('@/modules/scores/leaderboard/inl
 
 interface PlayerPinnedScoresSectionProps {
    pinnedScores: PinnedScore[];
+   showSeparator?: boolean;
 }
 
-export function PlayerPinnedScoresSection({ pinnedScores }: PlayerPinnedScoresSectionProps) {
+export function PlayerPinnedScoresSection({ pinnedScores, showSeparator = true }: PlayerPinnedScoresSectionProps) {
    const t = useTranslations();
    const [activeScorePanel, setActiveScorePanel] = useState<{ scoreId: number; panel: PinnedScorePanel } | null>(null);
    const visiblePinnedScores = activeScorePanel
@@ -56,7 +57,7 @@ export function PlayerPinnedScoresSection({ pinnedScores }: PlayerPinnedScoresSe
 
    return (
       <div className="py-4">
-         <Separator variant="gradient" className="mb-4" />
+         {showSeparator && <Separator variant="gradient" className="mb-4" />}
          <div className="mb-3 flex min-w-0 items-center justify-center gap-2 text-center">
             <Pin className="size-4 text-[color:var(--profile-accent,var(--primary))]" aria-hidden />
             <h2 className="truncate text-sm font-semibold">{t('player.customization.pinnedScores.profileTitle')}</h2>

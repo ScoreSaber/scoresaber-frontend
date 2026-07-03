@@ -16,6 +16,7 @@ import { SongInfoCard } from '@/modules/songs/song-info-card';
 import type { PlayerControllerGetPlayerScoresDataItem } from '@/shared/api/generated/ApiParams';
 import { dynamic } from '@/shared/components/dynamic';
 import { buildSongInfoProps, cn, formatAccuracy, formatPP, getHmdName, isLegacyAccuracyScore } from '@/shared/format/helpers';
+import { starsToPP } from '@/shared/format/star-conversion';
 import { isLeaderboardRanked } from '@/shared/format/styling';
 
 const InlineLeaderboard = dynamic(() => import('@/modules/scores/leaderboard/inline-leaderboard').then((mod) => mod.InlineLeaderboard), {
@@ -35,6 +36,13 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
    const isRanked = isLeaderboardRanked(leaderboard);
    const weightedPP = formatPP(score.pp * score.weight);
    const weightedPercent = formatAccuracy(score.weight * 100);
+   const fcPPContext = isRanked
+      ? {
+           realmId: leaderboard.realm.realmId,
+           maxPP: starsToPP(leaderboard.realm.stars),
+           positiveModifiers: leaderboard.realm.positiveModifiers
+        }
+      : undefined;
 
    const [activePanel, setActivePanel] = useState<Panel>(null);
    const [transitioning, setTransitioning] = useState(false);
@@ -122,7 +130,7 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
                   </div>
                )}
                <div className={cn(transitioning ? 'invisible absolute' : undefined, 'mt-2 lg:mx-6')}>
-                  {showDetails && <ScoreDetailsInline score={score} onReadyAction={onPanelReady} />}
+                  {showDetails && <ScoreDetailsInline score={score} fcPPContext={fcPPContext} onReadyAction={onPanelReady} />}
                   {showLeaderboard && (
                      <InlineLeaderboard
                         leaderboardId={leaderboard.id}

@@ -87,9 +87,9 @@ export function Pagination<TLocation>({
             const activeStyle =
                active || loading
                   ? {
-                       borderColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 85%, transparent)',
-                       backgroundColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 12%, transparent)',
-                       color: 'var(--profile-accent, var(--primary))'
+                       borderColor: 'var(--profile-accent, var(--primary))',
+                       backgroundColor: 'var(--profile-accent, var(--primary))',
+                       color: 'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
                     }
                   : undefined;
 

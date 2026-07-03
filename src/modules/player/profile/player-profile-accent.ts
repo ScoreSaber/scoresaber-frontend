@@ -2,17 +2,29 @@ import type { CSSProperties } from 'react';
 
 import type { PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
 
-export type PlayerProfileCustomizationStyle = NonNullable<PlayerControllerGetPlayerResponse['profileCustomization']>;
+export type PlayerProfileCustomizationStyle = Pick<
+   NonNullable<PlayerControllerGetPlayerResponse['profileCustomization']>,
+   | 'backgroundImage'
+   | 'backgroundImageVersion'
+   | 'accentColor'
+   | 'accentForegroundColor'
+   | 'accentForegroundActiveColor'
+   | 'supporterNameColorEnabled'
+>;
 
 export const DEFAULT_PROFILE_CUSTOMIZATION_STYLE: PlayerProfileCustomizationStyle = {
+   backgroundImage: null,
+   backgroundImageVersion: null,
    accentColor: null,
    accentForegroundColor: null,
+   accentForegroundActiveColor: null,
    supporterNameColorEnabled: true
 };
 
 type ProfileAccentProperties = CSSProperties & {
    '--profile-accent': string;
    '--profile-accent-foreground': string;
+   '--profile-accent-active-foreground': string;
 };
 
 export function normalizeProfileCustomizationStyle(
@@ -23,8 +35,11 @@ export function normalizeProfileCustomizationStyle(
    const accentColor = customization?.accentColor ?? null;
 
    return {
+      backgroundImage: customization?.backgroundImage ?? null,
+      backgroundImageVersion: customization?.backgroundImageVersion ?? null,
       accentColor,
       accentForegroundColor: accentColor ? (customization?.accentForegroundColor ?? null) : null,
+      accentForegroundActiveColor: accentColor ? (customization?.accentForegroundActiveColor ?? null) : null,
       supporterNameColorEnabled: customization?.supporterNameColorEnabled ?? true
    };
 }
@@ -35,7 +50,8 @@ export function getProfileAccentProperties(customization: PlayerProfileCustomiza
 
    return {
       '--profile-accent': style.accentColor,
-      '--profile-accent-foreground': style.accentForegroundColor ?? getReadableProfileAccentForeground(style.accentColor)
+      '--profile-accent-foreground': style.accentForegroundColor ?? getReadableProfileAccentForeground(style.accentColor),
+      '--profile-accent-active-foreground': style.accentForegroundActiveColor ?? getReadableProfileAccentForeground(style.accentColor)
    };
 }
 

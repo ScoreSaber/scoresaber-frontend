@@ -3,7 +3,7 @@
 import { type ReactNode, type TouchEvent as ReactTouchEvent, useEffect, useRef, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { Bomb, Grid3X3, Loader2, Scissors, Target, Zap } from 'lucide-react';
+import { Bomb, Clock, Grid3X3, Loader2, Pause, Ruler, Scissors, Star, Target, Zap } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { HandAccuracyRing } from './hand-accuracy-ring';
@@ -13,12 +13,14 @@ import { Button } from '@/components/ui/button';
 
 import { api } from '@/shared/api/ApiInstance';
 import type { ScoreControllerGetScoreStatsResponse } from '@/shared/api/generated/ApiParams';
+import { getRealmPPCurve } from '@/shared/api/realm-pp';
 import { dynamic } from '@/shared/components/dynamic';
 import { Stat } from '@/shared/components/stat';
-import { cn, formatNumber } from '@/shared/format/helpers';
-import { queryApiData } from '@/shared/result/api';
+import { cn, formatNumber, formatPP } from '@/shared/format/helpers';
+import { calculateCurvePP } from '@/shared/format/pp-curve';
+import { optionalApiData, queryApiData } from '@/shared/result/api';
 
-export function ScoreStatsDetail({ scoreId, fullCombo, onLoadedAction }: ScoreStatsDetailProps) {
+export function ScoreStatsDetail({ scoreId, fullCombo, fcPPContext, onLoadedAction }: ScoreStatsDetailProps) {
    const t = useTranslations();
    const [chartView, setChartView] = useState<ChartView>('basic');
    const chartSwipeRef = useRef<HTMLDivElement>(null);
@@ -71,7 +73,7 @@ export function ScoreStatsDetail({ scoreId, fullCombo, onLoadedAction }: ScoreSt
 
    if (isError || !stats) return null;
 
-   const accuracyContent = <ScoreAccuracyOverview stats={stats} fullCombo={fullCombo} />;
+   const accuracyContent = <ScoreAccuracyOverview stats={stats} fullCombo={fullCombo} fcPPContext={fcPPContext} />;
    const basicChart = stats.scoreGraph.length > 0 ? <ScoreAccuracyChart scoreGraph={stats.scoreGraph} endTime={stats.endTime} /> : null;
    const timelineChart = <ScoreAccuracyTimelineChart timeline={stats.accuracyTimeline} />;
    const distributionChart = <ScoreAccuracyDistributionChart distribution={stats.accuracyDistribution} />;
@@ -165,7 +167,14 @@ export function ScoreStatsDetail({ scoreId, fullCombo, onLoadedAction }: ScoreSt
 interface ScoreStatsDetailProps {
    scoreId: number;
    fullCombo: boolean;
+   fcPPContext?: FCPPContext;
    onLoadedAction?: () => void;
+}
+
+export interface FCPPContext {
+   realmId: number;
+   maxPP: number;
+   positiveModifiers: boolean;
 }
 
 const GRID_ROWS = [
@@ -206,6 +215,27 @@ function ChartSkeleton() {
 
 function formatHandPair(left: number, right: number, leftLabel: string, rightLabel: string) {
    return `${formatNumber(left)}${leftLabel} / ${formatNumber(right)}${rightLabel}`;
+}
+
+function formatCompactDecimal(value: number) {
+   if (!Number.isFinite(value)) return '--';
+   return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
+function formatPauseDuration(seconds: number) {
+   if (!Number.isFinite(seconds)) return '--';
+
+   const totalSeconds = Math.max(0, Math.floor(seconds));
+   const hours = Math.floor(totalSeconds / 3600);
+   const minutes = Math.floor((totalSeconds % 3600) / 60);
+   const remainingSeconds = totalSeconds % 60;
+   const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+
+   if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${paddedSeconds}`;
+   }
+
+   return `${minutes}:${paddedSeconds}`;
 }
 
 function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gridCutDetails']['grid'] }) {
@@ -262,10 +292,30 @@ function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gr
    );
 }
 
-function ScoreAccuracyOverview({ stats, fullCombo }: { stats: ScoreControllerGetScoreStatsResponse; fullCombo: boolean }) {
+function ScoreAccuracyOverview({
+   stats,
+   fullCombo,
+   fcPPContext
+}: {
+   stats: ScoreControllerGetScoreStatsResponse;
+   fullCombo: boolean;
+   fcPPContext?: FCPPContext;
+}) {
    const t = useTranslations();
    const leftLabel = t('score.leftShort');
    const rightLabel = t('score.rightShort');
+   const { data: ppCurveData } = useQuery({
+      queryKey: ['realmPPCurve', fcPPContext?.realmId],
+      queryFn: async () => {
+         if (!fcPPContext) return null;
+         return optionalApiData(getRealmPPCurve(fcPPContext.realmId));
+      },
+      enabled: !fullCombo && fcPPContext != null,
+      staleTime: 5 * 60 * 1000
+   });
+   const ppCurve = ppCurveData && fcPPContext ? (fcPPContext.positiveModifiers ? ppCurveData.positiveModifierCurve : ppCurveData.curve) : null;
+   const fcPP =
+      !fullCombo && Number.isFinite(stats.fcAcc) && fcPPContext && ppCurve ? calculateCurvePP(stats.fcAcc, fcPPContext.maxPP, ppCurve) : null;
 
    return (
       <div className="flex min-w-0 flex-col gap-4">
@@ -304,14 +354,34 @@ function ScoreAccuracyOverview({ stats, fullCombo }: { stats: ScoreControllerGet
                   {formatHandPair(stats.leftBombs, stats.rightBombs, leftLabel, rightLabel)}
                </Stat>
             )}
+            {stats.jumpDistance != null && (
+               <Stat icon={Ruler} label={t('score.jumpDistance')} className="gap-1.5 px-2 py-0.5 text-[11px]">
+                  {formatCompactDecimal(stats.jumpDistance)}m
+               </Stat>
+            )}
+            {stats.pauseCount != null && (
+               <Stat icon={Pause} label={t('score.pauses')} className="gap-1.5 px-2 py-0.5 text-[11px]">
+                  {formatNumber(stats.pauseCount)}
+               </Stat>
+            )}
+            {stats.pauseTotalDurationSeconds != null && (
+               <Stat icon={Clock} label={t('score.paused')} className="gap-1.5 px-2 py-0.5 text-[11px]">
+                  {formatPauseDuration(stats.pauseTotalDurationSeconds)}
+               </Stat>
+            )}
             {stats.max115Streak != null && (
                <Stat icon={Zap} label={t('score.streak115')} className="gap-1.5 px-2 py-0.5 text-[11px]">
                   {formatNumber(stats.max115Streak)}
                </Stat>
             )}
             {!fullCombo && (
-               <Stat icon={Target} label={t('score.estFcAccuracy')} className="gap-1.5 px-2 py-0.5 text-[11px]">
+               <Stat icon={Target} label={t('score.estFCAccuracy')} className="gap-1.5 px-2 py-0.5 text-[11px]">
                   {Number.isFinite(stats.fcAcc) ? `${(stats.fcAcc * 100).toFixed(2)}%` : '--'}
+               </Stat>
+            )}
+            {fcPP != null && (
+               <Stat icon={Star} label={t('score.estFCPP')} className="gap-1.5 px-2 py-0.5 text-[11px]">
+                  {formatPP(fcPP)}pp
                </Stat>
             )}
          </div>

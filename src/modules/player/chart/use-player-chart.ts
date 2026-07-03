@@ -6,7 +6,7 @@ import { useTranslations } from 'use-intl';
 import { z } from 'zod';
 
 import type { MetricKey, MetricLabel, PlayerChartStats, TimeRange } from '@/modules/player/chart/chart-types';
-import { METRIC_KEY_SCHEMA, TIME_RANGE_SCHEMA } from '@/modules/player/chart/chart-types';
+import { METRIC_KEYS, METRIC_KEY_SCHEMA, TIME_RANGE_SCHEMA } from '@/modules/player/chart/chart-types';
 import {
    buildPlayerChartDatasets,
    buildPlayerChartMetricStats,
@@ -85,11 +85,21 @@ function getDaysAgo(date: Date, now: Date) {
    return Math.max(0, Math.round((now.getTime() - date.getTime()) / DAY_MS));
 }
 
-export function usePlayerChart(playerId: string, stats: PlayerChartStats, history: PlayerControllerGetPlayerHistoryItem[]) {
+export function usePlayerChart(
+   playerId: string,
+   stats: PlayerChartStats,
+   history: PlayerControllerGetPlayerHistoryItem[],
+   enabledMetrics: MetricKey[] = [...METRIC_KEYS]
+) {
    const t = useTranslations('player');
    const tc = useTranslations('common');
    const initialPrefs = useRef(loadPrefs()).current;
-   const [activeMetrics, setActiveMetrics] = useState<Set<MetricKey>>(() => new Set(initialPrefs.activeMetrics));
+   const enabledMetricKeys = useMemo(() => normalizeEnabledMetrics(enabledMetrics), [enabledMetrics]);
+   const enabledMetricSet = useMemo(() => new Set(enabledMetricKeys), [enabledMetricKeys]);
+   const [activeMetrics, setActiveMetrics] = useState<Set<MetricKey>>(() => {
+      const initialActive = initialPrefs.activeMetrics.filter((key) => enabledMetricKeys.includes(key));
+      return new Set(initialActive.length > 0 ? initialActive : enabledMetricKeys.slice(0, 1));
+   });
    const [isShowingEstimated, setIsShowingEstimated] = useState(initialPrefs.isShowingEstimated);
    const [isInfoOpen, setIsInfoOpen] = useState(false);
    const [timeRange, setTimeRange] = useState<TimeRange>(initialPrefs.timeRange);
@@ -138,6 +148,14 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
    );
 
    useEffect(() => {
+      setActiveMetrics((current) => {
+         const next = new Set([...current].filter((key) => enabledMetricSet.has(key)));
+         if (next.size === 0 && enabledMetricKeys[0]) next.add(enabledMetricKeys[0]);
+         return next;
+      });
+   }, [enabledMetricKeys, enabledMetricSet]);
+
+   useEffect(() => {
       if (isFirstRender.current) {
          isFirstRender.current = false;
          return;
@@ -150,22 +168,27 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
       writeStorageJson(STORAGE_KEY, data);
    }, [activeMetrics, isShowingEstimated, timeRange]);
 
-   const handleMetricClick = useCallback((key: MetricKey, isMultiSelect: boolean) => {
-      if (!isMultiSelect) {
-         setActiveMetrics(new Set([key]));
-         return;
-      }
+   const handleMetricClick = useCallback(
+      (key: MetricKey, isMultiSelect: boolean) => {
+         if (!enabledMetricSet.has(key)) return;
 
-      setActiveMetrics((prev) => {
-         const next = new Set(prev);
-         if (next.has(key)) {
-            if (next.size > 1) next.delete(key);
-            return next;
+         if (!isMultiSelect) {
+            setActiveMetrics(new Set([key]));
+            return;
          }
-         next.add(key);
-         return next;
-      });
-   }, []);
+
+         setActiveMetrics((prev) => {
+            const next = new Set(prev);
+            if (next.has(key)) {
+               if (next.size > 1) next.delete(key);
+               return next;
+            }
+            next.add(key);
+            return next;
+         });
+      },
+      [enabledMetricSet]
+   );
 
    const { handlePointerDown, handlePointerUp, handlePointerCancel } = useLongPress<MetricKey>(handleMetricClick);
 
@@ -196,7 +219,7 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
 
    const labels = useMemo(() => [], []);
 
-   const activeKeys = useMemo(() => getActiveMetricKeys(activeMetrics), [activeMetrics]);
+   const activeKeys = useMemo(() => getActiveMetricKeys(activeMetrics).filter((key) => enabledMetricSet.has(key)), [activeMetrics, enabledMetricSet]);
    const isSingle = activeKeys.length === 1;
    isSingleRef.current = isSingle;
 
@@ -314,6 +337,7 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
 
    return {
       activeMetrics,
+      enabledMetricKeys,
       isShowingEstimated,
       setIsShowingEstimated,
       isInfoOpen,
@@ -344,4 +368,9 @@ export function usePlayerChart(playerId: string, stats: PlayerChartStats, histor
       pulseRef,
       denyahOverlayRef
    };
+}
+
+function normalizeEnabledMetrics(metrics: MetricKey[]) {
+   const enabled = new Set(metrics);
+   return METRIC_KEYS.filter((key) => enabled.has(key));
 }

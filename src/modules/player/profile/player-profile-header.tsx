@@ -1,8 +1,10 @@
 'use client';
 
-import type { CSSProperties, ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import type { IconType } from 'react-icons';
 import {
    FaBan,
    FaBullseye,
@@ -19,6 +21,7 @@ import {
 } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
+import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { PlayerFollowButton } from '@/modules/player/operations/member/player-follow-button';
@@ -51,8 +54,38 @@ const rankPillAccentClass = cn(
    'bg-[color:color-mix(in_srgb,var(--profile-accent)_9%,transparent)] hover:bg-[color:color-mix(in_srgb,var(--profile-accent)_16%,transparent)]'
 );
 
-export function PlayerProfileHeader({ player, aliases, actions, customization, children }: PlayerProfileHeaderProps) {
+export const PLAYER_PROFILE_STAT_IDS = [
+   'rankedPlays',
+   'rankedScore',
+   'rankedAcc',
+   'plusOnePP',
+   'totalPlays',
+   'totalScore',
+   'joined',
+   'replayViews',
+   'role'
+] as const;
+
+export type PlayerProfileStatId = (typeof PLAYER_PROFILE_STAT_IDS)[number];
+
+type PlayerProfileHeaderCustomization = PlayerControllerGetPlayerResponse['profileCustomization'] & {
+   statOrder?: PlayerProfileStatId[] | null;
+   badgeOrder?: number[] | null;
+   badgeComments?: Record<string, string> | null;
+};
+
+interface ProfileStatItem {
+   id: PlayerProfileStatId;
+   icon: IconType;
+   label: string;
+   value: ReactNode;
+   primary?: boolean;
+   tooltip?: string;
+}
+
+export function PlayerProfileHeader({ player, aliases, actions, customization, plusOneRawPP, children }: PlayerProfileHeaderProps) {
    const t = useTranslations();
+   const [statsExpanded, setStatsExpanded] = useState(false);
    const { stats } = player;
    const playerSummary = buildPlayerSummary(player, 'text');
    const isActive = !player.inactive && !player.banned;
@@ -70,6 +103,99 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, c
             ? 'text-[color:var(--profile-accent)]'
             : 'text-foreground'
          : undefined;
+   const primaryStatItems: ProfileStatItem[] = [
+      {
+         id: 'rankedPlays',
+         icon: FaTrophy,
+         label: t('player.rankedPlays'),
+         value: formatNumber(stats.totalPlayedRankedLeaderboards),
+         primary: true
+      },
+      {
+         id: 'rankedScore',
+         icon: FaStar,
+         label: t('player.rankedScore'),
+         value: formatNumber(Number(stats.totalRankedScore)),
+         primary: true
+      },
+      {
+         id: 'rankedAcc',
+         icon: FaBullseye,
+         label: t('player.rankedAcc'),
+         value: formatAccuracy(stats.averageAccuracy),
+         primary: true
+      },
+      ...(plusOneRawPP != null
+         ? [
+              {
+                 id: 'plusOnePP' as const,
+                 icon: FaStar,
+                 label: t('player.plusOnePP'),
+                 value: `${formatPP(plusOneRawPP)}pp`,
+                 primary: true,
+                 tooltip: t('player.plusOnePPHint')
+              }
+           ]
+         : [])
+   ];
+   const secondaryStatItems: ProfileStatItem[] = [
+      {
+         id: 'totalPlays',
+         icon: FaGamepad,
+         label: t('common.totalPlays'),
+         value: formatNumber(stats.totalPlayedLeaderboards)
+      },
+      {
+         id: 'totalScore',
+         icon: FaHashtag,
+         label: t('player.totalScore'),
+         value: formatNumber(Number(stats.totalScore))
+      },
+      {
+         id: 'joined',
+         icon: FaCalendarAlt,
+         label: t('player.joined'),
+         value: <Time date={player.createdAt} dateOnly />
+      },
+      {
+         id: 'replayViews',
+         icon: FaEye,
+         label: t('player.replayViews'),
+         value: formatNumber(stats.totalReplayViews)
+      },
+      ...(playerSummary.hasSpecialRole
+         ? [
+              {
+                 id: 'role' as const,
+                 icon: FaShieldAlt,
+                 label: t('player.role'),
+                 value: player.role ? normalizePlayerRoleText(player.role) : playerSummary.roleTitle!
+              }
+           ]
+         : [])
+   ];
+   const statsById = new Map([...primaryStatItems, ...secondaryStatItems].map((item) => [item.id, item]));
+   const customizedStats = customization?.statOrder
+      ?.map((statId) => statsById.get(statId))
+      .filter((item): item is ProfileStatItem => item !== undefined);
+   const customizedStatIds = new Set(customizedStats?.map((stat) => stat.id) ?? []);
+   const hiddenCustomizedStats = customizedStats
+      ? [...primaryStatItems, ...secondaryStatItems].filter((item) => !customizedStatIds.has(item.id))
+      : [];
+   const hiddenStatsToggle =
+      hiddenCustomizedStats.length > 0 ? (
+         <Button
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            className="text-muted-foreground hover:text-foreground hover:bg-transparent active:!scale-100 dark:hover:bg-transparent"
+            aria-expanded={statsExpanded}
+            aria-label={statsExpanded ? t('player.showLessStats') : t('player.showMoreStats')}
+            onClick={() => setStatsExpanded((expanded) => !expanded)}
+         >
+            {statsExpanded ? <ChevronLeft /> : <ChevronRight />}
+         </Button>
+      ) : null;
    const accentSurfaceStyle = hasCustomAccent
       ? {
            borderColor: `color-mix(in srgb, ${accentColor} 45%, transparent)`,
@@ -223,55 +349,50 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, c
                   {/* stats */}
                   {!player.banned && (
                      <div className="flex flex-col gap-1.5">
-                        <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                           <Stat
-                              icon={FaTrophy}
-                              label={t('player.rankedPlays')}
-                              labelClassName={accentSubtleTextClass}
-                              valueClassName={cn('tabular-nums', accentTextClass)}
-                           >
-                              {formatNumber(stats.totalPlayedRankedLeaderboards)}
-                           </Stat>
-                           <Stat
-                              icon={FaStar}
-                              label={t('player.rankedScore')}
-                              labelClassName={accentSubtleTextClass}
-                              valueClassName={cn('tabular-nums', accentTextClass)}
-                           >
-                              {formatNumber(Number(stats.totalRankedScore))}
-                           </Stat>
-                           <Stat
-                              icon={FaBullseye}
-                              label={t('player.rankedAcc')}
-                              labelClassName={accentSubtleTextClass}
-                              valueClassName={cn('tabular-nums', accentTextClass)}
-                           >
-                              {formatAccuracy(stats.averageAccuracy)}
-                           </Stat>
-                        </div>
-                        <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                           <Stat icon={FaGamepad} label={t('common.totalPlays')} valueClassName="tabular-nums">
-                              {formatNumber(stats.totalPlayedLeaderboards)}
-                           </Stat>
-                           <Stat icon={FaHashtag} label={t('player.totalScore')} valueClassName="tabular-nums">
-                              {formatNumber(Number(stats.totalScore))}
-                           </Stat>
-                           <Stat icon={FaCalendarAlt} label={t('player.joined')}>
-                              <Time date={player.createdAt} dateOnly />
-                           </Stat>
-                           <Stat icon={FaEye} label={t('player.replayViews')} valueClassName="tabular-nums">
-                              {formatNumber(stats.totalReplayViews)}
-                           </Stat>
-                           {playerSummary.hasSpecialRole && (
-                              <Stat icon={FaShieldAlt} label={t('player.role')}>
-                                 {player.role ? normalizePlayerRoleText(player.role) : playerSummary.roleTitle!}
-                              </Stat>
-                           )}
-                        </div>
+                        {customizedStats ? (
+                           <ProfileStatsRow
+                              items={statsExpanded ? [...customizedStats, ...hiddenCustomizedStats] : customizedStats}
+                              accentTextClass={accentTextClass}
+                              accentSubtleTextClass={accentSubtleTextClass}
+                              trailingAction={hiddenStatsToggle}
+                           />
+                        ) : (
+                           <>
+                              <ProfileStatsRow
+                                 items={primaryStatItems}
+                                 accentTextClass={accentTextClass}
+                                 accentSubtleTextClass={accentSubtleTextClass}
+                              />
+                              {statsExpanded && (
+                                 <ProfileStatsRow
+                                    items={secondaryStatItems}
+                                    accentTextClass={accentTextClass}
+                                    accentSubtleTextClass={accentSubtleTextClass}
+                                 />
+                              )}
+                              {secondaryStatItems.length > 0 && (
+                                 <div className="flex justify-center sm:justify-start">
+                                    <Button
+                                       type="button"
+                                       variant="ghost"
+                                       size="xs"
+                                       className="text-muted-foreground px-1.5"
+                                       aria-expanded={statsExpanded}
+                                       onClick={() => setStatsExpanded((expanded) => !expanded)}
+                                    >
+                                       {statsExpanded ? t('player.showLessStats') : t('player.showMoreStats')}
+                                       <ChevronDown data-icon className={cn('transition-transform duration-200', statsExpanded && 'rotate-180')} />
+                                    </Button>
+                                 </div>
+                              )}
+                           </>
+                        )}
                      </div>
                   )}
 
-                  {!player.banned && player.badges && <PlayerBadges badges={player.badges} />}
+                  {!player.banned && player.badges && (
+                     <PlayerBadges badges={player.badges} badgeOrder={customization?.badgeOrder} badgeComments={customization?.badgeComments} />
+                  )}
                </div>
             </div>
 
@@ -284,6 +405,69 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, c
          </div>
 
          {children}
+      </div>
+   );
+}
+
+function ProfileStatsRow({
+   items,
+   accentTextClass,
+   accentSubtleTextClass,
+   trailingAction
+}: {
+   items: ProfileStatItem[];
+   accentTextClass: string;
+   accentSubtleTextClass: string;
+   trailingAction?: ReactNode;
+}) {
+   const [openTooltipId, setOpenTooltipId] = useState<PlayerProfileStatId | null>(null);
+
+   if (items.length === 0 && !trailingAction) return null;
+
+   return (
+      <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 sm:justify-start">
+         {items.map((item) => {
+            const Icon = item.icon;
+            const labelClassName = cn(item.primary && accentSubtleTextClass, item.tooltip && 'cursor-help');
+            const valueClassName = cn('tabular-nums', item.primary && accentTextClass);
+
+            if (!item.tooltip) {
+               return (
+                  <Stat key={item.id} icon={item.icon} label={item.label} labelClassName={labelClassName} valueClassName={valueClassName}>
+                     {item.value}
+                  </Stat>
+               );
+            }
+
+            return (
+               <Tooltip
+                  key={item.id}
+                  open={openTooltipId === item.id}
+                  onOpenChange={(open) =>
+                     setOpenTooltipId((current) => {
+                        if (open) return item.id;
+                        return current === item.id ? null : current;
+                     })
+                  }
+               >
+                  <TooltipTrigger asChild>
+                     <button
+                        type="button"
+                        className="bg-secondary/35 text-muted-foreground focus-visible:ring-ring inline-flex cursor-help items-center gap-2 rounded-md border px-2.5 py-1 text-left text-xs focus-visible:ring-2 focus-visible:outline-none"
+                        onClick={() => setOpenTooltipId((current) => (current === item.id ? null : item.id))}
+                     >
+                        <Icon className="h-3 w-3 shrink-0" />
+                        <span className={cn('select-none', labelClassName)}>{item.label}</span>
+                        <span className={cn('text-foreground font-semibold', valueClassName)}>{item.value}</span>
+                     </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" sideOffset={4} className="max-w-64 text-center">
+                     <p>{item.tooltip}</p>
+                  </TooltipContent>
+               </Tooltip>
+            );
+         })}
+         {trailingAction}
       </div>
    );
 }
@@ -307,6 +491,7 @@ interface PlayerProfileHeaderProps {
    player: PlayerControllerGetPlayerResponse;
    aliases?: PlayerAliasControllerGetAliasesItem[];
    actions?: ReactNode;
-   customization?: PlayerControllerGetPlayerResponse['profileCustomization'];
+   customization?: PlayerProfileHeaderCustomization;
+   plusOneRawPP?: number | null;
    children?: ReactNode;
 }

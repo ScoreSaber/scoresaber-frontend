@@ -2183,7 +2183,142 @@ export interface UserControllerUpdatePinnedScoresPayload {
 export interface UserControllerUpdateProfileCustomizationStylePayload {
    accentColor: string | null;
    accentForegroundColor: string | null;
+   accentForegroundActiveColor: string | null;
    supporterNameColorEnabled: boolean;
+}
+
+export type PlayerProfileStatId =
+   | 'rankedPlays'
+   | 'rankedScore'
+   | 'rankedAcc'
+   | 'plusOnePP'
+   | 'totalPlays'
+   | 'totalScore'
+   | 'joined'
+   | 'replayViews'
+   | 'role';
+
+export type PlayerChartMetricId = 'rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays';
+
+export type PlayerProfileSectionId = 'charts' | 'bio' | 'pinnedScores' | 'scores';
+
+export interface PlayerProfileCustomizationResponse {
+   backgroundImage: string | null;
+   backgroundImageVersion: number | null;
+   accentColor: string | null;
+   accentForegroundColor: string | null;
+   accentForegroundActiveColor: string | null;
+   supporterNameColorEnabled: boolean;
+   badgeOrder: number[] | null;
+   badgeComments: Record<string, string> | null;
+   statOrder: PlayerProfileStatId[] | null;
+   chartMetricIds: PlayerChartMetricId[] | null;
+   sectionOrder: PlayerProfileSectionId[] | null;
+}
+
+export interface UserControllerUpdateProfileCustomizationPayload extends UserControllerUpdateProfileCustomizationStylePayload {
+   /** @maxItems 128 */
+   badgeOrder: number[] | null;
+   badgeComments: Record<string, string> | null;
+   /** @maxItems 16 */
+   statOrder: PlayerProfileStatId[] | null;
+   /** @maxItems 8 */
+   chartMetricIds: PlayerChartMetricId[] | null;
+   /** @maxItems 8 */
+   sectionOrder: PlayerProfileSectionId[] | null;
+}
+
+export type UserControllerProfileCustomizationError =
+   | (
+        | {
+             statusCode: 400;
+             error: 'Bad Request';
+             code: 'VALIDATION_ERROR';
+             message: string;
+             details?: {
+                field?: string;
+             };
+          }
+        | {
+             statusCode: 400;
+             error: 'Bad Request';
+             code: 'REQUEST_VALIDATION_ERROR';
+             message: string;
+             details: {
+                errors: {
+                   path: string;
+                   message: string;
+                }[];
+             };
+          }
+        | {
+             statusCode: 400;
+             error: 'Bad Request';
+             code: 'INVALID_PATH_PARAMETER';
+             message: string;
+             details: {
+                errors: {
+                   path: string;
+                   message: string;
+                }[];
+             };
+          }
+     )
+   | {
+        statusCode: 401;
+        error: 'Unauthorized';
+        code: 'UNAUTHORIZED';
+        message: string;
+     }
+   | {
+        statusCode: 403;
+        error: 'Forbidden';
+        code: 'FORBIDDEN';
+        message: string;
+        details?: {
+           reason: string;
+        };
+     }
+   | {
+        statusCode: 404;
+        error: 'Not Found';
+        code: 'NOT_FOUND';
+        message: string;
+        details?: {
+           resource: string;
+           id?: string | number;
+        };
+     }
+   | (
+        | {
+             statusCode: 500;
+             error: 'Internal Server Error';
+             code: 'DATABASE_WRITE_ERROR';
+             message: string;
+             details: {
+                operation: string;
+             };
+          }
+        | {
+             statusCode: 500;
+             error: 'Internal Server Error';
+             code: 'EXTERNAL_SERVICE_ERROR';
+             message: string;
+             details: {
+                service: string;
+             };
+          }
+        | {
+             statusCode: 500;
+             error: 'Internal Server Error';
+             code: 'INTERNAL_SERVER_ERROR';
+             message: string;
+          }
+     );
+
+export interface UserControllerUploadProfileCustomizationBackgroundPayload {
+   /** @format binary */
+   backgroundImage: File;
 }
 
 export interface UserControllerUpdateBioPayload {
@@ -3392,11 +3527,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                };
                bio: string | null;
                vanity: string | null;
-               profileCustomization: {
-                  accentColor: string | null;
-                  accentForegroundColor: string | null;
-                  supporterNameColorEnabled: boolean;
-               };
+               profileCustomization: PlayerProfileCustomizationResponse;
                createdAt: string;
                lastSeenAt: string;
                badges: {
@@ -3778,11 +3909,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                };
                bio: string | null;
                vanity: string | null;
-               profileCustomization: {
-                  accentColor: string | null;
-                  accentForegroundColor: string | null;
-                  supporterNameColorEnabled: boolean;
-               };
+               profileCustomization: PlayerProfileCustomizationResponse;
                createdAt: string;
                lastSeenAt: string;
                badges: {
@@ -23765,6 +23892,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     leftSaberHitOffset: number,
     rightSaberHitOffset: number,
     noteSpawnOffset: number,
+    jumpDistance?: number,
+    pauseCount?: number,
+    pauseTotalDurationSeconds?: number,
     averageHeight: number,
     averageHeadPosition: {
     x: number,
@@ -24027,6 +24157,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   leftSaberHitOffset: number;
                   rightSaberHitOffset: number;
                   noteSpawnOffset: number;
+                  jumpDistance?: number;
+                  pauseCount?: number;
+                  pauseTotalDurationSeconds?: number;
                   averageHeight: number;
                   averageHeadPosition: {
                      x: number;
@@ -24694,6 +24827,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     leftSaberHitOffset: number,
     rightSaberHitOffset: number,
     noteSpawnOffset: number,
+    jumpDistance?: number,
+    pauseCount?: number,
+    pauseTotalDurationSeconds?: number,
     averageHeight: number,
     averageHeadPosition: {
     x: number,
@@ -24909,6 +25045,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                leftSaberHitOffset: number;
                rightSaberHitOffset: number;
                noteSpawnOffset: number;
+               jumpDistance?: number;
+               pauseCount?: number;
+               pauseTotalDurationSeconds?: number;
                averageHeight: number;
                averageHeadPosition: {
                   x: number;
@@ -29523,6 +29662,173 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          }),
 
       /**
+       * No description
+       *
+       * @tags User
+       * @name UserControllerUploadProfileCustomizationBackground
+       * @request POST:/api/v2/user/@me/profile-customization/background
+       */
+      userControllerUploadProfileCustomizationBackground: (
+         data: UserControllerUploadProfileCustomizationBackgroundPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            PlayerProfileCustomizationResponse,
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/user/@me/profile-customization/background`,
+            method: 'POST',
+            body: data,
+            type: ContentType.FormData,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+       * No description
+       *
+       * @tags User
+       * @name UserControllerResetProfileCustomizationBackground
+       * @request DELETE:/api/v2/user/@me/profile-customization/background
+       */
+      userControllerResetProfileCustomizationBackground: (params: RequestParams = {}) =>
+         this.request<
+            PlayerProfileCustomizationResponse,
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/user/@me/profile-customization/background`,
+            method: 'DELETE',
+            format: 'json',
+            ...params
+         }),
+
+      /**
  * No description
  *
  * @tags User
@@ -29980,16 +30286,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
        * No description
        *
        * @tags User
+       * @name UserControllerUpdateProfileCustomization
+       * @request PUT:/api/v2/user/@me/profile-customization
+       */
+      userControllerUpdateProfileCustomization: (data: UserControllerUpdateProfileCustomizationPayload, params: RequestParams = {}) =>
+         this.request<PlayerProfileCustomizationResponse, UserControllerProfileCustomizationError>({
+            path: `/api/v2/user/@me/profile-customization`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+       * No description
+       *
+       * @tags User
        * @name UserControllerUpdateProfileCustomizationStyle
        * @request PUT:/api/v2/user/@me/profile-customization/style
        */
       userControllerUpdateProfileCustomizationStyle: (data: UserControllerUpdateProfileCustomizationStylePayload, params: RequestParams = {}) =>
          this.request<
-            {
-               accentColor: string | null;
-               accentForegroundColor: string | null;
-               supporterNameColorEnabled: boolean;
-            },
+            PlayerProfileCustomizationResponse,
             | (
                  | {
                       statusCode: 400;

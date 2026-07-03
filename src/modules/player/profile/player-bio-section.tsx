@@ -12,9 +12,10 @@ interface PlayerBioSectionProps {
    sanitizedBio: string;
    hasBioContent: boolean;
    playerId: string;
+   showSeparator?: boolean;
 }
 
-export function PlayerBioSection({ bio, sanitizedBio, hasBioContent, playerId }: PlayerBioSectionProps) {
+export function PlayerBioSection({ bio, sanitizedBio, hasBioContent, playerId, showSeparator = true }: PlayerBioSectionProps) {
    const { user } = useAuth();
    const isOwnProfile = user?.id === playerId;
    const userPerms = user?.permissions ?? 0;
@@ -24,7 +25,7 @@ export function PlayerBioSection({ bio, sanitizedBio, hasBioContent, playerId }:
 
    return (
       <div className="py-4">
-         <Separator variant="gradient" className="mb-4" />
+         {showSeparator && <Separator variant="gradient" className="mb-4" />}
          {canEditBio ? <PlayerBioEditor bio={bio} /> : hasBioContent && <PlayerBio sanitizedBio={sanitizedBio} />}
       </div>
    );

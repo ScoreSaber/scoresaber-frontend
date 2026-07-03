@@ -14,13 +14,14 @@ import { Separator } from '@/components/ui/separator';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { METRIC_KEYS, METRICS, TIME_RANGE_SCHEMA, TIME_RANGE_VALUES } from '@/modules/player/chart/chart-types';
+import { METRICS, TIME_RANGE_SCHEMA, TIME_RANGE_VALUES } from '@/modules/player/chart/chart-types';
 import { cn } from '@/shared/format/helpers';
 
 export function PlayerChartControls() {
    const t = useTranslations();
    const {
       activeMetrics,
+      enabledMetricKeys,
       isShowingEstimated,
       setIsShowingEstimated,
       isInfoOpen,
@@ -78,7 +79,7 @@ export function PlayerChartControls() {
          <Separator orientation="vertical" variant="gradient" size="toolbar" className="mx-0.5" />
 
          <ToggleGroup type="multiple" value={[...activeMetrics]} spacing={1.5} className="flex-wrap justify-center">
-            {METRIC_KEYS.map((key) => {
+            {enabledMetricKeys.map((key) => {
                const m = METRICS[key];
                const isActive = activeMetrics.has(key);
                const labels = metricLabels[key];
@@ -136,8 +137,9 @@ export function PlayerChartControls() {
                         style={
                            isShowingEstimated
                               ? {
-                                   backgroundColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 18%, transparent)',
-                                   color: 'var(--profile-accent, var(--primary))'
+                                   borderColor: 'var(--profile-accent, var(--primary))',
+                                   backgroundColor: 'var(--profile-accent, var(--primary))',
+                                   color: 'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
                                 }
                               : undefined
                         }
