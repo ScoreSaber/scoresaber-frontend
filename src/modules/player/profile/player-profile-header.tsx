@@ -3,7 +3,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react';
 import type { IconType } from 'react-icons';
 import {
    FaBan,
@@ -182,6 +182,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
    const enabledCustomizedStatIdSet = new Set(enabledCustomizedStatIds ?? []);
    const customizedStats = orderedCustomizedStats?.filter((item) => enabledCustomizedStatIdSet.has(item.id));
    const hiddenCustomizedStats = orderedCustomizedStats?.filter((item) => !enabledCustomizedStatIdSet.has(item.id)) ?? [];
+   const hasShownCustomizedStats = (customizedStats?.length ?? 0) > 0;
    const statsToggleLabel = t('player.customization.layout.statsTitle');
    const hiddenStatsToggle =
       hiddenCustomizedStats.length > 0 ? (
@@ -194,7 +195,17 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
             aria-label={statsToggleLabel}
             onClick={() => setStatsExpanded((expanded) => !expanded)}
          >
-            {statsExpanded ? <ChevronLeft data-icon /> : <ChevronRight data-icon />}
+            {hasShownCustomizedStats ? (
+               statsExpanded ? (
+                  <ChevronLeft data-icon />
+               ) : (
+                  <ChevronRight data-icon />
+               )
+            ) : statsExpanded ? (
+               <ChevronUp data-icon />
+            ) : (
+               <ChevronDown data-icon />
+            )}
          </Button>
       ) : null;
    const accentSurfaceStyle = hasCustomAccent
