@@ -3,7 +3,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
 
 import { getRouteApi } from '@tanstack/react-router';
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import type { IconType } from 'react-icons';
 import {
    FaBan,
@@ -182,6 +182,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
    const enabledCustomizedStatIdSet = new Set(enabledCustomizedStatIds ?? []);
    const customizedStats = orderedCustomizedStats?.filter((item) => enabledCustomizedStatIdSet.has(item.id));
    const hiddenCustomizedStats = orderedCustomizedStats?.filter((item) => !enabledCustomizedStatIdSet.has(item.id)) ?? [];
+   const statsToggleLabel = t('player.customization.layout.statsTitle');
    const hiddenStatsToggle =
       hiddenCustomizedStats.length > 0 ? (
          <Button
@@ -190,10 +191,10 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
             size="icon-xs"
             className="text-muted-foreground hover:text-foreground hover:bg-transparent active:!scale-100 dark:hover:bg-transparent"
             aria-expanded={statsExpanded}
-            aria-label={statsExpanded ? t('player.showLessStats') : t('player.showMoreStats')}
+            aria-label={statsToggleLabel}
             onClick={() => setStatsExpanded((expanded) => !expanded)}
          >
-            {statsExpanded ? <ChevronLeft /> : <ChevronRight />}
+            <ChevronDown className={cn('transition-transform duration-200', statsExpanded && 'rotate-180')} />
          </Button>
       ) : null;
    const accentSurfaceStyle = hasCustomAccent
@@ -375,12 +376,12 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                                     <Button
                                        type="button"
                                        variant="ghost"
-                                       size="xs"
-                                       className="text-muted-foreground px-1.5"
+                                       size="icon-xs"
+                                       className="text-muted-foreground"
                                        aria-expanded={statsExpanded}
+                                       aria-label={statsToggleLabel}
                                        onClick={() => setStatsExpanded((expanded) => !expanded)}
                                     >
-                                       {statsExpanded ? t('player.showLessStats') : t('player.showMoreStats')}
                                        <ChevronDown data-icon className={cn('transition-transform duration-200', statsExpanded && 'rotate-180')} />
                                     </Button>
                                  </div>
