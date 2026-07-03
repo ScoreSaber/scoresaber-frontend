@@ -141,7 +141,9 @@ export function PlayerChartControls() {
                                    backgroundColor: 'var(--profile-accent, var(--primary))',
                                    color: 'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
                                 }
-                              : undefined
+                              : {
+                                   color: 'var(--profile-accent-foreground)'
+                                }
                         }
                         className={cn(
                            'size-auto border p-1.5',

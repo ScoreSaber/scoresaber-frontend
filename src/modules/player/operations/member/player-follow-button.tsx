@@ -70,14 +70,19 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
    const accentSolidStyle: CSSProperties = {
       borderColor: 'var(--profile-accent, var(--primary))',
       backgroundColor: 'var(--profile-accent, var(--primary))',
+      color: 'var(--profile-accent-foreground, var(--primary-foreground))'
+   };
+   const accentActiveStyle: CSSProperties = {
+      borderColor: 'var(--profile-accent, var(--primary))',
+      backgroundColor: 'var(--profile-accent, var(--primary))',
       color: 'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
    };
    const accentSubtleStyle: CSSProperties = {
       borderColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 35%, transparent)',
       backgroundColor: 'color-mix(in srgb, var(--profile-accent, var(--primary)) 12%, transparent)',
-      color: 'var(--profile-accent, var(--primary))'
+      color: 'var(--profile-accent-foreground, var(--profile-accent, var(--primary)))'
    };
-   const accentStyle = showUnfollow ? undefined : isFollowing ? accentSubtleStyle : accentSolidStyle;
+   const accentStyle = showUnfollow ? undefined : isFollowing ? accentActiveStyle : accentSolidStyle;
 
    const icon = pending ? (
       <Loader2 className={cn('animate-spin', compactIconClass)} />

@@ -92,6 +92,12 @@ export function Pagination<TLocation>({
                        color: 'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
                     }
                   : undefined;
+            const inactiveStyle =
+               !active && !loading && !disabled
+                  ? {
+                       color: 'var(--profile-accent-foreground)'
+                    }
+                  : undefined;
 
             function handleClick(event: MouseEvent<HTMLAnchorElement>) {
                if (disabled) {
@@ -122,7 +128,7 @@ export function Pagination<TLocation>({
                      disabled={disabled}
                      variant="secondary"
                      className={cn('min-w-8 cursor-pointer items-center border p-1', (active || loading) && 'border-primary/85 bg-card')}
-                     style={activeStyle}
+                     style={activeStyle ?? inactiveStyle}
                   >
                      {loading ? <Icons.spinner data-icon className="size-4 animate-spin" /> : label}
                   </Button>
@@ -171,7 +177,7 @@ export function PaginationArrow<TLocation>({ direction, page, disabled, getPageL
          onTouchStart={() => preloadNow(location)}
          className={loading ? 'pointer-events-none' : ''}
       >
-         <Button variant="secondary" size="icon" className="cursor-pointer">
+         <Button variant="secondary" size="icon" className="cursor-pointer" style={{ color: 'var(--profile-accent-foreground)' }}>
             {loading ? <Icons.spinner data-icon className="size-4 animate-spin" /> : <Icon data-icon />}
          </Button>
       </a>

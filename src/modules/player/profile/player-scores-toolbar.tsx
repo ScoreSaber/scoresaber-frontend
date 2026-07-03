@@ -60,6 +60,11 @@ export function PlayerScoresToolbar<TLocation>({
          accentProperties?.['--profile-accent-active-foreground'] ??
          'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
    };
+   const inactiveSortStyle: CSSProperties | undefined = accentProperties
+      ? {
+           color: accentProperties['--profile-accent-foreground']
+        }
+      : undefined;
 
    function handleSearch(value: string | undefined) {
       navigate({ search: value }, { scroll: false });
@@ -83,7 +88,7 @@ export function PlayerScoresToolbar<TLocation>({
                size="sm"
                variant={currentSort === 'top' || topLoading ? 'default' : 'secondary'}
                className="cursor-pointer"
-               style={currentSort === 'top' || topLoading ? activeSortStyle : undefined}
+               style={currentSort === 'top' || topLoading ? activeSortStyle : inactiveSortStyle}
             >
                {!topLoading ? <FaTrophy data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
                {t('player.topScores')}
@@ -99,7 +104,7 @@ export function PlayerScoresToolbar<TLocation>({
                size="sm"
                variant={currentSort === 'recent' || recentLoading ? 'default' : 'secondary'}
                className="cursor-pointer"
-               style={currentSort === 'recent' || recentLoading ? activeSortStyle : undefined}
+               style={currentSort === 'recent' || recentLoading ? activeSortStyle : inactiveSortStyle}
             >
                {!recentLoading ? <FaClock data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
                {t('player.recentScores')}
