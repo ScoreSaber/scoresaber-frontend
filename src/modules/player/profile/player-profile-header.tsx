@@ -70,6 +70,7 @@ export type PlayerProfileStatId = (typeof PLAYER_PROFILE_STAT_IDS)[number];
 
 type PlayerProfileHeaderCustomization = PlayerControllerGetPlayerResponse['profileCustomization'] & {
    statOrder?: PlayerProfileStatId[] | null;
+   enabledStatIds?: PlayerProfileStatId[] | null;
    badgeOrder?: number[] | null;
    badgeComments?: Record<string, string> | null;
 };
@@ -175,13 +176,12 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
          : [])
    ];
    const statsById = new Map([...primaryStatItems, ...secondaryStatItems].map((item) => [item.id, item]));
-   const customizedStats = customization?.statOrder
-      ?.map((statId) => statsById.get(statId))
-      .filter((item): item is ProfileStatItem => item !== undefined);
-   const customizedStatIds = new Set(customizedStats?.map((stat) => stat.id) ?? []);
-   const hiddenCustomizedStats = customizedStats
-      ? [...primaryStatItems, ...secondaryStatItems].filter((item) => !customizedStatIds.has(item.id))
-      : [];
+   const customizedStatOrder = customization?.statOrder ?? (customization?.enabledStatIds ? [...PLAYER_PROFILE_STAT_IDS] : null);
+   const orderedCustomizedStats = customizedStatOrder ? getOrderedProfileStats(customizedStatOrder, statsById) : null;
+   const enabledCustomizedStatIds = customization?.enabledStatIds ?? customization?.statOrder ?? null;
+   const enabledCustomizedStatIdSet = new Set(enabledCustomizedStatIds ?? []);
+   const customizedStats = orderedCustomizedStats?.filter((item) => enabledCustomizedStatIdSet.has(item.id));
+   const hiddenCustomizedStats = orderedCustomizedStats?.filter((item) => !enabledCustomizedStatIdSet.has(item.id)) ?? [];
    const hiddenStatsToggle =
       hiddenCustomizedStats.length > 0 ? (
          <Button
@@ -351,7 +351,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                      <div className="flex flex-col gap-1.5">
                         {customizedStats ? (
                            <ProfileStatsRow
-                              items={statsExpanded ? [...customizedStats, ...hiddenCustomizedStats] : customizedStats}
+                              items={statsExpanded ? (orderedCustomizedStats ?? customizedStats) : customizedStats}
                               accentTextClass={accentTextClass}
                               accentSubtleTextClass={accentSubtleTextClass}
                               trailingAction={hiddenStatsToggle}
@@ -470,6 +470,16 @@ function ProfileStatsRow({
          {trailingAction}
       </div>
    );
+}
+
+function getOrderedProfileStats(statOrder: PlayerProfileStatId[], statsById: Map<PlayerProfileStatId, ProfileStatItem>) {
+   const orderedStats = statOrder.map((statId) => statsById.get(statId)).filter((item): item is ProfileStatItem => item !== undefined);
+   const orderedStatIds = new Set(orderedStats.map((item) => item.id));
+   const remainingStats = PLAYER_PROFILE_STAT_IDS.filter((statId) => !orderedStatIds.has(statId))
+      .map((statId) => statsById.get(statId))
+      .filter((item): item is ProfileStatItem => item !== undefined);
+
+   return [...orderedStats, ...remainingStats];
 }
 
 function StatusBadge({ tooltip, className, style, children }: { tooltip: string; className: string; style?: CSSProperties; children: ReactNode }) {

@@ -2212,6 +2212,7 @@ export interface PlayerProfileCustomizationResponse {
    badgeOrder: number[] | null;
    badgeComments: Record<string, string> | null;
    statOrder: PlayerProfileStatId[] | null;
+   enabledStatIds: PlayerProfileStatId[] | null;
    chartMetricIds: PlayerChartMetricId[] | null;
    sectionOrder: PlayerProfileSectionId[] | null;
 }
@@ -2222,6 +2223,8 @@ export interface UserControllerUpdateProfileCustomizationPayload extends UserCon
    badgeComments: Record<string, string> | null;
    /** @maxItems 16 */
    statOrder: PlayerProfileStatId[] | null;
+   /** @maxItems 16 */
+   enabledStatIds: PlayerProfileStatId[] | null;
    /** @maxItems 8 */
    chartMetricIds: PlayerChartMetricId[] | null;
    /** @maxItems 8 */

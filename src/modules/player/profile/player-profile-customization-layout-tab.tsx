@@ -23,12 +23,14 @@ export const REQUIRED_PROFILE_SECTION_IDS: readonly ProfileSectionId[] = ['score
 
 export interface ProfileLayoutCustomization {
    statOrder: PlayerProfileStatId[];
+   enabledStatIds: PlayerProfileStatId[];
    chartMetricIds: MetricKey[];
    sectionOrder: ProfileSectionId[];
 }
 
 export const DEFAULT_PROFILE_LAYOUT: ProfileLayoutCustomization = {
    statOrder: [...PLAYER_PROFILE_STAT_IDS],
+   enabledStatIds: [...PLAYER_PROFILE_STAT_IDS],
    chartMetricIds: [...METRIC_KEYS],
    sectionOrder: [...PROFILE_SECTION_IDS]
 };
@@ -115,7 +117,9 @@ export function PlayerProfileCustomizationLayoutTab({
                   <LayoutSection title={t('player.customization.layout.statsTitle')} description={t('player.customization.layout.statsDescription')}>
                      <OrderedOptions
                         items={PLAYER_PROFILE_STAT_IDS}
-                        selectedItems={draftLayout.statOrder}
+                        orderedItems={draftLayout.statOrder}
+                        selectedItems={draftLayout.enabledStatIds}
+                        allowUncheckedMove
                         disabled={!canUseLayoutCustomization}
                         getLabel={(statId) => statLabels[statId] ?? statId}
                         onToggle={onToggleStatAction}
@@ -171,16 +175,20 @@ function LayoutSection({ title, description, children }: { title: string; descri
 
 function OrderedOptions<T extends string>({
    items,
+   orderedItems,
    selectedItems,
    requiredItems = [],
+   allowUncheckedMove = false,
    disabled,
    getLabel,
    onToggle,
    onMove
 }: {
    items: readonly T[];
+   orderedItems?: T[];
    selectedItems: T[];
    requiredItems?: readonly T[];
+   allowUncheckedMove?: boolean;
    disabled: boolean;
    getLabel: (item: T) => string;
    onToggle: (item: T, checked: boolean) => void;
@@ -189,14 +197,22 @@ function OrderedOptions<T extends string>({
    const availableItems = new Set(items);
    const selectedItemSet = new Set(selectedItems);
    const requiredItemSet = new Set(requiredItems);
-   const optionItems = [...selectedItems.filter((item) => availableItems.has(item)), ...items.filter((item) => !selectedItemSet.has(item))];
+   const orderedOptionItems = orderedItems?.filter((item) => availableItems.has(item)) ?? selectedItems.filter((item) => availableItems.has(item));
+   const orderedItemSet = new Set(orderedOptionItems);
+   const optionItems = [
+      ...orderedOptionItems,
+      ...selectedItems.filter((item) => availableItems.has(item) && !orderedItemSet.has(item)),
+      ...items.filter((item) => !orderedItemSet.has(item) && !selectedItemSet.has(item))
+   ];
 
    return (
       <div className="flex flex-col gap-2">
-         {optionItems.map((item) => {
+         {optionItems.map((item, optionIndex) => {
             const selectedIndex = selectedItems.indexOf(item);
             const checked = selectedIndex !== -1;
             const required = requiredItemSet.has(item);
+            const moveIndex = allowUncheckedMove ? optionIndex : selectedIndex;
+            const moveLimit = allowUncheckedMove ? optionItems.length : selectedItems.length;
             const id = `profile-layout-${item}`;
 
             return (
@@ -219,9 +235,9 @@ function OrderedOptions<T extends string>({
                      )}
                   </Label>
                   <MoveButtons
-                     disabled={disabled || !checked}
-                     upDisabled={selectedIndex <= 0}
-                     downDisabled={selectedIndex === -1 || selectedIndex >= selectedItems.length - 1}
+                     disabled={disabled || (!allowUncheckedMove && !checked)}
+                     upDisabled={moveIndex <= 0}
+                     downDisabled={moveIndex === -1 || moveIndex >= moveLimit - 1}
                      onUp={() => onMove(item, -1)}
                      onDown={() => onMove(item, 1)}
                   />
