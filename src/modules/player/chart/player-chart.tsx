@@ -8,7 +8,7 @@ import { PlayerChartContext } from './player-chart-context';
 import { PlayerChartControls } from './player-chart-controls';
 import { PlayerChartStats } from './player-chart-stats';
 
-import type { PlayerChartStats as PlayerChartStatsType } from '@/modules/player/chart/chart-types';
+import type { MetricKey, PlayerChartStats as PlayerChartStatsType } from '@/modules/player/chart/chart-types';
 import { usePlayerChart } from '@/modules/player/chart/use-player-chart';
 import type { PlayerControllerGetPlayerHistoryItem } from '@/shared/api/generated/ApiParams';
 import { getChartTooltipColors, getLineChartBaseOptions } from '@/shared/components/chart/chart-options';
@@ -21,11 +21,12 @@ type PlayerChartProps = {
    playerId: string;
    stats: PlayerChartStatsType;
    history: PlayerControllerGetPlayerHistoryItem[];
+   enabledMetrics?: MetricKey[];
 };
 
-export function PlayerChart({ playerId, stats, history }: PlayerChartProps) {
+export function PlayerChart({ playerId, stats, history, enabledMetrics }: PlayerChartProps) {
    const t = useTranslations();
-   const chart = usePlayerChart(playerId, stats, history);
+   const chart = usePlayerChart(playerId, stats, history, enabledMetrics);
 
    return (
       <PlayerChartContext.Provider value={chart}>

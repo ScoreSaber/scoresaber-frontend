@@ -19,6 +19,7 @@ import type {
 import { DeviceDisplay } from '@/shared/components/device-display';
 import { Time } from '@/shared/components/time';
 import { cn, formatNumber, getHmdName, isLegacyAccuracyScore } from '@/shared/format/helpers';
+import { starsToPP } from '@/shared/format/star-conversion';
 import { isLeaderboardRanked } from '@/shared/format/styling';
 
 interface LeaderboardScoresTableProps {
@@ -44,6 +45,7 @@ export function LeaderboardScoresTable({ scores, leaderboard, highlight, scopedP
                   isRanked={isRanked}
                   isHighlighted={highlight === score.id}
                   showAccuracy={leaderboard.maxScore > 0}
+                  leaderboard={leaderboard}
                   relativeRank={isScoped ? (scopedPage - 1) * scopedPageSize + index + 1 : undefined}
                />
             ))}
@@ -57,12 +59,20 @@ interface LeaderboardScoreCardProps {
    isRanked: boolean;
    isHighlighted: boolean;
    showAccuracy: boolean;
+   leaderboard: LeaderboardControllerGetLeaderboardByIdResponse;
    relativeRank?: number;
 }
 
-function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, relativeRank }: LeaderboardScoreCardProps) {
+function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, leaderboard, relativeRank }: LeaderboardScoreCardProps) {
    const [detailsExpanded, setDetailsExpanded] = useState(false);
    const legacyAccuracy = isLegacyAccuracyScore(score.createdAt);
+   const fcPPContext = isRanked
+      ? {
+           realmId: leaderboard.realm.realmId,
+           maxPP: starsToPP(leaderboard.realm.stars),
+           positiveModifiers: leaderboard.realm.positiveModifiers
+        }
+      : undefined;
 
    const hmdName = getHmdName(score.device, score.legacyHmdId);
    const hasDevice = !!(hmdName || score.device?.controllerLeft || score.device?.controllerRight);
@@ -188,7 +198,7 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, re
          </div>
          {detailsExpanded && (
             <div className="mt-2 lg:mx-6">
-               <ScoreDetailsInline score={score} />
+               <ScoreDetailsInline score={score} fcPPContext={fcPPContext} />
             </div>
          )}
       </div>

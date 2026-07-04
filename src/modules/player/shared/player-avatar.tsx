@@ -10,6 +10,10 @@ type PlayerAvatarProps = Omit<ComponentProps<typeof FadeInImage>, 'onError'> & {
 };
 
 export function versionedAvatarUrl(src: string, version?: number) {
+   return versionedImageUrl(src, version);
+}
+
+export function versionedImageUrl(src: string, version?: number | null) {
    return version ? `${src}?v=${version}` : src;
 }
 
@@ -27,7 +31,7 @@ export function PlayerAvatar({ className, alt, src, version, ...props }: PlayerA
       <span className={cn('relative inline-flex shrink-0 overflow-hidden rounded-full', className)} style={boxStyle}>
          <FadeInImage
             {...imageProps}
-            src={src === undefined ? undefined : versionedAvatarUrl(src, version)}
+            src={src === undefined ? undefined : versionedImageUrl(src, version)}
             alt={alt}
             width={width}
             height={height}

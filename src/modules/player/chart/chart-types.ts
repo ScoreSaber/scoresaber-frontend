@@ -70,6 +70,7 @@ export interface PlayerChartMetricStat {
 
 export interface PlayerChartContextValue {
    activeMetrics: Set<MetricKey>;
+   enabledMetricKeys: MetricKey[];
    isShowingEstimated: boolean;
    setIsShowingEstimated: Dispatch<SetStateAction<boolean>>;
    isInfoOpen: boolean;

@@ -2,20 +2,19 @@
 
 import type { ReactNode } from 'react';
 
-import { ArrowDown, ArrowUp, Loader2, Save } from 'lucide-react';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SheetFooter } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
 
 import type { PlayerControllerGetPlayerScoresDataItem } from '@/shared/api/generated/ApiParams';
 import { ConditionalOverlay } from '@/shared/components/conditional-overlay';
 import { SupporterRequiredOverlay } from '@/shared/components/supporter-required-overlay';
-import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
+import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
 
 export const MAX_PINNED_SCORES = 6;
 
@@ -32,26 +31,18 @@ interface PlayerProfileCustomizationPinnedScoresTabProps {
    draftItems: PinnedScoreDraftItem[];
    canUsePinnedScores: boolean;
    patreonConnected: boolean;
-   dirty: boolean;
-   saveDisabled: boolean;
-   savePending: boolean;
    onToggleScoreAction: (score: PinnedScoreCustomizationScore, checked: boolean) => void;
    onUpdateCommentAction: (scoreId: number, comment: string) => void;
    onMoveScoreAction: (scoreId: number, direction: -1 | 1) => void;
-   onSaveAction: () => void;
 }
 
 export function PlayerProfileCustomizationPinnedScoresTab({
    draftItems,
    canUsePinnedScores,
    patreonConnected,
-   dirty,
-   saveDisabled,
-   savePending,
    onToggleScoreAction,
    onUpdateCommentAction,
-   onMoveScoreAction,
-   onSaveAction
+   onMoveScoreAction
 }: PlayerProfileCustomizationPinnedScoresTabProps) {
    const t = useTranslations();
 
@@ -102,15 +93,6 @@ export function PlayerProfileCustomizationPinnedScoresTab({
                </CustomizationSection>
             </div>
          </ScrollArea>
-         <SheetFooter className="border-border/60 shrink-0 border-t px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className={cn('text-muted-foreground text-xs', dirty && 'text-foreground')}>
-               {dirty ? t('player.customization.pinnedScores.unsaved') : t('player.customization.pinnedScores.noChanges')}
-            </p>
-            <Button type="button" disabled={saveDisabled} onClick={onSaveAction} className="cursor-pointer sm:min-w-24">
-               {savePending ? <Loader2 data-icon="inline-start" className="animate-spin" /> : <Save data-icon="inline-start" />}
-               {t('common.save')}
-            </Button>
-         </SheetFooter>
       </ConditionalOverlay>
    );
 }

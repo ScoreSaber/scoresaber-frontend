@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 
 import { Loader2 } from 'lucide-react';
 
+import type { FCPPContext } from './score-stats-detail';
+
 import type {
    LeaderboardControllerGetLeaderboardScoresByIdDataItem,
    PlayerControllerGetPlayerScoresDataItem
@@ -21,10 +23,11 @@ const ScoreStatsDetail = dynamic(() => import('./score-stats-detail').then((mod)
 
 interface ScoreDetailsInlineProps {
    score: PlayerControllerGetPlayerScoresDataItem['score'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem;
+   fcPPContext?: FCPPContext;
    onReadyAction?: () => void;
 }
 
-export function ScoreDetailsInline({ score, onReadyAction }: ScoreDetailsInlineProps) {
+export function ScoreDetailsInline({ score, fcPPContext, onReadyAction }: ScoreDetailsInlineProps) {
    // if no replay, content is synchronous. signal ready immediately
    useEffect(() => {
       if (!score.hasReplay) onReadyAction?.();
@@ -32,7 +35,9 @@ export function ScoreDetailsInline({ score, onReadyAction }: ScoreDetailsInlineP
 
    return (
       <div className="bg-secondary/30 animate-in fade-in rounded border p-3 text-sm duration-300">
-         {score.hasReplay && <ScoreStatsDetail scoreId={score.id} fullCombo={score.fullCombo} onLoadedAction={onReadyAction} />}
+         {score.hasReplay && (
+            <ScoreStatsDetail scoreId={score.id} fullCombo={score.fullCombo} fcPPContext={fcPPContext} onLoadedAction={onReadyAction} />
+         )}
       </div>
    );
 }

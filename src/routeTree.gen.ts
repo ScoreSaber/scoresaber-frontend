@@ -26,6 +26,7 @@ import { Route as SettingsDeveloperRouteImport } from './routes/settings/develop
 import { Route as SettingsConnectionsRouteImport } from './routes/settings/connections'
 import { Route as SettingsAccountRouteImport } from './routes/settings/account'
 import { Route as RankingRequestsRouteImport } from './routes/ranking/requests'
+import { Route as QuestPairRouteImport } from './routes/quest_/pair'
 import { Route as QuestVersionsRouteImport } from './routes/quest/versions'
 import { Route as QuestDownloadRouteImport } from './routes/quest/download'
 import { Route as OauthAuthorizeRouteImport } from './routes/oauth/authorize'
@@ -139,6 +140,11 @@ const SettingsAccountRoute = SettingsAccountRouteImport.update({
 const RankingRequestsRoute = RankingRequestsRouteImport.update({
   id: '/ranking/requests',
   path: '/ranking/requests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuestPairRoute = QuestPairRouteImport.update({
+  id: '/quest_/pair',
+  path: '/quest/pair',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuestVersionsRoute = QuestVersionsRouteImport.update({
@@ -316,6 +322,7 @@ export interface FileRoutesByFullPath {
   '/oauth/authorize': typeof OauthAuthorizeRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
+  '/quest/pair': typeof QuestPairRoute
   '/ranking/requests': typeof RankingRequestsRoute
   '/settings/account': typeof SettingsAccountRoute
   '/settings/connections': typeof SettingsConnectionsRoute
@@ -361,6 +368,7 @@ export interface FileRoutesByTo {
   '/oauth/authorize': typeof OauthAuthorizeRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
+  '/quest/pair': typeof QuestPairRoute
   '/ranking/requests': typeof RankingRequestsRoute
   '/settings/account': typeof SettingsAccountRoute
   '/settings/connections': typeof SettingsConnectionsRoute
@@ -408,6 +416,7 @@ export interface FileRoutesById {
   '/oauth/authorize': typeof OauthAuthorizeRoute
   '/quest/download': typeof QuestDownloadRoute
   '/quest/versions': typeof QuestVersionsRoute
+  '/quest_/pair': typeof QuestPairRoute
   '/ranking/requests': typeof RankingRequestsRoute
   '/settings/account': typeof SettingsAccountRoute
   '/settings/connections': typeof SettingsConnectionsRoute
@@ -458,6 +467,7 @@ export interface FileRouteTypes {
     | '/oauth/authorize'
     | '/quest/download'
     | '/quest/versions'
+    | '/quest/pair'
     | '/ranking/requests'
     | '/settings/account'
     | '/settings/connections'
@@ -503,6 +513,7 @@ export interface FileRouteTypes {
     | '/oauth/authorize'
     | '/quest/download'
     | '/quest/versions'
+    | '/quest/pair'
     | '/ranking/requests'
     | '/settings/account'
     | '/settings/connections'
@@ -549,6 +560,7 @@ export interface FileRouteTypes {
     | '/oauth/authorize'
     | '/quest/download'
     | '/quest/versions'
+    | '/quest_/pair'
     | '/ranking/requests'
     | '/settings/account'
     | '/settings/connections'
@@ -595,6 +607,7 @@ export interface RootRouteChildren {
   LegalCopyrightRoute: typeof LegalCopyrightRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   OauthAuthorizeRoute: typeof OauthAuthorizeRoute
+  QuestPairRoute: typeof QuestPairRoute
   RankingRequestsRoute: typeof RankingRequestsRoute
   SettingsAccountRoute: typeof SettingsAccountRoute
   SettingsConnectionsRoute: typeof SettingsConnectionsRoute
@@ -724,6 +737,13 @@ declare module '@tanstack/react-router' {
       path: '/ranking/requests'
       fullPath: '/ranking/requests'
       preLoaderRoute: typeof RankingRequestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quest_/pair': {
+      id: '/quest_/pair'
+      path: '/quest/pair'
+      fullPath: '/quest/pair'
+      preLoaderRoute: typeof QuestPairRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quest/versions': {
@@ -1066,6 +1086,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalCopyrightRoute: LegalCopyrightRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   OauthAuthorizeRoute: OauthAuthorizeRoute,
+  QuestPairRoute: QuestPairRoute,
   RankingRequestsRoute: RankingRequestsRoute,
   SettingsAccountRoute: SettingsAccountRoute,
   SettingsConnectionsRoute: SettingsConnectionsRoute,

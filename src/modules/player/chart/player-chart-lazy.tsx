@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Loader2 } from 'lucide-react';
 
-import type { PlayerChartStats } from '@/modules/player/chart/chart-types';
+import type { MetricKey, PlayerChartStats } from '@/modules/player/chart/chart-types';
 import type { PlayerControllerGetPlayerHistoryItem } from '@/shared/api/generated/ApiParams';
 import { dynamic } from '@/shared/components/dynamic';
 
-export function PlayerChartLazy({ playerId, stats, history }: PlayerChartLazyProps) {
+export function PlayerChartLazy({ playerId, stats, history, enabledMetrics }: PlayerChartLazyProps) {
    const containerRef = useRef<HTMLDivElement>(null);
    const [shouldLoad, setShouldLoad] = useState(false);
 
@@ -38,7 +38,7 @@ export function PlayerChartLazy({ playerId, stats, history }: PlayerChartLazyPro
 
    return (
       <div ref={containerRef} className="min-h-100">
-         {shouldLoad ? <PlayerChart playerId={playerId} stats={stats} history={history} /> : <ChartSkeleton />}
+         {shouldLoad ? <PlayerChart playerId={playerId} stats={stats} history={history} enabledMetrics={enabledMetrics} /> : <ChartSkeleton />}
       </div>
    );
 }
@@ -60,4 +60,5 @@ type PlayerChartLazyProps = {
    playerId: string;
    stats: PlayerChartStats;
    history: PlayerControllerGetPlayerHistoryItem[];
+   enabledMetrics?: MetricKey[];
 };

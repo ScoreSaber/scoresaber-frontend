@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import type { CSSProperties } from 'react';
 
 import { FaClock, FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
 
+import { getProfileAccentProperties, type PlayerProfileCustomizationStyle } from '@/modules/player/profile/player-profile-accent';
 import type { PlayerControllerGetPlayerScoresSort } from '@/shared/api/generated/ApiParams';
 import { DebouncedSearchInput } from '@/shared/components/debounced-search-input';
 import { Icons } from '@/shared/components/icons';
@@ -25,11 +27,13 @@ export function PlayerScoresToolbar<TLocation>({
    search,
    buildLocation,
    parseSearch,
+   customization,
    className
 }: {
    search: PlayerScoresSearch;
    buildLocation: RouteLocationBuilder<PlayerScoresSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => PlayerScoresSearch | null;
+   customization?: PlayerProfileCustomizationStyle | null;
    className?: string;
 }) {
    const t = useTranslations();
@@ -48,11 +52,19 @@ export function PlayerScoresToolbar<TLocation>({
    const loading = newSort !== currentSort;
    const topLoading = loading && newSort === 'top';
    const recentLoading = loading && newSort === 'recent';
-   const activeSortStyle = {
-      backgroundColor: 'var(--profile-accent, var(--primary))',
-      borderColor: 'var(--profile-accent, var(--primary))',
-      color: 'var(--profile-accent-foreground, var(--primary-foreground))'
+   const accentProperties = getProfileAccentProperties(customization);
+   const activeSortStyle: CSSProperties = {
+      backgroundColor: accentProperties?.['--profile-accent'] ?? 'var(--profile-accent, var(--primary))',
+      borderColor: accentProperties?.['--profile-accent'] ?? 'var(--profile-accent, var(--primary))',
+      color:
+         accentProperties?.['--profile-accent-active-foreground'] ??
+         'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
    };
+   const inactiveSortStyle: CSSProperties | undefined = accentProperties
+      ? {
+           color: accentProperties['--profile-accent-foreground']
+        }
+      : undefined;
 
    function handleSearch(value: string | undefined) {
       navigate({ search: value }, { scroll: false });
@@ -76,7 +88,7 @@ export function PlayerScoresToolbar<TLocation>({
                size="sm"
                variant={currentSort === 'top' || topLoading ? 'default' : 'secondary'}
                className="cursor-pointer"
-               style={currentSort === 'top' || topLoading ? activeSortStyle : undefined}
+               style={currentSort === 'top' || topLoading ? activeSortStyle : inactiveSortStyle}
             >
                {!topLoading ? <FaTrophy data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
                {t('player.topScores')}
@@ -92,7 +104,7 @@ export function PlayerScoresToolbar<TLocation>({
                size="sm"
                variant={currentSort === 'recent' || recentLoading ? 'default' : 'secondary'}
                className="cursor-pointer"
-               style={currentSort === 'recent' || recentLoading ? activeSortStyle : undefined}
+               style={currentSort === 'recent' || recentLoading ? activeSortStyle : inactiveSortStyle}
             >
                {!recentLoading ? <FaClock data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
                {t('player.recentScores')}

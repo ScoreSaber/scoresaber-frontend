@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react';
+import { Fragment, useEffect, type ReactNode } from 'react';
 
 import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
@@ -9,21 +9,28 @@ import { z } from 'zod';
 import { Separator } from '@/components/ui/separator';
 
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
+import type { MetricKey } from '@/modules/player/chart/chart-types';
 import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-chart-lazy';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
 import { PlayerPinnedScoresSection } from '@/modules/player/profile/player-pinned-scores-section';
+import type { PlayerProfileCustomizationStyle } from '@/modules/player/profile/player-profile-accent';
 import { PlayerProfileAccentScope } from '@/modules/player/profile/player-profile-accent-scope';
 import { PlayerProfileCustomization } from '@/modules/player/profile/player-profile-customization';
 import { PlayerProfileHeader } from '@/modules/player/profile/player-profile-header';
 import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
 import { PlayerScoresToolbar } from '@/modules/player/profile/player-scores-toolbar';
-import { versionedAvatarUrl } from '@/modules/player/shared/player-avatar';
-import type { PlayerControllerGetPlayerScoresDataItem, PlayerControllerGetPlayerScoresSort } from '@/shared/api/generated/ApiParams';
+import { versionedAvatarUrl, versionedImageUrl } from '@/modules/player/shared/player-avatar';
+import type {
+   PlayerControllerGetPlayerResponse,
+   PlayerControllerGetPlayerScoresDataItem,
+   PlayerControllerGetPlayerScoresSort
+} from '@/shared/api/generated/ApiParams';
 import { api, publicApi } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
 import { PageError } from '@/shared/components/error/page-error';
-import { formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
+import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
+import { calculateRawPPForTotalPPGain } from '@/shared/format/weighted-pp';
 import { optionalApi, optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
 import { buildSeoHead } from '@/shared/seo/metadata';
@@ -54,6 +61,15 @@ type PlayerProfileRouteInput = {
 };
 
 type ParsePlayerSearch = (search: Record<string, unknown>) => PlayerProfileSearch | null;
+type PlayerStatsWithPlusOnePP = PlayerControllerGetPlayerResponse['stats'] & {
+   plusOnePP?: number | null;
+};
+
+const PLUS_ONE_PP_SCORE_LIMIT = 100;
+const DEFAULT_PROFILE_SECTION_ORDER = ['charts', 'bio', 'pinnedScores', 'scores'] as const;
+
+type PlayerProfileSectionId = (typeof DEFAULT_PROFILE_SECTION_ORDER)[number];
+const REQUIRED_PROFILE_SECTION_IDS: readonly PlayerProfileSectionId[] = ['scores'];
 
 const getPlayerProfilePageData = createServerFn({ method: 'GET' })
    .inputValidator((data: PlayerProfileRouteInput) => data)
@@ -72,6 +88,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
             history: null,
             aliases: [],
             patreonConnected: false,
+            plusOneRawPP: null,
             sanitizedBio: '',
             hasBioContent: false
          };
@@ -80,8 +97,9 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
       const apiPlayerId = playerResult.data.id;
       const bio = playerResult.data.bio ?? '';
       const sanitizedBio = sanitizeRichTextHtml(bio);
+      const apiPlusOnePP = readPlusOnePP(playerResult.data.stats);
 
-      const [scores, history, aliases, connections] = await Promise.all([
+      const [scores, plusOneScores, history, aliases, connections] = await Promise.all([
          optionalApiData(
             publicApi.player.playerControllerGetPlayerScores({
                id: apiPlayerId,
@@ -91,10 +109,27 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
                search: data.search.search
             })
          ),
+         apiPlusOnePP == null
+            ? optionalApiData(
+                 publicApi.player.playerControllerGetPlayerScores({
+                    id: apiPlayerId,
+                    limit: PLUS_ONE_PP_SCORE_LIMIT,
+                    page: 1,
+                    sort: 'top'
+                 })
+              )
+            : null,
          optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
          optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId })),
          token ? optionalApi(api.user.userControllerGetConnections().then((r) => r.data)) : null
       ]);
+      const plusOneRawPP =
+         apiPlusOnePP ??
+         calculateRawPPForTotalPPGain({
+            scores: plusOneScores?.data.map(({ score }) => ({ pp: score.pp, weight: score.weight })) ?? [],
+            totalPP: playerResult.data.stats.totalPP,
+            totalRankedScores: playerResult.data.stats.totalPlayedRankedLeaderboards
+         });
 
       return {
          result: playerResult,
@@ -102,10 +137,16 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
          history,
          aliases: aliases ?? [],
          patreonConnected: connections?.some((connection) => connection.provider === 'PATREON' && connection.state === 'CONNECTED') ?? false,
+         plusOneRawPP,
          sanitizedBio,
          hasBioContent: hasRichTextContent(sanitizedBio)
       };
    });
+
+function readPlusOnePP(stats: PlayerControllerGetPlayerResponse['stats']) {
+   const plusOnePP = (stats as PlayerStatsWithPlusOnePP).plusOnePP;
+   return typeof plusOnePP === 'number' ? plusOnePP : null;
+}
 
 export const Route = createFileRoute('/u/$playerId')({
    params: {
@@ -155,7 +196,7 @@ function PlayerProfileRouteContent({
    parseSearch: ParsePlayerSearch;
    data: Awaited<ReturnType<typeof getPlayerProfilePageData>>;
 }) {
-   const { result, scores, history, aliases, patreonConnected, sanitizedBio, hasBioContent } = data;
+   const { result, scores, history, aliases, patreonConnected, plusOneRawPP, sanitizedBio, hasBioContent } = data;
 
    useVanityBrowserUrl(result.ok ? result.data.vanity : null);
 
@@ -165,74 +206,188 @@ function PlayerProfileRouteContent({
 
    return (
       <div className="relative flex-1 overflow-hidden">
-         <SetPageBackground src={player.avatar} />
          <div className="app-container relative z-10 p-4 md:p-8">
             <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
-               {({ extraActions, profileCustomization, renderScoreAction }) => (
-                  <PlayerProfileAccentScope customization={profileCustomization}>
-                     <PlayerProfileHeader
-                        player={player}
-                        aliases={aliases}
-                        customization={profileCustomization}
-                        actions={
-                           <PlayerActions
-                              playerId={player.id}
-                              playerBanned={player.banned}
-                              playerPermissions={player.permissions}
-                              playerRole={player.role}
-                              extraActions={extraActions}
-                           />
-                        }
-                     >
-                        {player.banned ? (
-                           <div className="py-6 text-center">
-                              <Separator variant="gradient" className="via-destructive/15 mb-4" />
-                              <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
-                           </div>
-                        ) : null}
+               {({ extraActions, profileCustomization, renderScoreAction }) => {
+                  const profileBackgroundImage = profileCustomization.backgroundImage
+                     ? versionedImageUrl(profileCustomization.backgroundImage, profileCustomization.backgroundImageVersion)
+                     : null;
+                  const profileSections = player.banned
+                     ? []
+                     : buildProfileSections({
+                          player,
+                          history,
+                          scores,
+                          input,
+                          parseSearch,
+                          sanitizedBio,
+                          hasBioContent,
+                          chartMetricIds: profileCustomization.chartMetricIds,
+                          profileCustomization,
+                          sectionOrder: profileCustomization.sectionOrder,
+                          renderScoreAction
+                       });
 
-                        {!player.banned && !player.inactive && history && history.length > 0 && (
-                           <div className="py-4">
-                              <Separator variant="gradient" className="mb-4" />
-                              <PlayerChart
+                  return (
+                     <PlayerProfileAccentScope customization={profileCustomization}>
+                        <SetPageBackground
+                           src={profileBackgroundImage ?? player.avatar}
+                           candidates={profileBackgroundImage ? [profileBackgroundImage, player.avatar] : [player.avatar]}
+                        />
+                        <PlayerProfileHeader
+                           player={player}
+                           aliases={aliases}
+                           customization={profileCustomization}
+                           plusOneRawPP={plusOneRawPP}
+                           actions={
+                              <PlayerActions
                                  playerId={player.id}
-                                 stats={{
-                                    rank: player.stats.rank,
-                                    totalPP: player.stats.totalPP,
-                                    averageAccuracy: player.stats.averageAccuracy,
-                                    totalSubmittedPlays: player.stats.totalSubmittedPlays
-                                 }}
-                                 history={history}
+                                 playerBanned={player.banned}
+                                 playerPermissions={player.permissions}
+                                 playerRole={player.role}
+                                 extraActions={extraActions}
                               />
-                           </div>
-                        )}
+                           }
+                        >
+                           {player.banned ? (
+                              <div className="py-6 text-center">
+                                 <Separator variant="gradient" className="via-destructive/15 mb-4" />
+                                 <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
+                              </div>
+                           ) : null}
 
-                        {!player.banned && (
-                           <PlayerBioSection bio={player.bio ?? ''} sanitizedBio={sanitizedBio} hasBioContent={hasBioContent} playerId={player.id} />
-                        )}
-
-                        {!player.banned && <PlayerPinnedScoresSection pinnedScores={player.pinnedScores ?? []} />}
-
-                        {!player.banned && scores && (
-                           <PlayerScoresSection
-                              playerId={input.playerId}
-                              scores={scores}
-                              page={input.search.page ?? 1}
-                              sort={input.search.sort ?? 'top'}
-                              search={input.search.search}
-                              hasScores={player.stats.totalSubmittedPlays > 0}
-                              hasContentAbove={(player.pinnedScores?.length ?? 0) === 0 && (!player.inactive || hasBioContent)}
-                              parseSearch={parseSearch}
-                              renderScoreAction={renderScoreAction}
-                           />
-                        )}
-                     </PlayerProfileHeader>
-                  </PlayerProfileAccentScope>
-               )}
+                           {profileSections.map((section, index) => (
+                              <Fragment key={section.id}>{section.render(index > 0)}</Fragment>
+                           ))}
+                        </PlayerProfileHeader>
+                     </PlayerProfileAccentScope>
+                  );
+               }}
             </PlayerProfileCustomization>
          </div>
       </div>
    );
+}
+
+function buildProfileSections({
+   player,
+   history,
+   scores,
+   input,
+   parseSearch,
+   sanitizedBio,
+   hasBioContent,
+   chartMetricIds,
+   profileCustomization,
+   sectionOrder,
+   renderScoreAction
+}: {
+   player: PlayerControllerGetPlayerResponse;
+   history: Awaited<ReturnType<typeof getPlayerProfilePageData>>['history'];
+   scores: Awaited<ReturnType<typeof getPlayerProfilePageData>>['scores'];
+   input: PlayerProfileRouteInput;
+   parseSearch: ParsePlayerSearch;
+   sanitizedBio: string;
+   hasBioContent: boolean;
+   chartMetricIds?: MetricKey[] | null;
+   profileCustomization: PlayerProfileCustomizationStyle;
+   sectionOrder?: PlayerProfileSectionId[] | null;
+   renderScoreAction?: (score: PlayerControllerGetPlayerScoresDataItem) => ReactNode;
+}) {
+   const hasEnabledChartMetrics = chartMetricIds == null || chartMetricIds.length > 0;
+   const sections = new Map<PlayerProfileSectionId, { id: PlayerProfileSectionId; render: (showSeparator: boolean) => ReactNode } | null>([
+      [
+         'charts',
+         !player.inactive && history && history.length > 0 && hasEnabledChartMetrics
+            ? {
+                 id: 'charts',
+                 render: (showSeparator) => (
+                    <div className="py-4">
+                       {showSeparator && <Separator variant="gradient" className="mb-4" />}
+                       <PlayerChart
+                          playerId={player.id}
+                          stats={{
+                             rank: player.stats.rank,
+                             totalPP: player.stats.totalPP,
+                             averageAccuracy: player.stats.averageAccuracy,
+                             totalSubmittedPlays: player.stats.totalSubmittedPlays
+                          }}
+                          history={history}
+                          enabledMetrics={chartMetricIds ?? undefined}
+                       />
+                    </div>
+                 )
+              }
+            : null
+      ],
+      [
+         'bio',
+         {
+            id: 'bio',
+            render: (showSeparator) => (
+               <PlayerBioSection
+                  bio={player.bio ?? ''}
+                  sanitizedBio={sanitizedBio}
+                  hasBioContent={hasBioContent}
+                  playerId={player.id}
+                  showSeparator={showSeparator}
+               />
+            )
+         }
+      ],
+      [
+         'pinnedScores',
+         (player.pinnedScores?.length ?? 0) > 0
+            ? {
+                 id: 'pinnedScores',
+                 render: (showSeparator) => <PlayerPinnedScoresSection pinnedScores={player.pinnedScores ?? []} showSeparator={showSeparator} />
+              }
+            : null
+      ],
+      [
+         'scores',
+         scores
+            ? {
+                 id: 'scores',
+                 render: (showSeparator) => (
+                    <PlayerScoresSection
+                       playerId={input.playerId}
+                       scores={scores}
+                       page={input.search.page ?? 1}
+                       sort={input.search.sort ?? 'top'}
+                       search={input.search.search}
+                       hasScores={player.stats.totalSubmittedPlays > 0}
+                       showSeparator={showSeparator}
+                       parseSearch={parseSearch}
+                       customization={profileCustomization}
+                       renderScoreAction={renderScoreAction}
+                    />
+                 )
+              }
+            : null
+      ]
+   ]);
+
+   return normalizeProfileSectionOrder(sectionOrder)
+      .map((sectionId) => sections.get(sectionId))
+      .filter((section): section is { id: PlayerProfileSectionId; render: (showSeparator: boolean) => ReactNode } => section != null);
+}
+
+function normalizeProfileSectionOrder(sectionOrder?: PlayerProfileSectionId[] | null) {
+   if (!sectionOrder) return [...DEFAULT_PROFILE_SECTION_ORDER];
+
+   const allowed = new Set(DEFAULT_PROFILE_SECTION_ORDER);
+   const seen = new Set<PlayerProfileSectionId>();
+   const normalized = sectionOrder.filter((sectionId) => {
+      if (!allowed.has(sectionId) || seen.has(sectionId)) return false;
+      seen.add(sectionId);
+      return true;
+   });
+
+   return [
+      ...normalized,
+      ...DEFAULT_PROFILE_SECTION_ORDER.filter((sectionId) => REQUIRED_PROFILE_SECTION_IDS.includes(sectionId) && !seen.has(sectionId))
+   ];
 }
 
 export function buildPlayerProfileHead(loaderData: Awaited<ReturnType<typeof getPlayerProfilePageData>> | undefined) {
@@ -282,8 +437,9 @@ function PlayerScoresSection({
    sort,
    search,
    hasScores,
-   hasContentAbove,
+   showSeparator,
    parseSearch,
+   customization,
    renderScoreAction
 }: {
    playerId: string;
@@ -292,8 +448,9 @@ function PlayerScoresSection({
    sort: PlayerControllerGetPlayerScoresSort;
    search?: string;
    hasScores: boolean;
-   hasContentAbove: boolean;
+   showSeparator: boolean;
    parseSearch: ParsePlayerSearch;
+   customization: PlayerProfileCustomizationStyle;
    renderScoreAction?: (score: PlayerControllerGetPlayerScoresDataItem) => ReactNode;
 }) {
    const t = useTranslations();
@@ -304,11 +461,11 @@ function PlayerScoresSection({
    const hasNoScoresAtAll = !hasScores;
 
    return (
-      <div className="pb-3">
-         {hasContentAbove && <Separator variant="gradient" className="mb-4" />}
+      <div className={cn('pb-3', !showSeparator && 'pt-4')}>
+         {showSeparator && <Separator variant="gradient" className="mb-4" />}
          {!hasNoScoresAtAll && (
             <div className="mb-4 flex justify-center">
-               <PlayerScoresToolbar search={currentSearch} buildLocation={buildLocation} parseSearch={parseSearch} />
+               <PlayerScoresToolbar search={currentSearch} buildLocation={buildLocation} parseSearch={parseSearch} customization={customization} />
             </div>
          )}
          {scores.data.length > 0 ? (

@@ -483,6 +483,14 @@ export type UserControllerClaimVanityResponse = _R<_User['userControllerClaimVan
 
 export type UserControllerUpdatePinnedScoresResponse = _R<_User['userControllerUpdatePinnedScores']>;
 
+export type UserControllerUpdateProfileCustomizationResponse = _R<_User['userControllerUpdateProfileCustomization']>;
+
+export type UserControllerUpdateProfileCustomizationStyleResponse = _R<_User['userControllerUpdateProfileCustomizationStyle']>;
+
+export type UserControllerUploadProfileCustomizationBackgroundResponse = _R<_User['userControllerUploadProfileCustomizationBackground']>;
+
+export type UserControllerResetProfileCustomizationBackgroundResponse = _R<_User['userControllerResetProfileCustomizationBackground']>;
+
 export type UserControllerGetMyInfoResponse = _R<_User['userControllerGetMyInfo']>;
 
 export type UserControllerGetQuestKeyResponse = _R<_User['userControllerGetQuestKey']>;

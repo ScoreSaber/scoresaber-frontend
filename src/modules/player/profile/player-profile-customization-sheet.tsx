@@ -20,6 +20,7 @@ interface PlayerProfileCustomizationSheetProps<Tab extends string> {
    title: ReactNode;
    description: ReactNode;
    tabs: PlayerProfileCustomizationSheetTab<Tab>[];
+   footer?: ReactNode;
 }
 
 export function PlayerProfileCustomizationSheet<Tab extends string>({
@@ -29,7 +30,8 @@ export function PlayerProfileCustomizationSheet<Tab extends string>({
    onActiveTabChange,
    title,
    description,
-   tabs
+   tabs,
+   footer
 }: PlayerProfileCustomizationSheetProps<Tab>) {
    function changeActiveTab(value: string) {
       const tab = tabs.find((tab) => tab.value === value);
@@ -45,13 +47,13 @@ export function PlayerProfileCustomizationSheet<Tab extends string>({
             </SheetHeader>
             <Tabs value={activeTab} onValueChange={changeActiveTab} className="min-h-0 flex-1 gap-0">
                <div className="shrink-0 px-5 pt-4">
-                  <TabsList className="bg-accent/25 h-auto w-full rounded-2xl border p-0.5">
+                  <TabsList className="bg-accent/25 h-auto w-full justify-start overflow-x-auto rounded-2xl border p-0.5">
                      {tabs.map((tab) => (
                         <TabsTrigger
                            key={tab.value}
                            value={tab.value}
                            disabled={tab.disabled}
-                           className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground h-8 rounded-[0.8rem] border-transparent px-0 text-[13px] font-semibold shadow-none data-[state=active]:pointer-events-none data-[state=active]:border-transparent dark:data-[state=active]:border-transparent"
+                           className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground h-8 rounded-[0.8rem] border-transparent px-3 text-[13px] font-semibold shadow-none data-[state=active]:pointer-events-none data-[state=active]:border-transparent dark:data-[state=active]:border-transparent"
                         >
                            {tab.label}
                         </TabsTrigger>
@@ -64,6 +66,7 @@ export function PlayerProfileCustomizationSheet<Tab extends string>({
                   </TabsContent>
                ))}
             </Tabs>
+            {footer}
          </SheetContent>
       </Sheet>
    );

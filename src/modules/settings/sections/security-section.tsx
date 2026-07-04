@@ -4,7 +4,6 @@ import type { SubmitEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import { startRegistration, type PublicKeyCredentialCreationOptionsJSON } from '@simplewebauthn/browser';
-import { useQuery } from '@tanstack/react-query';
 import { getRouteApi, useRouter } from '@tanstack/react-router';
 import { Result } from 'better-result';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
@@ -21,12 +20,11 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { Label } from '@/components/ui/label';
 
 import { useActionMutation } from '@/hooks/use-action-mutation';
-import { useCountdownSeconds } from '@/hooks/use-countdown-seconds';
 import { useEmailChallenge } from '@/hooks/use-email-challenge';
 import { useAuth } from '@/modules/auth';
 import { changePassword, completePasswordSetup, startPasswordSetup, type PasswordCredentialSummary } from '@/modules/auth/actions/credentials';
 import { deletePasskey, getPasskeyRegistrationOptions, renamePasskey, verifyPasskeyRegistration } from '@/modules/auth/actions/passkey';
-import { getDeviceLoginStatus, startDeviceLogin } from '@/modules/settings/actions/device-code';
+import { DeviceCodePanel } from '@/modules/auth/device-code-panel';
 import type { PasskeyControllerListPasskeysResponse } from '@/shared/api/generated/ApiParams';
 import { ConfirmDialog } from '@/shared/components/confirm-dialog';
 import { Time } from '@/shared/components/time';
@@ -464,100 +462,43 @@ function PasskeysRow({ passkeys }: { passkeys: PasskeySummary[] }) {
 function DeviceLoginRow() {
    const t = useTranslations();
    const [dialogOpen, setDialogOpen] = useState(false);
-   const [device, setDevice] = useState<{ code: string; expiresAt: string } | null>(null);
-   const [startPending, setStartPending] = useState(false);
-   const expirySeconds = useCountdownSeconds(device?.expiresAt);
-
-   const statusQuery = useQuery({
-      queryKey: ['device-login-status', device?.code],
-      queryFn: async () => unwrapAction(await getDeviceLoginStatus()),
-      enabled: dialogOpen && device !== null && expirySeconds > 0,
-      refetchInterval: (query) => (query.state.data?.status === 'claimed' ? false : 2000)
-   });
-
-   const claimed = statusQuery.data?.status === 'claimed';
-   const expired = !claimed && device !== null && expirySeconds <= 0;
-
-   const openDialog = async () => {
-      setDialogOpen(true);
-      await requestCode();
-   };
-
-   const requestCode = async () => {
-      setStartPending(true);
-      const result = await Result.tryPromise({
-         try: async () => unwrapAction(await startDeviceLogin()),
-         catch: (error) => error
-      });
-
-      if (Result.isOk(result)) {
-         setDevice(result.value);
-      } else {
-         toast.error(t('settings.security.deviceCodeFailed'), { description: result.error instanceof Error ? result.error.message : undefined });
-         setDialogOpen(false);
-      }
-
-      setStartPending(false);
-   };
-
-   const changeDialogOpen = (open: boolean) => {
-      setDialogOpen(open);
-      if (!open) {
-         setDevice(null);
-      }
-   };
 
    return (
       <>
-         <div className="flex flex-col gap-4 pt-5 opacity-55 grayscale md:flex-row md:items-center md:justify-between">
+         <div className="flex flex-col gap-4 pt-5 md:flex-row md:items-center md:justify-between">
             <div className="flex min-w-0 gap-4">
                <span className={iconClass}>
                   <Gamepad2 className="size-5" aria-hidden />
                </span>
                <div className="flex min-h-10 min-w-0 flex-col justify-center">
-                  <h3 className="leading-5 font-semibold">
-                     {t('settings.security.deviceLogin')}{' '}
-                     <span className="text-muted-foreground font-normal">{t('settings.security.deviceLoginComingSoon')}</span>
-                  </h3>
+                  <h3 className="leading-5 font-semibold">{t('settings.security.deviceLogin')}</h3>
                   <p className="text-muted-foreground text-sm">{t('settings.security.deviceLoginHelper')}</p>
                </div>
             </div>
-            <Button type="button" variant="outline" disabled onClick={() => void openDialog()} className="w-fit cursor-not-allowed">
+            <Button type="button" variant="outline" onClick={() => setDialogOpen(true)} className="w-fit cursor-pointer">
                <Gamepad2 data-icon="inline-start" />
                {t('settings.security.deviceLoginAction')}
             </Button>
          </div>
 
-         <Dialog open={dialogOpen} onOpenChange={changeDialogOpen}>
+         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogContent className="sm:max-w-md">
                <DialogHeader>
                   <DialogTitle>{t('settings.security.deviceLogin')}</DialogTitle>
                   <DialogDescription>{t('settings.security.deviceLoginInstructions')}</DialogDescription>
                </DialogHeader>
 
-               <div className="flex flex-col items-center gap-3 py-4">
-                  {startPending || !device ? (
-                     <Loader2 className="text-muted-foreground size-6 animate-spin" aria-hidden />
-                  ) : claimed ? (
-                     <p className="text-center text-lg font-semibold">{t('settings.security.deviceLoginClaimed')}</p>
-                  ) : expired ? (
-                     <>
-                        <p className="text-muted-foreground text-sm">{t('settings.security.deviceCodeExpired')}</p>
-                        <Button type="button" onClick={() => void requestCode()} className="cursor-pointer">
-                           {t('settings.security.deviceCodeNew')}
-                        </Button>
-                     </>
-                  ) : (
-                     <>
-                        <span className="font-mono text-5xl font-bold tracking-[0.3em]" aria-live="polite">
-                           {device.code}
-                        </span>
-                        <span className="text-muted-foreground text-xs tabular-nums">
-                           {t('settings.security.deviceCodeExpiresIn', { seconds: expirySeconds })}
-                        </span>
-                     </>
-                  )}
-               </div>
+               {dialogOpen ? (
+                  <DeviceCodePanel
+                     autoStart
+                     onStartErrorAction={(error) => {
+                        toast.error(t('settings.security.deviceCodeFailed'), {
+                           description: error instanceof Error ? error.message : undefined
+                        });
+                        setDialogOpen(false);
+                     }}
+                  />
+               ) : null}
             </DialogContent>
          </Dialog>
       </>

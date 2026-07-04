@@ -18,7 +18,7 @@ type LoginSearchParams = {
    steam?: 'failed';
    patreon?: 'failed';
    discord?: 'failed';
-   mode?: 'password-reset';
+   mode?: 'password-reset' | 'signup';
    redirectTo?: string;
 };
 
@@ -28,7 +28,7 @@ export function LoginScreen({ params }: { params: LoginSearchParams }) {
    const failedProvider = loginOAuthProviders.find((provider) => params[provider] === 'failed') ?? null;
    const redirectTo = safeSitePath(params.redirectTo, '/');
    const absoluteRedirectTo = getSiteUrl(redirectTo);
-   const initialPanel: LoginPanel = params.mode === 'password-reset' ? 'password' : 'providers';
+   const initialPanel: LoginPanel = params.mode === 'password-reset' ? 'password' : params.mode === 'signup' ? 'signup' : 'providers';
    const [activePanel, setActivePanel] = useState<LoginPanel>(initialPanel);
    const showIntro = activePanel === 'providers';
    const providerLabels = {
