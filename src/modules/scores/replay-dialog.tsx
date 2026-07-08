@@ -3,15 +3,23 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { useState } from 'react';
 
+import { useQuery } from '@tanstack/react-query';
 import { ExternalLink, Loader2, Play } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import { api } from '@/shared/api/ApiInstance';
+import type { ScoreControllerGetScoreResponse } from '@/shared/api/generated/ApiParams';
 import { getReplayArcviewerUrl } from '@/shared/arcviewer-url';
 import { cn } from '@/shared/format/helpers';
+import { optionalApiData } from '@/shared/result/api';
 import { isMobileViewport } from '@/shared/ui-adjacent/viewport';
+
+type ScoreWithReplayViewCount = ScoreControllerGetScoreResponse['score'] & {
+   replayViewCount?: number;
+};
 
 interface ReplayDialogProps {
    scoreId: number;
@@ -32,6 +40,17 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
    const [open, setOpen] = useState(false);
    const [tooltipOpen, setTooltipOpen] = useState(false);
    const replayUrl = getReplayUrl(scoreId);
+   const { data: replayViewCount } = useQuery({
+      queryKey: ['scoreReplayViews', scoreId],
+      queryFn: async () => {
+         const detail = await optionalApiData(api.score.scoreControllerGetScore({ id: scoreId, includeScoreStats: 'false' }));
+         const score: ScoreWithReplayViewCount | undefined = detail?.score;
+         return score?.replayViewCount ?? null;
+      },
+      enabled: open || tooltipOpen,
+      staleTime: 60_000
+   });
+   const replayViewCountLabel = replayViewCount == null || replayViewCount <= 0 ? null : t('score.replayViews', { count: replayViewCount });
    const openReplayAction = (event: MouseEvent<HTMLElement>) => {
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       if (isMobileViewport()) return;
@@ -45,8 +64,9 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
    const wrappedTrigger = tooltip ? (
       <Tooltip open={tooltipOpen && !open} onOpenChange={setTooltipOpen} delayDuration={tooltipDelayMs}>
          <TooltipTrigger asChild>{renderedTrigger}</TooltipTrigger>
-         <TooltipContent side={tooltipSide}>
-            <p>{tooltip}</p>
+         <TooltipContent side={tooltipSide} className="whitespace-nowrap">
+            <p className="leading-none">{tooltip}</p>
+            {replayViewCountLabel && <p className="mt-1 text-[0.6875rem] leading-none text-current/75 tabular-nums">{replayViewCountLabel}</p>}
          </TooltipContent>
       </Tooltip>
    ) : (
@@ -64,9 +84,12 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
          {wrappedTrigger}
          <DialogContent className="w-[90vw] max-w-[90vw] sm:max-w-[90vw]" aria-describedby={undefined} showCloseButton>
             <DialogHeader>
-               <DialogTitle className="flex items-center gap-2">
-                  <Play className="size-4" />
-                  {t('score.replayViewer')}
+               <DialogTitle className="flex min-w-0 items-center gap-2">
+                  <Play className="size-4 shrink-0" />
+                  <span className="min-w-0 truncate">{t('score.replayViewer')}</span>
+                  {replayViewCountLabel && (
+                     <span className="text-muted-foreground shrink-0 text-xs font-medium tabular-nums">{replayViewCountLabel}</span>
+                  )}
                   <Tooltip>
                      <TooltipTrigger asChild>
                         <a
