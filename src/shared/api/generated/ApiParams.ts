@@ -222,6 +222,8 @@ export type LeaderboardControllerGetLeaderboardListingsDataItem = LeaderboardCon
 
 export type LeaderboardControllerGetLeaderboardByIdResponse = _R<_Leaderboard['leaderboardControllerGetLeaderboardById']>;
 
+export type LeaderboardControllerGetLeaderboardPlayStatsByIdResponse = _R<_Leaderboard['leaderboardControllerGetLeaderboardPlayStatsById']>;
+
 export type LeaderboardControllerGetLeaderboardScoresByIdResponse = _R<_Leaderboard['leaderboardControllerGetLeaderboardScoresById']>;
 export type LeaderboardControllerGetLeaderboardScoresByIdDataItem = LeaderboardControllerGetLeaderboardScoresByIdResponse['data'][number];
 

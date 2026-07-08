@@ -132,7 +132,7 @@ export function RankingsTable<TLocation>({
             {/* mobile: sort pills + card list */}
             <div className="lg:hidden">
                {!isPlayerPivot && (
-                  <div className={cn('flex flex-wrap gap-1.5 pb-3', isPending && 'pointer-events-none opacity-50')}>
+                  <div className={cn('flex flex-wrap justify-center gap-1.5 pb-3', isPending && 'pointer-events-none opacity-50')}>
                      {SORTABLE_COLUMNS.map((col) => {
                         const isActive = activeField === col.sortField;
                         return (
@@ -280,7 +280,6 @@ export function RankingCard({
             className
          )}
          onClick={() => router.navigate({ to: '/u/$playerId', params: { playerId: player.id } })}
-         onMouseEnter={() => router.preloadRoute({ to: '/u/$playerId', params: { playerId: player.id } })}
       >
          {variant === 'summary' ? (
             <RankingCardSummary

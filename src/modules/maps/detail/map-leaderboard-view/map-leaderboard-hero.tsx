@@ -98,7 +98,7 @@ function MapStats({ mapInfo }: { mapInfo: MapControllerGetMapByIdResponse }) {
          <Stat icon={FaClock} label={t('map.created')}>
             <Time date={mapInfo.createdAt} short />
          </Stat>
-         {mapInfo.bsid && <BeatSaverKeyPill beatSaverKey={mapInfo.bsid} variant="copy" size="sm" className="bg-secondary/35" />}
+         {mapInfo.bsid && <BeatSaverKeyPill beatSaverKey={mapInfo.bsid} variant="copy" size="sm" className="bg-secondary/35 rounded-md" />}
       </div>
    );
 }

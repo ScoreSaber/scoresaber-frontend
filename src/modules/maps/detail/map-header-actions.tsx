@@ -80,7 +80,7 @@ interface MapHeaderActionsProps {
    canReplace: boolean;
    canApprove: boolean;
    canAdmin: boolean;
-   activeTab: 'leaderboard' | 'rank-request';
+   activeTab: 'leaderboard' | 'insights' | 'rank-request';
 }
 
 const rankRequestModerationOperations: { id: RankRequestModerationOperation }[] = [

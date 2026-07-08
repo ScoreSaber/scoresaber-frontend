@@ -24,7 +24,7 @@ const selectTriggerVariants = cva('', {
    variants: {
       variant: {
          default: '',
-         filter: 'bg-secondary/35 text-muted-foreground hover:bg-accent/50 hover:text-foreground shadow-none',
+         filter: 'border-border bg-secondary/35 text-muted-foreground hover:bg-accent/50 hover:text-foreground shadow-none',
          icon: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-input/50 bg-background justify-center gap-0 rounded-full p-0 shadow-xs [&_[data-slot=select-value]]:hidden [&_svg.lucide-chevron-down]:hidden'
       },
       size: {

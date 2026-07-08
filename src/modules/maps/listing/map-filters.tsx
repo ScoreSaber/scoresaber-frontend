@@ -22,6 +22,7 @@ import {
 import { DebouncedSearchInput } from '@/shared/components/debounced-search-input';
 import { FilterPill } from '@/shared/components/filter-pill';
 import { PaginationArrow } from '@/shared/components/pagination';
+import { useHorizontalScrollFade } from '@/shared/components/use-horizontal-scroll-fade';
 import { cn } from '@/shared/format/helpers';
 import { mapFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { usePersistedParams } from '@/shared/url-state/persisted/use-persisted-params';
@@ -91,6 +92,8 @@ export function MapFilters<TLocation>({
    initialFiltersOpen
 }: MapFiltersProps<TLocation>) {
    const t = useTranslations();
+   const statusRowScroll = useHorizontalScrollFade();
+   const sortRowScroll = useHorizontalScrollFade();
    const { navigate, preload, preloadClearAll, cancelPreload, clearAll, loadStorage, saveStorage } = usePersistedParams({
       storageKey: mapFilterPreferences.storageKey,
       search,
@@ -270,7 +273,10 @@ export function MapFilters<TLocation>({
 
             <CollapsibleContent className="flex flex-col gap-1.5 overflow-hidden pt-1">
                {/* filters */}
-               <div className="scrollbar-none flex items-center gap-1.5 overflow-x-auto sm:flex-wrap sm:justify-center">
+               <div
+                  ref={statusRowScroll.scrollRef}
+                  className={cn('flex items-center gap-1.5 overflow-x-auto sm:flex-wrap sm:justify-center', statusRowScroll.fadeClassName)}
+               >
                   {STATUS_OPTIONS.map(({ value, icon }) => {
                      const isRankedButton = value === 'RANKED';
                      const active = isRankedMode && isRankedButton ? true : activeStatuses.has(value);
@@ -311,7 +317,10 @@ export function MapFilters<TLocation>({
 
                {/* sort + stars */}
                <div className="flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
-                  <div className="scrollbar-none flex items-center gap-1.5 overflow-x-auto sm:justify-center">
+                  <div
+                     ref={sortRowScroll.scrollRef}
+                     className={cn('flex items-center gap-1.5 overflow-x-auto sm:justify-center', sortRowScroll.fadeClassName)}
+                  >
                      {SORT_OPTIONS.map(({ value }) => {
                         const isActive = currentSortBy === value;
                         return (

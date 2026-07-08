@@ -5,6 +5,8 @@ import { useTranslations } from 'use-intl';
 
 import { FilterPill } from '@/shared/components/filter-pill';
 import { PaginationArrow } from '@/shared/components/pagination';
+import { useHorizontalScrollFade } from '@/shared/components/use-horizontal-scroll-fade';
+import { cn } from '@/shared/format/helpers';
 import { rankRequestFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { usePersistedParams } from '@/shared/url-state/persisted/use-persisted-params';
 import type { RouteLocationBuilder } from '@/shared/url-state/route-location';
@@ -35,6 +37,7 @@ export function RankRequestFilters<TLocation>({
    parseSearch
 }: RankRequestFiltersProps<TLocation>) {
    const t = useTranslations();
+   const { scrollRef, fadeClassName } = useHorizontalScrollFade();
    const { navigate, preload, preloadClearAll, cancelPreload, clearAll } = usePersistedParams({
       storageKey: rankRequestFilterPreferences.storageKey,
       search,
@@ -55,7 +58,10 @@ export function RankRequestFilters<TLocation>({
                <PaginationArrow direction="left" page={currentPage - 1} disabled={currentPage <= 1} getPageLocation={getPageLocation} />
             )}
 
-            <div className="scrollbar-none flex min-w-0 flex-1 items-center justify-center gap-1.5 overflow-x-auto sm:flex-wrap">
+            <div
+               ref={scrollRef}
+               className={cn('flex min-w-0 flex-1 items-center justify-center gap-1.5 overflow-x-auto sm:flex-wrap', fadeClassName)}
+            >
                <FilterPill
                   className="cursor-pointer"
                   active={currentHideDownvoted}

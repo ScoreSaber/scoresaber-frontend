@@ -299,6 +299,16 @@ export interface LeaderboardControllerGetLeaderboardByIdParams {
    id: number;
 }
 
+export interface LeaderboardControllerGetLeaderboardPlayStatsByIdParams {
+   /**
+    * Realm ID (defaults to the active realm)
+    * @min 0
+    */
+   realmId?: number;
+   /** @exclusiveMin true */
+   id: number;
+}
+
 export interface LeaderboardControllerGetLeaderboardScoresByIdParams {
    /**
     * Page number
@@ -6274,6 +6284,169 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
               }
          >({
             path: `/api/v2/leaderboards/${id}`,
+            method: 'GET',
+            query: query,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Leaderboard
+ * @name LeaderboardControllerGetLeaderboardPlayStatsById
+ * @request GET:/api/v2/leaderboards/{id}/play-stats
+ * @response `200` `{
+    totalPlays: number,
+    clearPlays: number,
+    failPlays: number,
+    quitPlays: number,
+    restartPlays: number,
+    unknownTimePlays: number,
+    bucketSizeSeconds: number,
+    refreshedAt: string,
+    buckets: ({
+    startSeconds: number,
+    failPlays: number,
+    quitPlays: number,
+    restartPlays: number,
+
+})[],
+
+} | null` Leaderboard play outcome stats
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      leaderboardControllerGetLeaderboardPlayStatsById: (
+         { id, ...query }: LeaderboardControllerGetLeaderboardPlayStatsByIdParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               totalPlays: number;
+               clearPlays: number;
+               failPlays: number;
+               quitPlays: number;
+               restartPlays: number;
+               unknownTimePlays: number;
+               bucketSizeSeconds: number;
+               refreshedAt: string;
+               buckets: {
+                  startSeconds: number;
+                  failPlays: number;
+                  quitPlays: number;
+                  restartPlays: number;
+               }[];
+            } | null,
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/leaderboards/${id}/play-stats`,
             method: 'GET',
             query: query,
             format: 'json',

@@ -12,7 +12,7 @@ type RankRequest = NonNullable<MapControllerGetMapByIdResponse['rankRequest']>;
 
 type LeaderboardScores = LeaderboardControllerGetLeaderboardScoresByIdResponse | null;
 
-type MapLeaderboardTab = 'leaderboard' | 'rank-request';
+type MapLeaderboardTab = 'leaderboard' | 'insights' | 'rank-request';
 type MapLeaderboardRouteName = 'map' | 'mapDifficulty';
 
 type LeaderboardSearchParams = SearchParamsRecord & {

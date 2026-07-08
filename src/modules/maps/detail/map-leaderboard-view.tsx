@@ -29,7 +29,7 @@ export function MapLeaderboardView<TLocation>({
    const hasMultipleGameModes = new Set(mapInfo.leaderboards.map((lb) => getGameModeFromRawDifficulty(lb.rawDifficulty))).size > 1;
 
    const hasRankRequest = rankRequest != null;
-   const activeTab = defaultTab === 'rank-request' ? 'rank-request' : 'leaderboard';
+   const activeTab = defaultTab === 'rank-request' && hasRankRequest ? 'rank-request' : defaultTab === 'insights' ? 'insights' : 'leaderboard';
    const canCreateRequest = Permissions.checkPermissionNumber(userPermissions, Permissions.security.RT | Permissions.security.RTR);
    const canQualify = Permissions.checkPermissionNumber(userPermissions, Permissions.security.NAT);
    const canDeny = Permissions.checkPermissionNumber(userPermissions, Permissions.security.NAT);

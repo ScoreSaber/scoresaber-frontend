@@ -28,7 +28,7 @@ export const leaderboardSearchSchema = z.object({
    scope: countryRegionSearchSchema,
    pivot: z.enum(LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT).optional(),
    highlight: isNumber.optional(),
-   tab: z.enum(['leaderboard', 'rank-request']).optional()
+   tab: z.enum(['leaderboard', 'insights', 'rank-request']).optional()
 });
 
 type MapLeaderboardRouteName = 'map' | 'mapDifficulty';
@@ -172,9 +172,10 @@ async function loadMapLeaderboardPageData({
    if (!mapResult.ok) return mapResult;
 
    const mapInfo = mapResult.data;
-   const activeLeaderboardId = leaderboardId ?? getDefaultMapLeaderboardId(mapInfo, searchParams.tab);
+   const activeLeaderboardId =
+      leaderboardId ?? getDefaultMapLeaderboardId(mapInfo, searchParams.tab === 'rank-request' ? 'rank-request' : 'leaderboard');
 
-   const shouldLoadScores = searchParams.tab !== 'rank-request' || mapInfo.rankRequest == null;
+   const shouldLoadScores = searchParams.tab !== 'insights' && (searchParams.tab !== 'rank-request' || mapInfo.rankRequest == null);
    const [leaderboardInfoResult, leaderboardScores] = await Promise.all([
       pageApiData(publicApi.leaderboard.leaderboardControllerGetLeaderboardById({ id: activeLeaderboardId })),
       shouldLoadScores

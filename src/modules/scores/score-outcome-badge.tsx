@@ -26,7 +26,7 @@ const OUTCOME_STYLES = {
 
 type NonClearOutcome = keyof typeof OUTCOME_STYLES;
 
-function formatOutcomeTime(seconds: number) {
+export function formatOutcomeTime(seconds: number) {
    const total = Math.max(0, Math.floor(seconds));
    const minutes = Math.floor(total / 60);
    const secs = total % 60;
