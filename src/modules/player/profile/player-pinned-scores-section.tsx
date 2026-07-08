@@ -22,9 +22,9 @@ import { cn, formatNumber, isLegacyAccuracyScore } from '@/shared/format/helpers
 import { getDifficultyLabel } from '@/shared/format/strings';
 
 type PinnedScore = PlayerControllerGetPlayerResponse['pinnedScores'][number];
-type PinnedScorePanel = 'details' | 'leaderboard';
+type PinnedScorePanel = 'details' | 'history';
 
-const InlineLeaderboard = dynamic(() => import('@/modules/scores/leaderboard/inline-leaderboard').then((mod) => mod.InlineLeaderboard), {
+const ScoreHistory = dynamic(() => import('@/modules/scores/score-history').then((mod) => mod.ScoreHistory), {
    ssr: false
 });
 
@@ -98,7 +98,7 @@ function PinnedScoreCard({
    const isRanked = leaderboard.realm.leaderboardStatus === 'RANKED';
    const trimmedComment = comment.trim();
    const showDetails = activePanel === 'details';
-   const showLeaderboard = activePanel === 'leaderboard';
+   const showHistory = activePanel === 'history';
    const isExpanded = activePanel != null;
 
    return (
@@ -170,10 +170,10 @@ function PinnedScoreCard({
             </ScoreCardSurface>
             <ScoreCardActions
                score={score}
-               expanded={showLeaderboard}
-               onToggleExpandedAction={() => onTogglePanelAction('leaderboard')}
+               historyExpanded={showHistory}
+               onToggleHistoryAction={() => onTogglePanelAction('history')}
                detailsExpanded={showDetails}
-               onToggleDetailsAction={score.hasReplay ? () => onTogglePanelAction('details') : undefined}
+               onToggleDetailsAction={() => onTogglePanelAction('details')}
                tooltipSide="left"
                replayTooltipSide="left"
                className={isExpanded ? 'right-3' : 'right-2'}
@@ -181,16 +181,8 @@ function PinnedScoreCard({
          </div>
          {activePanel && (
             <div className="mt-2 md:mx-4">
-               {showDetails && <ScoreDetailsInline score={score} />}
-               {showLeaderboard && (
-                  <InlineLeaderboard
-                     leaderboardId={leaderboard.id}
-                     leaderboard={leaderboard}
-                     mapId={leaderboard.map.id}
-                     playerRank={score.rank}
-                     playerScoreId={score.id}
-                  />
-               )}
+               {showDetails && <ScoreDetailsInline score={score} leaderboard={leaderboard} />}
+               {showHistory && <ScoreHistory scoreId={score.id} leaderboard={leaderboard} />}
             </div>
          )}
       </div>

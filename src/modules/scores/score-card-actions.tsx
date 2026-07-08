@@ -1,6 +1,6 @@
 'use client';
 
-import { ChartSpline, ChevronDown, Play, Trophy } from 'lucide-react';
+import { ChartSpline, ChevronDown, History, Play } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
@@ -16,8 +16,8 @@ import { cn } from '@/shared/format/helpers';
 interface ScoreCardActionsProps {
    score: PlayerControllerGetPlayerScoresDataItem['score'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem;
    className?: string;
-   expanded?: boolean;
-   onToggleExpandedAction?: () => void;
+   historyExpanded?: boolean;
+   onToggleHistoryAction?: () => void;
    detailsExpanded?: boolean;
    onToggleDetailsAction?: () => void;
    mobileBottomRow?: boolean;
@@ -29,8 +29,8 @@ interface ScoreCardActionsProps {
 export function ScoreCardActions({
    score,
    className,
-   expanded,
-   onToggleExpandedAction,
+   historyExpanded,
+   onToggleHistoryAction,
    detailsExpanded,
    onToggleDetailsAction,
    mobileBottomRow = false,
@@ -41,7 +41,7 @@ export function ScoreCardActions({
    const t = useTranslations();
    const iconButtonClassName = 'h-auto w-auto cursor-default p-0 text-muted-foreground hover:bg-transparent hover:text-foreground';
    const disabledClassName = cn(iconButtonClassName, 'text-muted-foreground/30 hover:text-muted-foreground/30');
-   const shouldCenterSingleAction = !score.hasReplay && !onToggleExpandedAction && !onToggleDetailsAction;
+   const shouldCenterSingleAction = !score.hasReplay && !onToggleHistoryAction && !onToggleDetailsAction;
    const bottomRowDesktopClassName =
       bottomRowDesktopBreakpoint === 'md' ? 'flex-row gap-3 md:flex-col md:gap-1.5' : 'flex-row gap-3 lg:flex-col lg:gap-1.5';
    const bottomRowDetailsClassName = bottomRowDesktopBreakpoint === 'md' ? 'gap-2 md:flex-col md:gap-1.5' : 'gap-2 lg:flex-col lg:gap-1.5';
@@ -98,26 +98,41 @@ export function ScoreCardActions({
       </Button>
    );
 
-   const expandButton = onToggleExpandedAction ? (
-      <Tooltip>
-         <TooltipTrigger asChild>
-            <Button
-               type="button"
-               variant="ghost-icon"
-               size="icon-xs"
-               onClick={onToggleExpandedAction}
-               className={cn(iconButtonClassName, 'gap-0.5', expanded && 'text-foreground')}
-               aria-label={expanded ? t('score.collapseLeaderboard') : t('score.expandLeaderboard')}
-               aria-expanded={expanded}
-            >
-               <Trophy data-icon />
-               <ChevronDown data-icon className={cn('transition-transform duration-200', expanded && 'rotate-180')} />
-            </Button>
-         </TooltipTrigger>
-         <TooltipContent side={tooltipSide}>
-            <p>{expanded ? t('score.collapseLeaderboard') : t('score.expandLeaderboard')}</p>
-         </TooltipContent>
-      </Tooltip>
+   const historyAvailable = score.hasHistory !== false;
+   const historyButton = onToggleHistoryAction ? (
+      historyAvailable ? (
+         <Tooltip>
+            <TooltipTrigger asChild>
+               <Button
+                  type="button"
+                  variant="ghost-icon"
+                  size="icon-xs"
+                  onClick={onToggleHistoryAction}
+                  className={cn(iconButtonClassName, 'gap-0.5', historyExpanded && 'text-foreground')}
+                  aria-label={historyExpanded ? t('score.hideHistory') : t('score.showHistory')}
+                  aria-expanded={historyExpanded}
+               >
+                  <History data-icon />
+                  <ChevronDown data-icon className={cn('transition-transform duration-200', historyExpanded && 'rotate-180')} />
+               </Button>
+            </TooltipTrigger>
+            <TooltipContent side={tooltipSide}>
+               <p>{t('score.scoreHistory')}</p>
+            </TooltipContent>
+         </Tooltip>
+      ) : (
+         <Button
+            type="button"
+            variant="ghost-icon"
+            size="icon-xs"
+            className={cn(disabledClassName, 'gap-0.5')}
+            disabled
+            aria-label={t('score.noScoreHistory')}
+         >
+            <History data-icon />
+            <ChevronDown data-icon />
+         </Button>
+      )
    ) : null;
 
    return (
@@ -134,14 +149,14 @@ export function ScoreCardActions({
                {replayButton}
                <div className={cn('flex', bottomRowDetailsClassName)}>
                   {detailsButton}
-                  {expandButton}
+                  {historyButton}
                </div>
             </div>
          ) : (
             <>
                {replayButton}
                {detailsButton}
-               {expandButton}
+               {historyButton}
             </>
          )}
       </div>

@@ -1826,6 +1826,13 @@ export interface ScoreControllerGetScoreHistoryParams {
     * @default 20
     */
    limit?: number;
+   /**
+    * Filter by play outcome. accepts a single value or comma-separated values
+    * @minItems 1
+    */
+   outcomes?: ('CLEAR' | 'FAIL' | 'QUIT' | 'RESTART')[];
+   /** Exclude personal best attempts */
+   excludePersonalBest?: string;
    /** @exclusiveMin true */
    id: number;
 }
@@ -3443,6 +3450,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -3655,6 +3663,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                         playOutcomeTime: number | null;
                         createdAt: string;
+                        hasHistory?: boolean;
                         player: {
                            id: string;
                            name: string;
@@ -3861,6 +3870,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -4073,6 +4083,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                         playOutcomeTime: number | null;
                         createdAt: string;
+                        hasHistory?: boolean;
                         player: {
                            id: string;
                            name: string;
@@ -4707,6 +4718,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -4810,6 +4822,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                playOutcomeTime: number | null;
                createdAt: string;
+               hasHistory?: boolean;
                player: {
                   id: string;
                   name: string;
@@ -4913,6 +4926,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -5065,6 +5079,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                      playOutcomeTime: number | null;
                      createdAt: string;
+                     hasHistory?: boolean;
                      player: {
                         id: string;
                         name: string;
@@ -6292,6 +6307,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -6405,6 +6421,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                   playOutcomeTime: number | null;
                   createdAt: string;
+                  hasHistory?: boolean;
                   player: {
                      id: string;
                      name: string;
@@ -6859,6 +6876,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -6905,6 +6923,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -7011,6 +7030,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                   playOutcomeTime: number | null;
                   createdAt: string;
+                  hasHistory?: boolean;
                   player: {
                      id: string;
                      name: string;
@@ -7053,6 +7073,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                   playOutcomeTime: number | null;
                   createdAt: string;
+                  hasHistory?: boolean;
                   player: {
                      id: string;
                      name: string;
@@ -23942,6 +23963,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -24214,6 +24236,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                   playOutcomeTime: number | null;
                   createdAt: string;
+                  hasHistory?: boolean;
                   player: {
                      id: string;
                      name: string;
@@ -24467,6 +24490,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
     playOutcomeTime: number | null,
     createdAt: string,
+    hasHistory?: boolean,
     player: {
     id: string,
     name: string,
@@ -24535,7 +24559,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 
 },
 
-}` Player's visible attempts on the same leaderboard up to this score
+}` Player's visible attempts on the same leaderboard
  * @response `400` `({
     statusCode: 400,
     error: "Bad Request",
@@ -24619,6 +24643,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
                      playOutcomeTime: number | null;
                      createdAt: string;
+                     hasHistory?: boolean;
                      player: {
                         id: string;
                         name: string;

@@ -5,6 +5,7 @@ import { useTranslations } from 'use-intl';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import { ScoreOutcomeBadge } from '@/modules/scores/score-outcome-badge';
 import type {
    LeaderboardControllerGetLeaderboardScoresByIdDataItem,
    PlayerControllerGetPlayerScoresDataItem
@@ -57,7 +58,9 @@ export function ScoreStats({
             className
          )}
       >
-         {showAccuracy && (
+         {score.playOutcome !== 'CLEAR' && score.playOutcomeTime != null ? (
+            <ScoreOutcomeBadge outcome={score.playOutcome} time={score.playOutcomeTime} statClassName={statClassName} iconClassName={iconClassName} />
+         ) : showAccuracy ? (
             <div className={cn('flex', isCompact ? 'gap-1' : 'gap-2 lg:mb-1')}>
                <Tooltip>
                   <TooltipTrigger asChild>
@@ -110,7 +113,7 @@ export function ScoreStats({
                   </Stat>
                )}
             </div>
-         )}
+         ) : null}
 
          <div className={cn('flex items-center', isCompact ? 'gap-1' : 'gap-2')}>
             {showScoreStat && (

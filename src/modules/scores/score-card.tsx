@@ -19,11 +19,11 @@ import { buildSongInfoProps, cn, formatAccuracy, formatPP, getHmdName, isLegacyA
 import { starsToPP } from '@/shared/format/star-conversion';
 import { isLeaderboardRanked } from '@/shared/format/styling';
 
-const InlineLeaderboard = dynamic(() => import('@/modules/scores/leaderboard/inline-leaderboard').then((mod) => mod.InlineLeaderboard), {
+const ScoreHistory = dynamic(() => import('@/modules/scores/score-history').then((mod) => mod.ScoreHistory), {
    ssr: false
 });
 
-type Panel = 'details' | 'leaderboard' | null;
+type Panel = 'details' | 'history' | null;
 
 interface ScoreCardProps {
    playerScore: PlayerControllerGetPlayerScoresDataItem;
@@ -50,7 +50,7 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
    const panelRef = useRef<HTMLDivElement>(null);
 
    const toggle = useCallback(
-      (panel: 'details' | 'leaderboard') => {
+      (panel: 'details' | 'history') => {
          if (activePanel === panel) {
             setActivePanel(null);
             setMinHeight(0);
@@ -72,7 +72,7 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
    }, []);
 
    const showDetails = activePanel === 'details';
-   const showLeaderboard = activePanel === 'leaderboard';
+   const showHistory = activePanel === 'history';
 
    return (
       <div>
@@ -119,10 +119,10 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
             <Separator variant="gradient" className="absolute right-4 bottom-7 left-4 lg:hidden" />
             <ScoreCardActions
                score={score}
-               expanded={showLeaderboard}
-               onToggleExpandedAction={() => toggle('leaderboard')}
+               historyExpanded={showHistory}
+               onToggleHistoryAction={() => toggle('history')}
                detailsExpanded={showDetails}
-               onToggleDetailsAction={score.hasReplay ? () => toggle('details') : undefined}
+               onToggleDetailsAction={() => toggle('details')}
                tooltipSide="right"
                mobileBottomRow
                className="bottom-2 left-1/2 -translate-x-1/2 lg:top-1/2 lg:right-3 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:-translate-y-1/2"
@@ -136,17 +136,10 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
                   </div>
                )}
                <div className={cn(transitioning ? 'invisible absolute' : undefined, 'mt-2 lg:mx-6')}>
-                  {showDetails && <ScoreDetailsInline score={score} fcPPContext={fcPPContext} onReadyAction={onPanelReady} />}
-                  {showLeaderboard && (
-                     <InlineLeaderboard
-                        leaderboardId={leaderboard.id}
-                        leaderboard={leaderboard}
-                        mapId={leaderboard.map.id}
-                        playerRank={score.rank}
-                        playerScoreId={score.id}
-                        onReadyAction={onPanelReady}
-                     />
+                  {showDetails && (
+                     <ScoreDetailsInline score={score} fcPPContext={fcPPContext} leaderboard={leaderboard} onReadyAction={onPanelReady} />
                   )}
+                  {showHistory && <ScoreHistory scoreId={score.id} leaderboard={leaderboard} onReadyAction={onPanelReady} />}
                </div>
             </div>
          )}

@@ -11,6 +11,7 @@ import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
 import { ScoreCardActions } from '@/modules/scores/score-card-actions';
 import { ScoreDetailsInline } from '@/modules/scores/score-details-inline';
+import { ScoreHistory } from '@/modules/scores/score-history';
 import { ScoreStats } from '@/modules/scores/score-stats';
 import type {
    LeaderboardControllerGetLeaderboardByIdResponse,
@@ -29,9 +30,19 @@ interface LeaderboardScoresTableProps {
    // when filtering by scope/search, pass pagination info to compute relative ranks
    scopedPage?: number;
    scopedPageSize?: number;
+   showHistory?: boolean;
+   historyContext?: boolean;
 }
 
-export function LeaderboardScoresTable({ scores, leaderboard, highlight, scopedPage, scopedPageSize }: LeaderboardScoresTableProps) {
+export function LeaderboardScoresTable({
+   scores,
+   leaderboard,
+   highlight,
+   scopedPage,
+   scopedPageSize,
+   showHistory = true,
+   historyContext = false
+}: LeaderboardScoresTableProps) {
    const isRanked = isLeaderboardRanked(leaderboard);
    const isScoped = scopedPage != null && scopedPageSize != null;
 
@@ -47,6 +58,8 @@ export function LeaderboardScoresTable({ scores, leaderboard, highlight, scopedP
                   showAccuracy={leaderboard.maxScore > 0}
                   leaderboard={leaderboard}
                   relativeRank={isScoped ? (scopedPage - 1) * scopedPageSize + index + 1 : undefined}
+                  showHistory={showHistory}
+                  historyContext={historyContext}
                />
             ))}
          </div>
@@ -61,10 +74,22 @@ interface LeaderboardScoreCardProps {
    showAccuracy: boolean;
    leaderboard: LeaderboardControllerGetLeaderboardByIdResponse;
    relativeRank?: number;
+   showHistory: boolean;
+   historyContext: boolean;
 }
 
-function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, leaderboard, relativeRank }: LeaderboardScoreCardProps) {
+function LeaderboardScoreCard({
+   score,
+   isRanked,
+   isHighlighted,
+   showAccuracy,
+   leaderboard,
+   relativeRank,
+   showHistory,
+   historyContext
+}: LeaderboardScoreCardProps) {
    const [detailsExpanded, setDetailsExpanded] = useState(false);
+   const [historyExpanded, setHistoryExpanded] = useState(false);
    const legacyAccuracy = isLegacyAccuracyScore(score.createdAt);
    const fcPPContext = isRanked
       ? {
@@ -76,6 +101,7 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, le
 
    const hmdName = getHmdName(score.device, score.legacyHmdId);
    const hasDevice = !!(hmdName || score.device?.controllerLeft || score.device?.controllerRight);
+   const hasBottomActions = score.hasReplay || showHistory;
 
    const deviceIcons = hasDevice ? (
       <DeviceDisplay
@@ -86,22 +112,27 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, le
       />
    ) : null;
 
-   const rankDisplay =
-      relativeRank != null ? (
-         <span className="flex items-baseline gap-1">
-            <span className="text-muted-foreground tabular-nums">#{formatNumber(relativeRank)}</span>
-            <span className="text-muted-foreground/60 text-xs tabular-nums">(#{formatNumber(score.rank)})</span>
-         </span>
-      ) : (
+   const rankDisplay = historyContext ? (
+      score.playOutcome === 'CLEAR' ? (
          <span className="text-muted-foreground tabular-nums">#{formatNumber(score.rank)}</span>
-      );
+      ) : (
+         <span className="text-muted-foreground/60 tabular-nums">--</span>
+      )
+   ) : relativeRank != null ? (
+      <span className="flex items-baseline gap-1">
+         <span className="text-muted-foreground tabular-nums">#{formatNumber(relativeRank)}</span>
+         <span className="text-muted-foreground/60 text-xs tabular-nums">(#{formatNumber(score.rank)})</span>
+      </span>
+   ) : (
+      <span className="text-muted-foreground tabular-nums">#{formatNumber(score.rank)}</span>
+   );
 
    return (
       <div>
          <div
             className={cn(
                'bg-secondary/40 relative w-full rounded-lg border px-3 py-2.5 text-left transition-colors',
-               score.hasReplay ? 'pb-10' : 'pb-2.5',
+               hasBottomActions ? 'pb-10' : 'pb-2.5',
                'md:pr-14 md:pb-2.5',
                isHighlighted && 'border-primary'
             )}
@@ -181,24 +212,31 @@ function LeaderboardScoreCard({ score, isRanked, isHighlighted, showAccuracy, le
             </div>
 
             {/* actions */}
-            {score.hasReplay && <Separator variant="gradient" className="absolute right-4 bottom-8 left-4 md:hidden" />}
+            {hasBottomActions && <Separator variant="gradient" className="absolute right-4 bottom-8 left-4 md:hidden" />}
             <ScoreCardActions
                score={score}
                detailsExpanded={detailsExpanded}
                onToggleDetailsAction={score.hasReplay ? () => setDetailsExpanded((prev) => !prev) : undefined}
+               historyExpanded={historyExpanded}
+               onToggleHistoryAction={showHistory ? () => setHistoryExpanded((prev) => !prev) : undefined}
                replayTooltipSide="top"
                tooltipSide="bottom"
                mobileBottomRow
                bottomRowDesktopBreakpoint="md"
                className={cn(
                   'md:top-1/2 md:right-3 md:bottom-auto md:left-auto md:translate-x-0 md:-translate-y-1/2',
-                  score.hasReplay ? 'bottom-2 left-1/2 -translate-x-1/2' : 'hidden md:flex'
+                  score.hasReplay || showHistory ? 'bottom-2 left-1/2 -translate-x-1/2' : 'hidden md:flex'
                )}
             />
          </div>
          {detailsExpanded && (
             <div className="mt-2 lg:mx-6">
                <ScoreDetailsInline score={score} fcPPContext={fcPPContext} />
+            </div>
+         )}
+         {historyExpanded && (
+            <div className="mt-2 lg:mx-6">
+               <ScoreHistory scoreId={score.id} leaderboard={leaderboard} />
             </div>
          )}
       </div>

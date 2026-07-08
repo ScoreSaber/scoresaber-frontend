@@ -25,11 +25,20 @@ interface InlineLeaderboardProps {
    playerRank: number;
    playerScoreId: number;
    onReadyAction?: () => void;
+   unstyled?: boolean;
 }
 
 const PAGE_SIZE = 6;
 
-export function InlineLeaderboard({ leaderboardId, leaderboard, mapId, playerRank, playerScoreId, onReadyAction }: InlineLeaderboardProps) {
+export function InlineLeaderboard({
+   leaderboardId,
+   leaderboard,
+   mapId,
+   playerRank,
+   playerScoreId,
+   onReadyAction,
+   unstyled = false
+}: InlineLeaderboardProps) {
    const t = useTranslations();
    const initialPage = rankToPage(playerRank, PAGE_SIZE);
    const [page, setPage] = useState(initialPage);
@@ -65,7 +74,7 @@ export function InlineLeaderboard({ leaderboardId, leaderboard, mapId, playerRan
    }
 
    return (
-      <div ref={containerRef} className="bg-secondary/30 rounded border p-3">
+      <div ref={containerRef} className={unstyled ? undefined : 'bg-secondary/30 rounded border p-3'}>
          {isLoading && !scores ? (
             <div className="flex items-center justify-center py-8">
                <Icons.spinner className="text-muted-foreground size-6 animate-spin" />
@@ -74,7 +83,7 @@ export function InlineLeaderboard({ leaderboardId, leaderboard, mapId, playerRan
             <p className="text-destructive py-4 text-center text-sm">{t('leaderboard.failedToLoad')}</p>
          ) : scores && scores.length > 0 ? (
             <div className={isPlaceholderData ? 'pointer-events-none opacity-50 transition-opacity' : 'transition-opacity'}>
-               <LeaderboardScoresTable scores={scores} leaderboard={leaderboard} highlight={playerScoreId} />
+               <LeaderboardScoresTable scores={scores} leaderboard={leaderboard} highlight={playerScoreId} showHistory={false} />
                <div className="mt-2 flex items-center justify-center gap-2">
                   {totalPages > 1 && (
                      <>

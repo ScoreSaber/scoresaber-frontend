@@ -64,7 +64,7 @@ function FadeInImageImpl({
             {...props}
             alt={alt}
             ref={imgRef}
-            loading={priority ? 'eager' : loading}
+            loading={priority ? 'eager' : (loading ?? 'lazy')}
             fetchPriority={priority ? 'high' : fetchPriority}
             style={mergedStyle}
             className={cn(className, 'transition-opacity duration-300', isLoaded ? 'opacity-100' : 'opacity-0')}

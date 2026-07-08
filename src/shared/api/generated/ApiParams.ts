@@ -144,6 +144,11 @@ export const OAUTH_CONTROLLER_GET_AUTHORIZE_INFO_CODE_CHALLENGE_METHOD = ['S256'
 >[];
 export type OauthControllerGetAuthorizeInfoCodeChallengeMethod = (typeof OAUTH_CONTROLLER_GET_AUTHORIZE_INFO_CODE_CHALLENGE_METHOD)[number];
 
+export const SCORE_CONTROLLER_GET_SCORE_HISTORY_OUTCOMES = ['CLEAR', 'FAIL', 'QUIT', 'RESTART'] as const satisfies readonly NonNullable<
+   ApiTypes.ScoreControllerGetScoreHistoryParams['outcomes']
+>[number][];
+export type ScoreControllerGetScoreHistoryOutcomes = (typeof SCORE_CONTROLLER_GET_SCORE_HISTORY_OUTCOMES)[number];
+
 export const USER_CONTROLLER_REMOVE_CONNECTION_PROVIDER = ['STEAM', 'OCULUS', 'PATREON', 'DISCORD'] as const satisfies readonly NonNullable<
    ApiTypes.UserControllerRemoveConnectionParams['provider']
 >[];

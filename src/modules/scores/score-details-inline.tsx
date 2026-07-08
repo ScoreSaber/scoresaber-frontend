@@ -3,10 +3,14 @@
 import { useEffect } from 'react';
 
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'use-intl';
 
 import type { FCPPContext } from './score-stats-detail';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import type {
+   LeaderboardControllerGetLeaderboardByIdResponse,
    LeaderboardControllerGetLeaderboardScoresByIdDataItem,
    PlayerControllerGetPlayerScoresDataItem
 } from '@/shared/api/generated/ApiParams';
@@ -21,22 +25,61 @@ const ScoreStatsDetail = dynamic(() => import('./score-stats-detail').then((mod)
    )
 });
 
+const InlineLeaderboard = dynamic(() => import('@/modules/scores/leaderboard/inline-leaderboard').then((mod) => mod.InlineLeaderboard), {
+   ssr: false
+});
+
 interface ScoreDetailsInlineProps {
    score: PlayerControllerGetPlayerScoresDataItem['score'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem;
    fcPPContext?: FCPPContext;
+   leaderboard?: LeaderboardControllerGetLeaderboardByIdResponse;
    onReadyAction?: () => void;
 }
 
-export function ScoreDetailsInline({ score, fcPPContext, onReadyAction }: ScoreDetailsInlineProps) {
-   // if no replay, content is synchronous. signal ready immediately
+export function ScoreDetailsInline({ score, fcPPContext, leaderboard, onReadyAction }: ScoreDetailsInlineProps) {
+   const t = useTranslations();
+
    useEffect(() => {
-      if (!score.hasReplay) onReadyAction?.();
+      if (!score.hasReplay && !leaderboard) onReadyAction?.();
    }, []);
+
+   const detailsContent = score.hasReplay ? (
+      <ScoreStatsDetail scoreId={score.id} fullCombo={score.fullCombo} fcPPContext={fcPPContext} onLoadedAction={onReadyAction} />
+   ) : null;
+
+   const leaderboardContent = leaderboard ? (
+      <InlineLeaderboard
+         leaderboardId={leaderboard.id}
+         leaderboard={leaderboard}
+         mapId={leaderboard.map.id}
+         playerRank={score.rank}
+         playerScoreId={score.id}
+         onReadyAction={onReadyAction}
+         unstyled
+      />
+   ) : null;
 
    return (
       <div className="bg-secondary/30 animate-in fade-in rounded border p-3 text-sm duration-300">
-         {score.hasReplay && (
-            <ScoreStatsDetail scoreId={score.id} fullCombo={score.fullCombo} fcPPContext={fcPPContext} onLoadedAction={onReadyAction} />
+         {detailsContent && leaderboardContent ? (
+            <Tabs defaultValue="details">
+               <TabsList variant="accent-pill" className="mx-auto w-fit">
+                  <TabsTrigger value="details" className="px-4">
+                     {t('score.detailsTab')}
+                  </TabsTrigger>
+                  <TabsTrigger value="leaderboard" className="px-4">
+                     {t('score.leaderboardTab')}
+                  </TabsTrigger>
+               </TabsList>
+               <TabsContent value="details" className="mt-3">
+                  {detailsContent}
+               </TabsContent>
+               <TabsContent value="leaderboard" className="mt-3">
+                  {leaderboardContent}
+               </TabsContent>
+            </Tabs>
+         ) : (
+            (detailsContent ?? leaderboardContent)
          )}
       </div>
    );

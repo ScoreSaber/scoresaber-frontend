@@ -47,14 +47,9 @@ export function PlayerProfileCustomizationSheet<Tab extends string>({
             </SheetHeader>
             <Tabs value={activeTab} onValueChange={changeActiveTab} className="min-h-0 flex-1 gap-0">
                <div className="shrink-0 px-5 pt-4">
-                  <TabsList className="bg-accent/25 h-auto w-full justify-start overflow-x-auto rounded-2xl border p-0.5">
+                  <TabsList variant="compact-pill" className="justify-start overflow-x-auto">
                      {tabs.map((tab) => (
-                        <TabsTrigger
-                           key={tab.value}
-                           value={tab.value}
-                           disabled={tab.disabled}
-                           className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground h-8 rounded-[0.8rem] border-transparent px-3 text-[13px] font-semibold shadow-none data-[state=active]:pointer-events-none data-[state=active]:border-transparent dark:data-[state=active]:border-transparent"
-                        >
+                        <TabsTrigger key={tab.value} value={tab.value} disabled={tab.disabled} className="px-3">
                            {tab.label}
                         </TabsTrigger>
                      ))}
