@@ -39,10 +39,15 @@ export function MapLeaderboardFilters<TLocation>({ currentSearch, search, buildL
    const isLoggedIn = user != null;
 
    const currentPivot = search.pivot ?? null;
+   const currentScope = search.scope === 'country' || search.scope === 'region' ? undefined : search.scope;
    const userCountry = user ? parseCountryRegionParam(user.country) : undefined;
-   const userCountryActive = Boolean(userCountry && formatCountryRegionParam(search.scope) === formatCountryRegionParam(userCountry));
-   const globalActive = !currentPivot && !userCountryActive;
-   const activeFilterCount = (search.scope ? 1 : 0) + (currentSearch ? 1 : 0) + (currentPivot ? 1 : 0);
+   const userCountryActive =
+      isLoggedIn &&
+      (search.scope === 'country' || Boolean(userCountry && formatCountryRegionParam(currentScope) === formatCountryRegionParam(userCountry)));
+   const viewerRegionActive = isLoggedIn && search.scope === 'region';
+   const globalActive = !currentPivot && !userCountryActive && !viewerRegionActive;
+   const activeScope = search.scope === 'country' || search.scope === 'region' ? isLoggedIn : Boolean(search.scope);
+   const activeFilterCount = (activeScope ? 1 : 0) + (currentSearch ? 1 : 0) + (currentPivot ? 1 : 0);
    const hasActiveFilters = activeFilterCount > 0;
 
    function preloadHandlers(updates: Partial<LeaderboardSearchParams>) {
@@ -55,7 +60,7 @@ export function MapLeaderboardFilters<TLocation>({ currentSearch, search, buildL
    }
 
    function getGlobalUpdates() {
-      return { pivot: undefined, highlight: undefined, scope: userCountryActive ? undefined : search.scope };
+      return { pivot: undefined, highlight: undefined, scope: userCountryActive || viewerRegionActive ? undefined : search.scope };
    }
 
    function navigateSearch(updates: Partial<LeaderboardSearchParams>) {
@@ -184,7 +189,7 @@ export function MapLeaderboardFilters<TLocation>({ currentSearch, search, buildL
                      <Separator />
                   </>
                )}
-               <LeaderboardScopeNavigator currentScope={search.scope} navigateAction={navigateSearch} className="*:flex-1" />
+               <LeaderboardScopeNavigator currentScope={currentScope} navigateAction={navigateSearch} className="*:flex-1" />
                <LeaderboardSearch currentSearch={currentSearch} navigateAction={navigateSearch} />
             </div>
          </PopoverContent>

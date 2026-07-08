@@ -10,7 +10,7 @@ import type { SearchParamsRecord, SearchParamValue } from '@/shared/url-state/se
 type LeaderboardSearchParams = SearchParamsRecord & {
    page: number;
    search?: string;
-   scope?: CountryRegionFilterValue;
+   scope?: CountryRegionFilterValue | 'country' | 'region';
    pivot?: (typeof LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT)[number];
    highlight?: number;
    tab?: 'leaderboard' | 'rank-request';
@@ -35,11 +35,16 @@ function parsePersistedLeaderboardSearch(search: SearchParamsRecord): Leaderboar
    return {
       page: 1,
       search: typeof search.search === 'string' ? search.search : undefined,
-      scope: parseCountryRegionParam(search.scope),
+      scope: parseLeaderboardScope(search.scope),
       pivot: isLeaderboardPivot(search.pivot) ? search.pivot : undefined,
       highlight: typeof search.highlight === 'number' ? search.highlight : undefined,
       tab: search.tab === 'rank-request' || search.tab === 'leaderboard' ? search.tab : undefined
    };
+}
+
+function parseLeaderboardScope(value: SearchParamValue): LeaderboardSearchParams['scope'] {
+   if (value === 'country' || value === 'region') return value;
+   return parseCountryRegionParam(value);
 }
 
 function isLeaderboardPivot(value: SearchParamValue): value is LeaderboardSearchParams['pivot'] {

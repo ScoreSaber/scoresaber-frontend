@@ -25,7 +25,7 @@ import { SetPageBackground } from '@/shell/background/page-background-provider';
 export const leaderboardSearchSchema = z.object({
    page: isPageNumber,
    search: z.string().optional(),
-   scope: countryRegionSearchSchema,
+   scope: z.enum(['country', 'region']).or(countryRegionSearchSchema),
    pivot: z.enum(LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT).optional(),
    highlight: isNumber.optional(),
    tab: z.enum(['leaderboard', 'insights', 'rank-request']).optional()
@@ -55,7 +55,7 @@ export const getMapLeaderboardPageData = createServerFn({ method: 'GET' })
          persistedKeys: leaderboardFilterPreferences.persistedKeys,
          enabled: Boolean(token)
       });
-      const searchParams = leaderboardSearchSchema.parse({ ...data.search, ...effectiveSearchParams });
+      const searchParams = normalizeViewerScopeSearch(leaderboardSearchSchema.parse({ ...data.search, ...effectiveSearchParams }), Boolean(token));
       const result = await loadMapLeaderboardPageData({
          mapId: data.mapId,
          leaderboardId: data.leaderboardId,
@@ -134,6 +134,14 @@ function parseLeaderboardSearch(search: Record<string, unknown>) {
    return leaderboardSearchSchema.safeParse({ page: 1, ...search }).data ?? null;
 }
 
+function normalizeViewerScopeSearch(searchParams: MapLeaderboardSearch, hasSession: boolean) {
+   if (hasSession || (searchParams.scope !== 'country' && searchParams.scope !== 'region')) return searchParams;
+
+   const globalSearchParams = { ...searchParams };
+   delete globalSearchParams.scope;
+   return globalSearchParams;
+}
+
 export function buildMapLeaderboardHead(
    loaderData: Awaited<ReturnType<typeof getMapLeaderboardPageData>> | undefined,
    routeName: MapLeaderboardRouteName
@@ -167,7 +175,7 @@ async function loadMapLeaderboardPageData({
 }) {
    const page = searchParams.page ?? 1;
    const mapApi = hasSession ? api : publicApi;
-   const scoreApi = searchParams.pivot ? api : publicApi;
+   const scoreApi = searchParams.pivot || searchParams.scope === 'country' || searchParams.scope === 'region' ? api : publicApi;
    const mapResult = await pageApiData(mapApi.map.mapControllerGetMapById({ id: mapId }));
    if (!mapResult.ok) return mapResult;
 

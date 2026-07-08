@@ -14,11 +14,12 @@ type LeaderboardScores = LeaderboardControllerGetLeaderboardScoresByIdResponse |
 
 type MapLeaderboardTab = 'leaderboard' | 'insights' | 'rank-request';
 type MapLeaderboardRouteName = 'map' | 'mapDifficulty';
+type LeaderboardScopeSearch = CountryRegionFilterValue | 'country' | 'region';
 
 type LeaderboardSearchParams = SearchParamsRecord & {
    page: number;
    search?: string;
-   scope?: CountryRegionFilterValue;
+   scope?: LeaderboardScopeSearch;
    pivot?: LeaderboardControllerGetLeaderboardScoresByIdPivot;
    highlight?: number;
    tab?: MapLeaderboardTab;
@@ -39,4 +40,11 @@ interface MapLeaderboardViewProps<TLocation> {
    parseSearch: (search: SearchParamsRecord) => LeaderboardSearchParams | null;
 }
 
-export type { LeaderboardScores, LeaderboardSearchParams, MapLeaderboardRouteName, MapLeaderboardTab, MapLeaderboardViewProps, RankRequest };
+export type {
+   LeaderboardScores,
+   LeaderboardSearchParams,
+   MapLeaderboardRouteName,
+   MapLeaderboardTab,
+   MapLeaderboardViewProps,
+   RankRequest
+};
