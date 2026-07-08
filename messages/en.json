@@ -406,6 +406,8 @@
    "score": {
       "legacyAccuracy": "Score was set before the max score change",
       "weighted": "Weighted {weightedPercent}",
+      "accuracyPreview": "Accuracy preview",
+      "resetAccuracyPreview": "Reset accuracy preview",
       "score": "Score",
       "mods": "Mods",
       "watchReplay": "Watch Replay",

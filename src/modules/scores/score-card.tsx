@@ -113,6 +113,7 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
                      showAccuracy={leaderboard.maxScore > 0}
                      showPP={isRanked}
                      legacyAccuracy={isLegacyAccuracyScore(score.createdAt)}
+                     accuracyPPContext={fcPPContext}
                   />
                </div>
             </ScoreCardSurface>

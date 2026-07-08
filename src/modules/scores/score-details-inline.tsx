@@ -5,10 +5,9 @@ import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
-import type { FCPPContext } from './score-stats-detail';
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+import type { ScorePPContext } from '@/modules/scores/score-pp-context';
 import type {
    LeaderboardControllerGetLeaderboardByIdResponse,
    LeaderboardControllerGetLeaderboardScoresByIdDataItem,
@@ -31,7 +30,7 @@ const InlineLeaderboard = dynamic(() => import('@/modules/scores/leaderboard/inl
 
 interface ScoreDetailsInlineProps {
    score: PlayerControllerGetPlayerScoresDataItem['score'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem;
-   fcPPContext?: FCPPContext;
+   fcPPContext?: ScorePPContext;
    leaderboard?: LeaderboardControllerGetLeaderboardByIdResponse;
    onReadyAction?: () => void;
 }
