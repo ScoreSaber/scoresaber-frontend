@@ -182,6 +182,7 @@ function buildPlayerChartDatasets({
          pointHoverBackgroundColor: chartColors.metricBorder[key],
          pointHoverBorderColor: chartColors.pointHoverBorder,
          parsing: false,
+         cubicInterpolationMode: isRankMetric ? 'monotone' : 'default',
          tension: 0.3,
          spanGaps: false,
          segment: isRankMetric
