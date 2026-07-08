@@ -177,6 +177,8 @@ export type RealmControllerGetRealmsItem = RealmControllerGetRealmsResponse[numb
 
 export type RealmControllerGetRealmByIdResponse = _R<_Realm['realmControllerGetRealmById']>;
 
+export type RealmControllerGetRealmPPCurveResponse = _R<_Realm['realmControllerGetRealmPPCurve']>;
+
 export type PlayerControllerGetPlayersResponse = _R<_Player['playerControllerGetPlayers']>;
 export type PlayerControllerGetPlayersDataItem = PlayerControllerGetPlayersResponse['data'][number];
 
@@ -450,6 +452,10 @@ export type AdminUploadTrustControllerRevokeDevelopmentCredentialResponse = _R<
 
 export type AdminUploadTrustControllerRevokeOfficialBuildResponse = _R<_AdminUploadTrust['adminUploadTrustControllerRevokeOfficialBuild']>;
 
+export type AdminUploadTrustControllerAddOfficialBuildCompatibilityResponse = _R<
+   _AdminUploadTrust['adminUploadTrustControllerAddOfficialBuildCompatibility']
+>;
+
 export type AdminUserControllerBanPlayerResponse = _R<_AdminUser['adminUserControllerBanPlayer']>;
 
 export type AdminUserControllerUnbanPlayerResponse = _R<_AdminUser['adminUserControllerUnbanPlayer']>;
@@ -465,6 +471,8 @@ export type AdminUserControllerAdminResetCountryResponse = _R<_AdminUser['adminU
 export type AdminUserControllerUpdatePermissionsResponse = _R<_AdminUser['adminUserControllerUpdatePermissions']>;
 
 export type AdminUserControllerMergePlayerResponse = _R<_AdminUser['adminUserControllerMergePlayer']>;
+
+export type AdminUserControllerDeleteUserDataResponse = _R<_AdminUser['adminUserControllerDeleteUserData']>;
 
 export type AdminVersionControllerGetVersionsResponse = _R<_AdminVersion['adminVersionControllerGetVersions']>;
 export type AdminVersionControllerGetVersionsItem = AdminVersionControllerGetVersionsResponse[number];

@@ -567,6 +567,7 @@
       "hideEstimatedData": "Hide estimated data",
       "showEstimatedData": "Show estimated data",
       "peakRecorded": "Peak Recorded",
+      "weeklyRankChangeTooltip": "Weekly change",
       "previousNames": "Previous Names",
       "viewPreviousNames": "View previous names",
       "aliasRemoved": "Alias removed",

@@ -32,6 +32,7 @@ import { PlayerLivePresenceIndicator } from '@/modules/player/profile/player-liv
 import { getProfileAccentProperties } from '@/modules/player/profile/player-profile-accent';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
+import { WeeklyRankChange } from '@/modules/player/shared/weekly-rank-change';
 import type { PlayerAliasControllerGetAliasesItem, PlayerControllerGetPlayerResponse } from '@/shared/api/generated/ApiParams';
 import { CountryImage } from '@/shared/components/country-image';
 import { DeviceDisplay } from '@/shared/components/device-display';
@@ -320,6 +321,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                               search: { page: rankToPage(stats.rank, 50), highlight: player.id },
                               icon: <FaGlobe className="text-muted-foreground size-3" />,
                               value: stats.rank,
+                              change: stats.rankChange,
                               label: t('player.global')
                            },
                            {
@@ -330,9 +332,10 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                               },
                               icon: <CountryImage country={player.country} size={16} />,
                               value: stats.countryRank,
+                              change: null,
                               label: t('player.countryRank')
                            }
-                        ].map(({ search, icon, value, label }) => (
+                        ].map(({ search, icon, value, change, label }) => (
                            <rankingsRoute.Link
                               key={label}
                               search={search}
@@ -341,7 +344,10 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                            >
                               {icon}
                               <div>
-                                 <div className={cn(accentTextClass, 'text-sm font-bold tabular-nums')}>#{formatNumber(value)}</div>
+                                 <div className="flex items-center gap-1">
+                                    <div className={cn(accentTextClass, 'text-sm font-bold tabular-nums')}>#{formatNumber(value)}</div>
+                                    <WeeklyRankChange change={change} />
+                                 </div>
                                  <div className="text-muted-foreground text-[9px] tracking-wider uppercase">{label}</div>
                               </div>
                            </rankingsRoute.Link>

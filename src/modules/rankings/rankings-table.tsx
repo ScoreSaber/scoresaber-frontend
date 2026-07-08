@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { PlayerListLivePresenceIndicator, PlayerLivePresenceProvider } from '@/modules/player/profile/player-live-presence-indicator';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
+import { WeeklyRankChange } from '@/modules/player/shared/weekly-rank-change';
 import type {
    PlayerControllerGetPlayersDataItem,
    PlayerControllerGetPlayersPivot,
@@ -375,6 +376,7 @@ function RankingCardRank({ player, countryFiltered, isDefaultSort, listPosition 
             listPosition={listPosition}
             globalRank={stats.rank}
             countryRank={stats.countryRank}
+            rankChange={stats.rankChange}
             country={player.country}
          />
       </span>
@@ -408,6 +410,7 @@ function RankingRow({ player, countryFiltered, isDefaultSort, listPosition, high
                listPosition={listPosition}
                globalRank={stats.rank}
                countryRank={stats.countryRank}
+               rankChange={stats.rankChange}
                country={player.country}
             />
          </TableCell>
@@ -436,20 +439,27 @@ interface RankCellProps {
    listPosition: number;
    globalRank: number;
    countryRank: number;
+   rankChange: number | null;
    country: string;
 }
 
-function RankCell({ isDefaultSort, countryFiltered, listPosition, globalRank, countryRank, country }: RankCellProps) {
+function RankCell({ isDefaultSort, countryFiltered, listPosition, globalRank, countryRank, rankChange, country }: RankCellProps) {
    if (isDefaultSort) {
       if (countryFiltered) {
          return (
-            <>
+            <span className="inline-flex items-center gap-1 tabular-nums">
                <span>#{formatNumber(listPosition)}</span>
-               <span className="text-muted-foreground ml-1 text-xs">(#{formatNumber(globalRank)})</span>
-            </>
+               <span className="text-muted-foreground text-xs">(#{formatNumber(globalRank)})</span>
+               <WeeklyRankChange change={rankChange} />
+            </span>
          );
       }
-      return <>#{formatNumber(globalRank)}</>;
+      return (
+         <span className="inline-flex items-center gap-1.5 tabular-nums">
+            #{formatNumber(globalRank)}
+            <WeeklyRankChange change={rankChange} />
+         </span>
+      );
    }
 
    return (
@@ -465,6 +475,7 @@ function RankCell({ isDefaultSort, countryFiltered, listPosition, globalRank, co
             <span className="inline-flex items-center gap-0.5">
                <FaGlobe className="size-2.5" />
                <span className="tabular-nums">#{formatNumber(globalRank)}</span>
+               <WeeklyRankChange change={rankChange} />
             </span>
          </div>
       </div>

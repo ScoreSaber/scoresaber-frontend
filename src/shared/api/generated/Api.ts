@@ -15,6 +15,11 @@ export interface RealmControllerGetRealmByIdParams {
    id: number;
 }
 
+export interface RealmControllerGetRealmPPCurveParams {
+   /** @exclusiveMin true */
+   id: number;
+}
+
 export interface PlayerControllerGetPlayersParams {
    /**
     * Page number
@@ -1446,6 +1451,8 @@ export interface GameBuildControllerRegisterOfficialBuildPayload {
     * @maxLength 36
     */
    uploadVersionHash: string;
+   /** @default "pc" */
+   platform?: 'pc' | 'quest';
    /** @maxItems 32 */
    supportedVersions?: {
       /**
@@ -1458,6 +1465,7 @@ export interface GameBuildControllerRegisterOfficialBuildPayload {
        * @maxLength 36
        */
       uploadVersionHash: string;
+      platform?: 'pc' | 'quest';
    }[];
    protocolVersion: 2;
    /** @pattern ^[a-f0-9]{40}$ */
@@ -2002,6 +2010,21 @@ export interface AdminUploadTrustControllerRevokeOfficialBuildParams {
    buildId: string;
 }
 
+export interface AdminUploadTrustControllerAddOfficialBuildCompatibilityPayload {
+   /**
+    * Existing compatible Beat Saber game version
+    * @minLength 1
+    * @maxLength 16
+    */
+   fromGameVersion: string;
+   /**
+    * New Beat Saber game version to allow
+    * @minLength 1
+    * @maxLength 16
+    */
+   toGameVersion: string;
+}
+
 export interface AdminUserControllerBanPlayerPayload {
    /**
     * Ban reason
@@ -2113,6 +2136,10 @@ export interface AdminUserControllerMergePlayerParams {
    id: string;
 }
 
+export interface AdminUserControllerDeleteUserDataParams {
+   id: string;
+}
+
 export interface AdminVersionControllerCreateVersionPayload {
    /**
     * Version hash
@@ -2180,144 +2207,38 @@ export interface UserControllerUpdatePinnedScoresPayload {
    }[];
 }
 
-export interface UserControllerUpdateProfileCustomizationStylePayload {
+export interface UserControllerUpdateProfileCustomizationPayload {
+   /** @pattern ^#[0-9A-Fa-f]{6}$ */
    accentColor: string | null;
+   /** @pattern ^#[0-9A-Fa-f]{6}$ */
    accentForegroundColor: string | null;
+   /** @pattern ^#[0-9A-Fa-f]{6}$ */
    accentForegroundActiveColor: string | null;
    supporterNameColorEnabled: boolean;
-}
-
-export type PlayerProfileStatId =
-   | 'rankedPlays'
-   | 'rankedScore'
-   | 'rankedAcc'
-   | 'plusOnePP'
-   | 'totalPlays'
-   | 'totalScore'
-   | 'joined'
-   | 'replayViews'
-   | 'role';
-
-export type PlayerChartMetricId = 'rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays';
-
-export type PlayerProfileSectionId = 'charts' | 'bio' | 'pinnedScores' | 'scores';
-
-export interface PlayerProfileCustomizationResponse {
-   backgroundImage: string | null;
-   backgroundImageVersion: number | null;
-   accentColor: string | null;
-   accentForegroundColor: string | null;
-   accentForegroundActiveColor: string | null;
-   supporterNameColorEnabled: boolean;
-   badgeOrder: number[] | null;
-   badgeComments: Record<string, string> | null;
-   statOrder: PlayerProfileStatId[] | null;
-   enabledStatIds: PlayerProfileStatId[] | null;
-   chartMetricIds: PlayerChartMetricId[] | null;
-   sectionOrder: PlayerProfileSectionId[] | null;
-}
-
-export interface UserControllerUpdateProfileCustomizationPayload extends UserControllerUpdateProfileCustomizationStylePayload {
    /** @maxItems 128 */
    badgeOrder: number[] | null;
    badgeComments: Record<string, string> | null;
    /** @maxItems 16 */
-   statOrder: PlayerProfileStatId[] | null;
+   statOrder: ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[] | null;
    /** @maxItems 16 */
-   enabledStatIds: PlayerProfileStatId[] | null;
+   enabledStatIds:
+      | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+      | null;
    /** @maxItems 8 */
-   chartMetricIds: PlayerChartMetricId[] | null;
+   chartMetricIds: ('rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays')[] | null;
    /** @maxItems 8 */
-   sectionOrder: PlayerProfileSectionId[] | null;
+   sectionOrder: ('charts' | 'bio' | 'pinnedScores' | 'scores')[] | null;
 }
 
-export type UserControllerProfileCustomizationError =
-   | (
-        | {
-             statusCode: 400;
-             error: 'Bad Request';
-             code: 'VALIDATION_ERROR';
-             message: string;
-             details?: {
-                field?: string;
-             };
-          }
-        | {
-             statusCode: 400;
-             error: 'Bad Request';
-             code: 'REQUEST_VALIDATION_ERROR';
-             message: string;
-             details: {
-                errors: {
-                   path: string;
-                   message: string;
-                }[];
-             };
-          }
-        | {
-             statusCode: 400;
-             error: 'Bad Request';
-             code: 'INVALID_PATH_PARAMETER';
-             message: string;
-             details: {
-                errors: {
-                   path: string;
-                   message: string;
-                }[];
-             };
-          }
-     )
-   | {
-        statusCode: 401;
-        error: 'Unauthorized';
-        code: 'UNAUTHORIZED';
-        message: string;
-     }
-   | {
-        statusCode: 403;
-        error: 'Forbidden';
-        code: 'FORBIDDEN';
-        message: string;
-        details?: {
-           reason: string;
-        };
-     }
-   | {
-        statusCode: 404;
-        error: 'Not Found';
-        code: 'NOT_FOUND';
-        message: string;
-        details?: {
-           resource: string;
-           id?: string | number;
-        };
-     }
-   | (
-        | {
-             statusCode: 500;
-             error: 'Internal Server Error';
-             code: 'DATABASE_WRITE_ERROR';
-             message: string;
-             details: {
-                operation: string;
-             };
-          }
-        | {
-             statusCode: 500;
-             error: 'Internal Server Error';
-             code: 'EXTERNAL_SERVICE_ERROR';
-             message: string;
-             details: {
-                service: string;
-             };
-          }
-        | {
-             statusCode: 500;
-             error: 'Internal Server Error';
-             code: 'INTERNAL_SERVER_ERROR';
-             message: string;
-          }
-     );
+export interface UserControllerUpdateProfileCustomizationStylePayload {
+   /** @pattern ^#[0-9A-Fa-f]{6}$ */
+   accentColor: string | null;
+   /** @pattern ^#[0-9A-Fa-f]{6}$ */
+   accentForegroundColor: string | null;
+   /** @pattern ^#[0-9A-Fa-f]{6}$ */
+   accentForegroundActiveColor: string | null;
+   supporterNameColorEnabled: boolean;
+}
 
 export interface UserControllerUploadProfileCustomizationBackgroundPayload {
    /** @format binary */
@@ -2837,6 +2758,140 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             method: 'GET',
             format: 'json',
             ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Realm
+ * @name RealmControllerGetRealmPPCurve
+ * @request GET:/api/v2/realms/{id}/pp-curve
+ * @response `200` `{
+    curve: (((number))[])[],
+    positiveModifierCurve: (((number))[])[],
+
+}` Realm PP curve
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      realmControllerGetRealmPPCurve: ({ id }: RealmControllerGetRealmPPCurveParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               curve: number[][];
+               positiveModifierCurve: number[][];
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/realms/${id}/pp-curve`,
+            method: 'GET',
+            format: 'json',
+            ...params
          })
    };
    player = {
@@ -2864,7 +2919,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     realmName: string,
     rank: number,
     countryRank: number,
+    rankChange: number | null,
     totalPP: number,
+    plusOnePP: number | null,
     totalScore: string,
     totalRankedScore: string,
     totalPlayedLeaderboards: number,
@@ -2999,7 +3056,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      realmName: string;
                      rank: number;
                      countryRank: number;
+                     rankChange: number | null;
                      totalPP: number;
+                     plusOnePP: number | null;
                      totalScore: string;
                      totalRankedScore: string;
                      totalPlayedLeaderboards: number;
@@ -3317,7 +3376,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     realmName: string,
     rank: number,
     countryRank: number,
+    rankChange: number | null,
     totalPP: number,
+    plusOnePP: number | null,
     totalScore: string,
     totalRankedScore: string,
     totalPlayedLeaderboards: number,
@@ -3337,6 +3398,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 },
     bio: string | null,
     vanity: string | null,
+    profileCustomization: {
+    backgroundImage: string | null,
+    backgroundImageVersion: number | null,
+    accentColor: string | null,
+    accentForegroundColor: string | null,
+    accentForegroundActiveColor: string | null,
+    supporterNameColorEnabled: boolean,
+    badgeOrder: (number)[] | null,
+    badgeComments: Record<string,string> | null,
+    statOrder: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    enabledStatIds: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    chartMetricIds: ("rank" | "totalPP" | "averageAccuracy" | "totalSubmittedPlays")[] | null,
+    sectionOrder: ("charts" | "bio" | "pinnedScores" | "scores")[] | null,
+
+},
     createdAt: string,
     lastSeenAt: string,
     badges: ({
@@ -3512,7 +3588,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   realmName: string;
                   rank: number;
                   countryRank: number;
+                  rankChange: number | null;
                   totalPP: number;
+                  plusOnePP: number | null;
                   totalScore: string;
                   totalRankedScore: string;
                   totalPlayedLeaderboards: number;
@@ -3530,7 +3608,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                };
                bio: string | null;
                vanity: string | null;
-               profileCustomization: PlayerProfileCustomizationResponse;
+               profileCustomization: {
+                  backgroundImage: string | null;
+                  backgroundImageVersion: number | null;
+                  accentColor: string | null;
+                  accentForegroundColor: string | null;
+                  accentForegroundActiveColor: string | null;
+                  supporterNameColorEnabled: boolean;
+                  badgeOrder: number[] | null;
+                  badgeComments: Record<string, string> | null;
+                  statOrder:
+                     | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                     | null;
+                  enabledStatIds:
+                     | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                     | null;
+                  chartMetricIds: ('rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays')[] | null;
+                  sectionOrder: ('charts' | 'bio' | 'pinnedScores' | 'scores')[] | null;
+               };
                createdAt: string;
                lastSeenAt: string;
                badges: {
@@ -3699,7 +3794,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     realmName: string,
     rank: number,
     countryRank: number,
+    rankChange: number | null,
     totalPP: number,
+    plusOnePP: number | null,
     totalScore: string,
     totalRankedScore: string,
     totalPlayedLeaderboards: number,
@@ -3719,6 +3816,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 },
     bio: string | null,
     vanity: string | null,
+    profileCustomization: {
+    backgroundImage: string | null,
+    backgroundImageVersion: number | null,
+    accentColor: string | null,
+    accentForegroundColor: string | null,
+    accentForegroundActiveColor: string | null,
+    supporterNameColorEnabled: boolean,
+    badgeOrder: (number)[] | null,
+    badgeComments: Record<string,string> | null,
+    statOrder: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    enabledStatIds: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    chartMetricIds: ("rank" | "totalPP" | "averageAccuracy" | "totalSubmittedPlays")[] | null,
+    sectionOrder: ("charts" | "bio" | "pinnedScores" | "scores")[] | null,
+
+},
     createdAt: string,
     lastSeenAt: string,
     badges: ({
@@ -3894,7 +4006,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   realmName: string;
                   rank: number;
                   countryRank: number;
+                  rankChange: number | null;
                   totalPP: number;
+                  plusOnePP: number | null;
                   totalScore: string;
                   totalRankedScore: string;
                   totalPlayedLeaderboards: number;
@@ -3912,7 +4026,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                };
                bio: string | null;
                vanity: string | null;
-               profileCustomization: PlayerProfileCustomizationResponse;
+               profileCustomization: {
+                  backgroundImage: string | null;
+                  backgroundImageVersion: number | null;
+                  accentColor: string | null;
+                  accentForegroundColor: string | null;
+                  accentForegroundActiveColor: string | null;
+                  supporterNameColorEnabled: boolean;
+                  badgeOrder: number[] | null;
+                  badgeComments: Record<string, string> | null;
+                  statOrder:
+                     | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                     | null;
+                  enabledStatIds:
+                     | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                     | null;
+                  chartMetricIds: ('rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays')[] | null;
+                  sectionOrder: ('charts' | 'bio' | 'pinnedScores' | 'scores')[] | null;
+               };
                createdAt: string;
                lastSeenAt: string;
                badges: {
@@ -4081,7 +4212,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     realmName: string,
     rank: number,
     countryRank: number,
+    rankChange: number | null,
     totalPP: number,
+    plusOnePP: number | null,
     totalScore: string,
     totalRankedScore: string,
     totalPlayedLeaderboards: number,
@@ -4179,7 +4312,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   realmName: string;
                   rank: number;
                   countryRank: number;
+                  rankChange: number | null;
                   totalPP: number;
+                  plusOnePP: number | null;
                   totalScore: string;
                   totalRankedScore: string;
                   totalPlayedLeaderboards: number;
@@ -19384,6 +19519,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     clientTrust?: "official" | "development" | "legacy" | "untrusted",
     buildId?: string,
     uploadVersionHash?: string,
+  /** Durable quest credential, returned for device-code auth *\/
+    questKey?: string,
+  /** Public player ID, returned for device-code auth *\/
+    playerId?: string,
 
 }` Authenticated game session
  * @response `400` `({
@@ -19492,6 +19631,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                clientTrust?: 'official' | 'development' | 'legacy' | 'untrusted';
                buildId?: string;
                uploadVersionHash?: string;
+               /** Durable quest credential, returned for device-code auth */
+               questKey?: string;
+               /** Public player ID, returned for device-code auth */
+               playerId?: string;
             },
             | (
                  | {
@@ -27871,6 +28014,204 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             method: 'POST',
             format: 'json',
             ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Admin: Upload Trust
+ * @name AdminUploadTrustControllerAddOfficialBuildCompatibility
+ * @request POST:/api/v2/admin/upload-trust/official-builds/compatibility
+ * @response `200` `{
+    success: boolean,
+    fromGameVersion: string,
+    toGameVersion: string,
+    buildsUpdated: number,
+    targetVersions: number,
+
+}` Add a compatible Beat Saber runtime version to active official builds.
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      adminUploadTrustControllerAddOfficialBuildCompatibility: (
+         data: AdminUploadTrustControllerAddOfficialBuildCompatibilityPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               success: boolean;
+               fromGameVersion: string;
+               toGameVersion: string;
+               buildsUpdated: number;
+               targetVersions: number;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/admin/upload-trust/official-builds/compatibility`,
+            method: 'POST',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
          })
    };
    adminUser = {
@@ -29045,6 +29386,211 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             type: ContentType.Json,
             format: 'json',
             ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags AdminUser
+ * @name AdminUserControllerDeleteUserData
+ * @request DELETE:/api/v2/admin/user/{id}/data
+ * @response `200` `{
+    success: boolean,
+
+}` User data deletion result
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      adminUserControllerDeleteUserData: ({ id }: AdminUserControllerDeleteUserDataParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/admin/user/${id}/data`,
+            method: 'DELETE',
+            format: 'json',
+            ...params
          })
    };
    adminVersion = {
@@ -29665,173 +30211,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          }),
 
       /**
-       * No description
-       *
-       * @tags User
-       * @name UserControllerUploadProfileCustomizationBackground
-       * @request POST:/api/v2/user/@me/profile-customization/background
-       */
-      userControllerUploadProfileCustomizationBackground: (
-         data: UserControllerUploadProfileCustomizationBackgroundPayload,
-         params: RequestParams = {}
-      ) =>
-         this.request<
-            PlayerProfileCustomizationResponse,
-            | (
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'VALIDATION_ERROR';
-                      message: string;
-                      details?: {
-                         field?: string;
-                      };
-                   }
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'REQUEST_VALIDATION_ERROR';
-                      message: string;
-                      details: {
-                         errors: {
-                            path: string;
-                            message: string;
-                         }[];
-                      };
-                   }
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'INVALID_PATH_PARAMETER';
-                      message: string;
-                      details: {
-                         errors: {
-                            path: string;
-                            message: string;
-                         }[];
-                      };
-                   }
-              )
-            | {
-                 statusCode: 401;
-                 error: 'Unauthorized';
-                 code: 'UNAUTHORIZED';
-                 message: string;
-              }
-            | {
-                 statusCode: 403;
-                 error: 'Forbidden';
-                 code: 'FORBIDDEN';
-                 message: string;
-                 details?: {
-                    reason: string;
-                 };
-              }
-            | {
-                 statusCode: 404;
-                 error: 'Not Found';
-                 code: 'NOT_FOUND';
-                 message: string;
-                 details?: {
-                    resource: string;
-                    id?: string | number;
-                 };
-              }
-            | (
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'DATABASE_WRITE_ERROR';
-                      message: string;
-                      details: {
-                         operation: string;
-                      };
-                   }
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'EXTERNAL_SERVICE_ERROR';
-                      message: string;
-                      details: {
-                         service: string;
-                      };
-                   }
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'INTERNAL_SERVER_ERROR';
-                      message: string;
-                   }
-              )
-         >({
-            path: `/api/v2/user/@me/profile-customization/background`,
-            method: 'POST',
-            body: data,
-            type: ContentType.FormData,
-            format: 'json',
-            ...params
-         }),
-
-      /**
-       * No description
-       *
-       * @tags User
-       * @name UserControllerResetProfileCustomizationBackground
-       * @request DELETE:/api/v2/user/@me/profile-customization/background
-       */
-      userControllerResetProfileCustomizationBackground: (params: RequestParams = {}) =>
-         this.request<
-            PlayerProfileCustomizationResponse,
-            | {
-                 statusCode: 401;
-                 error: 'Unauthorized';
-                 code: 'UNAUTHORIZED';
-                 message: string;
-              }
-            | {
-                 statusCode: 403;
-                 error: 'Forbidden';
-                 code: 'FORBIDDEN';
-                 message: string;
-                 details?: {
-                    reason: string;
-                 };
-              }
-            | {
-                 statusCode: 404;
-                 error: 'Not Found';
-                 code: 'NOT_FOUND';
-                 message: string;
-                 details?: {
-                    resource: string;
-                    id?: string | number;
-                 };
-              }
-            | (
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'DATABASE_WRITE_ERROR';
-                      message: string;
-                      details: {
-                         operation: string;
-                      };
-                   }
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'INTERNAL_SERVER_ERROR';
-                      message: string;
-                   }
-              )
-         >({
-            path: `/api/v2/user/@me/profile-customization/background`,
-            method: 'DELETE',
-            format: 'json',
-            ...params
-         }),
-
-      /**
  * No description
  *
  * @tags User
@@ -30286,32 +30665,143 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          }),
 
       /**
-       * No description
-       *
-       * @tags User
-       * @name UserControllerUpdateProfileCustomization
-       * @request PUT:/api/v2/user/@me/profile-customization
-       */
-      userControllerUpdateProfileCustomization: (data: UserControllerUpdateProfileCustomizationPayload, params: RequestParams = {}) =>
-         this.request<PlayerProfileCustomizationResponse, UserControllerProfileCustomizationError>({
-            path: `/api/v2/user/@me/profile-customization`,
-            method: 'PUT',
-            body: data,
-            type: ContentType.Json,
-            format: 'json',
-            ...params
-         }),
+ * No description
+ *
+ * @tags User
+ * @name UserControllerUpdateProfileCustomization
+ * @request PUT:/api/v2/user/@me/profile-customization
+ * @response `200` `{
+    backgroundImage: string | null,
+    backgroundImageVersion: number | null,
+    accentColor: string | null,
+    accentForegroundColor: string | null,
+    accentForegroundActiveColor: string | null,
+    supporterNameColorEnabled: boolean,
+    badgeOrder: (number)[] | null,
+    badgeComments: Record<string,string> | null,
+    statOrder: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    enabledStatIds: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    chartMetricIds: ("rank" | "totalPP" | "averageAccuracy" | "totalSubmittedPlays")[] | null,
+    sectionOrder: ("charts" | "bio" | "pinnedScores" | "scores")[] | null,
 
-      /**
-       * No description
-       *
-       * @tags User
-       * @name UserControllerUpdateProfileCustomizationStyle
-       * @request PUT:/api/v2/user/@me/profile-customization/style
-       */
-      userControllerUpdateProfileCustomizationStyle: (data: UserControllerUpdateProfileCustomizationStylePayload, params: RequestParams = {}) =>
+}` Profile customization update result
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      userControllerUpdateProfileCustomization: (data: UserControllerUpdateProfileCustomizationPayload, params: RequestParams = {}) =>
          this.request<
-            PlayerProfileCustomizationResponse,
+            {
+               backgroundImage: string | null;
+               backgroundImageVersion: number | null;
+               accentColor: string | null;
+               accentForegroundColor: string | null;
+               accentForegroundActiveColor: string | null;
+               supporterNameColorEnabled: boolean;
+               badgeOrder: number[] | null;
+               badgeComments: Record<string, string> | null;
+               statOrder:
+                  | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                  | null;
+               enabledStatIds:
+                  | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                  | null;
+               chartMetricIds: ('rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays')[] | null;
+               sectionOrder: ('charts' | 'bio' | 'pinnedScores' | 'scores')[] | null;
+            },
             | (
                  | {
                       statusCode: 400;
@@ -30376,6 +30866,248 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                  | {
                       statusCode: 500;
                       error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/user/@me/profile-customization`,
+            method: 'PUT',
+            body: data,
+            type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags User
+ * @name UserControllerUpdateProfileCustomizationStyle
+ * @request PUT:/api/v2/user/@me/profile-customization/style
+ * @response `200` `{
+    backgroundImage: string | null,
+    backgroundImageVersion: number | null,
+    accentColor: string | null,
+    accentForegroundColor: string | null,
+    accentForegroundActiveColor: string | null,
+    supporterNameColorEnabled: boolean,
+    badgeOrder: (number)[] | null,
+    badgeComments: Record<string,string> | null,
+    statOrder: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    enabledStatIds: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    chartMetricIds: ("rank" | "totalPP" | "averageAccuracy" | "totalSubmittedPlays")[] | null,
+    sectionOrder: ("charts" | "bio" | "pinnedScores" | "scores")[] | null,
+
+}` Profile style customization update result
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      userControllerUpdateProfileCustomizationStyle: (data: UserControllerUpdateProfileCustomizationStylePayload, params: RequestParams = {}) =>
+         this.request<
+            {
+               backgroundImage: string | null;
+               backgroundImageVersion: number | null;
+               accentColor: string | null;
+               accentForegroundColor: string | null;
+               accentForegroundActiveColor: string | null;
+               supporterNameColorEnabled: boolean;
+               badgeOrder: number[] | null;
+               badgeComments: Record<string, string> | null;
+               statOrder:
+                  | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                  | null;
+               enabledStatIds:
+                  | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                  | null;
+               chartMetricIds: ('rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays')[] | null;
+               sectionOrder: ('charts' | 'bio' | 'pinnedScores' | 'scores')[] | null;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
                       code: 'DATABASE_WRITE_ERROR';
                       message: string;
                       details: {
@@ -30394,6 +31126,399 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             method: 'PUT',
             body: data,
             type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags User
+ * @name UserControllerUploadProfileCustomizationBackground
+ * @request POST:/api/v2/user/@me/profile-customization/background
+ * @response `200` `{
+    backgroundImage: string | null,
+    backgroundImageVersion: number | null,
+    accentColor: string | null,
+    accentForegroundColor: string | null,
+    accentForegroundActiveColor: string | null,
+    supporterNameColorEnabled: boolean,
+    badgeOrder: (number)[] | null,
+    badgeComments: Record<string,string> | null,
+    statOrder: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    enabledStatIds: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    chartMetricIds: ("rank" | "totalPP" | "averageAccuracy" | "totalSubmittedPlays")[] | null,
+    sectionOrder: ("charts" | "bio" | "pinnedScores" | "scores")[] | null,
+
+}` Profile background upload result
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      userControllerUploadProfileCustomizationBackground: (
+         data: UserControllerUploadProfileCustomizationBackgroundPayload,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               backgroundImage: string | null;
+               backgroundImageVersion: number | null;
+               accentColor: string | null;
+               accentForegroundColor: string | null;
+               accentForegroundActiveColor: string | null;
+               supporterNameColorEnabled: boolean;
+               badgeOrder: number[] | null;
+               badgeComments: Record<string, string> | null;
+               statOrder:
+                  | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                  | null;
+               enabledStatIds:
+                  | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                  | null;
+               chartMetricIds: ('rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays')[] | null;
+               sectionOrder: ('charts' | 'bio' | 'pinnedScores' | 'scores')[] | null;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/user/@me/profile-customization/background`,
+            method: 'POST',
+            body: data,
+            type: ContentType.FormData,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags User
+ * @name UserControllerResetProfileCustomizationBackground
+ * @request DELETE:/api/v2/user/@me/profile-customization/background
+ * @response `200` `{
+    backgroundImage: string | null,
+    backgroundImageVersion: number | null,
+    accentColor: string | null,
+    accentForegroundColor: string | null,
+    accentForegroundActiveColor: string | null,
+    supporterNameColorEnabled: boolean,
+    badgeOrder: (number)[] | null,
+    badgeComments: Record<string,string> | null,
+    statOrder: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    enabledStatIds: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    chartMetricIds: ("rank" | "totalPP" | "averageAccuracy" | "totalSubmittedPlays")[] | null,
+    sectionOrder: ("charts" | "bio" | "pinnedScores" | "scores")[] | null,
+
+}` Profile background reset result
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      userControllerResetProfileCustomizationBackground: (params: RequestParams = {}) =>
+         this.request<
+            {
+               backgroundImage: string | null;
+               backgroundImageVersion: number | null;
+               accentColor: string | null;
+               accentForegroundColor: string | null;
+               accentForegroundActiveColor: string | null;
+               supporterNameColorEnabled: boolean;
+               badgeOrder: number[] | null;
+               badgeComments: Record<string, string> | null;
+               statOrder:
+                  | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                  | null;
+               enabledStatIds:
+                  | ('rankedPlays' | 'rankedScore' | 'rankedAcc' | 'plusOnePP' | 'totalPlays' | 'totalScore' | 'joined' | 'replayViews' | 'role')[]
+                  | null;
+               chartMetricIds: ('rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays')[] | null;
+               sectionOrder: ('charts' | 'bio' | 'pinnedScores' | 'scores')[] | null;
+            },
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/user/@me/profile-customization/background`,
+            method: 'DELETE',
             format: 'json',
             ...params
          }),
