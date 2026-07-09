@@ -20550,6 +20550,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 
 },
     difficultyCount: number,
+    rtVoteReadiness: {
+    status: "READY" | "CLOSE" | "BLOCKED" | "QUEUED",
+    missingUpvotes: number,
+    downvotes: number,
+
+},
     totalRtVotes: {
     upvotes: number,
     downvotes: number,
@@ -20656,6 +20662,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      verified: boolean;
                   };
                   difficultyCount: number;
+                  rtVoteReadiness: {
+                     status: 'READY' | 'CLOSE' | 'BLOCKED' | 'QUEUED';
+                     missingUpvotes: number;
+                     downvotes: number;
+                  };
                   totalRtVotes: {
                      upvotes: number;
                      downvotes: number;

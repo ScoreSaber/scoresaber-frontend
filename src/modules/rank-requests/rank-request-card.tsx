@@ -1,17 +1,24 @@
 'use client';
 
 import { FaLayerGroup, FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
-import { FaCircleMinus } from 'react-icons/fa6';
+import { FaCheck, FaCircleMinus, FaHourglassHalf } from 'react-icons/fa6';
 import { useTranslations } from 'use-intl';
+
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { SongCard } from '@/modules/maps/shared/song-card';
 import type { RankingControllerGetRequestsDataItem } from '@/shared/api/generated/ApiParams';
+import { cn } from '@/shared/format/helpers';
 import { usePersistedLeaderboardSearch } from '@/shared/url-state/persisted/use-persisted-leaderboard-search';
 
 export function RankRequestCard({ request, className, queuePosition }: RankRequestCardProps) {
    const t = useTranslations('rankRequest');
    const map = request.map;
    const linkSearch = usePersistedLeaderboardSearch({ tab: 'rank-request' });
+   const readiness = request.rtVoteReadiness;
+   const readinessConfig = readinessConfigByStatus[readiness.status];
+   const ReadinessIcon = readinessConfig.icon;
+   const readinessLabel = getReadinessLabel(t, readiness);
 
    return (
       <SongCard
@@ -25,6 +32,26 @@ export function RankRequestCard({ request, className, queuePosition }: RankReque
          mapId={map.id}
          linkSearch={linkSearch}
          className={className}
+         coverClassName={readinessConfig.coverClassName}
+         coverBadge={
+            <Tooltip>
+               <TooltipTrigger asChild>
+                  <button
+                     type="button"
+                     className={cn(
+                        'inline-flex size-5 cursor-help items-center justify-center rounded-full border text-[10px] shadow-lg backdrop-blur focus-visible:outline-2 focus-visible:outline-offset-2',
+                        readinessConfig.badgeClassName
+                     )}
+                     aria-label={readinessLabel}
+                  >
+                     <ReadinessIcon className="size-2.5" aria-hidden="true" />
+                  </button>
+               </TooltipTrigger>
+               <TooltipContent>
+                  <p>{readinessLabel}</p>
+               </TooltipContent>
+            </Tooltip>
+         }
          pills={
             <>
                {queuePosition !== undefined && (
@@ -67,6 +94,41 @@ export function RankRequestCard({ request, className, queuePosition }: RankReque
       />
    );
 }
+
+function getReadinessLabel(t: ReturnType<typeof useTranslations<'rankRequest'>>, readiness: RankingControllerGetRequestsDataItem['rtVoteReadiness']) {
+   switch (readiness.status) {
+      case 'READY':
+         return t('queueIndicatorReady');
+      case 'BLOCKED':
+         return t('queueIndicatorDownvoted', { count: readiness.downvotes });
+      case 'CLOSE':
+      case 'QUEUED':
+         return t('queueIndicatorNeedsVotes', { count: readiness.missingUpvotes });
+   }
+}
+
+const readinessConfigByStatus = {
+   READY: {
+      icon: FaCheck,
+      coverClassName: 'ring-2 ring-status-success/80 shadow-status-success/30',
+      badgeClassName: 'border-status-success/50 bg-status-success/90 text-white'
+   },
+   CLOSE: {
+      icon: FaHourglassHalf,
+      coverClassName: 'ring-2 ring-score-pp/80 shadow-score-pp/25',
+      badgeClassName: 'border-score-pp/50 bg-score-pp/90 text-black'
+   },
+   BLOCKED: {
+      icon: FaThumbsDown,
+      coverClassName: 'ring-2 ring-destructive/80 shadow-destructive/30',
+      badgeClassName: 'border-destructive/50 bg-destructive/90 text-destructive-foreground'
+   },
+   QUEUED: {
+      icon: FaHourglassHalf,
+      coverClassName: 'ring-1 ring-border/80',
+      badgeClassName: 'border-border/80 bg-secondary/90 text-muted-foreground'
+   }
+} as const;
 
 function VoteSummary({ label, up, down, neutral }: { label: string; up: number; down: number; neutral?: number }) {
    return (
