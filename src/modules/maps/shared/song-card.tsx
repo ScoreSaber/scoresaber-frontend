@@ -29,6 +29,7 @@ interface SongCardProps {
    mobileMetadata?: ReactNode;
    desktopMetadata?: ReactNode;
    coverBadge?: ReactNode;
+   coverClassName?: string;
    className?: string;
    compact?: boolean;
    showMappedAt?: boolean;
@@ -51,6 +52,7 @@ export function SongCard({
    mobileMetadata,
    desktopMetadata,
    coverBadge,
+   coverClassName,
    className,
    compact = false,
    showMappedAt = true,
@@ -91,7 +93,8 @@ export function SongCard({
          <div
             className={cn(
                'relative z-20 m-2.5 ml-3.5 aspect-square shrink-0 overflow-hidden rounded-md shadow-lg outline outline-1 outline-black/10 dark:outline-white/10',
-               compact ? 'h-14 w-14' : 'h-18 w-18 md:h-21.5 md:w-21.5'
+               compact ? 'h-14 w-14' : 'h-18 w-18 md:h-21.5 md:w-21.5',
+               coverClassName
             )}
          >
             <FadeInImage src={coverUrl} alt={songName} fill className="object-cover" sizes={compact ? '56px' : '86px'} priority={coverPriority} />

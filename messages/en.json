@@ -821,7 +821,10 @@
       "noCommentsOrNotes": "No comments or notes for this difficulty",
       "noRequestsFound": "No requests found",
       "upNext": "Up next",
-      "openRequests": "In queue"
+      "openRequests": "In queue",
+      "queueIndicatorReady": "Ready for RT qualification",
+      "queueIndicatorNeedsVotes": "{count, plural, one {Needs # more RT upvote} other {Needs # more RT upvotes}}",
+      "queueIndicatorDownvoted": "{count, plural, one {Has # RT downvote} other {Has # RT downvotes}}"
    },
    "leaderboard": {
       "admin": "Admin",
