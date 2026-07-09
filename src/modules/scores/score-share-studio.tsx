@@ -51,6 +51,7 @@ export function ScoreShareStudio({ open, onOpenChange, scores, initialScoreId }:
 
    const selectedScores = useMemo(() => scores.filter((entry) => selectedIds.has(entry.score.id)), [scores, selectedIds]);
    const hasSelection = selectedScores.length > 0;
+   const allScoresSelected = scores.length > 0 && scores.every((entry) => selectedIds.has(entry.score.id));
 
    const toggleScore = useCallback((id: number) => {
       setSelectedIds((prev) => {
@@ -164,7 +165,7 @@ export function ScoreShareStudio({ open, onOpenChange, scores, initialScoreId }:
             </DialogHeader>
 
             <div className="flex min-h-0 flex-col gap-4 overflow-y-auto px-4 pb-4 sm:px-0 sm:pb-0">
-               <div className="bg-muted/20 flex max-h-[28dvh] min-h-24 shrink-0 overflow-auto rounded-md border p-2 sm:max-h-[46vh] sm:min-h-32 sm:p-3">
+               <div className="bg-muted/20 flex max-h-[22dvh] min-h-24 shrink-0 overflow-auto rounded-md border p-2 sm:max-h-[34vh] sm:min-h-32 sm:p-3">
                   {hasSelection ? (
                      <div ref={setViewportElement} className="flex min-h-full w-full">
                         <div className="relative m-auto shrink-0" style={{ width: preview.width || undefined, height: preview.height || undefined }}>
@@ -232,7 +233,19 @@ export function ScoreShareStudio({ open, onOpenChange, scores, initialScoreId }:
                </label>
 
                <div className="flex min-h-0 flex-1 flex-col gap-2">
-                  <span className="text-sm font-medium">{t('score.share.rows', { count: selectedScores.length })}</span>
+                  <div className="flex items-center justify-between gap-3">
+                     <span className="text-sm font-medium">{t('score.share.rows', { count: selectedScores.length })}</span>
+                     <Button
+                        type="button"
+                        variant="link"
+                        size="xs"
+                        disabled={allScoresSelected || scores.length === 0}
+                        onClick={() => setSelectedIds(new Set(scores.map((entry) => entry.score.id)))}
+                        className="h-auto p-0 text-xs"
+                     >
+                        {t('score.share.selectAll')}
+                     </Button>
+                  </div>
                   <div className="min-h-0 flex-1 overflow-y-auto rounded-md border sm:max-h-44">
                      {scores.map((entry) => (
                         <label
