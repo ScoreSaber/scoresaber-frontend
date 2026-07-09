@@ -35,6 +35,7 @@ interface SongInfoCardProps {
    showMapper?: boolean;
    showCreatedDate?: boolean;
    className?: string;
+   useContainerQueries?: boolean;
 }
 
 export function SongInfoCard({
@@ -54,17 +55,23 @@ export function SongInfoCard({
    showSongAuthor = true,
    showMapper = true,
    showCreatedDate = true,
-   className
+   className,
+   useContainerQueries = false
 }: SongInfoCardProps) {
    const tc = useTranslations();
    const linkSearch = usePersistedLeaderboardSearch();
    const compact = variant === 'compact';
+   const cq = useContainerQueries;
 
    return (
       <div
          className={cn(
             'flex cursor-default',
-            compact ? 'min-w-0 flex-col gap-0.5' : 'flex-col gap-2 lg:flex-row lg:items-center lg:gap-4',
+            compact ? 'min-w-0 flex-col gap-0.5' : 'flex-col gap-2',
+            !compact &&
+               (cq
+                  ? '@min-[600px]/scorecard:flex-row @min-[600px]/scorecard:items-center @min-[600px]/scorecard:gap-4'
+                  : 'lg:flex-row lg:items-center lg:gap-4'),
             className
          )}
       >
@@ -93,7 +100,7 @@ export function SongInfoCard({
                </figure>
             </div>
          )}
-         <div className={cn('flex min-w-0 flex-col', !compact && 'lg:justify-center')}>
+         <div className={cn('flex min-w-0 flex-col', !compact && (cq ? '@min-[600px]/scorecard:justify-center' : 'lg:justify-center'))}>
             {compact ? (
                <div className="text-muted-foreground flex min-w-0 items-baseline text-sm leading-tight">
                   <mapDifficultyRoute.Link
@@ -111,7 +118,12 @@ export function SongInfoCard({
                   )}
                </div>
             ) : (
-               <div className="text-muted-foreground inline-block w-full overflow-hidden text-center text-ellipsis whitespace-nowrap lg:text-left">
+               <div
+                  className={cn(
+                     'text-muted-foreground inline-block w-full overflow-hidden text-center text-ellipsis whitespace-nowrap',
+                     cq ? '@min-[600px]/scorecard:text-left' : 'lg:text-left'
+                  )}
+               >
                   <mapDifficultyRoute.Link
                      className="text-foreground mr-1 text-lg font-semibold transition-colors"
                      params={{ id: mapId, leaderboardId }}
@@ -131,7 +143,8 @@ export function SongInfoCard({
                <div
                   className={cn(
                      'text-muted-foreground overflow-hidden text-ellipsis whitespace-nowrap',
-                     compact ? 'text-[11px] leading-tight' : '-mt-1.5 text-center lg:mt-0 lg:text-left'
+                     compact ? 'text-[11px] leading-tight' : '-mt-1.5 text-center',
+                     !compact && (cq ? '@min-[600px]/scorecard:mt-0 @min-[600px]/scorecard:text-left' : 'lg:mt-0 lg:text-left')
                   )}
                >
                   <span className="capitalize">{tc('common.mappedBy')}</span>

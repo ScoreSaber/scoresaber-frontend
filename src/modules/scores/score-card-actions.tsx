@@ -1,6 +1,6 @@
 'use client';
 
-import { ChartSpline, ChevronDown, History, Play } from 'lucide-react';
+import { Camera, ChartSpline, ChevronDown, History, Play } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,7 @@ interface ScoreCardActionsProps {
    onToggleHistoryAction?: () => void;
    detailsExpanded?: boolean;
    onToggleDetailsAction?: () => void;
+   onShareAction?: () => void;
    mobileBottomRow?: boolean;
    bottomRowDesktopBreakpoint?: 'md' | 'lg';
    tooltipSide?: 'top' | 'right' | 'bottom' | 'left';
@@ -33,6 +34,7 @@ export function ScoreCardActions({
    onToggleHistoryAction,
    detailsExpanded,
    onToggleDetailsAction,
+   onShareAction,
    mobileBottomRow = false,
    bottomRowDesktopBreakpoint = 'lg',
    tooltipSide = 'top',
@@ -105,6 +107,19 @@ export function ScoreCardActions({
       </Button>
    );
 
+   const shareButton = onShareAction ? (
+      <Button
+         type="button"
+         variant="ghost-icon"
+         size="icon-xs"
+         onClick={onShareAction}
+         className={cn(iconButtonClassName, bottomRowDesktopBreakpoint === 'md' ? 'md:hidden' : 'lg:hidden')}
+         aria-label={t('score.share.shareRow')}
+      >
+         <Camera data-icon />
+      </Button>
+   ) : null;
+
    const historyAvailable = score.hasHistory !== false;
    const historyButton = onToggleHistoryAction ? (
       historyAvailable ? (
@@ -158,6 +173,7 @@ export function ScoreCardActions({
                   {detailsButton}
                   {historyButton}
                </div>
+               {shareButton}
             </div>
          ) : (
             <>

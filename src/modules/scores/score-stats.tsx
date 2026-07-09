@@ -39,6 +39,7 @@ interface ScoreStatsProps {
    timeSet?: string | Date;
    size?: 'default' | 'compact';
    scoreStatMode?: 'scoreAndMods' | 'modsOnly';
+   useContainerQueries?: boolean;
 }
 
 export function ScoreStats({
@@ -52,14 +53,16 @@ export function ScoreStats({
    className,
    timeSet,
    size = 'default',
-   scoreStatMode = 'scoreAndMods'
+   scoreStatMode = 'scoreAndMods',
+   useContainerQueries = false
 }: ScoreStatsProps) {
    const t = useTranslations();
+   const cq = useContainerQueries;
    const accuracy = formatAccuracy(score.accuracy * 100);
    const missedTotal = score.missedNotes + score.badCuts;
    const isCompact = size === 'compact';
    const statClassName = isCompact ? 'gap-1 rounded px-1.5 py-0.5 text-[10px]' : undefined;
-   const iconClassName = isCompact ? 'h-2.5 w-2.5' : undefined;
+   const iconClassName = isCompact ? 'size-2.5' : undefined;
    const hasMods = score.mods.length > 0;
    const showScoreStat = scoreStatMode === 'scoreAndMods' || hasMods;
 
@@ -67,14 +70,15 @@ export function ScoreStats({
       <div
          className={cn(
             'text-foreground flex cursor-default flex-wrap items-center justify-center gap-1',
-            isCompact ? 'text-[10px]' : 'flex-col text-sm lg:items-end',
+            isCompact ? 'text-[10px]' : 'flex-col text-sm',
+            !isCompact && (cq ? '@min-[600px]/scorecard:items-end' : 'lg:items-end'),
             className
          )}
       >
          {score.playOutcome !== 'CLEAR' && score.playOutcomeTime != null ? (
             <ScoreOutcomeBadge outcome={score.playOutcome} time={score.playOutcomeTime} statClassName={statClassName} iconClassName={iconClassName} />
          ) : showAccuracy ? (
-            <div className={cn('flex', isCompact ? 'gap-1' : 'gap-2 lg:mb-1')}>
+            <div className={cn('flex', isCompact ? 'gap-1' : 'gap-2', !isCompact && (cq ? '@min-[600px]/scorecard:mb-1' : 'lg:mb-1'))}>
                <Tooltip>
                   <TooltipTrigger asChild>
                      <Stat

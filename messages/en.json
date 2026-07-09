@@ -404,6 +404,20 @@
       "live": "Live"
    },
    "score": {
+      "share": {
+         "title": "Share scores",
+         "description": "Pick which rows to include, adjust the size, then copy or save the image",
+         "shareRow": "Share this score",
+         "width": "Width",
+         "padding": "Padding",
+         "rows": "{count, plural, =0 {No rows selected} one {# row selected} other {# rows selected}}",
+         "emptyPreview": "Select at least one score to preview",
+         "copy": "Copy",
+         "copied": "Copied",
+         "copyFailed": "Couldn't copy the image",
+         "save": "Save PNG",
+         "saveFailed": "Couldn't save the image"
+      },
       "legacyAccuracy": "Score was set before the max score change",
       "weighted": "Weighted {weightedPercent}",
       "accuracyPreview": "Accuracy preview",
