@@ -1,8 +1,11 @@
 import { createServerFn } from '@tanstack/react-start';
 
+import type { PlayerReportControllerSubmitProfileReportPayload } from '@/shared/api/generated/Api';
 import { api } from '@/shared/api/server-api';
-import { actionResultVoid } from '@/shared/result/action';
+import { actionApiVoid, actionResultVoid } from '@/shared/result/action';
 import { toInt64PathParam } from '@/shared/url-state/params';
+
+type PlayerReportReason = PlayerReportControllerSubmitProfileReportPayload['reason'];
 
 const disableAliasFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { playerId: string; aliasId: number }) => data)
@@ -22,6 +25,20 @@ const unfollowPlayerFn = createServerFn({ method: 'POST' })
    .inputValidator((playerId: string) => playerId)
    .handler(({ data }) => actionResultVoid(api.player.playerRelationshipControllerUnfollowPlayer({ id: toInt64PathParam(data) })));
 
+const reportPlayerFn = createServerFn({ method: 'POST' })
+   .inputValidator((data: { playerId: string; reason: PlayerReportReason; details?: string }) => data)
+   .handler(({ data }) =>
+      actionApiVoid(
+         api.player.playerReportControllerSubmitProfileReport(
+            { id: toInt64PathParam(data.playerId) },
+            {
+               reason: data.reason,
+               details: data.details ?? ''
+            }
+         )
+      )
+   );
+
 export async function disableAlias(playerId: string, aliasId: number) {
    return disableAliasFn({ data: { playerId, aliasId } });
 }
@@ -37,3 +54,9 @@ export async function followPlayer(playerId: string) {
 export async function unfollowPlayer(playerId: string) {
    return unfollowPlayerFn({ data: playerId });
 }
+
+export async function reportPlayer(playerId: string, reason: PlayerReportReason, details?: string) {
+   return reportPlayerFn({ data: { playerId, reason, details } });
+}
+
+export type { PlayerReportReason };

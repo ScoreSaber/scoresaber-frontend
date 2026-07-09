@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from 'react';
 
 import type { IconType } from 'react-icons';
-import { FaBan, FaGlobe, FaIdBadge, FaLock, FaUndoAlt, FaUsersCog } from 'react-icons/fa';
+import { FaBan, FaFlag, FaGlobe, FaIdBadge, FaLock, FaUndoAlt, FaUsersCog } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,13 +11,15 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSepa
 import { useActionMutation } from '@/hooks/use-action-mutation';
 import { useAuth } from '@/modules/auth';
 import { type PlayerAdminOperation, PlayerAdminOperations } from '@/modules/player/operations/admin/player-admin-operations';
+import { PlayerReportDialog } from '@/modules/player/operations/member/player-report-dialog';
 import Permissions from '@/shared/permissions';
 
-type ActiveDialog = PlayerAdminOperation | null;
+type PlayerOperation = PlayerAdminOperation | 'report';
+type ActiveDialog = PlayerOperation | null;
 type PlayerOperationGroup = 'primary' | 'country';
 
 interface PlayerOperationDescriptor {
-   id: PlayerAdminOperation;
+   id: PlayerOperation;
    group: PlayerOperationGroup;
    visible: boolean;
    icon: IconType;
@@ -56,6 +58,7 @@ export function PlayerActions({ playerId, playerBanned, playerPermissions, playe
    const action = useActionMutation();
    const pending = action.isPending;
    const compactIconClass = compact ? 'size-2.5' : undefined;
+   const activeAdminDialog = activeDialog === 'report' ? null : activeDialog;
 
    function closeDialog() {
       setActiveDialog(null);
@@ -68,6 +71,13 @@ export function PlayerActions({ playerId, playerBanned, playerPermissions, playe
          visible: canBan && !isOwnProfile && playerBanned,
          icon: FaUndoAlt,
          label: t('player.unbanPlayer')
+      },
+      {
+         id: 'report',
+         group: 'primary',
+         visible: !!user && !isOwnProfile && !playerBanned,
+         icon: FaFlag,
+         label: t('player.reportProfile')
       },
       {
          id: 'ban',
@@ -145,13 +155,19 @@ export function PlayerActions({ playerId, playerBanned, playerPermissions, playe
          </div>
 
          <PlayerAdminOperations
-            activeOperation={activeDialog}
+            activeOperation={activeAdminDialog}
             playerId={playerId}
             playerBanned={playerBanned}
             playerPermissions={playerPermissions}
             playerRole={playerRole}
             currentUserPermissions={userPerms}
             isOwnProfile={isOwnProfile}
+            action={action}
+            onOpenChangeAction={(open) => !open && closeDialog()}
+         />
+         <PlayerReportDialog
+            open={activeDialog === 'report'}
+            playerId={playerId}
             action={action}
             onOpenChangeAction={(open) => !open && closeDialog()}
          />
