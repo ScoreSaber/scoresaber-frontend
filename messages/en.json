@@ -501,6 +501,8 @@
       "totalScores": "Total scores",
       "scoresToday": "Scores today",
       "activeRankRequest": "Active rank request",
+      "version": "Version",
+      "currentVersion": "Current",
       "difficulty": "Difficulty",
       "gameMode": "Gamemode",
       "starRatingRange": "Star rating range",

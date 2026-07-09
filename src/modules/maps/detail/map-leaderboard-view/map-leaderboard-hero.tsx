@@ -8,6 +8,8 @@ import { useTranslations } from 'use-intl';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
+import { MapReuploadVersionSelection } from '@/modules/maps/detail/map-reupload-version-selection';
 import { BeatSaverKeyPill } from '@/modules/maps/shared/beatsaver-key-pill';
 import { LinkedNames } from '@/modules/search/search-link';
 import type { LeaderboardControllerGetLeaderboardByIdResponse, MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
@@ -19,7 +21,7 @@ import { cn, formatNumber } from '@/shared/format/helpers';
 import { getStatusAccentClass } from '@/shared/format/styling';
 import { isLeaderboardPersonalizationParam } from '@/shared/url-state/persisted-filter-preferences';
 
-export function MapLeaderboardHero({ mapInfo, leaderboardInfo }: MapLeaderboardHeroProps) {
+export function MapLeaderboardHero({ mapInfo, leaderboardInfo, linkSearchParams }: MapLeaderboardHeroProps) {
    const tc = useTranslations();
    const status = leaderboardInfo.realm.leaderboardStatus;
 
@@ -53,6 +55,12 @@ export function MapLeaderboardHero({ mapInfo, leaderboardInfo }: MapLeaderboardH
                   </span>
                   <ShareMapButton />
                   <CopyMapHashButton hash={mapInfo.hash} />
+                  <MapReuploadVersionSelection
+                     mapInfo={mapInfo}
+                     activeLeaderboardId={leaderboardInfo.id}
+                     linkSearchParams={linkSearchParams}
+                     triggerVariant="icon"
+                  />
                </div>
 
                <h1 className="min-w-0 text-base leading-tight text-pretty sm:text-lg md:text-xl">
@@ -180,4 +188,5 @@ function CopyMapHashButton({ hash }: { hash: string }) {
 interface MapLeaderboardHeroProps {
    mapInfo: MapControllerGetMapByIdResponse;
    leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
+   linkSearchParams?: LeaderboardSearchParams;
 }
