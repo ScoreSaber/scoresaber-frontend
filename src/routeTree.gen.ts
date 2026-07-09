@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TeamRouteImport } from './routes/team'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RankingsRouteImport } from './routes/rankings'
@@ -60,6 +61,11 @@ import { Route as MapIdDifficultyLeaderboardIdRouteRouteImport } from './routes/
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -308,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/rankings': typeof RankingsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/map/$id': typeof MapIdRouteRouteWithChildren
   '/u/$playerId': typeof UPlayerIdRouteRoute
@@ -356,6 +363,7 @@ export interface FileRoutesByTo {
   '/rankings': typeof RankingsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/u/$playerId': typeof UPlayerIdRouteRoute
   '/leaderboards': typeof legacyLeaderboardsRoute
@@ -402,6 +410,7 @@ export interface FileRoutesById {
   '/rankings': typeof RankingsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/team': typeof TeamRoute
   '/map/$id': typeof MapIdRouteRouteWithChildren
   '/u/$playerId': typeof UPlayerIdRouteRoute
@@ -453,6 +462,7 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/support'
     | '/team'
     | '/map/$id'
     | '/u/$playerId'
@@ -501,6 +511,7 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/support'
     | '/team'
     | '/u/$playerId'
     | '/leaderboards'
@@ -546,6 +557,7 @@ export interface FileRouteTypes {
     | '/rankings'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/support'
     | '/team'
     | '/map/$id'
     | '/u/$playerId'
@@ -596,6 +608,7 @@ export interface RootRouteChildren {
   RankingsRoute: typeof RankingsRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SupportRoute: typeof SupportRoute
   TeamRoute: typeof TeamRoute
   MapIdRouteRoute: typeof MapIdRouteRouteWithChildren
   UPlayerIdRouteRoute: typeof UPlayerIdRouteRoute
@@ -625,6 +638,13 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/team'
       preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -1075,6 +1095,7 @@ const rootRouteChildren: RootRouteChildren = {
   RankingsRoute: RankingsRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SupportRoute: SupportRoute,
   TeamRoute: TeamRoute,
   MapIdRouteRoute: MapIdRouteRouteWithChildren,
   UPlayerIdRouteRoute: UPlayerIdRouteRoute,

@@ -46,6 +46,7 @@ const questRoute = getRouteApi('/quest');
 const rankingsRoute = getRouteApi('/rankings');
 const rankRequestsRoute = getRouteApi('/ranking/requests');
 const teamRoute = getRouteApi('/team');
+const supportRoute = getRouteApi('/support');
 
 type NavLinkProps = Omit<ComponentProps<'a'>, 'href'> & {
    route: AppNavRoute;
@@ -79,6 +80,7 @@ export function NavLink({ route, ...props }: NavLinkProps) {
    if (route === 'live') return <liveRoute.Link {...props} />;
    if (route === 'questInstaller') return <questRoute.Link {...props} search={{ step: 1 }} />;
    if (route === 'team') return <teamRoute.Link {...props} />;
+   if (route === 'support') return <supportRoute.Link {...props} />;
 
    return <homeRoute.Link {...props} />;
 }

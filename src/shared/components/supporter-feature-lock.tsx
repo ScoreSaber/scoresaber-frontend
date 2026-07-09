@@ -55,7 +55,7 @@ export function SupporterFeatureLock({
                            <p className="text-muted-foreground line-clamp-2 text-xs leading-snug text-pretty">{lockDescription}</p>
                         </div>
                         <Button asChild size="xs" className="shrink-0 cursor-pointer">
-                           <a href="https://patreon.com/scoresaber" target="_blank" rel="noreferrer">
+                           <a href="https://patreon.com/scoresaber/membership" target="_blank" rel="noreferrer">
                               <ExternalLink data-icon="inline-start" />
                               {t('supporterGate.supportUs')}
                            </a>

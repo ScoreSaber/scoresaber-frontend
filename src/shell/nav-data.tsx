@@ -1,12 +1,12 @@
 import type { RegisteredRouter, RouteIds } from '@tanstack/react-router';
-import { BookOpen, Home, MessageSquareText, RadioTower, Search, Smartphone, Users } from 'lucide-react';
+import { BookOpen, Heart, Home, MessageSquareText, RadioTower, Search, Smartphone, Users } from 'lucide-react';
 import { FaList, FaMap, FaMedal } from 'react-icons/fa';
 import type { Messages } from 'use-intl';
 
 import { Icons } from '@/shared/components/icons';
 
 type NavKey = string & keyof Messages['nav'];
-export type AppNavRoute = 'home' | 'maps' | 'rankings' | 'rankRequests' | 'live' | 'questInstaller' | 'team';
+export type AppNavRoute = 'home' | 'maps' | 'rankings' | 'rankRequests' | 'live' | 'questInstaller' | 'team' | 'support';
 type AppRouteId = RouteIds<RegisteredRouter['routeTree']>;
 type NavItem = { key: NavKey; shortKey: NavKey; icon: React.ReactNode; route: AppNavRoute; disabled?: boolean };
 type SearchNavItem = { key: NavKey; shortKey: NavKey; icon: React.ReactNode; action: 'search' };
@@ -59,7 +59,8 @@ export const secondaryItems: (InternalSecondaryItem | ExternalSecondaryItem)[] =
       route: 'questInstaller',
       external: false
    },
-   { key: 'team', icon: <Users data-icon className="size-4" aria-hidden="true" />, route: 'team', external: false }
+   { key: 'team', icon: <Users data-icon className="size-4" aria-hidden="true" />, route: 'team', external: false },
+   { key: 'support', icon: <Heart data-icon className="size-4" aria-hidden="true" />, route: 'support', external: false }
 ];
 
 export const socialLinks = [
@@ -79,14 +80,11 @@ const navRouteIds = {
    rankRequests: '/ranking/requests',
    live: '/live/',
    questInstaller: '/quest',
-   team: '/team'
+   team: '/team',
+   support: '/support'
 } satisfies Record<AppNavRoute, AppRouteId>;
 
-function getNavPath(route: AppNavRoute) {
-   return navRouteIds[route];
-}
-
 export function isNavActive(pathname: string, route: AppNavRoute) {
-   const href = getNavPath(route);
+   const href = navRouteIds[route];
    return href === navRouteIds.home ? pathname === navRouteIds.home : pathname.startsWith(href);
 }

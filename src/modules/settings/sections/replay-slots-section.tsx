@@ -84,7 +84,7 @@ export function ReplaySlotsSection({ replaySlots, scoreDetails }: ReplaySlotsSec
                </div>
                {showCta && (
                   <Button variant="outline" size="sm" asChild className="cursor-pointer justify-start">
-                     <a href="https://www.patreon.com/scoresaber" target="_blank" rel="noreferrer">
+                     <a href="https://patreon.com/scoresaber/membership" target="_blank" rel="noreferrer">
                         <Icons.patreon data-icon="inline-start" className="size-4 fill-current text-[#ff424d]" />
                         {isSupporter ? t('settings.perks.replaySlots.supporterCta') : t('settings.perks.replaySlots.patreonCta')}
                         <ExternalLink className="size-3" aria-hidden />

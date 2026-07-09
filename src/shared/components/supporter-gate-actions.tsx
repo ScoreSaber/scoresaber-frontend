@@ -22,7 +22,7 @@ export function SupporterGateActions({ size = 'default', align = 'center' }: Sup
    return (
       <div className={cn('flex flex-col gap-2', align === 'center' ? 'items-center text-center' : 'items-start text-left')}>
          <Button asChild size={size} className={cn('cursor-pointer', align === 'start' && 'w-fit')}>
-            <a href="https://patreon.com/scoresaber" target="_blank" rel="noreferrer">
+            <a href="https://patreon.com/scoresaber/membership" target="_blank" rel="noreferrer">
                <ExternalLink data-icon="inline-start" />
                {t('supporterGate.supportUs')}
             </a>

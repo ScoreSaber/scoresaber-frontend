@@ -111,7 +111,8 @@
       "livePlatform": "Live",
       "apiDocs": "API Docs",
       "questInstaller": "Quest Installer",
-      "team": "Team"
+      "team": "Team",
+      "support": "Support ScoreSaber"
    },
    "home": {
       "hero": {
@@ -202,6 +203,92 @@
       "supportUs": "Support us on Patreon",
       "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
       "connectSupporterLink": "here"
+   },
+   "support": {
+      "title": "Power the home of competitive Beat Saber",
+      "subtitle": "ScoreSaber has been the largest leaderboard and competitive system for Beat Saber since 2018, serving players worldwide. A Patreon pledge funds full-time development and the infrastructure behind millions of scores and unlocks a set of supporter perks as thanks",
+      "logoAlt": "ScoreSaber",
+      "supportCta": "Support on Patreon",
+      "connect": {
+         "text": "Already a patron?",
+         "link": "Connect your Patreon in settings"
+      },
+      "why": {
+         "title": "Where your support goes",
+         "platform": {
+            "title": "Evolution",
+            "description": "ScoreSaber is developed full-time and growing into a full competitive platform, with a tournament system we'll be hosting free for the community"
+         },
+         "servers": {
+            "title": "Servers & infrastructure",
+            "description": "Leaderboards, the API and the site serve millions of scores around the clock and your support keeps them fast & online"
+         },
+         "replays": {
+            "title": "Replay storage",
+            "description": "Every ranked score is stored as a full replay you can watch back in-game or on the web and that archive grows every day"
+         }
+      },
+      "tiers": {
+         "title": "Supporter perks",
+         "subtitle": "Perks are our way of saying thanks. They apply as soon as your pledge is active and pause if it lapses",
+         "everythingIn": "everything in supporter, plus...",
+         "moreSoon": "more coming soon...",
+         "supporter": {
+            "name": "Supporter",
+            "price": "{price} / month"
+         },
+         "ppFarmer": {
+            "name": "PP Farmer",
+            "price": "{price} / month"
+         }
+      },
+      "perks": {
+         "adFree": {
+            "title": "Ad-free experience",
+            "description": "ScoreSaber runs no ads today. If we ever run an occasional promotion with a relevant partner, your support keeps it off your screen"
+         },
+         "bio": {
+            "title": "Custom profile bio"
+         },
+         "vanity": {
+            "title": "Custom profile URL",
+            "description": "Claim a personal link like scoresaber.com/u/yourname"
+         },
+         "nameColor": {
+            "title": "Coloured leaderboard name",
+            "description": "Stand out with the supporter name colour across every leaderboard"
+         },
+         "replays5k": {
+            "title": "5,000 replay slots",
+            "description": "Protect up to 5,000 replays outside of regular retention"
+         },
+         "supporterRole": {
+            "title": "Supporter role",
+            "description": "Shown on ScoreSaber and in Discord"
+         },
+         "replays20k": {
+            "title": "20,000 replay slots",
+            "description": "Protect up to 20,000 replays outside of regular retention"
+         },
+         "background": {
+            "title": "Profile background"
+         },
+         "accent": {
+            "title": "Custom profile colours"
+         },
+         "pinned": {
+            "title": "Pinned scores",
+            "description": "Pin up to 6 favourite scores to the top of your profile"
+         },
+         "customization": {
+            "title": "Badge & layout control",
+            "description": "Reorder your badges, stats and profile sections exactly how you like them"
+         },
+         "ppFarmerBadge": {
+            "title": "PP Farmer badge & roles",
+            "description": "PP Farmer badge on ScoreSaber, plus Supporter and PP Farmer roles in Discord"
+         }
+      }
    },
    "login": {
       "titlePrefix": "Sign into",

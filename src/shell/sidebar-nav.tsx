@@ -23,6 +23,7 @@ import { Image } from '@/shared/components/image';
 import { parseCountryRegionParam } from '@/shared/country-region';
 import { cn, formatNumber, rankToPage } from '@/shared/format/helpers';
 import { getPlayerRoleStyleAndTitle } from '@/shared/format/styling';
+import Permissions from '@/shared/permissions';
 import { isNavActive, navItems, secondaryItems, socialLinks } from '@/shell/nav-data';
 import { SidebarNavLink } from '@/shell/sidebar-nav-link';
 import { SidebarMoreMenu } from '@/shell/sidebar/sidebar-more-menu';
@@ -71,6 +72,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
    const [playerNameClass] = getPlayerRoleStyleAndTitle(user);
    const currentPath = location.href;
    const visibleNavItems = navItems.filter((item) => item.route !== 'live' || canUseLivePlatform(user?.permissions));
+   const visibleSecondaryItems = secondaryItems.filter((item) => item.key !== 'support' || !Permissions.isSupporter(user?.permissions ?? 0));
 
    function navLabel(key: string) {
       return key === 'home'
@@ -95,7 +97,9 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                            ? t('nav.questInstaller')
                            : key === 'team'
                              ? t('nav.team')
-                             : t('nav.apiDocs');
+                             : key === 'support'
+                               ? t('nav.support')
+                               : t('nav.apiDocs');
    }
 
    const realmSwitcherTrigger = (
@@ -224,7 +228,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
 
             <Separator className="my-2" />
 
-            {secondaryItems.map((item) => (
+            {visibleSecondaryItems.map((item) => (
                <SidebarNavLink
                   key={item.key}
                   route={item.external ? undefined : item.route}

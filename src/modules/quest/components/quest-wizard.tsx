@@ -177,7 +177,7 @@ function WizardFooter() {
          <p>{t('quest.footer.patreonPerks')}</p>
          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             <a
-               href="https://patreon.com/scoresaber"
+               href="https://patreon.com/scoresaber/membership"
                target="_blank"
                rel="external noreferrer"
                className="text-foreground hover:text-primary inline-flex items-center gap-2 font-medium transition-colors"
