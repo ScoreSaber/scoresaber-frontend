@@ -425,6 +425,7 @@
       "historyFilterQuits": "Quits",
       "historyFilterFails": "Fails",
       "totalPlays": "{count, plural, one {# play} other {# plays}}",
+      "replayViews": "{count, plural, one {# view} other {# views}}",
       "outcomeFailAt": "Failed at {time}",
       "outcomeQuitAt": "Quit at {time}",
       "outcomeRestartAt": "Restarted at {time}",
