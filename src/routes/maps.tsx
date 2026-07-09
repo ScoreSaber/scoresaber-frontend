@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 
 import { MapCard } from '@/modules/maps/listing/map-card';
+import { MapDownloadActions } from '@/modules/maps/listing/map-download-actions';
 import { DEFAULT_MAX_STARS, DEFAULT_MIN_STARS, MapFilters } from '@/modules/maps/listing/map-filters';
 import { isMapIdentifierSearch } from '@/modules/maps/shared/map-search';
 import {
@@ -128,6 +129,7 @@ function MapsRoute() {
                buildLocation={buildMapsLocation}
                parseSearch={parseMapsSearch}
                initialFiltersOpen={persistedStorage.filtersOpen === 'true'}
+               trailingAction={<MapDownloadActions search={searchParams} />}
             />
 
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
