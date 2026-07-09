@@ -78,7 +78,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
          {/* logo */}
          <div className="flex justify-center p-3">
             <homeRoute.Link aria-label="ScoreSaber Home">
-               <Image src="/scoresaber-pride.svg" width={24} height={24} alt={tSidebar('common.scoreSaberLogo')} priority />
+               <Image src="/scoresaber.svg" width={24} height={24} alt={tSidebar('common.scoreSaberLogo')} priority />
             </homeRoute.Link>
          </div>
 

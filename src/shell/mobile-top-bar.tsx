@@ -52,7 +52,7 @@ export function MobileTopBar() {
 
                {/* center: logo */}
                <homeRoute.Link className="absolute left-1/2 -translate-x-1/2" aria-label="ScoreSaber Home">
-                  <Image src="/scoresaber-pride.svg" width={28} height={28} alt={tSidebar('common.scoreSaberLogo')} priority />
+                  <Image src="/scoresaber.svg" width={28} height={28} alt={tSidebar('common.scoreSaberLogo')} priority />
                </homeRoute.Link>
 
                {/* right spacer */}
