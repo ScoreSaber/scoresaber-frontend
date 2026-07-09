@@ -217,6 +217,8 @@ export type PlayerRelationshipControllerFollowPlayerResponse = _R<_Player['playe
 
 export type PlayerRelationshipControllerUnfollowPlayerResponse = _R<_Player['playerRelationshipControllerUnfollowPlayer']>;
 
+export type PlayerReportControllerSubmitProfileReportResponse = _R<_Player['playerReportControllerSubmitProfileReport']>;
+
 export type LeaderboardControllerGetLeaderboardListingsResponse = _R<_Leaderboard['leaderboardControllerGetLeaderboardListings']>;
 export type LeaderboardControllerGetLeaderboardListingsDataItem = LeaderboardControllerGetLeaderboardListingsResponse['data'][number];
 
