@@ -82,7 +82,7 @@ export function ScoreCard({ playerScore, className, overlayAction }: ScoreCardPr
                coverUrl={leaderboard.map.coverUrl}
                className={cn(
                   className,
-                  'pb-9 lg:pr-16 lg:pb-3',
+                  'pb-9 max-lg:pointer-coarse:pb-10 lg:pr-16 lg:pb-3',
                   // cut a hole in the card behind the pin button so it reads as a notch, not a blob
                   overlayAction &&
                      'pl-6 lg:pl-7 [-webkit-mask-image:radial-gradient(circle_at_6px_6px,transparent_17.5px,black_18.5px)] [mask-image:radial-gradient(circle_at_6px_6px,transparent_17.5px,black_18.5px)]'
