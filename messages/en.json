@@ -140,7 +140,11 @@
          "browse": "Browse"
       },
       "news": {
-         "readMore": "Read more..."
+         "readMore": "Read more...",
+         "repostedBy": "{name} reposted",
+         "imageLabel": "Image {number} of {count}",
+         "videoLabel": "Video from {name}",
+         "playVideoOnX": "Play video on X"
       },
       "rankedBatch": {
          "eyebrow": "Latest ranked batch",

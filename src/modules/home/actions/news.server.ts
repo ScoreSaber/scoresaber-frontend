@@ -4,7 +4,7 @@ import { Result, TaggedError } from 'better-result';
 import sanitizeHtml from 'sanitize-html';
 
 import { HOME_NEWS_YOUTUBE_CHANNEL_ID, HOME_NEWS_YOUTUBE_HANDLE } from '../home-constants';
-import type { HomeNewsFeed, HomeNewsPost, HomeNewsSource, HomeRankedBatchVideo } from './news';
+import type { HomeNewsFeed, HomeNewsPost, HomeNewsQuotedPost, HomeNewsSource, HomeNewsVideo, HomeRankedBatchVideo } from './news';
 
 import { env } from '@/env';
 
@@ -47,11 +47,15 @@ type PatreonPostsResponse = {
 type XTweet = {
    id: string;
    text: string;
+   author_id?: string;
    created_at?: string;
-   conversation_id?: string;
    attachments?: {
       media_keys?: string[];
    };
+   referenced_tweets?: {
+      type: 'retweeted' | 'quoted' | 'replied_to';
+      id: string;
+   }[];
    entities?: {
       urls?: {
          url: string;
@@ -67,6 +71,18 @@ type XMedia = {
    media_key: string;
    type: 'photo' | 'video' | 'animated_gif';
    url?: string;
+   alt_text?: string;
+   preview_image_url?: string;
+   variants?: {
+      bit_rate?: number;
+      content_type: string;
+      url: string;
+   }[];
+};
+
+type XUser = {
+   id: string;
+   username: string;
 };
 
 type YouTubeThumbnails = Partial<Record<'default' | 'medium' | 'high' | 'standard' | 'maxres', { url: string }>>;
@@ -222,42 +238,107 @@ async function fetchXPosts(): Promise<XPost[]> {
    const userId = await fetchXUserId();
    const url = new URL(`https://api.x.com/2/users/${userId}/tweets`);
    url.searchParams.set('max_results', String(NEWS_FEED_POST_LIMIT));
-   url.searchParams.set('tweet.fields', 'created_at,entities,conversation_id');
-   url.searchParams.set('expansions', 'attachments.media_keys');
-   url.searchParams.set('media.fields', 'url,type');
-   url.searchParams.set('exclude', 'retweets,replies');
+   url.searchParams.set('tweet.fields', 'author_id,created_at,entities,referenced_tweets');
+   url.searchParams.set(
+      'expansions',
+      'attachments.media_keys,referenced_tweets.id,referenced_tweets.id.author_id,referenced_tweets.id.attachments.media_keys'
+   );
+   url.searchParams.set('media.fields', 'url,type,alt_text,preview_image_url,variants');
+   url.searchParams.set('user.fields', 'username');
+   url.searchParams.set('exclude', 'replies');
 
-   const response = await fetchJson<{ data?: XTweet[]; includes?: { media?: XMedia[] } }>('x', url, {
-      headers: xHeaders()
-   });
+   const response = await fetchJson<{
+      data?: XTweet[];
+      includes?: { tweets?: XTweet[]; users?: XUser[]; media?: XMedia[] };
+   }>('x', url, { headers: xHeaders() });
+   const tweetsById = new Map((response.includes?.tweets ?? []).map((tweet) => [tweet.id, tweet]));
+   const usersById = new Map((response.includes?.users ?? []).map((user) => [user.id, user]));
    const mediaByKey = new Map((response.includes?.media ?? []).map((media) => [media.media_key, media]));
 
    return (response.data ?? []).flatMap((tweet) => {
-      // exclude=replies keeps self-replies, so drop thread continuations ourselves
-      if (tweet.conversation_id && tweet.conversation_id !== tweet.id) return [];
+      // exclude=replies keeps self-replies, so drop those thread continuations ourselves
+      if (tweet.referenced_tweets?.some((reference) => reference.type === 'replied_to')) return [];
 
-      const text = tweetText(tweet);
-      const media = (tweet.attachments?.media_keys ?? []).map((key) => mediaByKey.get(key)).filter((item) => item != null);
-      const imageUrls = media.filter((item) => item.type === 'photo' && item.url != null).map((item) => item.url as string);
-      // nothing renderable, e.g. a video-only tweet
-      if (!text && imageUrls.length === 0) return [];
+      const repostReference = tweet.referenced_tweets?.find((reference) => reference.type === 'retweeted');
+      const repostedTweet = repostReference ? tweetsById.get(repostReference.id) : undefined;
+      const repostedAuthor = repostedTweet?.author_id ? usersById.get(repostedTweet.author_id) : undefined;
+      const contentTweet = repostedTweet ?? tweet;
+      const quoteReference = contentTweet.referenced_tweets?.find((reference) => reference.type === 'quoted');
+      const quotedTweet = quoteReference ? tweetsById.get(quoteReference.id) : undefined;
+      const quotedAuthor = quotedTweet?.author_id ? usersById.get(quotedTweet.author_id) : undefined;
+      const quotedPost = quotedTweet && quotedAuthor ? toQuotedPost(quotedTweet, quotedAuthor, mediaByKey) : undefined;
+      const text = tweetText(contentTweet, quotedPost?.id);
+      const { images, video } = tweetMedia(contentTweet, mediaByKey);
+      if (!text && images.length === 0 && !video && !quotedPost) return [];
+
+      const originalUsername = repostedAuthor?.username;
+      const sourceLabel = originalUsername ? `@${originalUsername}` : `@${env.HOME_NEWS_X_USERNAME}`;
+      const sourceHref = `https://x.com/${originalUsername ?? env.HOME_NEWS_X_USERNAME}`;
+      const href = originalUsername
+         ? `https://x.com/${originalUsername}/status/${contentTweet.id}`
+         : `https://x.com/${env.HOME_NEWS_X_USERNAME}/status/${tweet.id}`;
 
       return [
          {
             post: {
                id: `x:${tweet.id}`,
                source: 'x' as const,
-               sourceLabel: `@${env.HOME_NEWS_X_USERNAME}`,
-               sourceHref: `https://x.com/${env.HOME_NEWS_X_USERNAME}`,
+               sourceLabel,
+               sourceHref,
+               repostedBy: originalUsername
+                  ? {
+                       label: `@${env.HOME_NEWS_X_USERNAME}`,
+                       href: `https://x.com/${env.HOME_NEWS_X_USERNAME}`
+                    }
+                  : undefined,
                body: excerpt(text, POST_BODY_LENGTH),
-               href: `https://x.com/${env.HOME_NEWS_X_USERNAME}/status/${tweet.id}`,
+               href,
                publishedAt: tweet.created_at ?? new Date(0).toISOString(),
-               imageUrls
+               images,
+               video,
+               quotedPost
             },
-            linkedUrls: tweetLinkedUrls(tweet)
+            linkedUrls: tweetLinkedUrls(contentTweet)
          }
       ];
    });
+}
+
+function toQuotedPost(tweet: XTweet, author: XUser, mediaByKey: Map<string, XMedia>): HomeNewsQuotedPost {
+   const { images, video } = tweetMedia(tweet, mediaByKey);
+
+   return {
+      id: tweet.id,
+      sourceLabel: `@${author.username}`,
+      sourceHref: `https://x.com/${author.username}`,
+      body: excerpt(tweetText(tweet), POST_BODY_LENGTH),
+      href: `https://x.com/${author.username}/status/${tweet.id}`,
+      publishedAt: tweet.created_at ?? new Date(0).toISOString(),
+      images,
+      video
+   };
+}
+
+function tweetMedia(tweet: XTweet, mediaByKey: Map<string, XMedia>) {
+   const media = (tweet.attachments?.media_keys ?? []).map((key) => mediaByKey.get(key)).filter((item) => item != null);
+   const images = media.flatMap((item) => (item.type === 'photo' && item.url ? [{ url: item.url, alt: item.alt_text }] : []));
+   const videoMedia = media.find((item) => item.type === 'video' || item.type === 'animated_gif');
+
+   return {
+      images,
+      video: videoMedia ? toNewsVideo(videoMedia) : undefined
+   };
+}
+
+function toNewsVideo(media: XMedia): HomeNewsVideo | undefined {
+   const mp4Variants = media.variants?.filter((variant) => variant.content_type === 'video/mp4') ?? [];
+   const playbackUrl = mp4Variants.reduce<(typeof mp4Variants)[number] | undefined>(
+      (best, variant) => (!best || (variant.bit_rate ?? 0) > (best.bit_rate ?? 0) ? variant : best),
+      undefined
+   )?.url;
+
+   if (!playbackUrl && !media.preview_image_url) return undefined;
+   return { playbackUrl, posterUrl: media.preview_image_url };
 }
 
 // the id never changes for a username, so look it up once per process
@@ -505,16 +586,29 @@ function getBestYouTubeThumbnail(thumbnails: YouTubeThumbnails | undefined) {
 
 // expand t.co links to their real urls, drop links to the tweet's own media,
 // strip leftover short links, and decode the html entities x escapes
-function tweetText(tweet: XTweet) {
+function tweetText(tweet: XTweet, omittedTweetId?: string) {
    let text = tweet.text;
    for (const url of tweet.entities?.urls ?? []) {
-      text = text.replaceAll(url.url, url.media_key ? '' : (url.expanded_url ?? url.url));
+      const expandedUrl = url.unwound_url ?? url.expanded_url ?? url.url;
+      text = text.replaceAll(url.url, url.media_key || getXTweetId(expandedUrl) === omittedTweetId ? '' : expandedUrl);
    }
 
    return normalizeWhitespace(text.replace(/https:\/\/t\.co\/\w+/g, ''))
       .replaceAll('&lt;', '<')
       .replaceAll('&gt;', '>')
       .replaceAll('&amp;', '&');
+}
+
+function getXTweetId(value: string) {
+   const url = parseUrl(value);
+   if (!url) return null;
+
+   const host = stripWww(url.hostname);
+   if (host !== 'x.com' && host !== 'twitter.com' && host !== 'mobile.twitter.com') return null;
+
+   const path = url.pathname.split('/').filter(Boolean);
+   const statusIndex = path.indexOf('status');
+   return statusIndex === -1 ? null : (path[statusIndex + 1] ?? null);
 }
 
 function htmlToText(value: string) {

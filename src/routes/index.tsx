@@ -84,12 +84,19 @@ export const Route = createFileRoute('/')({
       return getHomePageData();
    },
    staleTime: 60 * 1000,
-   head: () =>
-      buildSeoHead({
+   head: () => {
+      const head = buildSeoHead({
          title: 'Home',
          description: 'The original leaderboard system for Beat Saber custom songs, built for competitive players worldwide',
          path: '/'
-      }),
+      });
+
+      // X rejects video CDN requests that include a non-X referer
+      return {
+         ...head,
+         meta: [...head.meta, { name: 'referrer', content: 'no-referrer' }]
+      };
+   },
    component: HomeRoute
 });
 
