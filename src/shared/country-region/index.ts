@@ -6,7 +6,12 @@ type CountryRegionFilterValue = { kind: 'countries'; countries: CountryCode[] } 
 
 const regionCodeSet = new Set<string>(REGIONS.map((region) => region.code));
 const regionByCode = new Map<RegionCode, (typeof REGIONS)[number]>(REGIONS.map((region) => [region.code, region]));
-const regionByCountries = new Map<string, (typeof REGIONS)[number]>(REGIONS.map((region) => [region.countries, region]));
+const regionByCountries = new Map<string, (typeof REGIONS)[number]>(
+   REGIONS.flatMap((region) => [
+      [region.countries, region] as const,
+      ...(region.legacyCountries ?? []).map((countries) => [countries, region] as const)
+   ])
+);
 const regionCodeSchema = z.custom<RegionCode>((value) => typeof value === 'string' && regionCodeSet.has(value));
 
 const countryRegionFilterSchema = z.union([
