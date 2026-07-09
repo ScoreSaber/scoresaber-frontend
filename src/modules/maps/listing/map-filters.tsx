@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { FaArrowDown, FaArrowUp, FaCheckCircle, FaChevronDown, FaFire, FaHeart, FaMedal, FaStar, FaTimes, FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
@@ -70,6 +70,7 @@ interface MapFiltersProps<TLocation> {
    buildLocation: RouteLocationBuilder<MapsFilterSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => MapsFilterSearch | null;
    initialFiltersOpen: boolean;
+   trailingAction?: ReactNode;
 }
 
 type MapsFilterSearch = SearchParamsRecord & {
@@ -89,7 +90,8 @@ export function MapFilters<TLocation>({
    search,
    buildLocation,
    parseSearch,
-   initialFiltersOpen
+   initialFiltersOpen,
+   trailingAction
 }: MapFiltersProps<TLocation>) {
    const t = useTranslations();
    const statusRowScroll = useHorizontalScrollFade();
@@ -313,6 +315,7 @@ export function MapFilters<TLocation>({
                   >
                      {t('map.statusVerified')}
                   </FilterPill>
+                  {trailingAction}
                </div>
 
                {/* sort + stars */}
