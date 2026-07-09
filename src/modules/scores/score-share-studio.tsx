@@ -37,6 +37,7 @@ export function ScoreShareStudio({ open, onOpenChange, scores, initialScoreId }:
    const [selectedIds, setSelectedIds] = useState<Set<number>>(() => new Set());
    const [cardWidth, setCardWidth] = useState(CARD_WIDTH_DEFAULT);
    const [padding, setPadding] = useState(PADDING_DEFAULT);
+   const [includeBackground, setIncludeBackground] = useState(false);
    const [saving, setSaving] = useState(false);
 
    const [stageElement, setStageElement] = useState<HTMLDivElement | null>(null);
@@ -108,10 +109,11 @@ export function ScoreShareStudio({ open, onOpenChange, scores, initialScoreId }:
       const stage = stageElement;
       if (!stage) throw new Error('nothing to capture');
       const { toBlob } = await import('html-to-image');
-      const blob = await toBlob(stage, { pixelRatio: 2, cacheBust: true });
+      const backgroundColor = includeBackground ? getComputedStyle(stage).getPropertyValue('--background').trim() || undefined : undefined;
+      const blob = await toBlob(stage, { pixelRatio: 2, cacheBust: true, backgroundColor });
       if (!blob) throw new Error('capture produced no image');
       return blob;
-   }, [stageElement]);
+   }, [includeBackground, stageElement]);
 
    const fileName = useMemo(() => {
       if (selectedScores.length === 1) {
@@ -170,7 +172,11 @@ export function ScoreShareStudio({ open, onOpenChange, scores, initialScoreId }:
                               className="absolute top-0 left-0 origin-top-left"
                               style={{ opacity: preview.measured ? 1 : 0, transform: `scale(${preview.scale})` }}
                            >
-                              <div ref={setStageElement} className="w-fit" style={{ padding }}>
+                              <div
+                                 ref={setStageElement}
+                                 className="w-fit"
+                                 style={{ padding, backgroundColor: includeBackground ? 'var(--background)' : undefined }}
+                              >
                                  <div className="flex flex-col gap-2" style={{ width: cardWidth }}>
                                     {selectedScores.map((entry) => (
                                        <ScoreCard key={entry.score.id} presentation playerScore={entry} className="p-3" />
@@ -219,6 +225,11 @@ export function ScoreShareStudio({ open, onOpenChange, scores, initialScoreId }:
                      />
                   </div>
                </div>
+
+               <label className="flex shrink-0 cursor-default items-center gap-2 text-sm font-medium">
+                  <Checkbox checked={includeBackground} onCheckedChange={(checked) => setIncludeBackground(checked === true)} />
+                  <span>{t('score.share.addBackground')}</span>
+               </label>
 
                <div className="flex min-h-0 flex-1 flex-col gap-2">
                   <span className="text-sm font-medium">{t('score.share.rows', { count: selectedScores.length })}</span>

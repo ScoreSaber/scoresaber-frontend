@@ -497,6 +497,7 @@
          "shareRow": "Share this score",
          "width": "Width",
          "padding": "Padding",
+         "addBackground": "Add background (for sites like X)",
          "rows": "{count, plural, =0 {No rows selected} one {# row selected} other {# rows selected}}",
          "emptyPreview": "Select at least one score to preview",
          "copy": "Copy",
