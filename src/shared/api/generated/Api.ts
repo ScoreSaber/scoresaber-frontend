@@ -15047,6 +15047,44 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 },
 
 })[],
+    reuploadVersions: ({
+    id: number,
+    hash: string,
+    bsid: string | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    coverUrl: string,
+    verified: boolean,
+    totalScores: number,
+    dailyScores: number,
+    createdAt: string,
+    leaderboards: ({
+    id: number,
+    difficulty: number,
+    gameMode: string,
+    rawDifficulty: string,
+    maxScore: number,
+    totalScores: number,
+    dailyScores: number,
+    createdAt: string,
+    realm: {
+    realmId: number,
+    realmName: string,
+    leaderboardStatus: "UNRANKED" | "RANKED" | "QUALIFIED" | "LOVED",
+    positiveModifiers: boolean,
+    stars: number,
+    rankedAt: string | null,
+    qualifiedAt: string | null,
+    lovedAt: string | null,
+
+},
+
+})[],
+
+})[],
     rankRequest: {
     id: number,
     description: string,
@@ -15281,6 +15319,41 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      qualifiedAt: string | null;
                      lovedAt: string | null;
                   };
+               }[];
+               reuploadVersions: {
+                  id: number;
+                  hash: string;
+                  bsid: string | null;
+                  songName: string;
+                  songSubName: string;
+                  songAuthorName: string;
+                  levelAuthorName: string;
+                  bpm: number;
+                  coverUrl: string;
+                  verified: boolean;
+                  totalScores: number;
+                  dailyScores: number;
+                  createdAt: string;
+                  leaderboards: {
+                     id: number;
+                     difficulty: number;
+                     gameMode: string;
+                     rawDifficulty: string;
+                     maxScore: number;
+                     totalScores: number;
+                     dailyScores: number;
+                     createdAt: string;
+                     realm: {
+                        realmId: number;
+                        realmName: string;
+                        leaderboardStatus: 'UNRANKED' | 'RANKED' | 'QUALIFIED' | 'LOVED';
+                        positiveModifiers: boolean;
+                        stars: number;
+                        rankedAt: string | null;
+                        qualifiedAt: string | null;
+                        lovedAt: string | null;
+                     };
+                  }[];
                }[];
                rankRequest: {
                   id: number;

@@ -59,7 +59,7 @@ export function MapLeaderboardView<TLocation>({
 
    return (
       <div className="flex flex-col gap-3">
-         <MapLeaderboardHero mapInfo={mapInfo} leaderboardInfo={leaderboardInfo} />
+         <MapLeaderboardHero mapInfo={mapInfo} leaderboardInfo={leaderboardInfo} linkSearchParams={search} />
 
          <div className="flex flex-col gap-3">
             <MapLeaderboardContent
