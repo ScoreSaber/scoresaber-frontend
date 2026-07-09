@@ -39,7 +39,14 @@ export function ScoreCardActions({
    replayTooltipSide
 }: ScoreCardActionsProps) {
    const t = useTranslations();
-   const iconButtonClassName = 'h-auto w-auto cursor-default p-0 text-muted-foreground hover:bg-transparent hover:text-foreground';
+   const bottomRowTouchTargetClassName =
+      bottomRowDesktopBreakpoint === 'md'
+         ? 'max-md:pointer-coarse:min-h-8 max-md:pointer-coarse:min-w-8'
+         : 'max-lg:pointer-coarse:min-h-8 max-lg:pointer-coarse:min-w-8';
+   const iconButtonClassName = cn(
+      'h-auto w-auto cursor-default p-0 text-muted-foreground hover:bg-transparent hover:text-foreground',
+      mobileBottomRow && bottomRowTouchTargetClassName
+   );
    const disabledClassName = cn(iconButtonClassName, 'text-muted-foreground/30 hover:text-muted-foreground/30');
    const shouldCenterSingleAction = !score.hasReplay && !onToggleHistoryAction && !onToggleDetailsAction;
    const bottomRowDesktopClassName =
