@@ -21,6 +21,7 @@ import { Icons } from '@/shared/components/icons';
 import { cn } from '@/shared/format/helpers';
 
 const questRoute = getRouteApi('/quest');
+const supportRoute = getRouteApi('/support');
 
 type QuestStep = 1 | 2 | 3 | 4;
 type QuestSearchParams = {
@@ -176,15 +177,10 @@ function WizardFooter() {
       <div className="text-muted-foreground flex flex-col items-center gap-2 pt-4 text-center text-xs">
          <p>{t('quest.footer.patreonPerks')}</p>
          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            <a
-               href="https://patreon.com/scoresaber/membership"
-               target="_blank"
-               rel="external noreferrer"
-               className="text-foreground hover:text-primary inline-flex items-center gap-2 font-medium transition-colors"
-            >
+            <supportRoute.Link className="text-foreground hover:text-primary inline-flex items-center gap-2 font-medium transition-colors">
                <Icons.patreon className="size-3.5 fill-current" aria-hidden />
                {t('quest.footer.patreon')}
-            </a>
+            </supportRoute.Link>
             <a
                href="https://github.com/ScoreSaber/quest-mod"
                target="_blank"
