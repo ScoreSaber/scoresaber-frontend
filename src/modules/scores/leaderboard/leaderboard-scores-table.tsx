@@ -168,6 +168,7 @@ function LeaderboardScoreCard({
                   showAccuracy={showAccuracy}
                   showPP={isRanked}
                   legacyAccuracy={legacyAccuracy}
+                  accuracyPPContext={fcPPContext}
                   className="mx-auto mt-0 max-w-80 flex-row flex-wrap gap-1.5"
                   timeSet={score.createdAt}
                />
@@ -208,7 +209,14 @@ function LeaderboardScoreCard({
                   </div>
                </div>
 
-               <ScoreStats score={score} showAccuracy={showAccuracy} showPP={isRanked} legacyAccuracy={legacyAccuracy} className="mt-0 items-end" />
+               <ScoreStats
+                  score={score}
+                  showAccuracy={showAccuracy}
+                  showPP={isRanked}
+                  legacyAccuracy={legacyAccuracy}
+                  accuracyPPContext={fcPPContext}
+                  className="mt-0 items-end"
+               />
             </div>
 
             {/* actions */}

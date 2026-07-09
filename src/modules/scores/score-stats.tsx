@@ -1,18 +1,29 @@
 'use client';
 
-import { Check, Clock, Info, Star, Target, X } from 'lucide-react';
+import { useEffect, useState, type ChangeEvent, type ReactNode } from 'react';
+
+import { useQuery } from '@tanstack/react-query';
+import { Check, Clock, Info, Loader2, RotateCcw, Star, Target, X } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Slider } from '@/components/ui/slider';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { ScoreOutcomeBadge } from '@/modules/scores/score-outcome-badge';
+import type { ScorePPContext } from '@/modules/scores/score-pp-context';
 import type {
    LeaderboardControllerGetLeaderboardScoresByIdDataItem,
    PlayerControllerGetPlayerScoresDataItem
 } from '@/shared/api/generated/ApiParams';
+import { getRealmPPCurve } from '@/shared/api/realm-pp';
 import { Stat } from '@/shared/components/stat';
 import { Time } from '@/shared/components/time';
 import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
+import { calculateCurvePP } from '@/shared/format/pp-curve';
+import { optionalApiData } from '@/shared/result/api';
 
 type ScoreStatsScore = PlayerControllerGetPlayerScoresDataItem['score'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem;
 
@@ -23,6 +34,7 @@ interface ScoreStatsProps {
    showAccuracy?: boolean;
    showPP?: boolean;
    legacyAccuracy?: boolean;
+   accuracyPPContext?: ScorePPContext;
    className?: string;
    timeSet?: string | Date;
    size?: 'default' | 'compact';
@@ -36,6 +48,7 @@ export function ScoreStats({
    showAccuracy = true,
    showPP = true,
    legacyAccuracy = false,
+   accuracyPPContext,
    className,
    timeSet,
    size = 'default',
@@ -90,14 +103,27 @@ export function ScoreStats({
                      className={cn(statClassName, 'border-score-pp bg-score-pp/10')}
                      iconClassName={cn(iconClassName, 'text-score-pp')}
                   >
-                     <Tooltip>
-                        <TooltipTrigger asChild>
-                           <span className="cursor-default">{formatPP(score.pp)}pp</span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           <p>{t('common.performancePoints')}</p>
-                        </TooltipContent>
-                     </Tooltip>
+                     {accuracyPPContext ? (
+                        <AccuracyPPPopover
+                           score={score}
+                           ppContext={accuracyPPContext}
+                           isCompact={isCompact}
+                           trigger={
+                              <button type="button" className="hover:text-score-pp cursor-pointer rounded-sm text-left">
+                                 {formatPP(score.pp)}pp
+                              </button>
+                           }
+                        />
+                     ) : (
+                        <Tooltip>
+                           <TooltipTrigger asChild>
+                              <span className="cursor-default">{formatPP(score.pp)}pp</span>
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              <p>{t('common.performancePoints')}</p>
+                           </TooltipContent>
+                        </Tooltip>
+                     )}
                      {weightedPP && weightedPercent && (
                         <Tooltip>
                            <TooltipTrigger asChild>
@@ -156,5 +182,115 @@ export function ScoreStats({
             </Stat>
          )}
       </div>
+   );
+}
+
+function AccuracyPPPopover({
+   score,
+   ppContext,
+   isCompact,
+   trigger
+}: {
+   score: ScoreStatsScore;
+   ppContext: ScorePPContext;
+   isCompact: boolean;
+   trigger: ReactNode;
+}) {
+   const t = useTranslations();
+   const maxAccuracyPercent = ppContext.positiveModifiers ? 114 : 100;
+   const actualAccuracyPercent = Math.min(maxAccuracyPercent, Math.max(0, score.accuracy * 100));
+   const [open, setOpen] = useState(false);
+   const [accuracyPercent, setAccuracyPercent] = useState(actualAccuracyPercent);
+   const { data: ppCurveData, isLoading } = useQuery({
+      queryKey: ['realmPPCurve', ppContext.realmId],
+      queryFn: () => optionalApiData(getRealmPPCurve(ppContext.realmId)),
+      enabled: open,
+      staleTime: 5 * 60 * 1000
+   });
+
+   useEffect(() => {
+      setAccuracyPercent(actualAccuracyPercent);
+   }, [actualAccuracyPercent, maxAccuracyPercent]);
+
+   const ppCurve = ppCurveData ? (ppContext.positiveModifiers ? ppCurveData.positiveModifierCurve : ppCurveData.curve) : null;
+   const previewPP =
+      Math.abs(accuracyPercent - actualAccuracyPercent) < 0.000001
+         ? score.pp
+         : ppCurve
+           ? calculateCurvePP(accuracyPercent / 100, ppContext.maxPP, ppCurve)
+           : null;
+
+   function handleSliderChange(values: number[]) {
+      const next = values[0];
+      if (next == null) return;
+      setAccuracyPercent(Math.min(maxAccuracyPercent, Math.max(0, next)));
+   }
+
+   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+      const next = Number.parseFloat(event.currentTarget.value);
+      if (!Number.isFinite(next)) return;
+      setAccuracyPercent(Math.min(maxAccuracyPercent, Math.max(0, next)));
+   }
+
+   return (
+      <Popover open={open} onOpenChange={setOpen}>
+         <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+         <PopoverContent className="w-64 cursor-default p-3" align="end">
+            <div className="flex flex-col gap-3">
+               <div className="flex items-center justify-between gap-3">
+                  <div>
+                     <div className="text-foreground text-xs font-semibold">{t('score.accuracyPreview')}</div>
+                  </div>
+                  <Button
+                     type="button"
+                     variant="ghost-icon"
+                     size="icon-xs"
+                     onClick={() => setAccuracyPercent(actualAccuracyPercent)}
+                     aria-label={t('score.resetAccuracyPreview')}
+                  >
+                     <RotateCcw className="size-3" />
+                  </Button>
+               </div>
+
+               <div className="flex items-center gap-2">
+                  <Slider
+                     value={[accuracyPercent]}
+                     onValueChange={handleSliderChange}
+                     min={0}
+                     max={maxAccuracyPercent}
+                     step={0.01}
+                     aria-label={t('score.accuracyPreview')}
+                     className="min-w-0 flex-1"
+                  />
+                  <div className="relative w-24 shrink-0">
+                     <Input
+                        type="text"
+                        inputMode="decimal"
+                        value={accuracyPercent.toFixed(2)}
+                        onChange={handleInputChange}
+                        aria-label={t('score.accuracyPreview')}
+                        className="h-7 pr-6 text-right text-xs tabular-nums"
+                     />
+                     <span className="text-muted-foreground pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[10px]">%</span>
+                  </div>
+               </div>
+
+               <div className="bg-secondary/35 flex items-center justify-between rounded border px-2 py-1.5">
+                  <span className="text-muted-foreground text-[11px]">{t('common.pp')}</span>
+                  <span
+                     className={cn('text-foreground inline-flex min-h-4 items-center text-xs font-semibold tabular-nums', isCompact && 'text-[11px]')}
+                  >
+                     {isLoading && previewPP == null ? (
+                        <Loader2 className="size-3 animate-spin opacity-60" />
+                     ) : previewPP == null ? (
+                        '--'
+                     ) : (
+                        `${formatPP(previewPP)}pp`
+                     )}
+                  </span>
+               </div>
+            </div>
+         </PopoverContent>
+      </Popover>
    );
 }

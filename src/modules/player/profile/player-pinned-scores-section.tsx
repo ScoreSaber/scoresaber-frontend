@@ -19,6 +19,7 @@ import { dynamic } from '@/shared/components/dynamic';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { Time } from '@/shared/components/time';
 import { cn, formatNumber, isLegacyAccuracyScore } from '@/shared/format/helpers';
+import { starsToPP } from '@/shared/format/star-conversion';
 import { getDifficultyLabel } from '@/shared/format/strings';
 
 type PinnedScore = PlayerControllerGetPlayerResponse['pinnedScores'][number];
@@ -100,6 +101,13 @@ function PinnedScoreCard({
    const showDetails = activePanel === 'details';
    const showHistory = activePanel === 'history';
    const isExpanded = activePanel != null;
+   const fcPPContext = isRanked
+      ? {
+           realmId: leaderboard.realm.realmId,
+           maxPP: starsToPP(leaderboard.realm.stars),
+           positiveModifiers: leaderboard.realm.positiveModifiers
+        }
+      : undefined;
 
    return (
       <div className={cn('min-w-0', className)}>
@@ -161,6 +169,7 @@ function PinnedScoreCard({
                         showAccuracy={leaderboard.maxScore > 0}
                         showPP={isRanked}
                         legacyAccuracy={isLegacyAccuracyScore(score.createdAt)}
+                        accuracyPPContext={fcPPContext}
                         size="compact"
                         scoreStatMode="modsOnly"
                         className="justify-start"
@@ -181,7 +190,7 @@ function PinnedScoreCard({
          </div>
          {activePanel && (
             <div className="mt-2 md:mx-4">
-               {showDetails && <ScoreDetailsInline score={score} leaderboard={leaderboard} />}
+               {showDetails && <ScoreDetailsInline score={score} fcPPContext={fcPPContext} leaderboard={leaderboard} />}
                {showHistory && <ScoreHistory scoreId={score.id} leaderboard={leaderboard} />}
             </div>
          )}

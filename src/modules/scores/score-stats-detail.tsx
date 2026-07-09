@@ -11,6 +11,7 @@ import { HitScoreValue } from './hit-score-value';
 
 import { Button } from '@/components/ui/button';
 
+import type { ScorePPContext } from '@/modules/scores/score-pp-context';
 import { api } from '@/shared/api/ApiInstance';
 import type { ScoreControllerGetScoreStatsResponse } from '@/shared/api/generated/ApiParams';
 import { getRealmPPCurve } from '@/shared/api/realm-pp';
@@ -167,14 +168,8 @@ export function ScoreStatsDetail({ scoreId, fullCombo, fcPPContext, onLoadedActi
 interface ScoreStatsDetailProps {
    scoreId: number;
    fullCombo: boolean;
-   fcPPContext?: FCPPContext;
+   fcPPContext?: ScorePPContext;
    onLoadedAction?: () => void;
-}
-
-export interface FCPPContext {
-   realmId: number;
-   maxPP: number;
-   positiveModifiers: boolean;
 }
 
 const GRID_ROWS = [
@@ -299,7 +294,7 @@ function ScoreAccuracyOverview({
 }: {
    stats: ScoreControllerGetScoreStatsResponse;
    fullCombo: boolean;
-   fcPPContext?: FCPPContext;
+   fcPPContext?: ScorePPContext;
 }) {
    const t = useTranslations();
    const leftLabel = t('score.leftShort');
