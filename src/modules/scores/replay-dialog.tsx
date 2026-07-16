@@ -125,7 +125,6 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
                            loaded ? 'animate-in fade-in opacity-100 duration-300' : 'opacity-0'
                         )}
                         onLoad={() => setLoaded(true)}
-                        allow="autoplay"
                         referrerPolicy="no-referrer"
                         sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox"
                         allowFullScreen
@@ -140,7 +139,6 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
 
 function getReplayUrl(scoreId: number) {
    return getReplayArcviewerUrl({
-      ssScoreId: scoreId.toString(),
-      autoPlay: 'true'
+      ssScoreId: scoreId.toString()
    });
 }
