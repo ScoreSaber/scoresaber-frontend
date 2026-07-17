@@ -12,22 +12,14 @@ type IdentifiedLeaderboard = {
    id: number;
 };
 
-function getLeaderboardsForGameMode<T extends GameModeLeaderboard>(leaderboards: T[], gameMode: string) {
-   return leaderboards.filter((leaderboard) => getGameModeFromRawDifficulty(leaderboard.rawDifficulty) === gameMode);
-}
-
-function sortLeaderboardsByDifficulty<T extends DifficultyLeaderboard>(leaderboards: T[], ascending = true) {
-   return [...leaderboards].sort((a, b) => (ascending ? a.difficulty - b.difficulty : b.difficulty - a.difficulty));
-}
-
 export function getDisplayLeaderboards<T extends GameModeLeaderboard & DifficultyLeaderboard>(
    leaderboards: T[],
    gameMode = DEFAULT_GAME_MODE,
    ascending = true
 ) {
-   const filteredLeaderboards = getLeaderboardsForGameMode(leaderboards, gameMode);
+   const filteredLeaderboards = leaderboards.filter((leaderboard) => getGameModeFromRawDifficulty(leaderboard.rawDifficulty) === gameMode);
    const visibleLeaderboards = filteredLeaderboards.length > 0 ? filteredLeaderboards : leaderboards;
-   return sortLeaderboardsByDifficulty(visibleLeaderboards, ascending);
+   return [...visibleLeaderboards].sort((a, b) => (ascending ? a.difficulty - b.difficulty : b.difficulty - a.difficulty));
 }
 
 export function getDefaultLeaderboardId<T extends GameModeLeaderboard & DifficultyLeaderboard & IdentifiedLeaderboard>(

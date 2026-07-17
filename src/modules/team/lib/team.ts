@@ -3,7 +3,7 @@ import '@tanstack/react-start/server-only';
 import { TaggedError } from 'better-result';
 import * as z from 'zod';
 
-import { createGithubJsonFetcher, type GithubJsonErrorInput } from '@/shared/result/github';
+import { createGithubJsonFetcher } from '@/shared/result/github';
 
 const GITHUB_REPO = 'ScoreSaber/scoresaber-team';
 const TEAM_FILE_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/team.json`;
@@ -43,11 +43,12 @@ class TeamFetchError extends TaggedError('TeamFetchError')<{
    cause: unknown;
 }>() {}
 
-function teamFetchError({ message, status, cause }: GithubJsonErrorInput) {
-   return new TeamFetchError({ message, status, cause });
-}
-
-const fetchTeamJson = createGithubJsonFetcher(TEAM_FILE_URL, teamSchema, teamFetchError, 'github team fetch');
+const fetchTeamJson = createGithubJsonFetcher(
+   TEAM_FILE_URL,
+   teamSchema,
+   ({ message, status, cause }) => new TeamFetchError({ message, status, cause }),
+   'github team fetch'
+);
 
 export function fetchTeam() {
    return fetchTeamJson();

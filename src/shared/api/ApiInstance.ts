@@ -2,10 +2,6 @@ import { Api } from './generated/Api';
 
 import { env } from '@/env';
 
-function getClientApiUrl() {
-   return env.NEXT_PUBLIC_API_URL.replace(/\/$/, '');
-}
-
 const customFetch = Object.assign(
    (input: RequestInfo | URL, init?: RequestInit) =>
       fetch(input, {
@@ -18,7 +14,7 @@ const customFetch = Object.assign(
 );
 
 export const api = new Api({
-   baseUrl: getClientApiUrl(),
+   baseUrl: env.NEXT_PUBLIC_API_URL.replace(/\/$/, ''),
    baseApiParams: { secure: true, credentials: 'include' },
    securityWorker: () => ({}),
    customFetch

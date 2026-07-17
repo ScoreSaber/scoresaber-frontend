@@ -225,9 +225,7 @@ function AccuracyPPPopover({
            : null;
 
    function handleSliderChange(values: number[]) {
-      const next = values[0];
-      if (next == null) return;
-      setAccuracyPercent(Math.min(maxAccuracyPercent, Math.max(0, next)));
+      setAccuracyPercent(Math.min(maxAccuracyPercent, Math.max(0, values[0])));
    }
 
    function handleInputChange(event: ChangeEvent<HTMLInputElement>) {

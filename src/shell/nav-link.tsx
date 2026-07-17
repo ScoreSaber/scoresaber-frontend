@@ -112,13 +112,13 @@ function parseRankRequestsSearch(search: SearchParamsRecord): RankRequestsRouteS
 }
 
 function isMapSortBy(value: SearchParamValue): value is MapsRouteSearch['sortBy'] {
-   return typeof value === 'string' && (MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY as readonly string[]).includes(value);
+   return typeof value === 'string' && MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY.some((sortBy) => sortBy === value);
 }
 
 function isMapSortDirection(value: SearchParamValue): value is MapsRouteSearch['sortDirection'] {
-   return typeof value === 'string' && (MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION as readonly string[]).includes(value);
+   return typeof value === 'string' && MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION.some((direction) => direction === value);
 }
 
 function isRankingsPivot(value: SearchParamValue): value is RankingsRouteSearch['pivot'] {
-   return typeof value === 'string' && (PLAYER_CONTROLLER_GET_PLAYERS_PIVOT as readonly string[]).includes(value);
+   return typeof value === 'string' && PLAYER_CONTROLLER_GET_PLAYERS_PIVOT.some((pivot) => pivot === value);
 }

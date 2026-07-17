@@ -1,7 +1,10 @@
+import { z } from 'zod';
+
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 
 type Messages = { [key: string]: string | Messages };
+const messagesSchema: z.ZodType<Messages> = z.lazy(() => z.record(z.string(), z.union([z.string(), messagesSchema])));
 
 const options = new Map<string, string>();
 for (let index = 2; index < Bun.argv.length; index += 1) {
@@ -16,11 +19,11 @@ const outputDirectoryFromRoot = relative(process.cwd(), outputDirectory).replace
 const basePathFromConfig = (relative(outputDirectory, process.cwd()) || '.').replaceAll('\\', '/');
 
 const git = (args: string[]) => {
-   const process = Bun.spawnSync(['git', ...args], { stdout: 'pipe', stderr: 'pipe' });
-   if (process.exitCode === 0) return process.stdout.toString().trimEnd();
+   const result = Bun.spawnSync(['git', ...args], { stdout: 'pipe', stderr: 'pipe' });
+   if (result.exitCode === 0) return result.stdout.toString().trimEnd();
 
-   console.error(process.stderr.toString());
-   process.exit(process.exitCode);
+   console.error(result.stderr.toString());
+   process.exit(result.exitCode);
 };
 
 const changedFiles = git(['diff', '--name-only', `${baseRef}..${headRef}`, '--', 'messages/*.json'])
@@ -34,8 +37,8 @@ let changedStrings = 0;
 let generatedFiles = 0;
 
 for (const file of changedFiles) {
-   const baseMessages = JSON.parse(git(['show', `${baseRef}:${file}`])) as Messages;
-   const headMessages = JSON.parse(git(['show', `${headRef}:${file}`])) as Messages;
+   const baseMessages = messagesSchema.parse(JSON.parse(git(['show', `${baseRef}:${file}`])));
+   const headMessages = messagesSchema.parse(JSON.parse(git(['show', `${headRef}:${file}`])));
    const partialMessages: Messages = {};
    const fileChangedStrings = copyChangedStrings(baseMessages, headMessages, partialMessages);
 
@@ -95,7 +98,8 @@ function copyChangedStrings(baseMessages: Messages, headMessages: Messages, part
       }
 
       const nestedMessages: Messages = {};
-      const nestedCount = copyChangedStrings((baseMessages[key] as Messages) ?? {}, value, nestedMessages);
+      const baseValue = baseMessages[key];
+      const nestedCount = copyChangedStrings(typeof baseValue === 'string' ? {} : (baseValue ?? {}), value, nestedMessages);
       if (nestedCount === 0) continue;
 
       partialMessages[key] = nestedMessages;

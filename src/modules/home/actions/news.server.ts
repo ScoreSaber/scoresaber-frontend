@@ -2,6 +2,7 @@ import '@tanstack/react-start/server-only';
 
 import { Result, TaggedError } from 'better-result';
 import sanitizeHtml from 'sanitize-html';
+import * as z from 'zod';
 
 import { HOME_NEWS_YOUTUBE_CHANNEL_ID, HOME_NEWS_YOUTUBE_HANDLE } from '../home-constants';
 import type { HomeNewsFeed, HomeNewsPost, HomeNewsQuotedPost, HomeNewsSource, HomeNewsVideo, HomeRankedBatchVideo } from './news';
@@ -25,82 +26,105 @@ class HomeNewsFetchError extends TaggedError('HomeNewsFetchError')<{
    cause: unknown;
 }>() {}
 
-// external api response shapes, typed at the http boundary
-type PatreonPost = {
-   id: string;
-   attributes: {
-      title?: string;
-      content?: string;
-      published_at?: string;
-      url?: string;
-      is_public?: boolean;
-   };
-};
+const patreonPostSchema = z.object({
+   id: z.string(),
+   attributes: z.object({
+      title: z.string().optional(),
+      content: z.string().optional(),
+      published_at: z.string().optional(),
+      url: z.string().optional(),
+      is_public: z.boolean().optional()
+   })
+});
+const patreonPostsResponseSchema = z.object({
+   data: z.array(patreonPostSchema).optional(),
+   links: z.object({ next: z.string().nullable().optional() }).optional()
+});
 
-type PatreonPostsResponse = {
-   data?: PatreonPost[];
-   links?: {
-      next?: string;
-   };
-};
+const xTweetSchema = z.object({
+   id: z.string(),
+   text: z.string(),
+   author_id: z.string().optional(),
+   created_at: z.string().optional(),
+   attachments: z.object({ media_keys: z.array(z.string()).optional() }).optional(),
+   referenced_tweets: z
+      .array(
+         z.object({
+            type: z.enum(['retweeted', 'quoted', 'replied_to']),
+            id: z.string()
+         })
+      )
+      .optional(),
+   entities: z
+      .object({
+         urls: z
+            .array(
+               z.object({
+                  url: z.string(),
+                  expanded_url: z.string().optional(),
+                  unwound_url: z.string().optional(),
+                  // present when the t.co link points at the tweet's own media
+                  media_key: z.string().optional()
+               })
+            )
+            .optional()
+      })
+      .optional()
+});
+const xMediaSchema = z.object({
+   media_key: z.string(),
+   type: z.enum(['photo', 'video', 'animated_gif']),
+   url: z.string().optional(),
+   alt_text: z.string().optional(),
+   preview_image_url: z.string().optional(),
+   variants: z
+      .array(
+         z.object({
+            bit_rate: z.number().optional(),
+            content_type: z.string(),
+            url: z.string()
+         })
+      )
+      .optional()
+});
+const xUserSchema = z.object({ id: z.string(), username: z.string() });
+const xPostsResponseSchema = z.object({
+   data: z.array(xTweetSchema).optional(),
+   includes: z
+      .object({
+         tweets: z.array(xTweetSchema).optional(),
+         users: z.array(xUserSchema).optional(),
+         media: z.array(xMediaSchema).optional()
+      })
+      .optional()
+});
+const xUserResponseSchema = z.object({ data: z.object({ id: z.string() }) });
 
-type XTweet = {
-   id: string;
-   text: string;
-   author_id?: string;
-   created_at?: string;
-   attachments?: {
-      media_keys?: string[];
-   };
-   referenced_tweets?: {
-      type: 'retweeted' | 'quoted' | 'replied_to';
-      id: string;
-   }[];
-   entities?: {
-      urls?: {
-         url: string;
-         expanded_url?: string;
-         unwound_url?: string;
-         // present when the t.co link points at the tweet's own media
-         media_key?: string;
-      }[];
-   };
-};
+const youtubeThumbnailSchema = z.object({ url: z.string() });
+const youtubeThumbnailsSchema = z.object({
+   default: youtubeThumbnailSchema.optional(),
+   medium: youtubeThumbnailSchema.optional(),
+   high: youtubeThumbnailSchema.optional(),
+   standard: youtubeThumbnailSchema.optional(),
+   maxres: youtubeThumbnailSchema.optional()
+});
+const youtubePlaylistItemSchema = z.object({
+   snippet: z.object({
+      title: z.string(),
+      description: z.string(),
+      publishedAt: z.string(),
+      thumbnails: youtubeThumbnailsSchema.optional(),
+      resourceId: z.object({ videoId: z.string().optional() })
+   }),
+   contentDetails: z.object({ videoPublishedAt: z.string().optional() }).optional()
+});
+const youtubePlaylistResponseSchema = z.object({ items: z.array(youtubePlaylistItemSchema).optional() });
 
-type XMedia = {
-   media_key: string;
-   type: 'photo' | 'video' | 'animated_gif';
-   url?: string;
-   alt_text?: string;
-   preview_image_url?: string;
-   variants?: {
-      bit_rate?: number;
-      content_type: string;
-      url: string;
-   }[];
-};
-
-type XUser = {
-   id: string;
-   username: string;
-};
-
-type YouTubeThumbnails = Partial<Record<'default' | 'medium' | 'high' | 'standard' | 'maxres', { url: string }>>;
-
-type YouTubePlaylistItem = {
-   snippet: {
-      title: string;
-      description: string;
-      publishedAt: string;
-      thumbnails?: YouTubeThumbnails;
-      resourceId: {
-         videoId?: string;
-      };
-   };
-   contentDetails?: {
-      videoPublishedAt?: string;
-   };
-};
+type PatreonPost = z.infer<typeof patreonPostSchema>;
+type XTweet = z.infer<typeof xTweetSchema>;
+type XMedia = z.infer<typeof xMediaSchema>;
+type XUser = z.infer<typeof xUserSchema>;
+type YouTubeThumbnails = z.infer<typeof youtubeThumbnailsSchema>;
 
 type YouTubeVideo = {
    id: string;
@@ -209,12 +233,12 @@ async function fetchPatreonPosts(): Promise<HomeNewsPost[]> {
    const posts: PatreonPost[] = [];
    let nextUrl: URL | null = url;
    while (nextUrl) {
-      const response: PatreonPostsResponse = await fetchJson<PatreonPostsResponse>('patreon', nextUrl, {
+      const response: z.output<typeof patreonPostsResponseSchema> = await fetchJson('patreon', nextUrl, patreonPostsResponseSchema, {
          headers: patreonHeaders()
       });
 
       posts.push(...(response.data ?? []));
-      const next = response.links?.next;
+      const next: string | null | undefined = response.links?.next;
       nextUrl = next ? new URL(next) : null;
    }
 
@@ -247,10 +271,7 @@ async function fetchXPosts(): Promise<XPost[]> {
    url.searchParams.set('user.fields', 'username');
    url.searchParams.set('exclude', 'replies');
 
-   const response = await fetchJson<{
-      data?: XTweet[];
-      includes?: { tweets?: XTweet[]; users?: XUser[]; media?: XMedia[] };
-   }>('x', url, { headers: xHeaders() });
+   const response = await fetchJson('x', url, xPostsResponseSchema, { headers: xHeaders() });
    const tweetsById = new Map((response.includes?.tweets ?? []).map((tweet) => [tweet.id, tweet]));
    const usersById = new Map((response.includes?.users ?? []).map((user) => [user.id, user]));
    const mediaByKey = new Map((response.includes?.media ?? []).map((media) => [media.media_key, media]));
@@ -348,7 +369,7 @@ async function fetchXUserId() {
    if (cachedXUserId) return cachedXUserId;
 
    const url = new URL(`https://api.x.com/2/users/by/username/${env.HOME_NEWS_X_USERNAME}`);
-   const response = await fetchJson<{ data: { id: string } }>('x', url, {
+   const response = await fetchJson('x', url, xUserResponseSchema, {
       headers: xHeaders()
    });
 
@@ -366,7 +387,7 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
    url.searchParams.set('playlistId', uploadsPlaylistId);
    url.searchParams.set('maxResults', String(NEWS_FEED_POST_LIMIT));
 
-   const response = await fetchJson<{ items?: YouTubePlaylistItem[] }>('youtube', url);
+   const response = await fetchJson('youtube', url, youtubePlaylistResponseSchema);
 
    return (response.items ?? [])
       .map((item) => {
@@ -426,7 +447,7 @@ async function resolveShortUrl(value: string) {
    return Result.unwrapOr(result, value);
 }
 
-async function fetchJson<T>(source: SocialSource, url: URL, init?: RequestInit) {
+async function fetchJson<TSchema extends z.ZodType>(source: SocialSource, url: URL, schema: TSchema, init?: RequestInit): Promise<z.output<TSchema>> {
    const response = await fetch(url, {
       ...init,
       cache: 'no-store',
@@ -445,7 +466,7 @@ async function fetchJson<T>(source: SocialSource, url: URL, init?: RequestInit) 
       });
    }
 
-   return response.json() as Promise<T>;
+   return schema.parse(await response.json());
 }
 
 function xHeaders() {

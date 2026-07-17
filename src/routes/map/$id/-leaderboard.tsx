@@ -19,6 +19,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isNumber, isPageNumber } from '@/shared/url-state/params';
 import { leaderboardFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
+import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
@@ -39,7 +40,7 @@ type MapLeaderboardRouteInput = {
    mapId: number;
    routeName: MapLeaderboardRouteName;
    search: MapLeaderboardSearch;
-   rawSearch: Record<string, unknown>;
+   rawSearch: SearchParamsRecord;
    leaderboardId?: number;
 };
 
@@ -70,7 +71,7 @@ export function MapLeaderboardRouteContent({
    input,
    data
 }: {
-   input: MapLeaderboardRouteInput;
+   input: { routeName: MapLeaderboardRouteName; mapId: number };
    data: Awaited<ReturnType<typeof getMapLeaderboardPageData>>;
 }) {
    const { result, searchParams } = data;
@@ -130,7 +131,7 @@ function normalizeMapLeaderboardLocationSearch(search?: LeaderboardSearchParams)
    return { page, ...rest };
 }
 
-function parseLeaderboardSearch(search: Record<string, unknown>) {
+function parseLeaderboardSearch(search: SearchParamsRecord) {
    return leaderboardSearchSchema.safeParse({ page: 1, ...search }).data ?? null;
 }
 

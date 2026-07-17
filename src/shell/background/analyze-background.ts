@@ -269,13 +269,6 @@ export function analyzeImage(url: string) {
 
 export type ScoredImage = { url: string; score: number; intensity: number; diagnostics: Diagnostics };
 
-// rank every candidate by score and return the full sorted list
-export async function pickBestBackground(urls: string[]): Promise<ScoredImage[]> {
-   const results = await Promise.all(urls.map(async (url) => ({ url, ...(await analyzeImage(url)) })));
-   results.sort((a, b) => b.score - a.score);
-   return results;
-}
-
 function getAnalysisImageUrl(url: string) {
    if (url.startsWith('blob:') || url.startsWith('data:')) {
       return url;

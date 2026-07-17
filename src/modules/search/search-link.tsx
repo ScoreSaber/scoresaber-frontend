@@ -24,11 +24,11 @@ function parseNames(input: string, splitCommas: boolean) {
 
    // pull off a trailing "(feat. ...)" if present
    const featMatch = input.match(/\s*\(feat\.\s+(.+?)\)\s*$/i);
-   const main = featMatch ? input.slice(0, featMatch.index!) : input;
+   const featOffset = featMatch?.index ?? input.length;
+   const main = input.slice(0, featOffset);
    const segments = toSegments(main);
 
    if (featMatch) {
-      const featOffset = featMatch.index ?? main.length;
       segments.push({ type: 'separator', text: ' (feat. ', offset: featOffset }, ...toSegments(featMatch[1], featOffset + ' (feat. '.length), {
          type: 'separator',
          text: ')',

@@ -1,9 +1,51 @@
+import { z } from 'zod';
+
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
 const SPEC_PATH = resolve(import.meta.dir, '..', 'orbis-openapi-processed.json');
 const API_PATH = resolve(import.meta.dir, '..', 'src', 'shared', 'api', 'generated', 'Api.ts');
 const OUT_PATH = resolve(import.meta.dir, '..', 'src', 'shared', 'api', 'generated', 'ApiParams.ts');
+
+const jsonObjectSchema = z.looseObject({});
+const enumValuesSchema = z.array(z.string()).catch([]);
+const parameterSchema = z.looseObject({
+   name: z.string().optional().catch(undefined),
+   schema: z
+      .looseObject({
+         enum: enumValuesSchema,
+         items: z.looseObject({ enum: enumValuesSchema }).optional().catch(undefined),
+         type: z.string().optional().catch(undefined)
+      })
+      .optional()
+      .catch(undefined)
+});
+const operationSchema = z.looseObject({
+   operationId: z.string().optional().catch(undefined),
+   parameters: z.array(z.unknown()).catch([]),
+   responses: jsonObjectSchema.optional().catch(undefined),
+   tags: z.array(z.string()).catch([])
+});
+const responseSchema = z.looseObject({
+   content: z
+      .looseObject({
+         'application/json': z
+            .looseObject({
+               schema: z
+                  .looseObject({
+                     properties: jsonObjectSchema.optional().catch(undefined),
+                     type: z.string().optional().catch(undefined)
+                  })
+                  .optional()
+                  .catch(undefined)
+            })
+            .optional()
+            .catch(undefined)
+      })
+      .optional()
+      .catch(undefined)
+});
+const dataPropertySchema = z.looseObject({ type: z.string().optional().catch(undefined) });
 
 interface EnumParam {
    name: string;
@@ -20,43 +62,6 @@ interface Operation {
    pascalName: string;
    enumParams: EnumParam[];
    responseType: 'paginated' | 'array' | 'object' | null;
-}
-
-type JsonRecord = Record<string, unknown>;
-
-function isRecord(value: unknown): value is JsonRecord {
-   return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function recordEntries(value: unknown): Array<[string, JsonRecord]> {
-   if (!isRecord(value)) return [];
-
-   return Object.entries(value).filter((entry): entry is [string, JsonRecord] => isRecord(entry[1]));
-}
-
-function getRecord(value: unknown): JsonRecord | undefined {
-   return isRecord(value) ? value : undefined;
-}
-
-function getString(value: unknown): string | undefined {
-   return typeof value === 'string' ? value : undefined;
-}
-
-function getStringArray(value: unknown): string[] {
-   return Array.isArray(value) && value.every((item) => typeof item === 'string') ? value : [];
-}
-
-function getParameters(value: unknown): JsonRecord[] {
-   return Array.isArray(value) ? value.filter(isRecord) : [];
-}
-
-function readJsonRecord(path: string): JsonRecord {
-   const parsed: unknown = JSON.parse(readFileSync(path, 'utf-8'));
-   if (!isRecord(parsed)) {
-      throw new Error(`expected object JSON at ${path}`);
-   }
-
-   return parsed;
 }
 
 function operationIdToPascal(operationId: string): string {
@@ -95,52 +100,63 @@ function operationIdToMethodName(operationId: string): string {
 }
 
 function main() {
-   const spec = readJsonRecord(SPEC_PATH);
+   const spec = jsonObjectSchema.parse(JSON.parse(readFileSync(SPEC_PATH, 'utf-8')));
+   const paths = jsonObjectSchema.catch({}).parse(spec.paths);
 
    const operations: Operation[] = [];
 
-   for (const [, methods] of recordEntries(spec.paths)) {
-      for (const [method, details] of recordEntries(methods)) {
+   for (const rawMethods of Object.values(paths)) {
+      const methods = jsonObjectSchema.safeParse(rawMethods);
+      if (!methods.success) continue;
+
+      for (const [method, rawDetails] of Object.entries(methods.data)) {
          if (!['get', 'post', 'put', 'delete', 'patch'].includes(method)) continue;
 
-         const operationId = getString(details.operationId);
+         const details = operationSchema.safeParse(rawDetails);
+         if (!details.success) continue;
+
+         const operationId = details.data.operationId;
          if (!operationId) continue;
 
-         const tags = getStringArray(details.tags);
-         const tag = tags[0];
+         const tag = details.data.tags[0];
          if (!tag) continue;
 
          // enum params (direct enum or array with items.enum)
          const enumParams: EnumParam[] = [];
-         for (const param of getParameters(details.parameters)) {
-            const name = getString(param.name);
+         for (const rawParam of details.data.parameters) {
+            const param = parameterSchema.safeParse(rawParam);
+            if (!param.success) continue;
+
+            const name = param.data.name;
             if (!name) continue;
 
-            const schema = getRecord(param.schema);
-            const enumValues = getStringArray(schema?.enum);
+            const enumValues = param.data.schema?.enum ?? [];
             if (enumValues.length > 0) {
                enumParams.push({ name, values: enumValues });
                continue;
             }
 
-            const items = getRecord(schema?.items);
-            const itemEnumValues = getStringArray(items?.enum);
-            if (schema?.type === 'array' && itemEnumValues.length > 0) {
+            const itemEnumValues = param.data.schema?.items?.enum ?? [];
+            if (param.data.schema?.type === 'array' && itemEnumValues.length > 0) {
                enumParams.push({ name, values: itemEnumValues, isArray: true });
             }
          }
 
          // response shape
-         const responses = getRecord(details.responses);
-         const resp = getRecord(responses?.['200']) ?? getRecord(responses?.['201']);
-         const content = getRecord(resp?.content);
-         const jsonContent = getRecord(content?.['application/json']);
-         const schema = getRecord(jsonContent?.schema);
-         const props = getRecord(schema?.properties) ?? {};
-         const dataProp = getRecord(props.data);
-         const hasDataArray = dataProp?.type === 'array';
+         const responses = details.data.responses ?? {};
+         const response200 = jsonObjectSchema.safeParse(responses['200']);
+         const response201 = jsonObjectSchema.safeParse(responses['201']);
+         const response = response200.success
+            ? responseSchema.parse(response200.data)
+            : response201.success
+              ? responseSchema.parse(response201.data)
+              : null;
+         const schema = response?.content?.['application/json']?.schema;
+         const properties = schema?.properties ?? {};
+         const dataProperty = dataPropertySchema.safeParse(properties.data);
+         const hasDataArray = dataProperty.success && dataProperty.data.type === 'array';
          const isArray = schema?.type === 'array';
-         const hasResponse = hasDataArray || isArray || Object.keys(props).length > 0;
+         const hasResponse = hasDataArray || isArray || Object.keys(properties).length > 0;
 
          operations.push({
             operationId,

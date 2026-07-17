@@ -40,7 +40,8 @@ export function readAuthCookie() {
 export function getEmailLoginHeaders() {
    const requestHeaders = getRequestHeaders();
    const headers: Record<string, string> = {};
-   const clientIp = getClientIp(requestHeaders);
+   const forwardedFor = requestHeaders.get('x-forwarded-for')?.split(',')[0]?.trim();
+   const clientIp = requestHeaders.get('cf-connecting-ip') ?? requestHeaders.get('x-real-ip') ?? forwardedFor ?? null;
    const clientCountry = getClientCountry(requestHeaders);
    const userAgent = requestHeaders.get('user-agent');
 
@@ -57,11 +58,6 @@ export function getEmailLoginHeaders() {
    }
 
    return headers;
-}
-
-function getClientIp(requestHeaders: Headers) {
-   const forwardedFor = requestHeaders.get('x-forwarded-for')?.split(',')[0]?.trim();
-   return requestHeaders.get('cf-connecting-ip') ?? requestHeaders.get('x-real-ip') ?? forwardedFor ?? null;
 }
 
 function getClientCountry(requestHeaders: Headers) {

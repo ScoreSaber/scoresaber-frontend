@@ -7,10 +7,7 @@ import { Slider as SliderPrimitive } from 'radix-ui';
 import { cn } from '@/shared/format/helpers';
 
 function Slider({ className, defaultValue, value, min = 0, max = 100, ...props }: React.ComponentProps<typeof SliderPrimitive.Root>) {
-   const _values = React.useMemo(
-      () => (Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max]),
-      [value, defaultValue, min, max]
-   );
+   const values = value ?? defaultValue ?? [min, max];
 
    return (
       <SliderPrimitive.Root
@@ -36,7 +33,7 @@ function Slider({ className, defaultValue, value, min = 0, max = 100, ...props }
                className={cn('bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full')}
             />
          </SliderPrimitive.Track>
-         {Array.from({ length: _values.length }, (_, index) => (
+         {Array.from({ length: values.length }, (_, index) => (
             <SliderPrimitive.Thumb
                data-slot="slider-thumb"
                key={index}

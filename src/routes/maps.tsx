@@ -19,6 +19,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { mapFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams, readPersistedSearchStorage } from '@/shared/url-state/persisted-search';
+import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
@@ -26,10 +27,7 @@ import { SetPageBackground } from '@/shell/background/page-background-provider';
 const isOptionalNumber = z.preprocess((val) => (val === '' ? undefined : val), z.coerce.number().min(0).optional());
 
 const mapStatusListSchema = z
-   .preprocess(
-      (val) => (typeof val === 'string' ? val.split(',').filter(Boolean) : []),
-      z.array(z.enum(MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS).optional().catch(undefined))
-   )
+   .array(z.enum(MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS).optional().catch(undefined))
    .transform((statuses) => statuses.filter((status) => status != null));
 
 const mapsSearchSchema = z.object({
@@ -43,11 +41,11 @@ const mapsSearchSchema = z.object({
    sortDirection: z.enum(MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_DIRECTION).optional()
 });
 
-type MapsSearchParams = Partial<z.output<typeof mapsSearchSchema>>;
+type MapsSearchParams = z.output<typeof mapsSearchSchema>;
 
 type MapsRouteInput = {
    search: MapsSearchParams;
-   rawSearch: Record<string, unknown>;
+   rawSearch: SearchParamsRecord;
 };
 
 const getMapsPageData = createServerFn({ method: 'GET' })
@@ -167,10 +165,10 @@ function normalizeMapsLocationSearch(search?: MapsSearchParams) {
    };
 }
 
-function parseMapsSearch(search: Record<string, unknown>) {
+function parseMapsSearch(search: SearchParamsRecord) {
    return mapsSearchSchema.safeParse({ page: 1, ...search }).data ?? null;
 }
 
 function parseMapListingStatuses(status?: string) {
-   return mapStatusListSchema.parse(status);
+   return mapStatusListSchema.parse(status?.split(',').filter(Boolean) ?? []);
 }

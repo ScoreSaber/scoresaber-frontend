@@ -54,10 +54,8 @@ export function LivePlayerCsvImportDialog({
       }
 
       setPending(true);
-      const importResult = Result.tapBoth(await Result.tryPromise(async () => onImportAction(result.rows)), {
-         ok: () => setPending(false),
-         err: () => setPending(false)
-      });
+      const importResult = await Result.tryPromise(async () => onImportAction(result.rows));
+      setPending(false);
 
       if (Result.isOk(importResult) && importResult.value) onOpenChangeAction(false);
    }

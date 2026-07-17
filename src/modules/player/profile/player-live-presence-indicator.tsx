@@ -82,7 +82,7 @@ function ConnectedPlayerLivePresenceIndicator({
    const t = useTranslations();
    const [loaded, setLoaded] = useState(false);
    const [open, setOpen] = useState(false);
-   const liveViewerUrl = getLivePlayerArcviewerUrl(playerId);
+   const liveViewerUrl = getArcviewerUrl({ playerId });
    const label = presence.playing ? t('player.livePresence.live') : t('player.livePresence.online');
    const openLiveViewerAction = (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
@@ -199,8 +199,4 @@ function ConnectedPlayerLivePresenceIndicator({
          </DialogContent>
       </Dialog>
    );
-}
-
-function getLivePlayerArcviewerUrl(playerId: string) {
-   return getArcviewerUrl({ playerId });
 }

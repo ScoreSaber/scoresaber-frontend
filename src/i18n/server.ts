@@ -75,7 +75,7 @@ function mergeMessages(base: Messages, override: Messages): Messages {
 
 function mergeMessage(base: string | Messages, override: string | Messages | undefined) {
    if (typeof base === 'string') return typeof override === 'string' && override.trim() ? override : base;
-   return mergeMessages(base, (override ?? {}) as Messages);
+   return mergeMessages(base, typeof override === 'string' ? {} : (override ?? {}));
 }
 
 function hasMessages(value: string | Messages): boolean {

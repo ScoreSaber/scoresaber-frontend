@@ -194,13 +194,12 @@ function TeamMemberCard({ member, tone, socialLabels }: { member: TeamMember; to
    const isRainbow = override === 'rainbow';
    const color = override && override !== 'rainbow' ? toneColor[override] : toneColor[tone];
    const textColor = override && override !== 'rainbow' ? toneColor[override] : (textToneColor[tone] ?? toneColor[tone]);
-   const socials = [
-      member.Discord ? socialLink('discord', socialMeta.discord.href(member.Discord)) : null,
-      member.Twitter ? socialLink('twitter', socialMeta.twitter.href(member.Twitter)) : null,
-      member.Twitch ? socialLink('twitch', socialMeta.twitch.href(member.Twitch)) : null,
-      member.YouTube ? socialLink('youtube', socialMeta.youtube.href(member.YouTube)) : null,
-      member.GitHub ? socialLink('github', socialMeta.github.href(member.GitHub)) : null
-   ].filter((social): social is { key: SocialKey; href: string } => social != null);
+   const socials: { key: SocialKey; href: string }[] = [];
+   if (member.Discord) socials.push({ key: 'discord', href: socialMeta.discord.href(member.Discord) });
+   if (member.Twitter) socials.push({ key: 'twitter', href: socialMeta.twitter.href(member.Twitter) });
+   if (member.Twitch) socials.push({ key: 'twitch', href: socialMeta.twitch.href(member.Twitch) });
+   if (member.YouTube) socials.push({ key: 'youtube', href: socialMeta.youtube.href(member.YouTube) });
+   if (member.GitHub) socials.push({ key: 'github', href: socialMeta.github.href(member.GitHub) });
    const profilePictureUrl = getTeamImageUrl(member.ProfilePicture);
    const style: CSSProperties & { '--team-color': string; '--team-text-color': string } = { '--team-color': color, '--team-text-color': textColor };
 
@@ -302,10 +301,6 @@ function getTeamSectionTitle(t: ReturnType<typeof useTranslations<'team'>>, key:
       case 'PPv3':
          return t('sections.ppv3');
    }
-}
-
-function socialLink(key: SocialKey, href: string) {
-   return { key, href };
 }
 
 function getTeamImageUrl(profilePicture: string) {

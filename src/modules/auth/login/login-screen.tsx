@@ -8,7 +8,7 @@ import { useTranslations } from 'use-intl';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-import { getApiOriginUrl, getSiteUrl, safeSitePath } from '@/modules/auth/lib/redirect';
+import { getApiOrigin, getSiteUrl, safeSitePath } from '@/modules/auth/lib/redirect';
 import { LoginFlow, type LoginPanel } from '@/modules/auth/login/login-flow';
 import { getRouteHref } from '@/shared/url-state/route-location';
 
@@ -69,7 +69,7 @@ export function LoginScreen({ params }: { params: LoginSearchParams }) {
             <LoginFlow
                steamHref={getRouteHref(
                   router,
-                  linkOptions({ to: '/auth/steam', search: { intent: 'login', returnUrl: getApiOriginUrl(), redirectTo: absoluteRedirectTo } })
+                  linkOptions({ to: '/auth/steam', search: { intent: 'login', returnUrl: getApiOrigin(), redirectTo: absoluteRedirectTo } })
                )}
                patreonHref={getRouteHref(router, linkOptions({ to: '/auth/patreon', search: { intent: 'login', redirectTo: absoluteRedirectTo } }))}
                discordHref={getRouteHref(router, linkOptions({ to: '/auth/discord', search: { intent: 'login', redirectTo: absoluteRedirectTo } }))}

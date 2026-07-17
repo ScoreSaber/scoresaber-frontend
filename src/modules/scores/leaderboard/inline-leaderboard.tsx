@@ -42,7 +42,6 @@ export function InlineLeaderboard({
    const t = useTranslations();
    const initialPage = rankToPage(playerRank, PAGE_SIZE);
    const [page, setPage] = useState(initialPage);
-   const containerRef = useRef<HTMLDivElement>(null);
    const readyFiredRef = useRef(false);
 
    const { data, isLoading, isError, isPlaceholderData } = useQuery({
@@ -69,12 +68,8 @@ export function InlineLeaderboard({
       }
    }, [isLoading]);
 
-   function handlePageChange(newPage: number) {
-      setPage(newPage);
-   }
-
    return (
-      <div ref={containerRef} className={unstyled ? undefined : 'bg-secondary/30 rounded border p-3'}>
+      <div className={unstyled ? undefined : 'bg-secondary/30 rounded border p-3'}>
          {isLoading && !scores ? (
             <div className="flex items-center justify-center py-8">
                <Icons.spinner className="text-muted-foreground size-6 animate-spin" />
@@ -91,7 +86,7 @@ export function InlineLeaderboard({
                            variant="secondary"
                            size="icon-sm"
                            disabled={page <= 1 || isPlaceholderData}
-                           onClick={() => handlePageChange(page - 1)}
+                           onClick={() => setPage(page - 1)}
                            className="cursor-pointer"
                         >
                            <ChevronLeft data-icon />
@@ -103,7 +98,7 @@ export function InlineLeaderboard({
                            variant="secondary"
                            size="icon-sm"
                            disabled={page >= totalPages || isPlaceholderData}
-                           onClick={() => handlePageChange(page + 1)}
+                           onClick={() => setPage(page + 1)}
                            className="cursor-pointer"
                         >
                            <ChevronRight data-icon />

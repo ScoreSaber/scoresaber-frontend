@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 
+import { Result } from 'better-result';
 import { Download, Loader2 } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
@@ -14,23 +15,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useAuth } from '@/modules/auth';
-import { downloadMapPlaylist } from '@/modules/maps/actions/playlist';
-import type { MapControllerGetMapListingsSortBy, MapControllerGetMapListingsSortDirection } from '@/shared/api/generated/ApiParams';
+import { downloadMapPlaylist, getMapPlaylistTitle, type PlaylistInput } from '@/modules/maps/actions/playlist';
 
 interface MapDownloadActionsProps {
-   search: {
-      search?: string;
-      status?: string;
-      verified?: 'true' | 'false';
-      minStars?: number;
-      maxStars?: number;
-      sortBy?: MapControllerGetMapListingsSortBy;
-      sortDirection?: MapControllerGetMapListingsSortDirection;
-      limit?: number;
-      playlistTitle?: string;
-      playlistAuthor?: string;
-      playlistDescription?: string;
-   };
+   search: PlaylistInput;
 }
 
 const DEFAULT_PLAYLIST_LIMIT = 100;
@@ -43,7 +31,7 @@ export function MapDownloadActions({ search }: MapDownloadActionsProps) {
    const [open, setOpen] = useState(false);
    const [pending, setPending] = useState(false);
    const [limit, setLimit] = useState(search.limit ?? DEFAULT_PLAYLIST_LIMIT);
-   const [playlistTitle, setPlaylistTitle] = useState(getDefaultPlaylistTitle(search));
+   const [playlistTitle, setPlaylistTitle] = useState(getMapPlaylistTitle(search));
    const [playlistDescription, setPlaylistDescription] = useState(search.playlistDescription ?? '');
    const canDownload = playlistTitle.trim().length > 0;
 
@@ -52,21 +40,16 @@ export function MapDownloadActions({ search }: MapDownloadActionsProps) {
       if (!nextOpen) return;
 
       const nextLimit = search.limit ?? DEFAULT_PLAYLIST_LIMIT;
-      const nextTitle = search.playlistTitle ?? getDefaultPlaylistTitle(search);
+      const nextTitle = getMapPlaylistTitle(search);
       setLimit(nextLimit);
       setPlaylistTitle(nextTitle);
       setPlaylistDescription(search.playlistDescription ?? '');
    }
 
-   function handleLimitChange(value: number[]) {
-      const nextLimit = value[0] ?? DEFAULT_PLAYLIST_LIMIT;
-      setLimit(nextLimit);
-   }
-
    async function handleDownloadPlaylist() {
       setPending(true);
 
-      try {
+      await Result.tryPromise(async () => {
          const result = await downloadMapPlaylist({
             ...search,
             limit,
@@ -74,9 +57,7 @@ export function MapDownloadActions({ search }: MapDownloadActionsProps) {
             playlistAuthor: user?.name.trim() || undefined,
             playlistDescription: playlistDescription.trim()
          });
-         if (!result.ok) {
-            return;
-         }
+         if (!result.ok) return;
 
          const url = URL.createObjectURL(new Blob([result.value.content], { type: 'application/json;charset=utf-8' }));
          const link = document.createElement('a');
@@ -85,11 +66,8 @@ export function MapDownloadActions({ search }: MapDownloadActionsProps) {
          link.click();
          URL.revokeObjectURL(url);
          setOpen(false);
-      } catch {
-         return;
-      } finally {
-         setPending(false);
-      }
+      });
+      setPending(false);
    }
 
    return (
@@ -164,7 +142,7 @@ export function MapDownloadActions({ search }: MapDownloadActionsProps) {
                   max={MAX_PLAYLIST_LIMIT}
                   step={1}
                   aria-label={t('map.playlistMapLimit')}
-                  onValueChange={handleLimitChange}
+                  onValueChange={(value) => setLimit(value[0])}
                   disabled={pending}
                />
             </div>
@@ -183,15 +161,4 @@ export function MapDownloadActions({ search }: MapDownloadActionsProps) {
          </DialogContent>
       </Dialog>
    );
-}
-
-function getDefaultPlaylistTitle(input: MapDownloadActionsProps['search']) {
-   if (input.sortBy === 'latestRankedAt') return 'ScoreSaber recent ranked maps';
-   if (input.minStars != null || input.maxStars != null) {
-      const min = input.minStars?.toFixed(1) ?? '0.0';
-      const max = input.maxStars?.toFixed(1) ?? '16.0';
-      return `ScoreSaber ${min}-${max} star maps`;
-   }
-   if (input.search) return `ScoreSaber maps for ${input.search}`;
-   return 'ScoreSaber maps';
 }

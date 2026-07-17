@@ -1,13 +1,13 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 
-import { legacyLeaderboardSearchParams, parseLegacyRouteId } from '../-redirects';
+import { legacyLeaderboardSearchParams, parseLegacyRouteId, type LegacyLeaderboardQuery } from '../-redirects';
 
 import { publicApi } from '@/shared/api/server-api';
 import { optionalApiData } from '@/shared/result/api';
 
 const getLegacyLeaderboardRedirect = createServerFn({ method: 'GET' })
-   .inputValidator((data: { leaderboardId?: string; search: Record<string, unknown> }) => data)
+   .inputValidator((data: { leaderboardId?: string; search: LegacyLeaderboardQuery }) => data)
    .handler(async ({ data }) => {
       const id = parseLegacyRouteId(data.leaderboardId);
       if (!id) return { name: 'maps' } as const;

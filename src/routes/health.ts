@@ -12,7 +12,7 @@ export const Route = createFileRoute('/health')({
    }
 });
 
-async function checkHealth() {
+function checkHealth() {
    const missingEnv = requiredEnv.filter((key) => !process.env[key]);
    const isHealthy = missingEnv.length === 0;
 

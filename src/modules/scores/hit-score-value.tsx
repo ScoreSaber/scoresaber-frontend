@@ -12,14 +12,10 @@ interface HitScoreValueProps {
    className?: string;
 }
 
-function formatHitScorePercent(value: number) {
-   return `${((value / MAX_HIT_SCORE) * 100).toFixed(2)}%`;
-}
-
 export function HitScoreValue({ value, decimals = 2, className }: HitScoreValueProps) {
    const [showTouchPercent, setShowTouchPercent] = useState(false);
-   const points = Number.isFinite(value) ? value.toFixed(decimals) : '--';
-   const percent = Number.isFinite(value) ? formatHitScorePercent(value) : '--';
+   const points = value.toFixed(decimals);
+   const percent = `${((value / MAX_HIT_SCORE) * 100).toFixed(2)}%`;
 
    return (
       <span

@@ -11,17 +11,9 @@ const transitionSpeed = 200;
 const clickSettleDelay = 120;
 const maxLoadDuration = 10000;
 
-function clamp(value: number, min: number, max: number) {
-   return Math.min(Math.max(value, min), max);
-}
-
 function incrementProgress(current: number, amount?: number) {
-   const nextAmount = amount ?? (1 - current) * clamp(Math.random() * current, 0.1, 0.95);
-   return clamp(current + nextAmount, 0, 0.994);
-}
-
-function getBar() {
-   return document.querySelector<HTMLElement>('#nprogress .bar');
+   const nextAmount = amount ?? (1 - current) * Math.min(Math.max(Math.random() * current, 0.1), 0.95);
+   return Math.min(Math.max(current + nextAmount, 0), 0.994);
 }
 
 function renderProgress() {
@@ -71,7 +63,7 @@ export function RouteTopLoader() {
       if (next == null) return;
 
       renderProgress();
-      const bar = getBar();
+      const bar = document.querySelector<HTMLElement>('#nprogress .bar');
       if (!bar) return;
 
       bar.style.transform = `translate3d(${(-1 + next) * 100}%,0,0)`;

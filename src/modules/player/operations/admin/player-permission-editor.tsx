@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, RefreshCw } from 'lucide-react';
@@ -26,6 +26,20 @@ interface Permission {
 type UpdatePermissionsResult = Extract<Awaited<ReturnType<typeof updatePermissions>>, { ok: true }>['value'];
 
 const permissionOrder = ['PANDA', 'ADMIN', 'QATHead', 'CCTHead', 'NAT', 'RT', 'RTR', 'QAT', 'CAT', 'CCT', 'PPV3', 'DEV'];
+
+function getPermissionChanges(permissions: Permission[], serverPermissions: number, draftPermissions: number) {
+   const add: string[] = [];
+   const remove: string[] = [];
+
+   for (const permission of permissions) {
+      const wasEnabled = (serverPermissions & permission.value) === permission.value;
+      const isEnabled = (draftPermissions & permission.value) === permission.value;
+      if (isEnabled && !wasEnabled) add.push(permission.name);
+      if (!isEnabled && wasEnabled) remove.push(permission.name);
+   }
+
+   return { add, remove };
+}
 
 interface PlayerPermissionEditorProps {
    open: boolean;
@@ -76,38 +90,18 @@ export function PlayerPermissionEditor({
       staleTime: 24 * 60 * 60 * 1000 // 24 hours
    });
 
-   // diff draft vs server to build add/remove lists
-   const computeDiff = useCallback(
-      (perms: Permission[]) => {
-         const add: string[] = [];
-         const remove: string[] = [];
-         for (const perm of perms) {
-            const wasOn = (serverPerms & perm.value) === perm.value;
-            const isOn = (draftPerms & perm.value) === perm.value;
-            if (isOn && !wasOn) add.push(perm.name);
-            if (!isOn && wasOn) remove.push(perm.name);
-         }
-         return { add, remove };
-      },
-      [serverPerms, draftPerms]
-   );
-
-   const hasPendingChanges = permissions
-      ? (() => {
-           const { add, remove } = computeDiff(permissions);
-           return add.length > 0 || remove.length > 0;
-        })()
-      : false;
+   const permissionChanges = permissions ? getPermissionChanges(permissions, serverPerms, draftPerms) : null;
+   const hasPendingChanges = permissionChanges ? permissionChanges.add.length > 0 || permissionChanges.remove.length > 0 : false;
 
    const mutation = useActionMutation<UpdatePermissionsResult>();
    const pending = mutation.isPending;
 
    function handleSave() {
-      if (!permissions) return;
+      if (!permissionChanges) return;
 
       mutation.mutate(
          () => {
-            const { add, remove } = computeDiff(permissions);
+            const { add, remove } = permissionChanges;
             return updatePermissions(playerId, add.length > 0 ? add : undefined, remove.length > 0 ? remove : undefined);
          },
          {
@@ -235,7 +229,7 @@ export function PlayerPermissionEditor({
                <Button variant="outline" onClick={handleCancel} disabled={pending}>
                   {tc('common.cancel')}
                </Button>
-               <Button onClick={() => handleSave()} disabled={pending || !hasPendingChanges} className="relative cursor-pointer">
+               <Button onClick={handleSave} disabled={pending || !hasPendingChanges} className="relative cursor-pointer">
                   <span className={pending ? 'invisible' : undefined}>{tc('common.save')}</span>
                   {pending && <Loader2 className="absolute animate-spin" />}
                </Button>

@@ -107,10 +107,8 @@ export function LivePlayersPanel({
 
    async function importPlayers(rows: LivePlayerCsvRow[]) {
       setImportPending(true);
-      const importResult = Result.tapBoth(await Result.tryPromise(() => importPlayerRows(rows)), {
-         ok: () => setImportPending(false),
-         err: () => setImportPending(false)
-      });
+      const importResult = await Result.tryPromise(() => importPlayerRows(rows));
+      setImportPending(false);
 
       return Result.match(importResult, {
          ok: (success) => success,

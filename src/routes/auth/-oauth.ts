@@ -4,7 +4,7 @@ import { Result } from 'better-result';
 import { env } from '@/env';
 import {
    authCookieMaxAge,
-   getApiOriginUrl,
+   getApiOrigin,
    getSiteUrl,
    oauthIntentCookieName,
    oauthRedirectCookieName,
@@ -60,7 +60,7 @@ export async function handleSteamLogin(
       api.auth.authControllerSteamLogin(
          {
             intent,
-            returnUrl: returnUrl ?? getApiOriginUrl(),
+            returnUrl: returnUrl ?? getApiOrigin(),
             redirectTo
          },
          {
@@ -71,7 +71,7 @@ export async function handleSteamLogin(
 
    return Result.match(result, {
       ok: (response) => {
-         const redirect = redirectResponse(response.data.redirectUrl);
+         const redirect = createMutableRedirectResponse(response.data.redirectUrl);
          appendApiCookies(redirect, response.headers);
          const state = getSteamState(response.data.redirectUrl);
          if (state) {
@@ -86,7 +86,7 @@ export async function handleSteamLogin(
 
          return redirect;
       },
-      err: () => redirectResponse(failedRedirect)
+      err: () => createMutableRedirectResponse(failedRedirect)
    });
 }
 
@@ -165,7 +165,7 @@ async function handleOAuthLogin({
 
    return Result.match(result, {
       ok: (response) => {
-         const redirect = redirectResponse(response.data.redirectUrl);
+         const redirect = createMutableRedirectResponse(response.data.redirectUrl);
          appendApiCookies(redirect, response.headers);
          const state = getOAuthState(response.data.redirectUrl);
          if (state) {
@@ -193,7 +193,7 @@ async function handleOAuthLogin({
          });
          return redirect;
       },
-      err: () => redirectResponse(failedRedirect)
+      err: () => createMutableRedirectResponse(failedRedirect)
    });
 }
 
@@ -220,20 +220,20 @@ async function handleOAuthCallback({
          : getSiteUrl(`${settingsConnectionsRoute.id}${stringifyUrlSearch({ [provider]: 'failed' })}`);
 
    if (!code || !state) {
-      return redirectResponse(failedRedirect);
+      return createMutableRedirectResponse(failedRedirect);
    }
 
    const result = await apiResult(requestCallback(code, state));
 
    return Result.match(result, {
       ok: (response) => {
-         const redirect = redirectResponse(successRedirect);
+         const redirect = createMutableRedirectResponse(successRedirect);
          appendApiCookies(redirect, response.headers);
          setCookie(redirect, oauthIntentCookieName, '', { path: oauthProviderRoutes[provider].id, maxAge: 0 });
          setCookie(redirect, oauthRedirectCookieName, '', { path: oauthProviderRoutes[provider].id, maxAge: 0 });
          return redirect;
       },
-      err: () => redirectResponse(failedRedirect)
+      err: () => createMutableRedirectResponse(failedRedirect)
    });
 }
 
@@ -243,13 +243,9 @@ function appendApiCookies(redirect: Response, headers: Headers) {
    }
 }
 
-function redirectResponse(url: string) {
-   return new Response(null, {
-      status: 307,
-      headers: {
-         Location: url
-      }
-   });
+function createMutableRedirectResponse(url: string) {
+   // Response.redirect() headers are immutable in Node
+   return new Response(null, { status: 307, headers: { Location: url } });
 }
 
 interface CookieOptions {
@@ -267,14 +263,9 @@ function setCookie(response: Response, name: string, value: string, options: Coo
    if (options.path) parts.push(`Path=${options.path}`);
    if (options.httpOnly) parts.push('HttpOnly');
    if (options.secure) parts.push('Secure');
-   if (options.sameSite) parts.push(`SameSite=${capitalizeSameSite(options.sameSite)}`);
+   if (options.sameSite) parts.push(`SameSite=${options.sameSite[0].toUpperCase()}${options.sameSite.slice(1)}`);
 
    response.headers.append('set-cookie', parts.join('; '));
-}
-
-function capitalizeSameSite(value: CookieOptions['sameSite']) {
-   if (!value) return value;
-   return `${value.slice(0, 1).toUpperCase()}${value.slice(1)}`;
 }
 
 function parseCookieHeader(header: string | null) {

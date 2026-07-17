@@ -43,10 +43,6 @@ export function LiveTournamentPlayerSelectDialog({
       );
    });
 
-   function selectPlayer(player: LiveTournamentRosterControllerListAuthorizedPlayersItem) {
-      onSelectAction(player);
-   }
-
    return (
       <Dialog
          open={open}
@@ -85,7 +81,13 @@ export function LiveTournamentPlayerSelectDialog({
                                     <TableCell>{player.teamName ?? t('noTeam')}</TableCell>
                                     <TableCell className="text-right">
                                        <LiveRowActions>
-                                          <Button type="button" variant="outline" size="sm" onClick={() => selectPlayer(player)} disabled={disabled}>
+                                          <Button
+                                             type="button"
+                                             variant="outline"
+                                             size="sm"
+                                             onClick={() => onSelectAction(player)}
+                                             disabled={disabled}
+                                          >
                                              {disabled ? t('added') : t('addPlayer')}
                                           </Button>
                                        </LiveRowActions>

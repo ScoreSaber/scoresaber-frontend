@@ -1,6 +1,7 @@
 import '@tanstack/react-start/server-only';
 
 import { Result, TaggedError } from 'better-result';
+import * as z from 'zod';
 
 import type { HomeBswcMatch, HomeBswcPromo, HomeBswcTeam } from './bswc';
 
@@ -22,38 +23,30 @@ class BswcFetchError extends TaggedError('BswcFetchError')<{
    cause: unknown;
 }>() {}
 
-type CubeTrpcResponse<T> = {
-   result?: {
-      data?: {
-         json?: T;
-      };
-   };
-};
+const cubeTournamentSchema = z.object({
+   name: z.string().optional(),
+   summary: z.string().nullable().optional(),
+   banner: z.string().nullable().optional(),
+   background: z.string().nullable().optional()
+});
+const cubeTeamSchema = z.object({
+   name: z.string(),
+   image: z.string().nullable().optional()
+});
+const cubeMatchSchema = z.object({
+   id: z.string(),
+   status: z.string(),
+   time: z.string().nullable(),
+   team1: cubeTeamSchema.nullable(),
+   team2: cubeTeamSchema.nullable()
+});
+const cubeLiveMatchSchema = z.object({
+   live: z.boolean(),
+   matchId: z.string().nullable().optional()
+});
 
-type CubeTournament = {
-   name?: string;
-   summary?: string | null;
-   banner?: string | null;
-   background?: string | null;
-};
-
-type CubeTeam = {
-   name: string;
-   image?: string | null;
-};
-
-type CubeMatch = {
-   id: string;
-   status: string;
-   time: string | null;
-   team1: CubeTeam | null;
-   team2: CubeTeam | null;
-};
-
-type CubeLiveMatch = {
-   live: boolean;
-   matchId?: string | null;
-};
+type CubeTeam = z.infer<typeof cubeTeamSchema>;
+type CubeMatch = z.infer<typeof cubeMatchSchema>;
 
 let cachedPromo: { expiresAt: number; promo: HomeBswcPromo | null } | null = null;
 let pendingRefresh: Promise<HomeBswcPromo | null> | null = null;
@@ -85,9 +78,9 @@ async function refreshHomeBswcPromo() {
 
 async function loadHomeBswcPromo(): Promise<HomeBswcPromo | null> {
    const [tournament, matches, live] = await Promise.all([
-      fetchOptional('tournaments.getTourney', () => fetchCubeTrpc<CubeTournament>('tournaments.getTourney')),
-      fetchOptional('bracket.getMatches', () => fetchCubeTrpc<CubeMatch[]>('bracket.getMatches')),
-      fetchOptional('bracket.getOnGoingMatch', () => fetchCubeTrpc<CubeLiveMatch>('bracket.getOnGoingMatch'))
+      fetchOptional('tournaments.getTourney', () => fetchCubeTrpc('tournaments.getTourney', cubeTournamentSchema)),
+      fetchOptional('bracket.getMatches', () => fetchCubeTrpc('bracket.getMatches', z.array(cubeMatchSchema))),
+      fetchOptional('bracket.getOnGoingMatch', () => fetchCubeTrpc('bracket.getOnGoingMatch', cubeLiveMatchSchema))
    ]);
 
    if (!matches) return null;
@@ -137,7 +130,7 @@ async function fetchOptional<T>(procedure: string, load: () => Promise<T>) {
    });
 }
 
-async function fetchCubeTrpc<T>(procedure: string) {
+async function fetchCubeTrpc<TSchema extends z.ZodType>(procedure: string, dataSchema: TSchema) {
    const url = new URL(`${CUBE_API_BASE_URL}/${procedure}`);
    url.searchParams.set('input', JSON.stringify({ json: { tournamentId: CUBE_TOURNAMENT_ID } }));
 
@@ -155,7 +148,15 @@ async function fetchCubeTrpc<T>(procedure: string) {
       });
    }
 
-   const payload = (await response.json()) as CubeTrpcResponse<T>;
+   const payload = z
+      .object({
+         result: z
+            .object({
+               data: z.object({ json: dataSchema.optional() }).optional()
+            })
+            .optional()
+      })
+      .parse(await response.json());
    const data = payload.result?.data?.json;
 
    if (data == null) {

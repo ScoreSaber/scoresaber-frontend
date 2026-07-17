@@ -15,27 +15,27 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankRequestFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams } from '@/shared/url-state/persisted-search';
+import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const QUEUE_TOP_COUNT = 6;
 
-function toTrue(): true {
-   return true;
-}
-
 const rankRequestsSearchSchema = z.object({
    page: isPageNumber,
    search: z.string().min(3).max(64).optional(),
-   hideDownvoted: z.enum(['true']).transform(toTrue).optional()
+   hideDownvoted: z
+      .literal('true')
+      .transform((): true => true)
+      .optional()
 });
 
 type RankRequestsSearchParams = Partial<z.output<typeof rankRequestsSearchSchema>>;
 
 type RankRequestsRouteInput = {
    search: RankRequestsSearchParams;
-   rawSearch: Record<string, unknown>;
+   rawSearch: SearchParamsRecord;
 };
 
 const getRankRequestsPageData = createServerFn({ method: 'GET' })
@@ -173,6 +173,6 @@ function normalizeRankRequestsLocationSearch(search?: RankRequestsSearchParams) 
    return { page, ...rest };
 }
 
-function parseRankRequestsSearch(search: Record<string, unknown>) {
+function parseRankRequestsSearch(search: SearchParamsRecord) {
    return rankRequestsSearchSchema.safeParse({ page: 1, ...search }).data ?? null;
 }

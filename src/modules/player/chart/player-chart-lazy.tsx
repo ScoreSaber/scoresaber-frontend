@@ -52,7 +52,6 @@ function ChartSkeleton() {
 }
 
 const PlayerChart = dynamic(() => import('@/modules/player/chart/player-chart').then((mod) => mod.PlayerChart), {
-   ssr: false,
    loading: () => <ChartSkeleton />
 });
 

@@ -3,7 +3,7 @@ import '@tanstack/react-start/server-only';
 import { Result, TaggedError } from 'better-result';
 import * as z from 'zod';
 
-import { createGithubJsonFetcher, type GithubJsonErrorInput } from '@/shared/result/github';
+import { createGithubJsonFetcher } from '@/shared/result/github';
 
 const GITHUB_REPO = 'ScoreSaber/quest-mod';
 const RELEASES_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases`;
@@ -51,11 +51,12 @@ class QuestReleasesError extends TaggedError('QuestReleasesError')<{
    cause: unknown;
 }>() {}
 
-function questReleasesError({ message, status, cause }: GithubJsonErrorInput) {
-   return new QuestReleasesError({ message, status, cause });
-}
-
-const fetchGithubReleases = createGithubJsonFetcher(RELEASES_URL, githubReleasesSchema, questReleasesError, 'github releases fetch');
+const fetchGithubReleases = createGithubJsonFetcher(
+   RELEASES_URL,
+   githubReleasesSchema,
+   ({ message, status, cause }) => new QuestReleasesError({ message, status, cause }),
+   'github releases fetch'
+);
 
 export async function fetchQuestReleases() {
    const result = await fetchGithubReleases();

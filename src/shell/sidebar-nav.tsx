@@ -2,8 +2,7 @@
 
 import { memo, useEffect, useState } from 'react';
 
-import { getRouteApi, useRouter } from '@tanstack/react-router';
-import { useLocation } from '@tanstack/react-router';
+import { getRouteApi, useLocation, useRouter } from '@tanstack/react-router';
 import { Check, ChevronsUpDown, CircleEllipsis, CircleHelp, EllipsisVertical, ExternalLink, LogIn, LogOut, Plus, Search } from 'lucide-react';
 import { FaGlobe } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
@@ -66,41 +65,14 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
    const pathname = location.pathname;
    const { user } = useAuth();
    const { setOpen: setSearchOpen } = useOmniSearch();
-   const [mounted, setMounted] = useState(false);
-   const [isMac, setIsMac] = useState(false);
+   const [isMac, setIsMac] = useState<boolean | null>(null);
    const t = useTranslations();
+   const tNav = useTranslations('nav');
    const [playerNameClass] = getPlayerRoleStyleAndTitle(user);
    const currentPath = location.href;
+   const mounted = isMac != null;
    const visibleNavItems = navItems.filter((item) => item.route !== 'live' || canUseLivePlatform(user?.permissions));
    const visibleSecondaryItems = secondaryItems.filter((item) => item.key !== 'support' || !Permissions.isSupporter(user?.permissions ?? 0));
-
-   function navLabel(key: string) {
-      return key === 'home'
-         ? t('nav.home')
-         : key === 'search'
-           ? t('nav.search')
-           : key === 'maps'
-             ? t('nav.maps')
-             : key === 'rankings'
-               ? t('nav.rankings')
-               : key === 'rankRequests'
-                 ? t('nav.rankRequests')
-                 : key === 'requests'
-                   ? t('nav.requests')
-                   : key === 'wiki'
-                     ? t('nav.wiki')
-                     : key === 'feedbackHub'
-                       ? t('nav.feedbackHub')
-                       : key === 'livePlatform'
-                         ? t('nav.livePlatform')
-                         : key === 'questInstaller'
-                           ? t('nav.questInstaller')
-                           : key === 'team'
-                             ? t('nav.team')
-                             : key === 'support'
-                               ? t('nav.support')
-                               : t('nav.apiDocs');
-   }
 
    const realmSwitcherTrigger = (
       <Button variant="ghost" size="icon-xs" className="text-muted-foreground" aria-label={t('sidebar.switchRealm')}>
@@ -109,7 +81,6 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
    );
 
    useEffect(() => {
-      setMounted(true);
       setIsMac(/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent));
    }, []);
 
@@ -192,7 +163,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
             >
                <Search data-icon />
                <span className="flex-1 text-left">{t('common.searchPlaceholder')}</span>
-               <Kbd>{mounted ? (isMac ? '⌘K' : 'Ctrl+K') : '⌘K'}</Kbd>
+               <Kbd>{isMac === false ? 'Ctrl+K' : '⌘K'}</Kbd>
             </Button>
          </div>
 
@@ -205,10 +176,10 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                         <TooltipTrigger asChild>
                            <span className={cn(navLinkClass, disabledClass)} aria-disabled="true">
                               {item.icon}
-                              {navLabel(item.key)}
+                              {tNav(item.key)}
                            </span>
                         </TooltipTrigger>
-                        <TooltipContent>{t('nav.comingSoon')}</TooltipContent>
+                        <TooltipContent>{tNav('comingSoon')}</TooltipContent>
                      </Tooltip>
                   );
                }
@@ -221,7 +192,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                      onNavigateAction={onNavigateAction}
                   >
                      {item.icon}
-                     {navLabel(item.key)}
+                     {tNav(item.key)}
                   </SidebarNavLink>
                );
             })}
@@ -231,14 +202,12 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
             {visibleSecondaryItems.map((item) => (
                <SidebarNavLink
                   key={item.key}
-                  route={item.external ? undefined : item.route}
-                  href={item.external ? item.href : undefined}
+                  {...(item.external ? { external: true as const, href: item.href } : { route: item.route })}
                   className={cn(navLinkClass, !item.external && isNavActive(pathname, item.route) ? activeClass : inactiveClass)}
-                  external={item.external}
                   onNavigateAction={onNavigateAction}
                >
                   {item.icon}
-                  <span className="flex-1">{navLabel(item.key)}</span>
+                  <span className="flex-1">{tNav(item.key)}</span>
                   {item.external && <ExternalLink data-icon className="ml-auto size-3" aria-hidden="true" />}
                </SidebarNavLink>
             ))}

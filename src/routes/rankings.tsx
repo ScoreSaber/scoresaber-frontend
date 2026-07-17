@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
-import { versionedAvatarUrl } from '@/modules/player/shared/player-avatar';
+import { versionedImageUrl } from '@/modules/player/shared/player-avatar';
 import { RankingsFilters } from '@/modules/rankings/rankings-filters';
 import { RankingsTable } from '@/modules/rankings/rankings-table';
 import {
@@ -21,6 +21,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankingFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
 import { applyPersistedSearchParams, readPersistedSearchStorage } from '@/shared/url-state/persisted-search';
+import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 import { normalizeSearchRecord } from '@/shared/url-state/search-serializer';
 import { updateSearchParams } from '@/shared/url-state/update-search-params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
@@ -41,7 +42,7 @@ type RankingsSearchParams = Partial<z.output<typeof rankingsSearchSchema>>;
 
 type RankingsRouteInput = {
    search: RankingsSearchParams;
-   rawSearch: Record<string, unknown>;
+   rawSearch: SearchParamsRecord;
 };
 
 const getRankingsPageData = createServerFn({ method: 'GET' })
@@ -74,11 +75,8 @@ const getRankingsPageData = createServerFn({ method: 'GET' })
          includeInactive: searchParams.includeInactive ?? 'false',
          live: 'true'
       };
-      const liveCountPromise =
-         searchParams.live === 'true'
-            ? Promise.resolve({ count: 1 })
-            : optionalApiData(publicApi.player.playerControllerGetPlayerCount(liveCountQuery));
-      const [result, liveCount] = await Promise.all([pageApiData(apiClient.player.playerControllerGetPlayers(playerQuery)), liveCountPromise]);
+      const liveCountRequest = searchParams.live === 'true' ? null : optionalApiData(publicApi.player.playerControllerGetPlayerCount(liveCountQuery));
+      const [result, liveCount] = await Promise.all([pageApiData(apiClient.player.playerControllerGetPlayers(playerQuery)), liveCountRequest]);
       const liveAvailable = searchParams.live === 'true' || (liveCount?.count ?? 0) > 0;
 
       return { result, searchParams, persistedStorage, liveAvailable };
@@ -106,7 +104,7 @@ function RankingsRoute() {
    const response = result.data;
    const players = response.data;
    const meta = response.metadata;
-   const bgCandidates = players.filter((p) => isSteamPlayer(p.id)).map((p) => versionedAvatarUrl(p.avatar, p.avatarVersion));
+   const bgCandidates = players.filter((p) => isSteamPlayer(p.id)).map((p) => versionedImageUrl(p.avatar, p.avatarVersion));
    const getPageLocation = (page: number) => buildRankingsLocation(updateSearchParams(searchParams, { page: page > 1 ? page : undefined }));
 
    return (
@@ -155,6 +153,6 @@ function normalizeRankingsLocationSearch(search?: RankingsSearchParams) {
    return { page, ...rest };
 }
 
-function parseRankingsSearch(search: Record<string, unknown>) {
+function parseRankingsSearch(search: SearchParamsRecord) {
    return rankingsSearchSchema.safeParse({ page: 1, ...search }).data ?? null;
 }

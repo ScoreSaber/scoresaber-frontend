@@ -22,12 +22,14 @@ const verifyPasskeyLoginFn = createServerFn({ method: 'POST' })
          api.auth.passkeyControllerVerifyAuthentication(data, { cache: 'no-store', headers: getEmailLoginHeaders() })
       );
 
-      if (result.ok && result.value.status === 'authenticated') {
+      if (!result.ok) return result;
+
+      if (result.value.status === 'authenticated') {
          setAuthCookie(result.value.token);
          return actionSuccess({ status: 'authenticated', playerId: result.value.playerId });
       }
 
-      return result as ActionResult<PasskeyLoginActionValue>;
+      return actionSuccess(result.value);
    });
 
 export async function verifyPasskeyLogin(data: { sessionId: string; response: AuthenticationResponseJSON }) {

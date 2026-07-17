@@ -82,12 +82,12 @@ export function MapRankRequestDetails({ leaderboardInfo, rankRequest, userPermis
                )}
 
                {/* description */}
-               {hasDescription && (
+               {rankRequest.description && (
                   <div className="py-3">
                      <h3 className="text-muted-foreground mb-1.5 text-xs font-semibold tracking-wider uppercase">
                         {t('rankRequest.rankRequestDescription')}
                      </h3>
-                     <p className="text-foreground text-sm whitespace-pre-wrap">{decodeHtmlEntities(rankRequest.description!)}</p>
+                     <p className="text-foreground text-sm whitespace-pre-wrap">{decodeHtmlEntities(rankRequest.description)}</p>
                   </div>
                )}
 

@@ -213,13 +213,10 @@ function formatHandPair(left: number, right: number, leftLabel: string, rightLab
 }
 
 function formatCompactDecimal(value: number) {
-   if (!Number.isFinite(value)) return '--';
    return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
 
 function formatPauseDuration(seconds: number) {
-   if (!Number.isFinite(seconds)) return '--';
-
    const totalSeconds = Math.max(0, Math.floor(seconds));
    const hours = Math.floor(totalSeconds / 3600);
    const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -309,8 +306,7 @@ function ScoreAccuracyOverview({
       staleTime: 5 * 60 * 1000
    });
    const ppCurve = ppCurveData && fcPPContext ? (fcPPContext.positiveModifiers ? ppCurveData.positiveModifierCurve : ppCurveData.curve) : null;
-   const fcPP =
-      !fullCombo && Number.isFinite(stats.fcAcc) && fcPPContext && ppCurve ? calculateCurvePP(stats.fcAcc, fcPPContext.maxPP, ppCurve) : null;
+   const fcPP = !fullCombo && fcPPContext && ppCurve ? calculateCurvePP(stats.fcAcc, fcPPContext.maxPP, ppCurve) : null;
 
    return (
       <div className="flex min-w-0 flex-col gap-4">
@@ -371,7 +367,7 @@ function ScoreAccuracyOverview({
             )}
             {!fullCombo && (
                <Stat icon={Target} label={t('score.estFCAccuracy')} className="gap-1.5 px-2 py-0.5 text-[11px]">
-                  {Number.isFinite(stats.fcAcc) ? `${(stats.fcAcc * 100).toFixed(2)}%` : '--'}
+                  {(stats.fcAcc * 100).toFixed(2)}%
                </Stat>
             )}
             {fcPP != null && (

@@ -1,9 +1,8 @@
 import { lazy, Suspense } from 'react';
-import type { ComponentType, ReactNode } from 'react';
+import type { ComponentType } from 'react';
 
 type DynamicOptions = {
    loading?: ComponentType;
-   ssr?: boolean;
 };
 
 export function dynamic<TProps extends object>(
@@ -18,7 +17,7 @@ export function dynamic<TProps extends object>(
    return function DynamicComponent(props: TProps) {
       const fallback = options.loading ? <options.loading /> : null;
       return (
-         <Suspense fallback={fallback as ReactNode}>
+         <Suspense fallback={fallback}>
             <LazyComponent {...props} />
          </Suspense>
       );

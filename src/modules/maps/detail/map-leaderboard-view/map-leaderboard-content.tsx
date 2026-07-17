@@ -257,14 +257,13 @@ function DifficultyToolbar({
    activeTab?: MapLeaderboardTab;
    search: LeaderboardSearchParams;
 }) {
-   const switchSearch: LeaderboardSearchParams = {
+   const linkSearchParams: LeaderboardSearchParams = {
       page: search.page,
       search: search.search,
       scope: search.scope,
       pivot: search.pivot,
       tab: activeTab === 'rank-request' ? activeTab : search.tab
    };
-   const linkSearchParams = Object.values(switchSearch).some((value) => value != null) ? switchSearch : undefined;
 
    return (
       <div className="flex min-w-0 items-center gap-1 md:gap-1.5">

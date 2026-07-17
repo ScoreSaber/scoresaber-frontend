@@ -37,10 +37,6 @@ export function LiveTournamentTeamSelectDialog({
       return team.name.toLowerCase().includes(needle);
    });
 
-   function selectTeam(team: LiveTournamentRosterControllerListTeamsItem) {
-      onSelectAction(team);
-   }
-
    return (
       <Dialog
          open={open}
@@ -74,7 +70,7 @@ export function LiveTournamentTeamSelectDialog({
                                     <TableCell className="font-medium">{team.name}</TableCell>
                                     <TableCell className="text-right">
                                        <LiveRowActions>
-                                          <Button type="button" variant="outline" size="sm" onClick={() => selectTeam(team)} disabled={disabled}>
+                                          <Button type="button" variant="outline" size="sm" onClick={() => onSelectAction(team)} disabled={disabled}>
                                              {disabled ? t('added') : t('addTeam')}
                                           </Button>
                                        </LiveRowActions>

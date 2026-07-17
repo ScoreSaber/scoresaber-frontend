@@ -25,9 +25,7 @@ import { getDifficultyLabel } from '@/shared/format/strings';
 type PinnedScore = PlayerControllerGetPlayerResponse['pinnedScores'][number];
 type PinnedScorePanel = 'details' | 'history';
 
-const ScoreHistory = dynamic(() => import('@/modules/scores/score-history').then((mod) => mod.ScoreHistory), {
-   ssr: false
-});
+const ScoreHistory = dynamic(() => import('@/modules/scores/score-history').then((mod) => mod.ScoreHistory));
 
 interface PlayerPinnedScoresSectionProps {
    pinnedScores: PinnedScore[];

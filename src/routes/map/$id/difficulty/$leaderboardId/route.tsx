@@ -33,17 +33,13 @@ export const Route = createFileRoute('/map/$id/difficulty/$leaderboardId')({
 
 function MapDifficultyRoute() {
    const params = Route.useParams();
-   const search = Route.useSearch();
    const data = Route.useLoaderData();
 
    return (
       <MapLeaderboardRouteContent
          input={{
             routeName: 'mapDifficulty',
-            mapId: params.id,
-            leaderboardId: params.leaderboardId,
-            search,
-            rawSearch: search
+            mapId: params.id
          }}
          data={data}
       />

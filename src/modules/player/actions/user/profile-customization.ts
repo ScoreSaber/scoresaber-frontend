@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 
 import type { UserControllerUpdateProfileCustomizationPayload } from '@/shared/api/generated/Api';
 import { api } from '@/shared/api/server-api';
-import { actionApiData, actionApiVoid, actionFailure } from '@/shared/result/action';
+import { actionApiData, actionFailure, actionResultVoid } from '@/shared/result/action';
 
 interface UpdatePinnedScoresInput {
    pinnedScores: {
@@ -16,7 +16,7 @@ const backgroundMaxSize = 10 * 1024 * 1024;
 const updatePinnedScoresFn = createServerFn({ method: 'POST' })
    .inputValidator((data: UpdatePinnedScoresInput) => data)
    .handler(({ data }) =>
-      actionApiVoid(
+      actionResultVoid(
          api.user.userControllerUpdatePinnedScores({
             pinnedScores: data.pinnedScores
          })

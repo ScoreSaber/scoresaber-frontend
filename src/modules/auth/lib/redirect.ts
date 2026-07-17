@@ -10,7 +10,7 @@ function getSiteOrigin() {
    return new URL(env.NEXT_PUBLIC_SITE_URL).origin;
 }
 
-function getApiOrigin() {
+export function getApiOrigin() {
    return new URL(env.NEXT_PUBLIC_API_URL).origin;
 }
 
@@ -37,14 +37,6 @@ export function safeSiteRedirect(value: string | null | undefined, fallback: str
 
 export function safeSitePath(value: string | null | undefined, fallback: string) {
    return getSitePath(safeSiteRedirect(value, getSiteUrl(fallback)));
-}
-
-export function getSiteOriginUrl() {
-   return getSiteOrigin();
-}
-
-export function getApiOriginUrl() {
-   return getApiOrigin();
 }
 
 export { authCookieMaxAge, getSiteUrl, oauthIntentCookieName, oauthRedirectCookieName };

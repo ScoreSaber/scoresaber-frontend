@@ -1,5 +1,3 @@
-import { Result } from 'better-result';
-
 type RichTextAttrs = Record<string, string | undefined>;
 
 const richTextPolicy = {
@@ -43,7 +41,7 @@ function normalizeRichTextIframe(value: string) {
    const src = getFirstIframeSrc(value);
    if (src) return normalizeRichTextIframe(src);
 
-   const url = toUrl(value);
+   const url = URL.canParse(value) ? new URL(value) : null;
    if (!url) return '';
 
    if ((url.hostname === 'youtube.com' || url.hostname === 'www.youtube.com') && url.pathname === '/watch') {
@@ -96,12 +94,12 @@ function buildRichTextIframe(src: string) {
 }
 
 function isAllowedRichTextIframe(value: string) {
-   const url = toUrl(value);
+   const url = URL.canParse(value) ? new URL(value) : null;
    return !!url && url.protocol === 'https:' && richTextPolicy.iframeHosts.includes(url.hostname);
 }
 
 function isAllowedRichTextLink(value: string) {
-   const url = toUrl(value);
+   const url = URL.canParse(value) ? new URL(value) : null;
    return !!url && ['http:', 'https:', 'mailto:'].includes(url.protocol);
 }
 
@@ -140,16 +138,6 @@ function buildTwitchEmbedUrl(baseUrl: string, params: Record<string, string>) {
       url.searchParams.append('parent', parent);
    }
    return url.toString();
-}
-
-function toUrl(value: string) {
-   return Result.unwrapOr(
-      Result.try({
-         try: () => new URL(value),
-         catch: () => null
-      }),
-      null
-   );
 }
 
 function sanitizeLinkAttrs(attribs: RichTextAttrs) {

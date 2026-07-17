@@ -32,10 +32,7 @@ export function PlayerBio({ sanitizedBio }: PlayerBioProps) {
       const content = contentRef.current;
       if (!content) return;
 
-      function updateCanExpand() {
-         if (!content) return;
-         setCanExpand(expanded || content.scrollHeight > collapsedBioHeight + 1);
-      }
+      const updateCanExpand = () => setCanExpand(expanded || content.scrollHeight > collapsedBioHeight + 1);
 
       updateCanExpand();
 

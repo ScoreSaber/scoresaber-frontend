@@ -94,13 +94,12 @@ export function MapLeaderboardHero({ mapInfo, leaderboardInfo, linkSearchParams 
 
 function MapStats({ mapInfo }: { mapInfo: MapControllerGetMapByIdResponse }) {
    const t = useTranslations();
-   const tc = useTranslations();
    return (
       <div className="flex flex-wrap items-center gap-2">
          <Stat icon={FaDrum} label="BPM">
             {mapInfo.bpm}
          </Stat>
-         <Stat icon={FaMusic} label={tc('common.totalPlays')}>
+         <Stat icon={FaMusic} label={t('common.totalPlays')}>
             {formatNumber(mapInfo.totalScores)}
          </Stat>
          <Stat icon={FaClock} label={t('map.created')}>

@@ -64,7 +64,7 @@ import { LiveSongSelectDialog } from '@/modules/live/components/live-song-select
 import { LiveTournamentPlayerSelectDialog } from '@/modules/live/components/live-tournament-player-select-dialog';
 import { LiveTournamentTeamSelectDialog } from '@/modules/live/components/live-tournament-team-select-dialog';
 import { CheckboxRow, LiveTableShell } from '@/modules/live/components/live-ui';
-import { getRoomPlayback, getRoomPlayerRows, type RoomMember, type RoomPlayerDraft } from '@/modules/live/lib/room-management';
+import { getAddedTeamIds, getRoomPlayback, getRoomPlayerRows, type RoomMember, type RoomPlayerDraft } from '@/modules/live/lib/room-management';
 import { useLudus } from '@/modules/live/ludus/use-ludus';
 import type { LiveMatchRoomControllerSetRoomSongPayload } from '@/shared/api/generated/Api';
 import type {
@@ -89,8 +89,6 @@ type RoomRosterMode = LiveMatchRoomControllerListRoomsItem['rosterMode'];
 type RoomFinalScore = LiveMatchRoomControllerGetRoomViewResponse['finalScores'][number];
 type LiveWorkflowOptions = LiveMatchRoomControllerGetRoomViewResponse['options'];
 type LiveWorkflowAccess = LiveMatchRoomControllerGetRoomViewResponse['access'];
-type LiveRoomUpsertPayload = Parameters<typeof upsertLiveRoom>[1] & { activePlayerIds?: string[] };
-type LiveRoomMembersPayload = Parameters<typeof setLiveRoomMembers>[2] & { activePlayerIds?: string[] };
 type LudusPromptResponses = ReturnType<typeof useLudus>['promptResponses'];
 type LudusChatMessage = ReturnType<typeof useLudus>['chatMessages'][number];
 type LudusRoom = ReturnType<typeof useLudus>['rooms'][number];
@@ -369,7 +367,7 @@ export function LiveRoomManagementPage({
                members: toRoomMemberPayload(nextRoomPlayers, room.members),
                activePlayerIds: getActivePlayerIds(nextRoomPlayers),
                rosterMode: nextRosterMode
-            } satisfies LiveRoomMembersPayload),
+            }),
          successLabel,
          t('membersSaveFailed'),
          (nextRoom) => {
@@ -430,7 +428,7 @@ export function LiveRoomManagementPage({
                rosterMode,
                members: toRoomMemberPayload(roomPlayers, room.members),
                activePlayerIds: getActivePlayerIds(roomPlayers)
-            } satisfies LiveRoomUpsertPayload),
+            }),
          t('roomReopened'),
          t('roomReopenFailed'),
          (nextRoom) => {
@@ -441,8 +439,9 @@ export function LiveRoomManagementPage({
    }
 
    function setRosterModeValue(value: string) {
-      if (options.roomRosterModes.includes(value as RoomRosterMode) && value !== rosterMode) {
-         persistRoomPlayers(roomPlayers, value as RoomRosterMode, t('roomPlayersSaved'));
+      const nextRosterMode = options.roomRosterModes.find((mode) => mode === value);
+      if (nextRosterMode && nextRosterMode !== rosterMode) {
+         persistRoomPlayers(roomPlayers, nextRosterMode, t('roomPlayersSaved'));
       }
    }
 
@@ -1136,18 +1135,6 @@ function toRoomMemberPayload(players: RoomPlayerDraft[], currentMembers: RoomMem
 
 function getActivePlayerIds(players: RoomPlayerDraft[]) {
    return players.flatMap((player) => (player.active ? [player.playerId] : []));
-}
-
-function getAddedTeamIds(
-   teams: LiveTournamentRosterControllerListTeamsItem[],
-   authorizedPlayers: LiveTournamentRosterControllerListAuthorizedPlayersItem[],
-   playerIds: Set<string>
-) {
-   return teams.flatMap((team) => {
-      const teamPlayers = authorizedPlayers.filter((player) => player.teamId === team.id);
-      if (teamPlayers.length === 0) return [];
-      return teamPlayers.every((player) => playerIds.has(player.playerId)) ? [team.id] : [];
-   });
 }
 
 function getPromptResponsesByPlayer(matchId: string, responses: LudusPromptResponses) {

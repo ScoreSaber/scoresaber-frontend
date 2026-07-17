@@ -1,5 +1,15 @@
 import { notFound } from '@tanstack/react-router';
 import { Err, matchError, Ok, Result, TaggedError } from 'better-result';
+import { z } from 'zod';
+
+const optionalApiErrorString = z.string().optional().catch(undefined);
+const apiErrorCauseSchema = z.object({
+   status: z.number().optional().catch(undefined),
+   statusText: optionalApiErrorString,
+   url: optionalApiErrorString,
+   message: optionalApiErrorString,
+   error: z.object({ message: optionalApiErrorString }).optional().catch(undefined)
+});
 
 class ApiNotFoundError extends TaggedError('ApiNotFoundError')<{
    message: string;
@@ -87,73 +97,35 @@ async function pageApi<T>(promise: Promise<T>): Promise<PageDataResult<T>> {
 }
 
 function toApiError(cause: unknown) {
-   const status = getApiStatus(cause);
+   const parsed = apiErrorCauseSchema.safeParse(cause);
+   const details = parsed.success ? parsed.data : null;
+   const status = details?.status ?? null;
+   const message =
+      cause instanceof Error && cause.message
+         ? cause.message
+         : details?.error?.message !== undefined
+           ? details.error.message
+           : details?.message || 'request failed';
 
    if (status === 404) {
       return new ApiNotFoundError({
-         message: getApiNotFoundMessage(cause),
+         message: message === 'request failed' ? 'resource not found' : message,
          cause
       });
    }
 
+   const requestDetails = [details?.url, details?.statusText].filter(Boolean);
+   const statusLabel = status == null ? 'unknown status' : String(status);
+   const requestMessage =
+      message !== 'request failed'
+         ? message
+         : requestDetails.length > 0
+           ? `api request failed (${statusLabel} ${requestDetails.join(' ')}): ${message}`
+           : `api request failed (${statusLabel}): ${message}`;
+
    return new ApiRequestError({
-      message: getApiRequestMessage(cause, status),
+      message: requestMessage,
       status,
       cause
    });
-}
-
-function getApiStatus(cause: unknown) {
-   if (typeof cause !== 'object' || cause == null || !('status' in cause)) return null;
-   return typeof cause.status === 'number' ? cause.status : null;
-}
-
-function getApiNotFoundMessage(cause: unknown) {
-   const message = getApiMessage(cause);
-   return message === 'request failed' ? 'resource not found' : message;
-}
-
-function getApiMessage(cause: unknown) {
-   if (cause instanceof Error && cause.message) return cause.message;
-   if (typeof cause !== 'object' || cause == null) return 'request failed';
-
-   if (
-      'error' in cause &&
-      typeof cause.error === 'object' &&
-      cause.error != null &&
-      'message' in cause.error &&
-      typeof cause.error.message === 'string'
-   ) {
-      return cause.error.message;
-   }
-
-   if ('message' in cause && typeof cause.message === 'string' && cause.message) {
-      return cause.message;
-   }
-
-   return 'request failed';
-}
-
-function getApiRequestMessage(cause: unknown, status: number | null) {
-   const message = getApiMessage(cause);
-   if (message !== 'request failed') {
-      return message;
-   }
-
-   const details = [getApiUrl(cause), getApiStatusText(cause)].filter(Boolean);
-   const statusLabel = status == null ? 'unknown status' : String(status);
-
-   return details.length > 0
-      ? `api request failed (${statusLabel} ${details.join(' ')}): ${message}`
-      : `api request failed (${statusLabel}): ${message}`;
-}
-
-function getApiUrl(cause: unknown) {
-   if (typeof cause !== 'object' || cause == null || !('url' in cause)) return null;
-   return typeof cause.url === 'string' && cause.url ? cause.url : null;
-}
-
-function getApiStatusText(cause: unknown) {
-   if (typeof cause !== 'object' || cause == null || !('statusText' in cause)) return null;
-   return typeof cause.statusText === 'string' && cause.statusText ? cause.statusText : null;
 }

@@ -15,12 +15,8 @@ function scorePercent(score: number) {
    return (score / MAX_CUT_SCORE) * 100;
 }
 
-function sum(values: number[]) {
-   return values.reduce((total, value) => total + value, 0);
-}
-
-function countsAreRatios(values: number[]) {
-   return sum(values) <= 1.5 && values.every((value) => value >= 0 && value <= 1);
+function countsAreRatios(values: number[], total: number) {
+   return total <= 1.5 && values.every((value) => value >= 0 && value <= 1);
 }
 
 function getBucketPercent(value: number, total: number) {
@@ -40,11 +36,10 @@ function formatTooltipPercent(value: number) {
 }
 
 function getScoreRange(values: number[]) {
-   const finiteValues = values.filter(Number.isFinite);
-   if (finiteValues.length === 0) return { min: 0, max: MAX_CUT_SCORE };
+   if (values.length === 0) return { min: 0, max: MAX_CUT_SCORE };
 
-   const min = Math.max(0, Math.floor((Math.min(...finiteValues) - 0.35) * 10) / 10);
-   const max = Math.min(MAX_CUT_SCORE, Math.ceil((Math.max(...finiteValues) + 0.35) * 10) / 10);
+   const min = Math.max(0, Math.floor((Math.min(...values) - 0.35) * 10) / 10);
+   const max = Math.min(MAX_CUT_SCORE, Math.ceil((Math.max(...values) + 0.35) * 10) / 10);
    return { min, max: Math.max(max, min + 1) };
 }
 
@@ -91,10 +86,10 @@ function buildAccuracyDistributionModel(distribution: AccuracyDistribution) {
    const buckets = Array.from({ length: end - start + 1 }, (_, idx) => start + idx);
    const labels = buckets.map((bucket) => bucket.toString());
 
-   const leftCountTotal = sum(distribution.leftCount);
-   const rightCountTotal = sum(distribution.rightCount);
-   const leftValuesAreRatios = countsAreRatios(distribution.leftCount);
-   const rightValuesAreRatios = countsAreRatios(distribution.rightCount);
+   const leftCountTotal = distribution.leftCount.reduce((total, value) => total + value, 0);
+   const rightCountTotal = distribution.rightCount.reduce((total, value) => total + value, 0);
+   const leftValuesAreRatios = countsAreRatios(distribution.leftCount, leftCountTotal);
+   const rightValuesAreRatios = countsAreRatios(distribution.rightCount, rightCountTotal);
    const leftPercent = buckets.map((bucket) => getBucketPercent(distribution.leftCount[bucket] ?? 0, leftCountTotal));
    const rightPercent = buckets.map((bucket) => getBucketPercent(distribution.rightCount[bucket] ?? 0, rightCountTotal));
    const leftTd = buckets.map((bucket) => distribution.leftTd[bucket] ?? null);

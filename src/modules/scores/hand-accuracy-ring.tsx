@@ -33,9 +33,9 @@ export function HandAccuracyRing({ side, accuracy, averageCut, timeDependence }:
       <div className={cn('flex items-center gap-2 sm:gap-3', isLeft ? 'flex-row-reverse' : 'flex-row')}>
          {/* cuts */}
          <div className="text-muted-foreground flex flex-col items-center text-xs tabular-nums">
-            <span>{Number(averageCut[0] ?? 0).toFixed(2)}</span>
-            <span>{Number(averageCut[1] ?? 0).toFixed(2)}</span>
-            <span>{Number(averageCut[2] ?? 0).toFixed(2)}</span>
+            <span>{(averageCut[0] ?? 0).toFixed(2)}</span>
+            <span>{(averageCut[1] ?? 0).toFixed(2)}</span>
+            <span>{(averageCut[2] ?? 0).toFixed(2)}</span>
          </div>
 
          {/* ring + td */}

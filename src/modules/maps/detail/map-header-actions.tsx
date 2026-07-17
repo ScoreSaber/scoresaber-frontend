@@ -105,8 +105,6 @@ export function MapHeaderActions({
    activeTab
 }: MapHeaderActionsProps) {
    const tRR = useTranslations();
-   const tLB = useTranslations();
-   const tc = useTranslations();
    const [activeDialog, setActiveDialog] = useState<ActiveDialog>(null);
    const [adminSelectKey, setAdminSelectKey] = useState(0);
    const action = useActionMutation();
@@ -176,39 +174,39 @@ export function MapHeaderActions({
          id: 'qualify-lb',
          visible: true,
          icon: FaStar,
-         label: tLB('leaderboard.qualify')
+         label: tRR('leaderboard.qualify')
       },
       {
          id: 'love-lb',
          visible: true,
          icon: FaHeart,
-         label: tLB('leaderboard.love')
+         label: tRR('leaderboard.love')
       },
       {
          id: 'rank-lb',
          visible: true,
          icon: FaStream,
-         label: tLB('leaderboard.rank'),
+         label: tRR('leaderboard.rank'),
          separatorBefore: true
       },
       {
          id: 'set-pp',
          visible: true,
          icon: FaCalculator,
-         label: tLB('leaderboard.setStars')
+         label: tRR('leaderboard.setStars')
       },
       {
          id: 'recalculate',
          visible: true,
          icon: FaCalculator,
-         label: tLB('leaderboard.recalculatePP'),
+         label: tRR('leaderboard.recalculatePP'),
          separatorBefore: true
       },
       {
          id: 'unrank-lb',
          visible: true,
          icon: FaTimesCircle,
-         label: tLB('leaderboard.unrank'),
+         label: tRR('leaderboard.unrank'),
          className: 'text-destructive focus:text-destructive'
       }
    ];
@@ -234,7 +232,7 @@ export function MapHeaderActions({
                         variant="outline"
                         size="icon-sm"
                         className="rounded-full"
-                        aria-label={tc('common.rankRequestActions')}
+                        aria-label={tRR('common.rankRequestActions')}
                         disabled={pending}
                      >
                         {pending ? <Loader2 className="size-3 animate-spin" /> : <FaGavel />}
@@ -242,7 +240,7 @@ export function MapHeaderActions({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                      <DropdownMenuGroup>
-                        <DropdownMenuLabel>{tc('common.actions')}</DropdownMenuLabel>
+                        <DropdownMenuLabel>{tRR('common.actions')}</DropdownMenuLabel>
                         {visibleRankRequestOperations
                            .filter((operation) => operation.id !== 'replace')
                            .map((operation) => (
@@ -278,13 +276,13 @@ export function MapHeaderActions({
 
             {showAdmin && (
                <Select key={`admin-${adminSelectKey}`} onValueChange={handleAdminAction}>
-                  <SelectTrigger variant="icon" size="icon" aria-label={tc('common.adminActions')} disabled={pending}>
-                     <SelectValue placeholder={tc('common.adminActions')} />
+                  <SelectTrigger variant="icon" size="icon" aria-label={tRR('common.adminActions')} disabled={pending}>
+                     <SelectValue placeholder={tRR('common.adminActions')} />
                      {pending ? <Loader2 className="size-3 animate-spin" /> : <FaCog className="size-3" />}
                   </SelectTrigger>
                   <SelectContent align="end" position="popper">
                      <SelectGroup>
-                        <SelectLabel>{tLB('leaderboard.admin')}</SelectLabel>
+                        <SelectLabel>{tRR('leaderboard.admin')}</SelectLabel>
                         {visibleAdminOperations.map((operation) => (
                            <Fragment key={operation.id}>
                               {operation.separatorBefore && <SelectSeparator />}

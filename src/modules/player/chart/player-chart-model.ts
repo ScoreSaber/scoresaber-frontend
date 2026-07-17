@@ -1,14 +1,6 @@
 import type { ChartDataset } from 'chart.js';
 
-import {
-   METRIC_KEYS,
-   type MetricKey,
-   type MetricLabel,
-   METRICS,
-   type PlayerChartMetricStat,
-   type PlayerChartStats,
-   type TimeRange
-} from './chart-types';
+import { type MetricKey, type MetricLabel, METRICS, type PlayerChartMetricStat, type PlayerChartStats, type TimeRange } from './chart-types';
 
 import type { PlayerControllerGetPlayerHistoryItem } from '@/shared/api/generated/ApiParams';
 import type { ChartColors } from '@/shared/components/chart/use-chart-colors';
@@ -32,10 +24,6 @@ function getTimeRangePlayerHistory(history: PlayerControllerGetPlayerHistoryItem
    return history.filter((entry) => new Date(entry.createdAt).getTime() >= earliestTime);
 }
 
-function getEstimatedFlags(history: PlayerControllerGetPlayerHistoryItem[]) {
-   return [...history.map((entry) => entry.estimated), false];
-}
-
 function getPlayerChartNowValues(stats: PlayerChartStats): Record<MetricKey, number | null> {
    return {
       rank: stats.rank === -1 ? null : stats.rank,
@@ -43,10 +31,6 @@ function getPlayerChartNowValues(stats: PlayerChartStats): Record<MetricKey, num
       averageAccuracy: stats.averageAccuracy,
       totalSubmittedPlays: stats.totalSubmittedPlays
    };
-}
-
-function getActiveMetricKeys(activeMetrics: Set<MetricKey>) {
-   return METRIC_KEYS.filter((key) => activeMetrics.has(key));
 }
 
 function getVisibleChartDayCount(history: PlayerControllerGetPlayerHistoryItem[], now: Date) {
@@ -168,7 +152,7 @@ function buildPlayerChartDatasets({
       });
       const pointBgArr = data.map(() => chartColors.metricBorder[key]);
 
-      return lineDataset({
+      return {
          label: metricLabels[key].label,
          data,
          yAxisID: `y-${key}`,
@@ -195,7 +179,7 @@ function buildPlayerChartDatasets({
                     return undefined;
                  }
               }
-      });
+      } satisfies ChartDataset<'line', DatedChartPoint[]>;
    });
 }
 
@@ -271,10 +255,6 @@ function buildPlayerChartScales({
    return result;
 }
 
-function lineDataset(dataset: ChartDataset<'line', DatedChartPoint[]>) {
-   return dataset;
-}
-
 function buildPlayerChartMetricStats({
    activeKeys,
    sortedHistory,
@@ -336,19 +316,12 @@ function buildPlayerChartMetricStats({
    });
 }
 
-function getRankDataValues(history: PlayerControllerGetPlayerHistoryItem[]) {
-   return history.map((entry) => entry.rank);
-}
-
 export {
    buildPlayerChartDatasets,
    buildPlayerChartMetricStats,
    buildPlayerChartScales,
-   getActiveMetricKeys,
-   getEstimatedFlags,
    getPlayerChartNowValues,
    getPlayerChartPadding,
-   getRankDataValues,
    getSortedPlayerHistory,
    getTimeRangePlayerHistory,
    getVisibleChartDayCount

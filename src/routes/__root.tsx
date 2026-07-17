@@ -22,9 +22,6 @@ import { parseServerTheme, THEME_COOKIE_NAME, THEME_MEDIA_QUERY, THEME_STORAGE_K
 import { AppShell } from '@/shell/app-shell';
 import { parseSidebarCollapsedCookie, SEEN_HOME_COOKIE_NAME, SIDEBAR_COLLAPSED_COOKIE_NAME } from '@/shell/sidebar-state';
 
-type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
-type RootMessages = Record<string, JsonValue>;
-
 const themeInitScript = `(function(){var theme='system';try{var stored=localStorage.getItem('${THEME_STORAGE_KEY}');if(stored==='light'||stored==='dark'||stored==='system')theme=stored}catch(e){}var resolved=theme==='system'?(window.matchMedia('${THEME_MEDIA_QUERY}').matches?'dark':'light'):theme;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved;try{document.cookie='${THEME_COOKIE_NAME}='+theme+'; Path=/; Max-Age=31536000; SameSite=Lax'}catch(e){}})()`;
 const criticalPaintStyles = `@layer theme,base,components,utilities;@layer base{*,::after,::before,::backdrop,::file-selector-button{border-color:var(--border,hsl(0 0% 20%))}body{background:var(--background,hsl(240 10% 4%));color:var(--foreground,hsl(60 7% 90%))}}@layer utilities{.app-container{margin-inline:auto;padding-inline:2rem;max-width:1300px}}`;
 const optionalSearchString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
@@ -42,7 +39,7 @@ const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
    const seenHome = getCookie(SEEN_HOME_COOKIE_NAME) === 'true';
    const sidebarCollapsed = parseSidebarCollapsedCookie(getCookie(SIDEBAR_COLLAPSED_COOKIE_NAME));
    const locale = await getLocale();
-   const messages = (await getMessages()) as RootMessages;
+   const messages = await getMessages();
    const visibleLocales = getVisibleLocales();
 
    return {

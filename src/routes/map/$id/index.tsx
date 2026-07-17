@@ -31,16 +31,13 @@ export const Route = createFileRoute('/map/$id/')({
 
 function MapRoute() {
    const params = Route.useParams();
-   const search = Route.useSearch();
    const data = Route.useLoaderData();
 
    return (
       <MapLeaderboardRouteContent
          input={{
             routeName: 'map',
-            mapId: params.id,
-            search,
-            rawSearch: search
+            mapId: params.id
          }}
          data={data}
       />

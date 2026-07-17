@@ -1,10 +1,14 @@
 import { Err, Ok, Result, TaggedError } from 'better-result';
 import ts from 'typescript';
+import { z } from 'zod';
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 
 type Viewport = 'desktop' | 'mobile';
+type Messages = { [key: string]: string | Messages };
+
+const messagesSchema: z.ZodType<Messages> = z.lazy(() => z.record(z.string(), z.union([z.string(), messagesSchema])));
 
 interface TranslationUsage {
    file: string;
@@ -21,20 +25,22 @@ interface ContextEntry {
    usages: TranslationUsage[];
 }
 
-interface CrowdinString {
-   context?: string | null;
-   id: number;
-   identifier?: string | null;
-}
+const crowdinStringSchema = z.object({
+   context: z.string().nullable().optional(),
+   id: z.number(),
+   identifier: z.string().nullable().optional()
+});
+const crowdinListResponseSchema = z.object({
+   data: z.array(z.object({ data: crowdinStringSchema })),
+   pagination: z.object({
+      limit: z.number(),
+      offset: z.number(),
+      total: z.number().optional()
+   })
+});
+const voidResponseSchema = z.unknown().transform(() => undefined);
 
-interface CrowdinListResponse {
-   data: Array<{ data: CrowdinString }>;
-   pagination: {
-      limit: number;
-      offset: number;
-      total?: number;
-   };
-}
+type CrowdinString = z.infer<typeof crowdinStringSchema>;
 
 interface ContextUpdate {
    currentContext: string;
@@ -66,7 +72,7 @@ const contextParam = 'ssctx';
 const contextBlockStart = '[scoresaber-context:start]';
 const contextBlockEnd = '[scoresaber-context:end]';
 const sourceRoot = resolve('src');
-const sourceStrings = flattenMessages(JSON.parse(readFileSync(resolve('messages/en.json'), 'utf8')));
+const sourceStrings = flattenMessages(messagesSchema.parse(JSON.parse(readFileSync(resolve('messages/en.json'), 'utf8'))));
 const shouldApply = Bun.argv.includes('--apply');
 const shouldUseRemote = shouldApply || Bun.argv.includes('--remote');
 const crowdinProjectId = process.env.CROWDIN_PROJECT_ID ?? '';
@@ -207,7 +213,7 @@ async function listCrowdinStrings(): Promise<CrowdinResult<CrowdinString[]>> {
       url.searchParams.set('limit', String(limit));
       url.searchParams.set('offset', String(offset));
 
-      const response = await crowdinFetch<CrowdinListResponse>(url, { method: 'GET' });
+      const response = await crowdinFetch(url, { method: 'GET' }, crowdinListResponseSchema);
       if (Result.isError(response)) return new Err(response.error);
 
       const page = response.value.data.map((entry) => entry.data);
@@ -231,16 +237,20 @@ async function applyCrowdinContextUpdates(updates: ContextUpdate[]): Promise<Cro
       const batch = updates.slice(index, index + crowdinApplyConcurrency);
       const results = await Promise.all(
          batch.map(async (update) => {
-            const result = await crowdinFetch(`${crowdinApiBaseUrl}/projects/${crowdinProjectId}/strings/${update.stringId}`, {
-               method: 'PATCH',
-               body: JSON.stringify([
-                  {
-                     op: 'replace',
-                     path: '/context',
-                     value: update.nextContext
-                  }
-               ])
-            });
+            const result = await crowdinFetch(
+               `${crowdinApiBaseUrl}/projects/${crowdinProjectId}/strings/${update.stringId}`,
+               {
+                  method: 'PATCH',
+                  body: JSON.stringify([
+                     {
+                        op: 'replace',
+                        path: '/context',
+                        value: update.nextContext
+                     }
+                  ])
+               },
+               voidResponseSchema
+            );
 
             completed += 1;
             if (completed === 1 || completed === updates.length || completed % crowdinProgressEvery === 0) {
@@ -281,7 +291,7 @@ function buildNextContext(currentContext: string, generatedContext: string) {
    return trimmedContext ? `${currentContext.trimEnd()}\n\n${managedBlock}` : managedBlock;
 }
 
-async function crowdinFetch<T = unknown>(url: string | URL, init: RequestInit): Promise<CrowdinResult<T>> {
+async function crowdinFetch<T>(url: string | URL, init: RequestInit, schema: z.ZodType<T>): Promise<CrowdinResult<T>> {
    return Result.tryPromise({
       try: async () => {
          let attempt = 1;
@@ -296,10 +306,7 @@ async function crowdinFetch<T = unknown>(url: string | URL, init: RequestInit): 
                }
             });
 
-            if (response.ok) {
-               if (response.status === 204) return undefined as T;
-               return (await response.json()) as T;
-            }
+            if (response.ok) return schema.parse(response.status === 204 ? undefined : await response.json());
 
             if ((response.status === 429 || response.status >= 500) && attempt < crowdinMaxAttempts) {
                const retryDelayMs = getCrowdinRetryDelayMs(response, attempt);
@@ -472,8 +479,12 @@ function buildContextEntries(usages: TranslationUsage[]) {
       .sort(([left], [right]) => left.localeCompare(right))
       .map(([key, usagesForKey]): ContextEntry => {
          const source = sourceStrings.get(key) ?? '';
-         const uniqueUsages = uniqueBy(usagesForKey, (usage) => `${usage.file}:${usage.line}:${usage.url}`);
-         const uniqueUrls = uniqueBy(uniqueUsages, (usage) => `${usage.viewport}:${usage.url}`);
+         const uniqueUsages = [...Map.groupBy(usagesForKey, (usage) => `${usage.file}:${usage.line}:${usage.url}`).values()].flatMap((group) =>
+            group.slice(0, 1)
+         );
+         const uniqueUrls = [...Map.groupBy(uniqueUsages, (usage) => `${usage.viewport}:${usage.url}`).values()].flatMap((group) =>
+            group.slice(0, 1)
+         );
          const context = [
             'Used on:',
             ...uniqueUrls.map((usage) => `- ${usage.url}${usage.viewport === 'mobile' ? ' (mobile viewport)' : ''}`),
@@ -493,17 +504,6 @@ function buildContextEntries(usages: TranslationUsage[]) {
       });
 }
 
-function uniqueBy<T>(items: T[], getId: (item: T) => string) {
-   const seen = new Set<string>();
-
-   return items.filter((item) => {
-      const id = getId(item);
-      if (seen.has(id)) return false;
-      seen.add(id);
-      return true;
-   });
-}
-
 function buildContextUrl(file: string, key: string, viewport: Viewport) {
    const url = new URL(routeForFile(file));
    url.searchParams.set(contextParam, key);
@@ -519,18 +519,16 @@ function routeForFile(file: string) {
    return routeRules.find(([parts]) => parts.some((part) => file.includes(part)))?.[1] ?? `${siteUrl}/maps?verified=true`;
 }
 
-function flattenMessages(source: Record<string, unknown>) {
+function flattenMessages(source: Messages) {
    const strings = new Map<string, string>();
    walk(source, []);
    return strings;
 
-   function walk(value: unknown, path: string[]) {
+   function walk(value: string | Messages, path: string[]) {
       if (typeof value === 'string') {
          strings.set(path.join('.'), value);
          return;
       }
-
-      if (!value || typeof value !== 'object' || Array.isArray(value)) return;
 
       for (const [key, child] of Object.entries(value)) {
          walk(child, [...path, key]);

@@ -312,13 +312,10 @@ function PasskeysRow({ passkeys }: { passkeys: PasskeySummary[] }) {
 
    const addPasskey = async () => {
       setAddPending(true);
-      const result = await Result.tryPromise({
-         try: async () => {
-            const options = unwrapAction(await getPasskeyRegistrationOptions());
-            const response = await startRegistration({ optionsJSON: options as PublicKeyCredentialCreationOptionsJSON });
-            unwrapAction(await verifyPasskeyRegistration({ response }));
-         },
-         catch: (error) => error
+      const result = await Result.tryPromise(async () => {
+         const options = unwrapAction(await getPasskeyRegistrationOptions());
+         const response = await startRegistration({ optionsJSON: options as PublicKeyCredentialCreationOptionsJSON });
+         unwrapAction(await verifyPasskeyRegistration({ response }));
       });
 
       if (Result.isOk(result)) {

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Result } from 'better-result';
+import { z } from 'zod';
 
 import { env } from '@/env';
 import { createLudusPacketDispatcher, createLudusState, type LudusPacketBytes, type LudusState } from '@/modules/live/ludus/packets';
@@ -34,11 +35,13 @@ type UseLudusOptions = {
    targetMatchId?: string;
 };
 
-type LudusBrowserSession = {
-   authToken: string;
-   playerId: string;
-   expiresAtUnixMs: number;
-};
+const ludusBrowserSessionSchema = z.object({
+   authToken: z.string(),
+   playerId: z.string(),
+   expiresAtUnixMs: z.number()
+});
+
+type LudusBrowserSession = z.infer<typeof ludusBrowserSessionSchema>;
 
 type LudusBrowserSessionOptions = {
    clientType: LudusClientKind;
@@ -290,22 +293,19 @@ async function fetchLudusBrowserSession({
 }: LudusBrowserSessionOptions): Promise<LudusBrowserSession | null> {
    const url = new URL('/api/v2/live/ludus/session', env.NEXT_PUBLIC_API_URL);
    const scopedBody = roomContext === 'TOURNAMENT' && tournamentId ? { tournamentId, clientType, targetMatchId } : null;
-   const result = await Result.tryPromise({
-      try: async () => {
-         const response = await fetch(url, {
-            method: 'POST',
-            credentials: 'include',
-            ...(scopedBody
-               ? {
-                    headers: { 'content-type': 'application/json' },
-                    body: JSON.stringify(scopedBody)
-                 }
-               : {})
-         });
-         if (!response.ok) return null;
-         return (await response.json()) as LudusBrowserSession;
-      },
-      catch: () => null
+   const result = await Result.tryPromise(async () => {
+      const response = await fetch(url, {
+         method: 'POST',
+         credentials: 'include',
+         ...(scopedBody
+            ? {
+                 headers: { 'content-type': 'application/json' },
+                 body: JSON.stringify(scopedBody)
+              }
+            : {})
+      });
+      if (!response.ok) return null;
+      return ludusBrowserSessionSchema.parse(await response.json());
    });
 
    return Result.unwrapOr(result, null);

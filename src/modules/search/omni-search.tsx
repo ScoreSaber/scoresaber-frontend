@@ -80,7 +80,6 @@ function OmniSearchBody() {
    const { open, setOpen, initialQuery, clearInitialQuery } = useOmniSearch();
    const router = useRouter();
    const t = useTranslations();
-   const tNav = useTranslations();
    const inputRef = useRef<HTMLInputElement>(null);
    const listRef = useRef<HTMLDivElement>(null);
 
@@ -410,7 +409,7 @@ function OmniSearchBody() {
                      collapsed={mapsCollapsed}
                      onToggle={() => setMapsCollapsed((prev) => !prev)}
                      icon={<FaMap className="text-muted-foreground size-3 fill-current" />}
-                     label={tNav('nav.maps')}
+                     label={t('nav.maps')}
                      count={totalMaps}
                      kbd="⌘2"
                      onNavigate={() => navigateToMaps(query.trim())}

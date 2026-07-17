@@ -8,7 +8,7 @@ import type {
 import { parseCountryRegionParam, type CountryRegionFilterValue } from '@/shared/country-region';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 
-type LegacyLeaderboardQuery = Record<string, unknown>;
+export type LegacyLeaderboardQuery = Record<string, unknown>;
 type MapsSearchParams = SearchParamsRecord & {
    page?: number;
    search?: string;

@@ -63,9 +63,8 @@ export function StepDownload({ releases, hasPrereleases, showPrereleases, onTogg
          toast.success(t('quest.step.3.downloadStarted'));
       },
       onError: (err) => {
-         const status = typeof err === 'object' && err !== null && 'status' in err && typeof err.status === 'number' ? err.status : undefined;
-         const message =
-            status === 401 ? t('quest.step.3.downloadAuthError') : err instanceof Error ? err.message : t('quest.step.3.downloadGenericError');
+         const status = 'status' in err && typeof err.status === 'number' ? err.status : undefined;
+         const message = status === 401 ? t('quest.step.3.downloadAuthError') : err.message;
          toast.error(message);
       }
    });

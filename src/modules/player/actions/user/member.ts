@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 
 import type { PlayerReportControllerSubmitProfileReportPayload } from '@/shared/api/generated/Api';
 import { api } from '@/shared/api/server-api';
-import { actionApiVoid, actionResultVoid } from '@/shared/result/action';
+import { actionResultVoid } from '@/shared/result/action';
 import { toInt64PathParam } from '@/shared/url-state/params';
 
 type PlayerReportReason = PlayerReportControllerSubmitProfileReportPayload['reason'];
@@ -28,7 +28,7 @@ const unfollowPlayerFn = createServerFn({ method: 'POST' })
 const reportPlayerFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { playerId: string; reason: PlayerReportReason; details?: string }) => data)
    .handler(({ data }) =>
-      actionApiVoid(
+      actionResultVoid(
          api.player.playerReportControllerSubmitProfileReport(
             { id: toInt64PathParam(data.playerId) },
             {

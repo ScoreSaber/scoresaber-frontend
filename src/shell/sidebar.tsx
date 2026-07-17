@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { getRouteApi } from '@tanstack/react-router';
-import { useLocation } from '@tanstack/react-router';
+import { getRouteApi, useLocation } from '@tanstack/react-router';
 import { ChevronLeft, ChevronRight, CircleEllipsis, LogIn, Search } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
@@ -40,39 +39,11 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
    const pathname = location.pathname;
    const { user } = useAuth();
    const { setOpen: setSearchOpen } = useOmniSearch();
-   const tNav = useTranslations();
+   const tNav = useTranslations('nav');
    const tSidebar = useTranslations();
 
    const iconLink = cn(navLinkClass, inactiveClass, 'justify-center px-0');
    const currentPath = location.href;
-
-   function navLabel(key: string) {
-      return key === 'home'
-         ? tNav('nav.home')
-         : key === 'search'
-           ? tNav('nav.search')
-           : key === 'maps'
-             ? tNav('nav.maps')
-             : key === 'rankings'
-               ? tNav('nav.rankings')
-               : key === 'rankRequests'
-                 ? tNav('nav.rankRequests')
-                 : key === 'requests'
-                   ? tNav('nav.requests')
-                   : key === 'wiki'
-                     ? tNav('nav.wiki')
-                     : key === 'feedbackHub'
-                       ? tNav('nav.feedbackHub')
-                       : key === 'livePlatform'
-                         ? tNav('nav.livePlatform')
-                         : key === 'questInstaller'
-                           ? tNav('nav.questInstaller')
-                           : key === 'team'
-                             ? tNav('nav.team')
-                             : key === 'support'
-                               ? tNav('nav.support')
-                               : tNav('nav.apiDocs');
-   }
 
    const visibleNavItems = navItems.filter((item) => item.route !== 'live' || canUseLivePlatform(user?.permissions));
    const visibleSecondaryItems = secondaryItems.filter((item) => item.key !== 'support' || !Permissions.isSupporter(user?.permissions ?? 0));
@@ -96,7 +67,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                      <Search data-icon />
                   </Button>
                </TooltipTrigger>
-               <TooltipContent side="right">{tNav('nav.search')}</TooltipContent>
+               <TooltipContent side="right">{tNav('search')}</TooltipContent>
             </Tooltip>
             {visibleNavItems.map((item) => (
                <Tooltip key={item.key}>
@@ -114,7 +85,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                         </NavLink>
                      )}
                   </TooltipTrigger>
-                  <TooltipContent side="right">{item.disabled ? tNav('nav.comingSoon') : navLabel(item.key)}</TooltipContent>
+                  <TooltipContent side="right">{item.disabled ? tNav('comingSoon') : tNav(item.key)}</TooltipContent>
                </Tooltip>
             ))}
 
@@ -136,7 +107,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
                         </NavLink>
                      )}
                   </TooltipTrigger>
-                  <TooltipContent side="right">{navLabel(item.key)}</TooltipContent>
+                  <TooltipContent side="right">{tNav(item.key)}</TooltipContent>
                </Tooltip>
             ))}
          </nav>
@@ -203,15 +174,13 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
 
 function ExpandedSidebar({ onCollapse }: { onCollapse: () => void }) {
    const tSidebar = useTranslations();
-   const [isMac, setIsMac] = useState(false);
-   const [mounted, setMounted] = useState(false);
+   const [isMac, setIsMac] = useState<boolean | null>(null);
 
    useEffect(() => {
-      setMounted(true);
       setIsMac(/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent));
    }, []);
 
-   const shortcut = mounted && !isMac ? 'Ctrl+Shift+S' : '⌘⇧S';
+   const shortcut = isMac === false ? 'Ctrl+Shift+S' : '⌘⇧S';
 
    return (
       <>

@@ -32,7 +32,7 @@ async function downloadQuestRelease(request: Request) {
 }
 
 async function streamReleaseAsset(releases: QuestRelease[], tag: string) {
-   const release = releases.find((r) => r.tag === tag) ?? null;
+   const release = releases.find((r) => r.tag === tag);
    if (!release) {
       return Response.json({ error: 'unknown release tag' }, { status: 404 });
    }

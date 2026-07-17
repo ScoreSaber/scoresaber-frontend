@@ -257,13 +257,17 @@ function ClientFormDialog({
    const pending = createMutation.isPending || updateMutation.isPending;
 
    // sync form state when the dialog opens for a different target
-   const targetKey = target === null ? null : target === 'new' ? ('new' as const) : target.id;
+   const targetKey = target === null ? null : target === 'new' ? 'new' : target.id;
    if (target !== null && initializedFor !== targetKey) {
       setInitializedFor(targetKey);
       setName(editing?.name ?? '');
       setDescription(editing?.description ?? '');
       setRedirectUris(editing?.redirectUris.join('\n') ?? '');
-      setScopes(editing ? editing.allowedScopes.split(' ').filter((s): s is OAuthScope => OAUTH_SCOPES.includes(s as OAuthScope)) : ['identity']);
+      setScopes(
+         editing
+            ? editing.allowedScopes.split(' ').filter((scope): scope is OAuthScope => OAUTH_SCOPES.some((option) => option === scope))
+            : ['identity']
+      );
    }
 
    const parsedUris = redirectUris

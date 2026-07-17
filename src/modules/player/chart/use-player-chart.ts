@@ -11,11 +11,8 @@ import {
    buildPlayerChartDatasets,
    buildPlayerChartMetricStats,
    buildPlayerChartScales,
-   getActiveMetricKeys,
-   getEstimatedFlags,
    getPlayerChartNowValues,
    getPlayerChartPadding,
-   getRankDataValues,
    getSortedPlayerHistory,
    getTimeRangePlayerHistory,
    getVisibleChartDayCount
@@ -160,7 +157,7 @@ export function usePlayerChart(
          isFirstRender.current = false;
          return;
       }
-      const data: Record<string, string | boolean | MetricKey[] | TimeRange> = {
+      const data = {
          activeMetrics: Array.from(activeMetrics),
          isShowingEstimated,
          timeRange
@@ -203,7 +200,7 @@ export function usePlayerChart(
 
    const hasEstimated = useMemo(() => sortedHistory.some((e) => e.estimated), [sortedHistory]);
 
-   const estimatedFlags = useMemo(() => getEstimatedFlags(sortedHistory), [sortedHistory]);
+   const estimatedFlags = useMemo(() => [...sortedHistory.map((entry) => entry.estimated), false], [sortedHistory]);
 
    const nowValues = useMemo(() => getPlayerChartNowValues(stats), [stats]);
 
@@ -219,7 +216,10 @@ export function usePlayerChart(
 
    const labels = useMemo(() => [], []);
 
-   const activeKeys = useMemo(() => getActiveMetricKeys(activeMetrics).filter((key) => enabledMetricSet.has(key)), [activeMetrics, enabledMetricSet]);
+   const activeKeys = useMemo(
+      () => METRIC_KEYS.filter((key) => activeMetrics.has(key) && enabledMetricSet.has(key)),
+      [activeMetrics, enabledMetricSet]
+   );
    const isSingle = activeKeys.length === 1;
    isSingleRef.current = isSingle;
 
@@ -304,7 +304,7 @@ export function usePlayerChart(
       });
    }, [activeKeys, sortedHistory, fullHistory, isShowingEstimated, nowValues, nowTime, avgPerDayLabel]);
 
-   const rankDataValues = useMemo(() => getRankDataValues(sortedHistory), [sortedHistory]);
+   const rankDataValues = useMemo(() => sortedHistory.map((entry) => entry.rank), [sortedHistory]);
 
    useDenyahOverlay(playerId, activeMetrics, rankDataValues, denyahOverlayRef);
 

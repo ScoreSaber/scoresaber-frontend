@@ -205,14 +205,13 @@ function LeaderboardSearch({
    navigateAction: (updates: Partial<LeaderboardSearchParams>) => void;
 }) {
    const t = useTranslations();
-   const tc = useTranslations();
 
    return (
       <DebouncedSearchInput
          id="leaderboard-search"
          initialValue={currentSearch ?? ''}
          placeholder={t('map.searchPlayersPlaceholder')}
-         clearLabel={tc('common.clearSearch')}
+         clearLabel={t('common.clearSearch')}
          srLabel={t('map.searchPlayersPlaceholder')}
          inputClassName="h-8 pr-7 pl-8 text-xs"
          onSearchAction={(value) => navigateAction({ search: value })}

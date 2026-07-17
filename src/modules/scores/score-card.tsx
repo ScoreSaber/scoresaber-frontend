@@ -21,9 +21,7 @@ import { buildSongInfoProps, cn, formatAccuracy, formatPP, getHmdName, isLegacyA
 import { starsToPP } from '@/shared/format/star-conversion';
 import { isLeaderboardRanked } from '@/shared/format/styling';
 
-const ScoreHistory = dynamic(() => import('@/modules/scores/score-history').then((mod) => mod.ScoreHistory), {
-   ssr: false
-});
+const ScoreHistory = dynamic(() => import('@/modules/scores/score-history').then((mod) => mod.ScoreHistory));
 
 type Panel = 'details' | 'history' | null;
 

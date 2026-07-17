@@ -1,20 +1,20 @@
 import { createServerFn } from '@tanstack/react-start';
 
 import { api } from '@/shared/api/server-api';
-import { actionApiVoid } from '@/shared/result/action';
+import { actionResultVoid } from '@/shared/result/action';
 
 const qualifyRequestFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { requestId: number; leaderboardId?: number }) => data)
-   .handler(({ data }) => actionApiVoid(api.ranking.rankingControllerQualify({ id: data.requestId }, { leaderboardId: data.leaderboardId })));
+   .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerQualify({ id: data.requestId }, { leaderboardId: data.leaderboardId })));
 
 const denyRequestFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { requestId: number; leaderboardId?: number }) => data)
-   .handler(({ data }) => actionApiVoid(api.ranking.rankingControllerDeny({ id: data.requestId }, { leaderboardId: data.leaderboardId })));
+   .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerDeny({ id: data.requestId }, { leaderboardId: data.leaderboardId })));
 
 const replaceRankRequestFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { requestId: number; mapId: number; description: string; leaderboardIds: number[] }) => data)
    .handler(({ data }) =>
-      actionApiVoid(
+      actionResultVoid(
          api.ranking.rankingControllerReplaceRequest(
             { id: data.requestId },
             { mapId: data.mapId, description: data.description, leaderboardIds: data.leaderboardIds }

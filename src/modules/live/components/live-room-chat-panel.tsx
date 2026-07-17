@@ -239,7 +239,8 @@ function rawLoadedMapLogHash(text: string) {
 }
 
 function mapLogSuffix(value: string | undefined) {
-   return value?.replace(/\s+/g, ' ').trim() ? ` ${value.replace(/\s+/g, ' ').trim()}` : '';
+   const suffix = value?.replace(/\s+/g, ' ').trim();
+   return suffix ? ` ${suffix}` : '';
 }
 
 function formatResolvedMapName(map: { songName: string; songAuthorName: string }) {

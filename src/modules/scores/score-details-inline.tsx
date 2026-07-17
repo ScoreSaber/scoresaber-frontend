@@ -16,7 +16,6 @@ import type {
 import { dynamic } from '@/shared/components/dynamic';
 
 const ScoreStatsDetail = dynamic(() => import('./score-stats-detail').then((mod) => mod.ScoreStatsDetail), {
-   ssr: false,
    loading: () => (
       <div className="flex min-h-32 items-center justify-center">
          <Loader2 className="text-muted-foreground/40 size-6 animate-spin" />
@@ -24,9 +23,7 @@ const ScoreStatsDetail = dynamic(() => import('./score-stats-detail').then((mod)
    )
 });
 
-const InlineLeaderboard = dynamic(() => import('@/modules/scores/leaderboard/inline-leaderboard').then((mod) => mod.InlineLeaderboard), {
-   ssr: false
-});
+const InlineLeaderboard = dynamic(() => import('@/modules/scores/leaderboard/inline-leaderboard').then((mod) => mod.InlineLeaderboard));
 
 interface ScoreDetailsInlineProps {
    score: PlayerControllerGetPlayerScoresDataItem['score'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem;

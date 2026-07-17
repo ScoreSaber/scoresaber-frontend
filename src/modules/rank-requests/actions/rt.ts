@@ -1,28 +1,28 @@
 import { createServerFn } from '@tanstack/react-start';
 
 import { api } from '@/shared/api/server-api';
-import { actionApiVoid } from '@/shared/result/action';
+import { actionResultVoid } from '@/shared/result/action';
 
 const rtVoteFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { difficultyId: number; vote: 'UPVOTE' | 'DOWNVOTE' }) => data)
-   .handler(({ data }) => actionApiVoid(api.ranking.rankingControllerRtVote({ id: data.difficultyId }, { vote: data.vote })));
+   .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerRtVote({ id: data.difficultyId }, { vote: data.vote })));
 
 const rtCommentFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { difficultyId: number; comment: string }) => data)
-   .handler(({ data }) => actionApiVoid(api.ranking.rankingControllerRtComment({ id: data.difficultyId }, { comment: data.comment })));
+   .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerRtComment({ id: data.difficultyId }, { comment: data.comment })));
 
 const createRankRequestFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { mapId: number; description: string; leaderboardIds: number[] }) => data)
-   .handler(({ data }) => actionApiVoid(api.ranking.rankingControllerCreateRequest(data)));
+   .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerCreateRequest(data)));
 
 const rtDeleteCommentFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { difficultyId: number; commentId: number }) => data)
-   .handler(({ data }) => actionApiVoid(api.ranking.rankingControllerRtDeleteComment({ id: data.difficultyId, commentId: data.commentId })));
+   .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerRtDeleteComment({ id: data.difficultyId, commentId: data.commentId })));
 
 const rtEditCommentFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { difficultyId: number; commentId: number; comment: string }) => data)
    .handler(({ data }) =>
-      actionApiVoid(api.ranking.rankingControllerRtEditComment({ id: data.difficultyId, commentId: data.commentId }, { comment: data.comment }))
+      actionResultVoid(api.ranking.rankingControllerRtEditComment({ id: data.difficultyId, commentId: data.commentId }, { comment: data.comment }))
    );
 
 export async function rtVote(difficultyId: number, vote: 'UPVOTE' | 'DOWNVOTE') {

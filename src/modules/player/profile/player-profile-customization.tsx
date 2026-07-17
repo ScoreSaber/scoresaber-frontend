@@ -17,7 +17,6 @@ import {
    updateProfileCustomization,
    uploadProfileBackground
 } from '@/modules/player/actions/user/profile-customization';
-import type { MetricKey } from '@/modules/player/chart/chart-types';
 import type { PlayerExtraAction } from '@/modules/player/operations/player-actions';
 import {
    DEFAULT_PROFILE_ACCENT_ACTIVE_FOREGROUND_COLOR,
@@ -35,8 +34,7 @@ import {
    DEFAULT_PROFILE_LAYOUT,
    PlayerProfileCustomizationLayoutTab,
    REQUIRED_PROFILE_SECTION_IDS,
-   type ProfileLayoutCustomization,
-   type ProfileSectionId
+   type ProfileLayoutCustomization
 } from '@/modules/player/profile/player-profile-customization-layout-tab';
 import {
    MAX_PINNED_SCORES,
@@ -49,19 +47,13 @@ import {
    type PlayerProfileCustomizationSheetTab
 } from '@/modules/player/profile/player-profile-customization-sheet';
 import { PlayerProfileCustomizationStyleTab } from '@/modules/player/profile/player-profile-customization-style-tab';
-import type { PlayerProfileStatId } from '@/modules/player/profile/player-profile-header';
 import type { PlayerControllerGetPlayerResponse, PlayerControllerGetPlayerScoresDataItem } from '@/shared/api/generated/ApiParams';
 import { cn } from '@/shared/format/helpers';
 import Permissions from '@/shared/permissions';
 import type { ActionResult } from '@/shared/result/action';
 
 type ProfileCustomizationTab = 'account' | 'style' | 'layout' | 'pinned-scores' | 'badges';
-type PlayerProfileCustomizationApiView = PlayerControllerGetPlayerResponse['profileCustomization'] & {
-   enabledStatIds?: PlayerProfileStatId[] | null;
-};
-type PlayerProfileCustomizationView = PlayerControllerGetPlayerResponse['profileCustomization'] & {
-   enabledStatIds: PlayerProfileStatId[] | null;
-};
+type PlayerProfileCustomizationView = PlayerControllerGetPlayerResponse['profileCustomization'];
 
 interface PinnedScorePayloadItem {
    scoreId: number;
@@ -98,16 +90,16 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
    const canUseBadgeCustomization = Permissions.isPPFarmer(userPerms);
    const canUseLayoutCustomization = Permissions.isPPFarmer(userPerms);
    const canShowCustomization = isOwnProfile && !player.banned;
-   const rawStyle = player.profileCustomization as PlayerProfileCustomizationApiView;
+   const rawStyle = player.profileCustomization;
    const initialStyle = useMemo(
       () => normalizeProfileCustomizationStyle(rawStyle),
       [
-         rawStyle?.backgroundImage,
-         rawStyle?.backgroundImageVersion,
-         rawStyle?.accentColor,
-         rawStyle?.accentForegroundColor,
-         rawStyle?.accentForegroundActiveColor,
-         rawStyle?.supporterNameColorEnabled
+         rawStyle.backgroundImage,
+         rawStyle.backgroundImageVersion,
+         rawStyle.accentColor,
+         rawStyle.accentForegroundColor,
+         rawStyle.accentForegroundActiveColor,
+         rawStyle.supporterNameColorEnabled
       ]
    );
    const initialLayout = useMemo(
@@ -119,14 +111,14 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
    const [draftBackgroundFile, setDraftBackgroundFile] = useState<File | null>(null);
    const [draftBackgroundPreviewUrl, setDraftBackgroundPreviewUrl] = useState<string | null>(null);
    const initialBadgeItems = useMemo(
-      () => createBadgeItems(player.badges, rawStyle?.badgeOrder, rawStyle?.badgeComments),
-      [player.badges, rawStyle?.badgeOrder, rawStyle?.badgeComments]
+      () => createBadgeItems(player.badges, rawStyle.badgeOrder, rawStyle.badgeComments),
+      [player.badges, rawStyle.badgeOrder, rawStyle.badgeComments]
    );
    const [savedBadgeItems, setSavedBadgeItems] = useState(initialBadgeItems);
    const [draftBadgeItems, setDraftBadgeItems] = useState(initialBadgeItems);
    const [savedLayout, setSavedLayout] = useState(initialLayout);
    const [draftLayout, setDraftLayout] = useState(initialLayout);
-   const initialPinnedItems = useMemo(() => createDraftItems(player.pinnedScores ?? []), [player.pinnedScores]);
+   const initialPinnedItems = useMemo(() => createDraftItems(player.pinnedScores), [player.pinnedScores]);
    const [savedPinnedItems, setSavedPinnedItems] = useState(initialPinnedItems);
    const [draftItems, setDraftItems] = useState(initialPinnedItems);
    const savedPayload = useMemo(() => toPinnedScorePayload(savedPinnedItems), [savedPinnedItems]);
@@ -213,7 +205,7 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
       setDraftBadgeItems(savedBadgeItems);
       setDraftLayout(savedLayout);
       clearDraftBackgroundFile();
-      setDraftItems(addDraftScore(savedPinnedItems, score));
+      setDraftItems(toggleDraftScore(savedPinnedItems, score, true));
       setActiveTab('pinned-scores');
       setOpen(true);
    }
@@ -256,26 +248,20 @@ export function PlayerProfileCustomization({ player, patreonConnected, children 
             supporterNameColorEnabled: canToggleSupporterNameColor ? draftStyle.supporterNameColorEnabled : true,
             badgeOrder: canUseBadgeCustomization
                ? (badgeDirty ? draftBadgeItems : savedBadgeItems).map((item) => item.badge.id)
-               : (rawStyle?.badgeOrder ?? null),
-            badgeComments: canUseBadgeCustomization
-               ? toBadgeCommentsPayload(badgeDirty ? draftBadgeItems : savedBadgeItems)
-               : (rawStyle?.badgeComments ?? null),
-            statOrder: canUseLayoutCustomization ? (layoutDirty ? draftLayout.statOrder : savedLayout.statOrder) : (rawStyle?.statOrder ?? null),
+               : rawStyle.badgeOrder,
+            badgeComments: canUseBadgeCustomization ? toBadgeCommentsPayload(badgeDirty ? draftBadgeItems : savedBadgeItems) : rawStyle.badgeComments,
+            statOrder: canUseLayoutCustomization ? (layoutDirty ? draftLayout.statOrder : savedLayout.statOrder) : rawStyle.statOrder,
             enabledStatIds: canUseLayoutCustomization
                ? layoutDirty
                   ? draftLayout.enabledStatIds
                   : savedLayout.enabledStatIds
-               : (rawStyle.enabledStatIds ?? null),
+               : rawStyle.enabledStatIds,
             chartMetricIds: canUseLayoutCustomization
                ? layoutDirty
                   ? draftLayout.chartMetricIds
                   : savedLayout.chartMetricIds
-               : (rawStyle?.chartMetricIds ?? null),
-            sectionOrder: canUseLayoutCustomization
-               ? layoutDirty
-                  ? draftLayout.sectionOrder
-                  : savedLayout.sectionOrder
-               : (rawStyle?.sectionOrder ?? null)
+               : rawStyle.chartMetricIds,
+            sectionOrder: canUseLayoutCustomization ? (layoutDirty ? draftLayout.sectionOrder : savedLayout.sectionOrder) : rawStyle.sectionOrder
          });
          if (!customizationResult.ok) return { ok: false, error: customizationResult.error };
 
@@ -532,8 +518,8 @@ function createDraftItems(pinnedScores: PlayerControllerGetPlayerResponse['pinne
 
 function createBadgeItems(
    badges: PlayerControllerGetPlayerResponse['badges'],
-   badgeOrder?: number[] | null,
-   badgeComments?: Record<string, string> | null
+   badgeOrder: number[] | null,
+   badgeComments: Record<string, string> | null
 ): BadgeCustomizationItem[] {
    const badgesById = new Map(badges.map((badge) => [badge.id, badge]));
    const orderedBadges = badgeOrder ? badgeOrder.map((badgeId) => badgesById.get(badgeId)).filter((badge) => badge !== undefined) : badges;
@@ -542,11 +528,6 @@ function createBadgeItems(
       badge,
       comment: badgeComments?.[String(badge.id)] ?? ''
    }));
-}
-
-function addDraftScore(items: PinnedScoreDraftItem[], score: PlayerControllerGetPlayerScoresDataItem) {
-   if (items.some((item) => item.score.score.id === score.score.id) || items.length >= MAX_PINNED_SCORES) return items;
-   return [...items, { score, comment: '' }];
 }
 
 function toggleDraftScore(items: PinnedScoreDraftItem[], score: PinnedScoreCustomizationScore, checked: boolean) {
@@ -690,33 +671,26 @@ function normalizeProfileCustomizationSaveResult(
    };
 }
 
-function normalizeProfileLayout(customization?: {
-   statOrder?: PlayerProfileStatId[] | null;
-   enabledStatIds?: PlayerProfileStatId[] | null;
-   chartMetricIds?: MetricKey[] | null;
-   sectionOrder?: ProfileSectionId[] | null;
-}): ProfileLayoutCustomization {
-   const statOrder = normalizeFullOrderedLayoutItems(customization?.statOrder, DEFAULT_PROFILE_LAYOUT.statOrder);
+function normalizeProfileLayout(
+   customization: Pick<PlayerProfileCustomizationView, 'statOrder' | 'enabledStatIds' | 'chartMetricIds' | 'sectionOrder'>
+): ProfileLayoutCustomization {
+   const statOrder = normalizeFullOrderedLayoutItems(customization.statOrder, DEFAULT_PROFILE_LAYOUT.statOrder);
    return {
       statOrder,
-      enabledStatIds: normalizeOrderedLayoutItems(customization?.enabledStatIds ?? customization?.statOrder, DEFAULT_PROFILE_LAYOUT.enabledStatIds),
-      chartMetricIds: normalizeOrderedLayoutItems(customization?.chartMetricIds, DEFAULT_PROFILE_LAYOUT.chartMetricIds),
-      sectionOrder: normalizeRequiredOrderedLayoutItems(
-         customization?.sectionOrder,
-         DEFAULT_PROFILE_LAYOUT.sectionOrder,
-         REQUIRED_PROFILE_SECTION_IDS
-      )
+      enabledStatIds: normalizeOrderedLayoutItems(customization.enabledStatIds ?? customization.statOrder, DEFAULT_PROFILE_LAYOUT.enabledStatIds),
+      chartMetricIds: normalizeOrderedLayoutItems(customization.chartMetricIds, DEFAULT_PROFILE_LAYOUT.chartMetricIds),
+      sectionOrder: normalizeRequiredOrderedLayoutItems(customization.sectionOrder, DEFAULT_PROFILE_LAYOUT.sectionOrder, REQUIRED_PROFILE_SECTION_IDS)
    };
 }
 
-function normalizeFullOrderedLayoutItems<T extends string>(items: T[] | null | undefined, defaultOrder: readonly T[]) {
+function normalizeFullOrderedLayoutItems<T extends string>(items: T[] | null, defaultOrder: readonly T[]) {
    const orderedItems = normalizeOrderedLayoutItems(items, defaultOrder);
    const orderedItemSet = new Set(orderedItems);
    return [...orderedItems, ...defaultOrder.filter((item) => !orderedItemSet.has(item))];
 }
 
-function normalizeOrderedLayoutItems<T extends string>(items: T[] | null | undefined, defaultOrder: readonly T[]) {
-   if (items === undefined || items === null) return [...defaultOrder];
+function normalizeOrderedLayoutItems<T extends string>(items: T[] | null, defaultOrder: readonly T[]) {
+   if (items === null) return [...defaultOrder];
 
    const allowedItems = new Set(defaultOrder);
    const seenItems = new Set<T>();
@@ -727,11 +701,7 @@ function normalizeOrderedLayoutItems<T extends string>(items: T[] | null | undef
    });
 }
 
-function normalizeRequiredOrderedLayoutItems<T extends string>(
-   items: T[] | null | undefined,
-   defaultOrder: readonly T[],
-   requiredItems: readonly T[]
-) {
+function normalizeRequiredOrderedLayoutItems<T extends string>(items: T[] | null, defaultOrder: readonly T[], requiredItems: readonly T[]) {
    const orderedItems = normalizeOrderedLayoutItems(items, defaultOrder);
    const selectedItems = new Set(orderedItems);
    return [...orderedItems, ...defaultOrder.filter((item) => requiredItems.includes(item) && !selectedItems.has(item))];

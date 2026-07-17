@@ -8,19 +8,21 @@ import { actionApiData, actionSuccess, type ActionResult } from '@/shared/result
 export type CredentialAuthActionValue = { status: 'authenticated'; playerId: string } | { status: 'support-required' };
 export type PasswordCredentialSummary = PasswordAuthControllerGetPasswordCredentialResponse;
 
+type CredentialAuthResponse = Awaited<ReturnType<typeof api.auth.passwordAuthControllerCompleteSignup>>['data'];
+
 function requestOptions() {
    return { cache: 'no-store' as const, headers: getEmailLoginHeaders() };
 }
 
-function finishAuth(
-   result: Awaited<ReturnType<typeof actionApiData<{ status: string; token?: string; playerId?: string }>>>
-): ActionResult<CredentialAuthActionValue> {
-   if (result.ok && result.value.status === 'authenticated' && result.value.token && result.value.playerId) {
+function finishAuth(result: ActionResult<CredentialAuthResponse>): ActionResult<CredentialAuthActionValue> {
+   if (!result.ok) return result;
+
+   if (result.value.status === 'authenticated') {
       setAuthCookie(result.value.token);
       return actionSuccess({ status: 'authenticated', playerId: result.value.playerId });
    }
 
-   return result as ActionResult<CredentialAuthActionValue>;
+   return actionSuccess(result.value);
 }
 
 const startSignupFn = createServerFn({ method: 'POST' })

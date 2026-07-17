@@ -87,7 +87,7 @@ export function ConnectionsSection({ connections, initialMergeChallengeId, steam
       if (!initialMergeChallengeId && !steamFailed) return;
 
       setMergeDialogOpen(true);
-      setMergeProvider(steamFailed || initialMergeChallengeId ? 'STEAM' : null);
+      setMergeProvider('STEAM');
    }, [initialMergeChallengeId, steamFailed]);
 
    useEffect(() => {

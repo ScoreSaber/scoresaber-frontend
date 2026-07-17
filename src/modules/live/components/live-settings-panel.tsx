@@ -23,8 +23,8 @@ import type {
 } from '@/shared/api/generated/ApiParams';
 
 type LiveTournamentStatus = NonNullable<LiveTournamentControllerUpsertSettingsPayload['status']>;
-type LiveSettings = LiveTournamentControllerGetSettingsResponse & { deniedMods?: string[] };
-type LiveSettingsPayload = LiveTournamentControllerUpsertSettingsPayload & { deniedMods?: string[] };
+type LiveSettings = LiveTournamentControllerGetSettingsResponse;
+type LiveSettingsPayload = LiveTournamentControllerUpsertSettingsPayload;
 
 export function LiveSettingsPanel({
    tournamentId,

@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 
 import { api } from '@/shared/api/server-api';
-import { actionApiData, actionApiVoid } from '@/shared/result/action';
+import { actionApiData, actionResultVoid } from '@/shared/result/action';
 import { toInt64PathParam } from '@/shared/url-state/params';
 
 type BanPlayerInput = {
@@ -18,7 +18,7 @@ const banPlayerFn = createServerFn({ method: 'POST' })
    .handler(({ data }) => {
       const apiPlayerId = toInt64PathParam(data.playerId);
 
-      return actionApiVoid(
+      return actionResultVoid(
          api.adminUser.adminUserControllerBanPlayer(
             { id: apiPlayerId },
             {
@@ -34,18 +34,18 @@ const banPlayerFn = createServerFn({ method: 'POST' })
 
 const unbanPlayerFn = createServerFn({ method: 'POST' })
    .inputValidator((playerId: string) => playerId)
-   .handler(({ data }) => actionApiVoid(api.adminUser.adminUserControllerUnbanPlayer({ id: toInt64PathParam(data) })));
+   .handler(({ data }) => actionResultVoid(api.adminUser.adminUserControllerUnbanPlayer({ id: toInt64PathParam(data) })));
 
 const adminResetCountryFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { playerId: string; country: string }) => data)
    .handler(({ data }) =>
-      actionApiVoid(api.adminUser.adminUserControllerAdminResetCountry({ id: toInt64PathParam(data.playerId) }, { country: data.country }))
+      actionResultVoid(api.adminUser.adminUserControllerAdminResetCountry({ id: toInt64PathParam(data.playerId) }, { country: data.country }))
    );
 
 const updateRoleTextFn = createServerFn({ method: 'POST' })
    .inputValidator((data: { playerId: string; roleText: string }) => data)
    .handler(({ data }) =>
-      actionApiVoid(api.adminUser.adminUserControllerUpdateRoleText({ id: toInt64PathParam(data.playerId) }, { roleText: data.roleText }))
+      actionResultVoid(api.adminUser.adminUserControllerUpdateRoleText({ id: toInt64PathParam(data.playerId) }, { roleText: data.roleText }))
    );
 
 const updatePermissionsFn = createServerFn({ method: 'POST' })

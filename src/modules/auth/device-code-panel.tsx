@@ -48,10 +48,7 @@ export function DeviceCodePanel({
       setStartPending(true);
       setStartError(null);
 
-      const result = await Result.tryPromise({
-         try: async () => unwrapAction(await startDeviceLogin()),
-         catch: (error) => error
-      });
+      const result = await Result.tryPromise(async () => unwrapAction(await startDeviceLogin()));
 
       if (Result.isOk(result)) {
          setDevice(result.value);

@@ -69,13 +69,6 @@ export const PLAYER_PROFILE_STAT_IDS = [
 
 export type PlayerProfileStatId = (typeof PLAYER_PROFILE_STAT_IDS)[number];
 
-type PlayerProfileHeaderCustomization = PlayerControllerGetPlayerResponse['profileCustomization'] & {
-   statOrder?: PlayerProfileStatId[] | null;
-   enabledStatIds?: PlayerProfileStatId[] | null;
-   badgeOrder?: number[] | null;
-   badgeComments?: Record<string, string> | null;
-};
-
 interface ProfileStatItem {
    id: PlayerProfileStatId;
    icon: IconType;
@@ -408,7 +401,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                      </div>
                   )}
 
-                  {!player.banned && player.badges && (
+                  {!player.banned && (
                      <PlayerBadges badges={player.badges} badgeOrder={customization?.badgeOrder} badgeComments={customization?.badgeComments} />
                   )}
                </div>
@@ -519,7 +512,7 @@ interface PlayerProfileHeaderProps {
    player: PlayerControllerGetPlayerResponse;
    aliases?: PlayerAliasControllerGetAliasesItem[];
    actions?: ReactNode;
-   customization?: PlayerProfileHeaderCustomization;
+   customization?: PlayerControllerGetPlayerResponse['profileCustomization'];
    plusOneRawPP?: number | null;
    children?: ReactNode;
 }

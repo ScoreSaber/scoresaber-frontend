@@ -48,7 +48,7 @@ function parseLeaderboardScope(value: SearchParamValue): LeaderboardSearchParams
 }
 
 function isLeaderboardPivot(value: SearchParamValue): value is LeaderboardSearchParams['pivot'] {
-   return typeof value === 'string' && (LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT as readonly string[]).includes(value);
+   return typeof value === 'string' && LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT.some((pivot) => pivot === value);
 }
 
 export { usePersistedLeaderboardSearch };

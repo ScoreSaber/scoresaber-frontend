@@ -49,7 +49,6 @@ interface RankRequestReplaceOperationProps {
 
 export function RankRequestReplaceOperation({ open, mapInfo, requestId, action, onOpenChangeAction }: RankRequestReplaceOperationProps) {
    const tRR = useTranslations();
-   const tc = useTranslations();
    const [description, setDescription] = useState('');
    const [replacementInput, setReplacementInput] = useState('');
    const [debouncedReplacementInput, setDebouncedReplacementInput] = useState('');
@@ -309,11 +308,11 @@ export function RankRequestReplaceOperation({ open, mapInfo, requestId, action, 
             <DialogFooter>
                {replaceStep === 'configure' ? (
                   <Button variant="secondary" onClick={() => setReplaceStep('search')}>
-                     {tc('common.back')}
+                     {tRR('common.back')}
                   </Button>
                ) : (
                   <Button variant="secondary" onClick={closeDialog}>
-                     {tc('common.cancel')}
+                     {tRR('common.cancel')}
                   </Button>
                )}
                {replaceStep === 'configure' && (
@@ -341,12 +340,8 @@ function parseReplacementSource(value: string): ReplacementSource | null {
    const prefixedLeaderboard = /^(?:lb|leaderboard):(\d+)$/i.exec(trimmed);
    if (prefixedLeaderboard) return { kind: 'leaderboard', id: Number(prefixedLeaderboard[1]) };
 
-   const urlResult = Result.try({
-      try: () => new URL(trimmed, env.NEXT_PUBLIC_SITE_URL),
-      catch: () => null
-   });
-   const url = Result.unwrapOr(urlResult, null);
-   if (!url) return null;
+   if (!URL.canParse(trimmed, env.NEXT_PUBLIC_SITE_URL)) return null;
+   const url = new URL(trimmed, env.NEXT_PUBLIC_SITE_URL);
 
    const leaderboardMatch = /^\/leaderboard\/(\d+)/.exec(url.pathname);
    if (leaderboardMatch) return { kind: 'leaderboard', id: Number(leaderboardMatch[1]) };
@@ -382,12 +377,8 @@ async function fetchReplacementMapFromSource(source: ReplacementSource) {
    });
 }
 
-function getReplacementLeaderboards(map: ReplacementMap) {
-   return getDisplayLeaderboards(map.leaderboards);
-}
-
 function getEligibleReplacementLeaderboards(map: ReplacementMap) {
-   return getReplacementLeaderboards(map).filter(
+   return getDisplayLeaderboards(map.leaderboards).filter(
       (leaderboard) => leaderboard.realm.leaderboardStatus === 'UNRANKED' && leaderboard.realm.stars === 0
    );
 }
@@ -403,7 +394,7 @@ type DifficultyPair = {
 
 function getDifficultyPairs(currentMap: ReplacementMap, replacementMap: ReplacementMap): DifficultyPair[] {
    const replacementLeaderboards = getEligibleReplacementLeaderboards(replacementMap);
-   return getReplacementLeaderboards(currentMap).map((current) => ({
+   return getDisplayLeaderboards(currentMap.leaderboards).map((current) => ({
       current,
       replacement: replacementLeaderboards.find((lb) => lb.difficulty === current.difficulty) ?? null
    }));
@@ -412,7 +403,7 @@ function getDifficultyPairs(currentMap: ReplacementMap, replacementMap: Replacem
 function getMatchedReplacementLeaderboardIds(currentMap: ReplacementMap, replacementMap: ReplacementMap) {
    return getDifficultyPairs(currentMap, replacementMap)
       .map((pair) => pair.replacement?.id)
-      .filter((id): id is number => id != null);
+      .filter((id) => id != null);
 }
 
 function ReplacementMapResult({ map, onSelect }: { map: MapControllerGetMapListingsDataItem; onSelect: () => void }) {

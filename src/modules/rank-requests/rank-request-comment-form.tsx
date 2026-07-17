@@ -25,7 +25,6 @@ interface RankRequestCommentFormProps {
 
 export function RankRequestCommentForm({ difficultyId, groups }: RankRequestCommentFormProps) {
    const t = useTranslations();
-   const tc = useTranslations();
    const { user } = useAuth();
 
    const actions = useMemo<CommentFormAction[]>(() => {
@@ -33,14 +32,14 @@ export function RankRequestCommentForm({ difficultyId, groups }: RankRequestComm
       return groups.map((group) => ({
          key: group,
          dropdownLabel: t('rankRequest.replyAs', { group }),
-         submitLabel: tc('comments.reply'),
+         submitLabel: t('comments.reply'),
          textareaClassName: hasMultiple ? COMMENT_GROUP_TEXTAREA_CLASS[group] : undefined,
          onSubmit: async (content) => {
             const action = group === 'RT' ? rtComment : qatComment;
             return action(difficultyId, content);
          }
       }));
-   }, [groups, difficultyId, t, tc]);
+   }, [groups, difficultyId, t]);
 
    const avatar = user ? (
       <PlayerAvatar

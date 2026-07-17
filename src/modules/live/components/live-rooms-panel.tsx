@@ -21,6 +21,7 @@ import { LivePlayerCell } from '@/modules/live/components/live-room-player-list'
 import { LiveTournamentPlayerSelectDialog } from '@/modules/live/components/live-tournament-player-select-dialog';
 import { LiveTournamentTeamSelectDialog } from '@/modules/live/components/live-tournament-team-select-dialog';
 import { FormField, LiveActionHeader, LiveRowActions, LiveSection, LiveTableShell } from '@/modules/live/components/live-ui';
+import { getAddedTeamIds } from '@/modules/live/lib/room-management';
 import type { LudusRoomState } from '@/modules/live/ludus/packets/protobuf';
 import { useLudus } from '@/modules/live/ludus/use-ludus';
 import type {
@@ -153,7 +154,8 @@ export function LiveRoomsPanel({
    }
 
    function setRosterModeValue(value: string) {
-      if (options.roomRosterModes.includes(value as RoomRosterMode)) setRosterMode(value as RoomRosterMode);
+      const nextRosterMode = options.roomRosterModes.find((mode) => mode === value);
+      if (nextRosterMode) setRosterMode(nextRosterMode);
    }
 
    function createRoom(event: FormEvent<HTMLFormElement>) {
@@ -455,16 +457,4 @@ function getConnectedPlayerCount(room: LiveRoomRow, roomStates: Map<string, Ludu
       : ludusConnected
         ? 0
         : room.members.filter((member) => member.role === 'PLAYER' && member.connected).length;
-}
-
-function getAddedTeamIds(
-   teams: LiveTournamentRosterControllerListTeamsItem[],
-   authorizedPlayers: LiveTournamentRosterControllerListAuthorizedPlayersItem[],
-   playerIds: Set<string>
-) {
-   return teams.flatMap((team) => {
-      const teamPlayers = authorizedPlayers.filter((player) => player.teamId === team.id);
-      if (teamPlayers.length === 0) return [];
-      return teamPlayers.every((player) => playerIds.has(player.playerId)) ? [team.id] : [];
-   });
 }

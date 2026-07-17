@@ -1,8 +1,12 @@
 import type { LiveRoomPlayerListRow } from '@/modules/live/components/live-room-player-list';
 import type { useLudus } from '@/modules/live/ludus/use-ludus';
-import type { LiveTournamentRosterControllerListAuthorizedPlayersItem, LiveMatchRoomControllerListRoomsItem } from '@/shared/api/generated/ApiParams';
+import type {
+   LiveMatchRoomControllerListRoomsItem,
+   LiveTournamentRosterControllerListAuthorizedPlayersItem,
+   LiveTournamentRosterControllerListTeamsItem
+} from '@/shared/api/generated/ApiParams';
 
-export type RoomMember = LiveMatchRoomControllerListRoomsItem['members'][number] & { active?: boolean; isBot?: boolean };
+export type RoomMember = LiveMatchRoomControllerListRoomsItem['members'][number];
 
 export type RoomPlayerDraft = {
    playerId: string;
@@ -15,6 +19,18 @@ export type RoomPlayerDraft = {
 type LiveLudusRoom = ReturnType<typeof useLudus>['rooms'][number];
 
 const roomPlaybackFreshMs = 5_000;
+
+export function getAddedTeamIds(
+   teams: LiveTournamentRosterControllerListTeamsItem[],
+   authorizedPlayers: LiveTournamentRosterControllerListAuthorizedPlayersItem[],
+   playerIds: Set<string>
+) {
+   return teams.flatMap((team) => {
+      const teamPlayers = authorizedPlayers.filter((player) => player.teamId === team.id);
+      if (teamPlayers.length === 0) return [];
+      return teamPlayers.every((player) => playerIds.has(player.playerId)) ? [team.id] : [];
+   });
+}
 
 export function getRoomPlayerRows(
    roomPlayers: RoomPlayerDraft[],

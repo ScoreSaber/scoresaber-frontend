@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
@@ -23,60 +25,46 @@ const TAG_MAP: Record<string, string> = {
 
 const V1_TAGS = new Set(['V1: Game', 'V1: Main']);
 
-type JsonRecord = Record<string, unknown>;
-
-function isRecord(value: unknown): value is JsonRecord {
-   return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function recordEntries(value: unknown): Array<[string, JsonRecord]> {
-   if (!isRecord(value)) return [];
-
-   return Object.entries(value).filter((entry): entry is [string, JsonRecord] => isRecord(entry[1]));
-}
-
-function getString(value: unknown): string | undefined {
-   return typeof value === 'string' ? value : undefined;
-}
-
-function getStringArray(value: unknown): string[] {
-   return Array.isArray(value) && value.every((item) => typeof item === 'string') ? value : [];
-}
-
-function readJsonRecord(path: string): JsonRecord {
-   const parsed: unknown = JSON.parse(readFileSync(path, 'utf-8'));
-   if (!isRecord(parsed)) {
-      throw new Error(`expected object JSON at ${path}`);
-   }
-
-   return parsed;
-}
+const jsonObjectSchema = z.looseObject({});
+const operationSchema = z.object({
+   operationId: z.string().optional().catch(undefined),
+   tags: z.array(z.string()).catch([])
+});
+const tagSchema = z.object({ name: z.string().optional().catch(undefined) });
+const tagArraySchema = z.array(z.unknown());
 
 function main() {
-   const spec = readJsonRecord(INPUT);
+   const spec = jsonObjectSchema.parse(JSON.parse(readFileSync(INPUT, 'utf-8')));
+   const paths = jsonObjectSchema.catch({}).parse(spec.paths);
 
-   const newPaths: Record<string, unknown> = {};
-   for (const [path, methods] of recordEntries(spec.paths)) {
-      const newMethods: Record<string, unknown> = {};
-      for (const [method, details] of recordEntries(methods)) {
+   const newPaths: typeof paths = {};
+   for (const [path, rawMethods] of Object.entries(paths)) {
+      const methods = jsonObjectSchema.safeParse(rawMethods);
+      if (!methods.success) continue;
+
+      const newMethods: typeof methods.data = {};
+      for (const [method, rawDetails] of Object.entries(methods.data)) {
+         const details = jsonObjectSchema.safeParse(rawDetails);
+         if (!details.success) continue;
+
          if (!['get', 'post', 'put', 'delete', 'patch'].includes(method)) {
-            newMethods[method] = details;
+            newMethods[method] = details.data;
             continue;
          }
 
-         const tags = getStringArray(details.tags);
+         const operation = operationSchema.parse(details.data);
+         const tags = operation.tags;
          if (tags.some((t) => V1_TAGS.has(t))) continue;
 
          // strip _v2 suffix from operationId
-         const operationId = getString(details.operationId);
-         if (operationId) {
-            details.operationId = operationId.replace(/_v2$/, '');
+         if (operation.operationId) {
+            details.data.operationId = operation.operationId.replace(/_v2$/, '');
          }
 
          // normalize tag names
-         details.tags = tags.map((t) => TAG_MAP[t] ?? t);
+         details.data.tags = tags.map((t) => TAG_MAP[t] ?? t);
 
-         newMethods[method] = details;
+         newMethods[method] = details.data;
       }
 
       if (Object.keys(newMethods).length > 0) {
@@ -86,12 +74,16 @@ function main() {
    spec.paths = newPaths;
 
    // Update top-level tags array
-   if (Array.isArray(spec.tags)) {
-      spec.tags = spec.tags.filter(isRecord).flatMap((tag) => {
-         const name = getString(tag.name);
+   const tags = tagArraySchema.safeParse(spec.tags);
+   if (tags.success) {
+      spec.tags = tags.data.flatMap((rawTag) => {
+         const tag = jsonObjectSchema.safeParse(rawTag);
+         if (!tag.success) return [];
+
+         const name = tagSchema.parse(tag.data).name;
          if (!name || V1_TAGS.has(name)) return [];
 
-         return [{ ...tag, name: TAG_MAP[name] ?? name }];
+         return [{ ...tag.data, name: TAG_MAP[name] ?? name }];
       });
    }
 

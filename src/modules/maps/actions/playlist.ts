@@ -26,9 +26,9 @@ const playlistInputSchema = z.object({
 });
 const mapStatusesSchema = z
    .array(z.enum(MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS).optional().catch(undefined))
-   .transform((statuses) => statuses.filter((status): status is MapControllerGetMapListingsStatus => status != null));
+   .transform((statuses) => statuses.filter((status) => status != null));
 
-type PlaylistInput = z.infer<typeof playlistInputSchema>;
+export type PlaylistInput = z.infer<typeof playlistInputSchema>;
 
 interface BeatSaberPlaylistSong {
    key: string;
@@ -96,7 +96,7 @@ const downloadMapPlaylistFn = createServerFn({ method: 'POST' })
       }
 
       const playlist: BeatSaberPlaylist = {
-         playlistTitle: data.playlistTitle ?? getPlaylistTitle(data),
+         playlistTitle: getMapPlaylistTitle(data),
          playlistAuthor: data.playlistAuthor ?? 'ScoreSaber',
          playlistDescription: data.playlistDescription ?? getPlaylistDescription(data, songs.length),
          image: SCORESABER_PLAYLIST_IMAGE,
@@ -127,7 +127,7 @@ function getImplicitRankedStatuses(input: PlaylistInput): MapControllerGetMapLis
    return undefined;
 }
 
-function getPlaylistTitle(input: PlaylistInput) {
+export function getMapPlaylistTitle(input: PlaylistInput) {
    if (input.playlistTitle) return input.playlistTitle;
    if (input.sortBy === 'latestRankedAt') return 'ScoreSaber recent ranked maps';
    if (input.minStars != null || input.maxStars != null) {
@@ -140,12 +140,12 @@ function getPlaylistTitle(input: PlaylistInput) {
 }
 
 function getPlaylistDescription(input: PlaylistInput, count: number) {
-   const title = getPlaylistTitle(input);
+   const title = getMapPlaylistTitle(input);
    return `${title} exported from scoresaber.com/maps (${count} maps)`;
 }
 
 function getPlaylistFileName(input: PlaylistInput) {
-   const slug = getPlaylistTitle(input)
+   const slug = getMapPlaylistTitle(input)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '');

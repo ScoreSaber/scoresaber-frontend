@@ -20,7 +20,7 @@ import { PlayerProfileCustomization } from '@/modules/player/profile/player-prof
 import { PlayerProfileHeader } from '@/modules/player/profile/player-profile-header';
 import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
 import { PlayerScoresToolbar } from '@/modules/player/profile/player-scores-toolbar';
-import { versionedAvatarUrl, versionedImageUrl } from '@/modules/player/shared/player-avatar';
+import { versionedImageUrl } from '@/modules/player/shared/player-avatar';
 import type {
    PlayerControllerGetPlayerResponse,
    PlayerControllerGetPlayerScoresDataItem,
@@ -60,10 +60,7 @@ type PlayerProfileRouteInput = {
    search: PlayerProfileSearch;
 };
 
-type ParsePlayerSearch = (search: Record<string, unknown>) => PlayerProfileSearch | null;
-type PlayerStatsWithPlusOnePP = PlayerControllerGetPlayerResponse['stats'] & {
-   plusOnePP?: number | null;
-};
+type ParsePlayerSearch = (search: SearchParamsRecord) => PlayerProfileSearch | null;
 
 const PLUS_ONE_PP_SCORE_LIMIT = 100;
 const DEFAULT_PROFILE_SECTION_ORDER = ['charts', 'bio', 'pinnedScores', 'scores'] as const;
@@ -97,7 +94,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
       const apiPlayerId = playerResult.data.id;
       const bio = playerResult.data.bio ?? '';
       const sanitizedBio = sanitizeRichTextHtml(bio);
-      const apiPlusOnePP = readPlusOnePP(playerResult.data.stats);
+      const apiPlusOnePP = playerResult.data.stats.plusOnePP;
 
       const [scores, plusOneScores, history, aliases, connections] = await Promise.all([
          optionalApiData(
@@ -143,11 +140,6 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
       };
    });
 
-function readPlusOnePP(stats: PlayerControllerGetPlayerResponse['stats']) {
-   const plusOnePP = (stats as PlayerStatsWithPlusOnePP).plusOnePP;
-   return typeof plusOnePP === 'number' ? plusOnePP : null;
-}
-
 export const Route = createFileRoute('/u/$playerId')({
    params: {
       parse: (params) => validateRequest(playerParamsSchema, params)
@@ -157,7 +149,7 @@ export const Route = createFileRoute('/u/$playerId')({
    loader: ({ params, deps }) =>
       getPlayerProfilePageData({
          data: {
-            playerId: params.playerId.toString(),
+            playerId: params.playerId,
             search: deps
          }
       }),
@@ -174,7 +166,7 @@ function PlayerRoute() {
    return (
       <PlayerProfileRouteContent
          input={{
-            playerId: params.playerId.toString(),
+            playerId: params.playerId,
             search
          }}
          parseSearch={parsePlayerSearch}
@@ -183,7 +175,7 @@ function PlayerRoute() {
    );
 }
 
-function parsePlayerSearch(search: Record<string, unknown>) {
+function parsePlayerSearch(search: SearchParamsRecord) {
    return playerSearchSchema.safeParse({ page: 1, ...search }).data ?? null;
 }
 
@@ -295,6 +287,7 @@ function buildProfileSections({
    renderScoreAction?: (score: PlayerControllerGetPlayerScoresDataItem) => ReactNode;
 }) {
    const hasEnabledChartMetrics = chartMetricIds == null || chartMetricIds.length > 0;
+   const pinnedScores = player.pinnedScores ?? [];
    const sections = new Map<PlayerProfileSectionId, { id: PlayerProfileSectionId; render: (showSeparator: boolean) => ReactNode } | null>([
       [
          'charts',
@@ -337,10 +330,10 @@ function buildProfileSections({
       ],
       [
          'pinnedScores',
-         (player.pinnedScores?.length ?? 0) > 0
+         pinnedScores.length > 0
             ? {
                  id: 'pinnedScores',
-                 render: (showSeparator) => <PlayerPinnedScoresSection pinnedScores={player.pinnedScores ?? []} showSeparator={showSeparator} />
+                 render: (showSeparator) => <PlayerPinnedScoresSection pinnedScores={pinnedScores} showSeparator={showSeparator} />
               }
             : null
       ],
@@ -370,7 +363,7 @@ function buildProfileSections({
 
    return normalizeProfileSectionOrder(sectionOrder)
       .map((sectionId) => sections.get(sectionId))
-      .filter((section): section is { id: PlayerProfileSectionId; render: (showSeparator: boolean) => ReactNode } => section != null);
+      .filter((section) => section != null);
 }
 
 function normalizeProfileSectionOrder(sectionOrder?: PlayerProfileSectionId[] | null) {
@@ -400,7 +393,7 @@ export function buildPlayerProfileHead(loaderData: Awaited<ReturnType<typeof get
 
    return playerProfileHead(`${player.name}'s Profile`, {
       ogTitle: `${player.name}'s profile`,
-      image: versionedAvatarUrl(player.avatar, player.avatarVersion),
+      image: versionedImageUrl(player.avatar, player.avatarVersion),
       path: `/u/${player.id}`,
       noindex: player.banned,
       description: [
@@ -413,10 +406,7 @@ export function buildPlayerProfileHead(loaderData: Awaited<ReturnType<typeof get
 }
 
 function getFlagEmoji(countryCode: string) {
-   return countryCode.toLowerCase().replace(/[a-z]/g, (char) => {
-      const codePoint = char.codePointAt(0);
-      return codePoint ? String.fromCodePoint(codePoint - 97 + 0x1f1e6) : '';
-   });
+   return countryCode.toLowerCase().replace(/[a-z]/g, (char) => String.fromCodePoint(char.charCodeAt(0) - 97 + 0x1f1e6));
 }
 
 function useVanityBrowserUrl(vanity: string | null) {

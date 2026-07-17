@@ -286,12 +286,8 @@ function parseSongSource(value: string): SongSource | null {
    const prefixedLeaderboard = /^(?:lb|leaderboard):(\d+)$/i.exec(trimmed);
    if (prefixedLeaderboard) return { kind: 'leaderboard', id: Number(prefixedLeaderboard[1]) };
 
-   const urlResult = Result.try({
-      try: () => new URL(trimmed, env.NEXT_PUBLIC_SITE_URL),
-      catch: () => null
-   });
-   const url = Result.unwrapOr(urlResult, null);
-   if (!url) return null;
+   if (!URL.canParse(trimmed, env.NEXT_PUBLIC_SITE_URL)) return null;
+   const url = new URL(trimmed, env.NEXT_PUBLIC_SITE_URL);
 
    const leaderboardMatch = /^\/leaderboard\/(\d+)/.exec(url.pathname);
    if (leaderboardMatch) return { kind: 'leaderboard', id: Number(leaderboardMatch[1]) };

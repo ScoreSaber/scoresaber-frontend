@@ -7,7 +7,7 @@ export const DEFAULT_PROFILE_ACCENT_FOREGROUND_COLOR = '#422006';
 export const DEFAULT_PROFILE_ACCENT_ACTIVE_FOREGROUND_COLOR = '#422006';
 
 export type PlayerProfileCustomizationStyle = Pick<
-   NonNullable<PlayerControllerGetPlayerResponse['profileCustomization']>,
+   PlayerControllerGetPlayerResponse['profileCustomization'],
    | 'backgroundImage'
    | 'backgroundImageVersion'
    | 'accentColor'
@@ -36,15 +36,15 @@ export function normalizeProfileCustomizationStyle(
 ): PlayerProfileCustomizationStyle {
    if (!customization) return DEFAULT_PROFILE_CUSTOMIZATION_STYLE;
 
-   const accentColor = customization?.accentColor ?? null;
+   const accentColor = customization.accentColor ?? null;
 
    return {
-      backgroundImage: customization?.backgroundImage ?? null,
-      backgroundImageVersion: customization?.backgroundImageVersion ?? null,
+      backgroundImage: customization.backgroundImage ?? null,
+      backgroundImageVersion: customization.backgroundImageVersion ?? null,
       accentColor,
-      accentForegroundColor: accentColor ? (customization?.accentForegroundColor ?? null) : null,
-      accentForegroundActiveColor: accentColor ? (customization?.accentForegroundActiveColor ?? null) : null,
-      supporterNameColorEnabled: customization?.supporterNameColorEnabled ?? true
+      accentForegroundColor: accentColor ? (customization.accentForegroundColor ?? null) : null,
+      accentForegroundActiveColor: accentColor ? (customization.accentForegroundActiveColor ?? null) : null,
+      supporterNameColorEnabled: customization.supporterNameColorEnabled ?? true
    };
 }
 

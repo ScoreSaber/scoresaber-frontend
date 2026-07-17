@@ -67,7 +67,14 @@ export function PlayerReportDialog({ open, playerId, action, onOpenChangeAction 
          <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1.5">
                <Label htmlFor={reasonId}>{t('player.reportReason')}</Label>
-               <Select value={reason} onValueChange={(value) => setReason(value as PlayerReportReason)} disabled={pending}>
+               <Select
+                  value={reason}
+                  onValueChange={(value) => {
+                     const nextReason = reportReasons.find((option) => option.value === value)?.value;
+                     if (nextReason) setReason(nextReason);
+                  }}
+                  disabled={pending}
+               >
                   <SelectTrigger id={reasonId}>
                      <SelectValue />
                   </SelectTrigger>

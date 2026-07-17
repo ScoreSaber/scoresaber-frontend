@@ -32,7 +32,7 @@ export function normalizeSearchRecord(search: Record<string, unknown>) {
       if (Array.isArray(value)) {
          params[key] = value.length > 0 ? String(value[value.length - 1]) : undefined;
       } else if (value != null) {
-         params[key] = typeof value === 'object' ? formatObjectSearchValue(value as Record<string, unknown>) : String(value);
+         params[key] = typeof value === 'object' ? formatObjectSearchValue(value) : String(value);
       }
    }
 
@@ -43,21 +43,17 @@ function appendSearchValue(searchParams: URLSearchParams, key: string, value: Se
    if (value == null || value === '') return;
    if (key === 'page' && value === 1) return;
 
-   if (isSearchArray(value)) {
+   if (Array.isArray(value)) {
       for (const item of value) {
          appendSearchValue(searchParams, key, item);
       }
       return;
    }
 
-   searchParams.append(key, typeof value === 'object' && !isSearchArray(value) ? formatObjectSearchValue(value) : String(value));
+   searchParams.append(key, typeof value === 'object' ? formatObjectSearchValue(value) : String(value));
 }
 
-function formatObjectSearchValue(value: Record<string, unknown>) {
+function formatObjectSearchValue(value: object) {
    const countryRegion = parseCountryRegionParam(value);
    return formatCountryRegionParam(countryRegion) ?? JSON.stringify(value);
-}
-
-function isSearchArray(value: SearchValue): value is readonly SearchValue[] {
-   return Array.isArray(value);
 }

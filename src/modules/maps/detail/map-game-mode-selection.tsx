@@ -23,10 +23,6 @@ export function MapGameModeSelection({ mapInfo, activeGameMode, linkSearchParams
    const gameModes = getAvailableGameModes(mapInfo.leaderboards);
    const linkSearch = { ...linkSearchParams, page: linkSearchParams?.page ?? 1 };
 
-   function getModeLeaderboardId(mode: string) {
-      return getDefaultLeaderboardId(mapInfo.leaderboards, mode);
-   }
-
    if (gameModes.length <= 1) {
       return null;
    }
@@ -37,7 +33,7 @@ export function MapGameModeSelection({ mapInfo, activeGameMode, linkSearchParams
          onValueChange={(mode) =>
             router.navigate({
                to: '/map/$id/difficulty/$leaderboardId',
-               params: { id: mapInfo.id, leaderboardId: getModeLeaderboardId(mode) },
+               params: { id: mapInfo.id, leaderboardId: getDefaultLeaderboardId(mapInfo.leaderboards, mode) },
                search: linkSearch
             })
          }

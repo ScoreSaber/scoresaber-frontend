@@ -23,7 +23,6 @@ interface RankRequestCreateOperationProps {
 
 export function RankRequestCreateOperation({ open, mapInfo, action, onOpenChangeAction }: RankRequestCreateOperationProps) {
    const tRR = useTranslations();
-   const tc = useTranslations();
    const [description, setDescription] = useState('');
    const [selectedLeaderboards, setSelectedLeaderboards] = useState<number[]>([]);
    const pending = action.isPending;
@@ -65,7 +64,7 @@ export function RankRequestCreateOperation({ open, mapInfo, action, onOpenChange
          }}
          title={tRR('rankRequest.createRankRequest')}
          description={tRR('rankRequest.createRankDesc')}
-         confirmLabel={tc('common.submit')}
+         confirmLabel={tRR('common.submit')}
          pending={pending}
          disabled={!description || selectedLeaderboards.length === 0}
          onConfirmAction={handleCreateRequest}

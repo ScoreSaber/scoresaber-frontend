@@ -16,21 +16,7 @@ export function MobileBottomBar() {
    const pathname = useLocation({ select: (location) => location.pathname });
    const hidden = useHideOnScroll();
    const { setOpen: setSearchOpen } = useOmniSearch();
-   const tNav = useTranslations();
-
-   function navLabel(key: string) {
-      return key === 'home'
-         ? tNav('nav.home')
-         : key === 'search'
-           ? tNav('nav.search')
-           : key === 'maps'
-             ? tNav('nav.maps')
-             : key === 'rankings'
-               ? tNav('nav.rankings')
-               : key === 'rankRequests'
-                 ? tNav('nav.rankRequests')
-                 : tNav('nav.requests');
-   }
+   const tNav = useTranslations('nav');
 
    return (
       <nav
@@ -52,7 +38,7 @@ export function MobileBottomBar() {
                         className="text-muted-foreground flex h-auto flex-col items-center gap-0.5 px-2 py-1 text-[10px] font-medium"
                      >
                         {item.icon}
-                        <span>{navLabel(item.shortKey)}</span>
+                        <span>{tNav(item.shortKey)}</span>
                      </Button>
                   );
                }
@@ -66,10 +52,10 @@ export function MobileBottomBar() {
                               aria-disabled="true"
                            >
                               {item.icon}
-                              <span>{navLabel(item.shortKey)}</span>
+                              <span>{tNav(item.shortKey)}</span>
                            </span>
                         </TooltipTrigger>
-                        <TooltipContent>{tNav('nav.comingSoon')}</TooltipContent>
+                        <TooltipContent>{tNav('comingSoon')}</TooltipContent>
                      </Tooltip>
                   );
                }
@@ -85,7 +71,7 @@ export function MobileBottomBar() {
                      )}
                   >
                      {item.icon}
-                     <span>{navLabel(item.shortKey)}</span>
+                     <span>{tNav(item.shortKey)}</span>
                   </NavLink>
                );
             })}

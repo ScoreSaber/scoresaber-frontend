@@ -48,7 +48,6 @@ const BioEditorForm = dynamic(() => import('@/shared/components/bio-editor-form'
 
 export function AccountSection({ countryReset, vanity, patreonConnected, beforeActions }: AccountSectionProps) {
    const t = useTranslations();
-   const tSidebar = useTranslations();
    const router = useRouter();
    const { user } = useAuth();
    const mutation = useActionMutation();
@@ -81,7 +80,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
             <Button asChild className="cursor-pointer">
                <loginRoute.Link search={{ redirectTo: settingsAccountRoute.id }}>
                   <LogIn data-icon="inline-start" />
-                  {tSidebar('sidebar.logIn')}
+                  {t('sidebar.logIn')}
                </loginRoute.Link>
             </Button>
          </div>
@@ -135,7 +134,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
       );
    };
    const saveAvatar = () => {
-      if (avatarSaveDisabled || !avatarFile) {
+      if (mutation.isPending || !avatarFile) {
          return;
       }
 

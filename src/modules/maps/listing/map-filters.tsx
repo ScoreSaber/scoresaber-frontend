@@ -52,7 +52,7 @@ export const DEFAULT_MAX_STARS = 16;
 const RANKED_SORTS = new Set<MapControllerGetMapListingsSortBy>(['highestStars', 'latestRankedAt']);
 
 function isMapSortBy(value: string | undefined): value is MapControllerGetMapListingsSortBy {
-   return value != null && (MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY as readonly string[]).includes(value);
+   return value != null && MAP_CONTROLLER_GET_MAP_LISTINGS_SORT_BY.some((sortBy) => sortBy === value);
 }
 
 function parseMapListingStatuses(status?: string) {
@@ -60,7 +60,7 @@ function parseMapListingStatuses(status?: string) {
 }
 
 function isMapStatus(value: string): value is MapControllerGetMapListingsStatus {
-   return (MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS as readonly string[]).includes(value);
+   return MAP_CONTROLLER_GET_MAP_LISTINGS_STATUS.some((status) => status === value);
 }
 
 interface MapFiltersProps<TLocation> {
@@ -166,7 +166,7 @@ export function MapFilters<TLocation>({
    }
 
    function handleStarSliderChange(values: number[]) {
-      const [min = DEFAULT_MIN_STARS, max = DEFAULT_MAX_STARS] = values;
+      const [min, max] = values;
       setPendingStarRange(min === currentMinStars && max === currentMaxStars ? null : [min, max]);
       debouncedStarNavigation.run(min, max);
    }

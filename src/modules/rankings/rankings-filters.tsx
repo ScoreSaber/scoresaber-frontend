@@ -70,7 +70,6 @@ export function RankingsFilters<TLocation>({
 }: RankingsFiltersProps<TLocation>) {
    const { user } = useAuth();
    const t = useTranslations();
-   const tc = useTranslations();
    const { navigate, preload, preloadClearAll, cancelPreload, loadStorage, saveStorage } = usePersistedParams({
       storageKey: rankingFilterPreferences.storageKey,
       search,
@@ -173,8 +172,8 @@ export function RankingsFilters<TLocation>({
                      <DebouncedSearchInput
                         id="ranking-search"
                         initialValue={currentSearch ?? ''}
-                        placeholder={tc('common.searchPlaceholder')}
-                        clearLabel={tc('common.clearSearch')}
+                        placeholder={t('common.searchPlaceholder')}
+                        clearLabel={t('common.clearSearch')}
                         srLabel={t('rankings.searchPlayers')}
                         onSearchAction={(value) => navigate({ search: value })}
                      />
@@ -187,7 +186,7 @@ export function RankingsFilters<TLocation>({
                                  type="button"
                                  variant={hasActiveFilters ? 'default' : 'secondary'}
                                  size="icon-xs"
-                                 aria-label={filtersOpen ? tc('common.hideFilters') : tc('common.showFilters')}
+                                 aria-label={filtersOpen ? t('common.hideFilters') : t('common.showFilters')}
                                  className={cn(
                                     'absolute -bottom-2.5 left-1/2 z-10 h-5 -translate-x-1/2 rounded-full border',
                                     hasActiveFilters ? 'w-auto gap-1 px-2' : 'w-8',
@@ -199,7 +198,7 @@ export function RankingsFilters<TLocation>({
                               </Button>
                            </TooltipTrigger>
                         </CollapsibleTrigger>
-                        <TooltipContent>{tc('common.filters')}</TooltipContent>
+                        <TooltipContent>{t('common.filters')}</TooltipContent>
                      </Tooltip>
                   </div>
 
@@ -225,12 +224,12 @@ export function RankingsFilters<TLocation>({
                                  className={QUICK_FILTER_BUTTON_CLASS}
                                  active={globalActive}
                                  icon={FaGlobe}
-                                 aria-label={tc('common.global')}
+                                 aria-label={t('common.global')}
                                  {...preloadHandlers(getGlobalUpdates())}
                                  onClick={handleGlobalToggle}
                               />
                            </TooltipTrigger>
-                           <TooltipContent>{tc('common.global')}</TooltipContent>
+                           <TooltipContent>{t('common.global')}</TooltipContent>
                         </Tooltip>
                         <Tooltip>
                            <TooltipTrigger asChild>
@@ -238,12 +237,12 @@ export function RankingsFilters<TLocation>({
                                  className={QUICK_FILTER_BUTTON_CLASS}
                                  active={isPlayerPivot}
                                  icon={FaUser}
-                                 aria-label={tc('common.aroundMe')}
+                                 aria-label={t('common.aroundMe')}
                                  {...preloadHandlers(getPivotUpdates('player'))}
                                  onClick={() => handlePivotToggle('player')}
                               />
                            </TooltipTrigger>
-                           <TooltipContent>{tc('common.aroundMe')}</TooltipContent>
+                           <TooltipContent>{t('common.aroundMe')}</TooltipContent>
                         </Tooltip>
                         <Tooltip>
                            <TooltipTrigger asChild>
@@ -251,12 +250,12 @@ export function RankingsFilters<TLocation>({
                                  className={QUICK_FILTER_BUTTON_CLASS}
                                  active={currentPivot === 'friends'}
                                  icon={FaUserFriends}
-                                 aria-label={tc('common.friends')}
+                                 aria-label={t('common.friends')}
                                  {...preloadHandlers(getPivotUpdates('friends'))}
                                  onClick={() => handlePivotToggle('friends')}
                               />
                            </TooltipTrigger>
-                           <TooltipContent>{tc('common.friends')}</TooltipContent>
+                           <TooltipContent>{t('common.friends')}</TooltipContent>
                         </Tooltip>
                         {userCountry && (
                            <Tooltip>
@@ -264,7 +263,7 @@ export function RankingsFilters<TLocation>({
                                  <FilterPill
                                     className={QUICK_FILTER_BUTTON_CLASS}
                                     active={userCountryActive}
-                                    aria-label={tc('common.country')}
+                                    aria-label={t('common.country')}
                                     {...preloadHandlers(getCountryUpdates())}
                                     onClick={handleCountryToggle}
                                  >
@@ -277,7 +276,7 @@ export function RankingsFilters<TLocation>({
                                     />
                                  </FilterPill>
                               </TooltipTrigger>
-                              <TooltipContent>{tc('common.country')}</TooltipContent>
+                              <TooltipContent>{t('common.country')}</TooltipContent>
                            </Tooltip>
                         )}
                      </div>
@@ -293,7 +292,7 @@ export function RankingsFilters<TLocation>({
                         {...preloadHandlers({ includeInactive: includeInactive ? undefined : 'true' })}
                         onClick={() => navigate({ includeInactive: includeInactive ? undefined : 'true' })}
                      >
-                        {tc('common.includeInactive')}
+                        {t('common.includeInactive')}
                      </FilterPill>
 
                      {/* live */}
@@ -323,7 +322,7 @@ export function RankingsFilters<TLocation>({
                            onBlur={cancelPreload}
                            onClick={handleClearAll}
                         >
-                           {tc('common.clear')}
+                           {t('common.clear')}
                         </FilterPill>
                      )}
                   </div>

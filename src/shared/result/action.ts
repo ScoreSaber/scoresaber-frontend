@@ -5,22 +5,13 @@ import { apiResult } from './api';
 // plain object that survives server function serialization
 export type ActionResult<T = void> = { ok: true; value: T } | { ok: false; error: string };
 
-type ApiResponse<T, E = unknown> = { data: T; error: E };
+type ApiResponse<T> = { data: T };
 
-export async function actionApiData<T, E = unknown>(promise: Promise<ApiResponse<T, E>>): Promise<ActionResult<T>> {
+export async function actionApiData<T>(promise: Promise<ApiResponse<T>>): Promise<ActionResult<T>> {
    const result = await apiResult(promise);
 
    if (Result.isOk(result)) {
       return { ok: true, value: result.value.data };
-   }
-   return actionError(result.error);
-}
-
-export async function actionApiVoid<T, E = unknown>(promise: Promise<ApiResponse<T, E>>): Promise<ActionResult<void>> {
-   const result = await apiResult(promise);
-
-   if (Result.isOk(result)) {
-      return { ok: true, value: undefined };
    }
    return actionError(result.error);
 }
