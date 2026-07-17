@@ -853,6 +853,7 @@
             "accentColor": "Accent colour",
             "accentForeground": "Accent foreground",
             "accentForegroundActive": "Active foreground",
+            "hexColorInput": "{setting} hex value",
             "accentDescription": "Presets:",
             "useAccent": "Use {color} as profile accent",
             "resetAccent": "Reset accent",

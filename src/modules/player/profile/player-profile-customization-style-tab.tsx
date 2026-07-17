@@ -20,6 +20,7 @@ import {
    DEFAULT_PROFILE_ACCENT_FOREGROUND_COLOR,
    type PlayerProfileCustomizationStyle
 } from '@/modules/player/profile/player-profile-accent';
+import { PlayerProfileColorPicker } from '@/modules/player/profile/player-profile-color-picker';
 import { versionedImageUrl } from '@/modules/player/shared/player-avatar';
 import { ConditionalOverlay } from '@/shared/components/conditional-overlay';
 import { FadeInImage } from '@/shared/components/fade-in-image';
@@ -202,51 +203,54 @@ export function PlayerProfileCustomizationStyleTab({
                            </Tooltip>
                         ))}
                      </div>
-                     <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
+                     <div className="flex min-w-0 flex-wrap items-end gap-3">
                         <div className="flex min-w-0 flex-col gap-2">
                            <Label htmlFor="profile-accent-color">{t('player.customization.style.accentColor')}</Label>
-                           <Input
+                           <PlayerProfileColorPicker
                               id="profile-accent-color"
-                              type="color"
                               value={accentColor}
                               disabled={!canUseAccentStyle}
-                              aria-label={t('player.customization.style.accentColor')}
-                              onChange={(event) => setAccentColor(event.target.value)}
-                              className="h-9 w-full min-w-0 p-1"
+                              label={t('player.customization.style.accentColor')}
+                              inputLabel={t('player.customization.style.hexColorInput', {
+                                 setting: t('player.customization.style.accentColor')
+                              })}
+                              onChange={setAccentColor}
                            />
                         </div>
                         <div className="flex min-w-0 flex-col gap-2">
                            <Label htmlFor="profile-accent-foreground">{t('player.customization.style.accentForeground')}</Label>
-                           <Input
+                           <PlayerProfileColorPicker
                               id="profile-accent-foreground"
-                              type="color"
                               value={accentForegroundColor}
                               disabled={!canUseAccentStyle}
-                              aria-label={t('player.customization.style.accentForeground')}
-                              onChange={(event) =>
+                              label={t('player.customization.style.accentForeground')}
+                              inputLabel={t('player.customization.style.hexColorInput', {
+                                 setting: t('player.customization.style.accentForeground')
+                              })}
+                              onChange={(color) =>
                                  updateStyle({
                                     accentColor: draftStyle.accentColor ?? DEFAULT_PROFILE_ACCENT_COLOR,
-                                    accentForegroundColor: event.target.value
+                                    accentForegroundColor: color
                                  })
                               }
-                              className="h-9 w-full min-w-0 p-1"
                            />
                         </div>
                         <div className="flex min-w-0 flex-col gap-2">
                            <Label htmlFor="profile-accent-active-foreground">{t('player.customization.style.accentForegroundActive')}</Label>
-                           <Input
+                           <PlayerProfileColorPicker
                               id="profile-accent-active-foreground"
-                              type="color"
                               value={accentForegroundActiveColor}
                               disabled={!canUseAccentStyle}
-                              aria-label={t('player.customization.style.accentForegroundActive')}
-                              onChange={(event) =>
+                              label={t('player.customization.style.accentForegroundActive')}
+                              inputLabel={t('player.customization.style.hexColorInput', {
+                                 setting: t('player.customization.style.accentForegroundActive')
+                              })}
+                              onChange={(color) =>
                                  updateStyle({
                                     accentColor: draftStyle.accentColor ?? DEFAULT_PROFILE_ACCENT_COLOR,
-                                    accentForegroundActiveColor: event.target.value
+                                    accentForegroundActiveColor: color
                                  })
                               }
-                              className="h-9 w-full min-w-0 p-1"
                            />
                         </div>
                         <Button type="button" variant="outline" disabled={!canUseAccentStyle} onClick={resetAccent} className="cursor-pointer">
