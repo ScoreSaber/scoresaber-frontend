@@ -84,10 +84,27 @@ function usePersistedParams<TSearch extends SearchParamsRecord & { page?: number
       [navigate]
    );
    const preload = useCallback(
-      (updates: Partial<TSearch>, options?: RouteUpdateOptions<TSearch>) => schedulePreload(buildRouteLocation(updates, options)),
-      [buildRouteLocation, schedulePreload]
+      (updates: Partial<TSearch>, options?: RouteUpdateOptions<TSearch>) => {
+         const nextSearch = updateSearchParams(search, updates, options?.resetKeys ?? resetKeys);
+
+         // the server would restore a cleared value from the current cookie before the click updates it
+         if (persistedKeys.some((key) => search?.[key] != null && nextSearch[key] == null)) {
+            cancelPreload();
+            return;
+         }
+
+         schedulePreload(buildLocation(nextSearch));
+      },
+      [buildLocation, cancelPreload, persistedKeys, resetKeys, schedulePreload, search]
    );
-   const preloadClearAll = useCallback(() => schedulePreload(buildLocation(undefined)), [buildLocation, schedulePreload]);
+   const preloadClearAll = useCallback(() => {
+      if (persistedKeys.some((key) => search?.[key] != null)) {
+         cancelPreload();
+         return;
+      }
+
+      schedulePreload(buildLocation(undefined));
+   }, [buildLocation, cancelPreload, persistedKeys, schedulePreload, search]);
 
    const clearAll = useCallback(
       (options?: { scroll?: boolean }) => {
