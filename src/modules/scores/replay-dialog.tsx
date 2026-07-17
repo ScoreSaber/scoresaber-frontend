@@ -39,7 +39,7 @@ export function ReplayDialog({ scoreId, trigger, tooltip, tooltipDelayMs, toolti
    const [loaded, setLoaded] = useState(false);
    const [open, setOpen] = useState(false);
    const [tooltipOpen, setTooltipOpen] = useState(false);
-   const replayUrl = getReplayArcviewerUrl({ ssScoreId: scoreId.toString() });
+   const replayUrl = getReplayArcviewerUrl({ scoreId: scoreId.toString() });
    const { data: replayViewCount } = useQuery({
       queryKey: ['scoreReplayViews', scoreId],
       queryFn: async () => {
