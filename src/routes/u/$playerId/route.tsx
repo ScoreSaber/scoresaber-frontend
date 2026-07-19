@@ -14,7 +14,7 @@ import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-ch
 import { isDenyah } from '@/modules/player/denyah/denyah';
 import { DenyahCursorTrail } from '@/modules/player/denyah/denyah-cursor-trail';
 import { DenyahModeProvider } from '@/modules/player/denyah/denyah-mode-context';
-import { DenyahPeePee } from '@/modules/player/denyah/denyah-pee-pee';
+import { DenyahTextEffects } from '@/modules/player/denyah/denyah-text-effects';
 import { DenyahTilt } from '@/modules/player/denyah/denyah-tilt';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
@@ -222,7 +222,7 @@ function PlayerProfileRouteContent({
                      : undefined
                }
             >
-               {denyahMode && <DenyahPeePee targetRef={denyahContainerRef} />}
+               {denyahMode && <DenyahTextEffects targetRef={denyahContainerRef} />}
                {denyahMode && <DenyahTilt targetRef={denyahContainerRef} />}
                <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
                   {({ extraActions, profileCustomization, renderScoreAction }) => {
