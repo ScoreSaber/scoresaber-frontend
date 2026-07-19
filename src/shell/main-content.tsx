@@ -17,7 +17,15 @@ function MainContentInner({ children, debugPageBackground }: { children: React.R
             collapsed ? 'lg:pl-14' : 'lg:pl-61 3xl:pl-68'
          )}
       >
-         {bgConfig && <PageBackground src={bgConfig.src} candidates={bgConfig.candidates} debugPanel={debugPageBackground} />}
+         {bgConfig && (
+            <PageBackground
+               src={bgConfig.src}
+               candidates={bgConfig.candidates}
+               invertImage={bgConfig.invertImage}
+               reducedBlur={bgConfig.reducedBlur}
+               debugPanel={debugPageBackground}
+            />
+         )}
          {children}
       </main>
    );

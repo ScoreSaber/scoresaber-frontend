@@ -12,7 +12,7 @@ const FLIP_TURN_MS = 900;
 const FLIP_HOLD_MS = 2000;
 const FLIP_BOUNCE_MS = 650;
 
-export function DenyahTilt({ targetRef }: { targetRef: RefObject<HTMLDivElement | null> }) {
+export function DenyahTilt({ targetRef, onFlipChange }: { targetRef: RefObject<HTMLDivElement | null>; onFlipChange: (flipping: boolean) => void }) {
    useEffect(() => {
       const root = targetRef.current;
       if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -41,9 +41,13 @@ export function DenyahTilt({ targetRef }: { targetRef: RefObject<HTMLDivElement 
       const at = (ms: number) => ms / flipTotal;
       const impactMs = FLIP_TURN_MS + FLIP_HOLD_MS + FLIP_TURN_MS;
       let flipAnimation: Animation | null = null;
+      let flipEndTimer: number | null = null;
       reportDenyahFlipTimings(0, Date.now() + FLIP_EVERY_MS);
       const flipInterval = window.setInterval(() => {
          reportDenyahFlipTimings(Date.now() + flipTotal, Date.now() + FLIP_EVERY_MS);
+         onFlipChange(true);
+         if (flipEndTimer) window.clearTimeout(flipEndTimer);
+         flipEndTimer = window.setTimeout(() => onFlipChange(false), flipTotal);
          flipAnimation = root.animate(
             [
                { rotate: '2deg', easing: 'ease-in-out' },
@@ -63,12 +67,13 @@ export function DenyahTilt({ targetRef }: { targetRef: RefObject<HTMLDivElement 
       return () => {
          root.removeEventListener('pointerover', onPointerOver);
          if (calmTimer) window.clearTimeout(calmTimer);
+         if (flipEndTimer) window.clearTimeout(flipEndTimer);
          window.clearInterval(flipInterval);
          flipAnimation?.cancel();
          animation.cancel();
          resetDenyahFlipTimings();
       };
-   }, [targetRef]);
+   }, [onFlipChange, targetRef]);
 
    return null;
 }

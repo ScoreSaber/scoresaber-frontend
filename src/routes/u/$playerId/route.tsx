@@ -11,11 +11,12 @@ import { Separator } from '@/components/ui/separator';
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import type { MetricKey } from '@/modules/player/chart/chart-types';
 import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-chart-lazy';
+import { getSortedPlayerHistory } from '@/modules/player/chart/player-chart-model';
+import { computeDenyahSections } from '@/modules/player/chart/use-denyah-overlay';
 import { isDenyah } from '@/modules/player/denyah/denyah';
 import { DenyahCursorTrail } from '@/modules/player/denyah/denyah-cursor-trail';
 import { DenyahModeProvider } from '@/modules/player/denyah/denyah-mode-context';
-import { DenyahTextEffects } from '@/modules/player/denyah/denyah-text-effects';
-import { DenyahTilt } from '@/modules/player/denyah/denyah-tilt';
+import { DenyahPageEffects } from '@/modules/player/denyah/denyah-page-effects';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
 import { PlayerPinnedScoresSection } from '@/modules/player/profile/player-pinned-scores-section';
@@ -202,6 +203,9 @@ function PlayerProfileRouteContent({
 
    const player = result.data;
    const denyahMode = isDenyah(player.id);
+   const currentDenyahSection =
+      denyahMode && history?.length ? computeDenyahSections(getSortedPlayerHistory(history).map((entry) => entry.rank)).at(-1) : undefined;
+   const denyahBackgroundImage = currentDenyahSection ? `/images/denyah-${currentDenyahSection.isGood ? 'good' : 'bad'}.png` : undefined;
 
    return (
       <DenyahModeProvider value={denyahMode}>
@@ -222,8 +226,7 @@ function PlayerProfileRouteContent({
                      : undefined
                }
             >
-               {denyahMode && <DenyahTextEffects targetRef={denyahContainerRef} />}
-               {denyahMode && <DenyahTilt targetRef={denyahContainerRef} />}
+               {denyahMode && <DenyahPageEffects targetRef={denyahContainerRef} backgroundImage={denyahBackgroundImage ?? player.avatar} />}
                <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
                   {({ extraActions, profileCustomization, renderScoreAction }) => {
                      const profileBackgroundImage = profileCustomization.backgroundImage
@@ -248,10 +251,12 @@ function PlayerProfileRouteContent({
                      return (
                         <PlayerProfileAccentScope customization={profileCustomization}>
                            {denyahMode && <DenyahCursorTrail />}
-                           <SetPageBackground
-                              src={profileBackgroundImage ?? player.avatar}
-                              candidates={profileBackgroundImage ? [profileBackgroundImage, player.avatar] : [player.avatar]}
-                           />
+                           {!denyahMode && (
+                              <SetPageBackground
+                                 src={profileBackgroundImage ?? player.avatar}
+                                 candidates={profileBackgroundImage ? [profileBackgroundImage, player.avatar] : [player.avatar]}
+                              />
+                           )}
                            <PlayerProfileHeader
                               player={player}
                               aliases={aliases}
