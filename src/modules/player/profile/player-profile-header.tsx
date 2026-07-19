@@ -24,6 +24,8 @@ import { useTranslations } from 'use-intl';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import { useDenyahMode } from '@/modules/player/denyah/denyah-mode-context';
+import { Runaway } from '@/modules/player/denyah/runaway';
 import { PlayerFollowButton } from '@/modules/player/operations/member/player-follow-button';
 import { buildPlayerSummary } from '@/modules/player/player-summary';
 import { PlayerAliases } from '@/modules/player/profile/player-aliases';
@@ -82,6 +84,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
    const t = useTranslations();
    const [statsExpanded, setStatsExpanded] = useState(false);
    const { stats } = player;
+   const denyahMode = useDenyahMode();
    const playerSummary = buildPlayerSummary(player, 'text');
    const isActive = !player.inactive && !player.banned;
    const profileAccentStyle = getProfileAccentProperties(customization);
@@ -180,27 +183,29 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
    const statsToggleLabel = t('player.customization.layout.statsTitle');
    const hiddenStatsToggle =
       hiddenCustomizedStats.length > 0 ? (
-         <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground hover:text-foreground hover:bg-transparent active:!scale-100 dark:hover:bg-transparent"
-            aria-expanded={statsExpanded}
-            aria-label={statsToggleLabel}
-            onClick={() => setStatsExpanded((expanded) => !expanded)}
-         >
-            {hasShownCustomizedStats ? (
-               statsExpanded ? (
-                  <ChevronLeft data-icon />
+         <Runaway enabled={denyahMode}>
+            <Button
+               type="button"
+               variant="ghost"
+               size="icon-xs"
+               className="text-muted-foreground hover:text-foreground hover:bg-transparent active:!scale-100 dark:hover:bg-transparent"
+               aria-expanded={statsExpanded}
+               aria-label={statsToggleLabel}
+               onClick={() => setStatsExpanded((expanded) => !expanded)}
+            >
+               {hasShownCustomizedStats ? (
+                  statsExpanded ? (
+                     <ChevronLeft data-icon />
+                  ) : (
+                     <ChevronRight data-icon />
+                  )
+               ) : statsExpanded ? (
+                  <ChevronUp data-icon />
                ) : (
-                  <ChevronRight data-icon />
-               )
-            ) : statsExpanded ? (
-               <ChevronUp data-icon />
-            ) : (
-               <ChevronDown data-icon />
-            )}
-         </Button>
+                  <ChevronDown data-icon />
+               )}
+            </Button>
+         </Runaway>
       ) : null;
    const accentSurfaceStyle = hasCustomAccent
       ? {
@@ -240,9 +245,9 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                      )}
                      <PlayerLivePresenceIndicator playerId={player.id} className="absolute bottom-1.5 left-[72%] z-10" />
                   </div>
-                  <div className="hidden sm:block">
+                  <Runaway enabled={denyahMode} className="hidden sm:block">
                      <PlayerFollowButton playerId={player.id} />
-                  </div>
+                  </Runaway>
                   {!player.banned && (
                      <div className="text-muted-foreground flex items-center gap-3 text-[11px]">
                         <span>
@@ -281,7 +286,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                      {!player.banned && (
                         <StatusBadge tooltip={t('common.performancePoints')} className={ppBadgeClass} style={accentSurfaceStyle}>
                            {formatPP(stats.totalPP)}
-                           <span className={cn(ppUnitClass, accentSubtleTextClass)}>pp</span>
+                           <span className={cn(ppUnitClass, accentSubtleTextClass)}>{denyahMode ? 'pee pee' : 'pp'}</span>
                         </StatusBadge>
                      )}
 
@@ -345,15 +350,37 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                               </div>
                            </rankingsRoute.Link>
                         ))}
-                        {stats.device?.hmd && (
-                           <DeviceDisplay
-                              hmd={stats.device.hmd}
-                              controllerLeft={stats.device.controllerLeft}
-                              controllerRight={stats.device.controllerRight}
-                              variant="stacked"
-                              size="md"
-                           />
-                        )}
+                        {stats.device?.hmd &&
+                           (denyahMode ? (
+                              <div className="flex flex-col items-center gap-0.5">
+                                 <Tooltip>
+                                    <TooltipTrigger asChild>
+                                       <span
+                                          className="flex cursor-help items-center justify-center text-2xl leading-none"
+                                          role="img"
+                                          aria-label={stats.device.hmd}
+                                       >
+                                          🚽
+                                       </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">{stats.device.hmd}</TooltipContent>
+                                 </Tooltip>
+                                 <DeviceDisplay
+                                    controllerLeft={stats.device.controllerLeft}
+                                    controllerRight={stats.device.controllerRight}
+                                    variant="stacked"
+                                    size="md"
+                                 />
+                              </div>
+                           ) : (
+                              <DeviceDisplay
+                                 hmd={stats.device.hmd}
+                                 controllerLeft={stats.device.controllerLeft}
+                                 controllerRight={stats.device.controllerRight}
+                                 variant="stacked"
+                                 size="md"
+                              />
+                           ))}
                      </div>
                   )}
 
@@ -383,17 +410,19 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                               )}
                               {secondaryStatItems.length > 0 && (
                                  <div className="flex justify-center sm:justify-start">
-                                    <Button
-                                       type="button"
-                                       variant="ghost"
-                                       size="icon-xs"
-                                       className="text-muted-foreground"
-                                       aria-expanded={statsExpanded}
-                                       aria-label={statsToggleLabel}
-                                       onClick={() => setStatsExpanded((expanded) => !expanded)}
-                                    >
-                                       {statsExpanded ? <ChevronLeft data-icon /> : <ChevronRight data-icon />}
-                                    </Button>
+                                    <Runaway enabled={denyahMode}>
+                                       <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="icon-xs"
+                                          className="text-muted-foreground"
+                                          aria-expanded={statsExpanded}
+                                          aria-label={statsToggleLabel}
+                                          onClick={() => setStatsExpanded((expanded) => !expanded)}
+                                       >
+                                          {statsExpanded ? <ChevronLeft data-icon /> : <ChevronRight data-icon />}
+                                       </Button>
+                                    </Runaway>
                                  </div>
                               )}
                            </>
@@ -411,7 +440,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                <div className="sm:hidden">
                   <PlayerFollowButton playerId={player.id} compact />
                </div>
-               {actions}
+               <Runaway enabled={denyahMode}>{actions}</Runaway>
             </div>
          </div>
 

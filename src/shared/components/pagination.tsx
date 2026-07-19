@@ -58,7 +58,7 @@ export function Pagination<TLocation>({
    if (totalPages <= 1) return null;
 
    return (
-      <div className="flex flex-row items-center gap-1">
+      <div data-pagination className="flex flex-row items-center gap-1">
          {options.map((option) => {
             if (option.type === 'symbol' && option.symbol === 'ELLIPSIS') {
                return (

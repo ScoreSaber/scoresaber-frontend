@@ -6,6 +6,8 @@ import { useTranslations } from 'use-intl';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import { useDenyahMode } from '@/modules/player/denyah/denyah-mode-context';
+import { Runaway } from '@/modules/player/denyah/runaway';
 import { ReplayDialog } from '@/modules/scores/replay-dialog';
 import type {
    LeaderboardControllerGetLeaderboardScoresByIdDataItem,
@@ -41,6 +43,7 @@ export function ScoreCardActions({
    replayTooltipSide
 }: ScoreCardActionsProps) {
    const t = useTranslations();
+   const denyahMode = useDenyahMode();
    const bottomRowTouchTargetClassName =
       bottomRowDesktopBreakpoint === 'md'
          ? 'max-md:pointer-coarse:min-h-8 max-md:pointer-coarse:min-w-8'
@@ -156,6 +159,21 @@ export function ScoreCardActions({
          </Button>
       )
    ) : null;
+   const runawayReplayButton = (
+      <Runaway enabled={denyahMode} maxDodges={1}>
+         {replayButton}
+      </Runaway>
+   );
+   const runawayDetailsButton = (
+      <Runaway enabled={denyahMode} maxDodges={1}>
+         {detailsButton}
+      </Runaway>
+   );
+   const runawayHistoryButton = historyButton && (
+      <Runaway enabled={denyahMode} maxDodges={1}>
+         {historyButton}
+      </Runaway>
+   );
 
    return (
       <div
@@ -168,18 +186,18 @@ export function ScoreCardActions({
       >
          {mobileBottomRow ? (
             <div className={cn('flex items-center', bottomRowDesktopClassName)}>
-               {replayButton}
+               {runawayReplayButton}
                <div className={cn('flex', bottomRowDetailsClassName)}>
-                  {detailsButton}
-                  {historyButton}
+                  {runawayDetailsButton}
+                  {runawayHistoryButton}
                </div>
                {shareButton}
             </div>
          ) : (
             <>
-               {replayButton}
-               {detailsButton}
-               {historyButton}
+               {runawayReplayButton}
+               {runawayDetailsButton}
+               {runawayHistoryButton}
             </>
          )}
       </div>

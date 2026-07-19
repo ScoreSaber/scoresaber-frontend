@@ -10,6 +10,7 @@ import { PlayerChartStats } from './player-chart-stats';
 
 import type { MetricKey, PlayerChartStats as PlayerChartStatsType } from '@/modules/player/chart/chart-types';
 import { usePlayerChart } from '@/modules/player/chart/use-player-chart';
+import { DenyahSkeletonOverlay } from '@/modules/player/denyah/denyah-skeleton-overlay';
 import type { PlayerControllerGetPlayerHistoryItem } from '@/shared/api/generated/ApiParams';
 import { getChartTooltipColors, getLineChartBaseOptions } from '@/shared/components/chart/chart-options';
 import { ChartShell } from '@/shared/components/chart/chart-shell';
@@ -48,6 +49,11 @@ export function PlayerChart({ playerId, stats, history, enabledMetrics }: Player
 
             <ChartShell id="rank-chart" className="h-72 p-4 shadow-xs">
                <div ref={chart.denyahOverlayRef} className="pointer-events-none absolute top-0 right-0 bottom-0 left-0 z-0" />
+               <DenyahSkeletonOverlay
+                  rankHistory={chart.sortedHistory}
+                  showEyes={chart.activeMetrics.has('rank')}
+                  faceOverlayRef={chart.denyahOverlayRef}
+               />
                <div
                   ref={chart.pulseRef}
                   className="pointer-events-none absolute z-10"

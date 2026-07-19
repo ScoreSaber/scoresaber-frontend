@@ -1,4 +1,4 @@
-import { Fragment, useEffect, type ReactNode } from 'react';
+import { Fragment, useEffect, useRef, type ReactNode } from 'react';
 
 import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
@@ -11,6 +11,11 @@ import { Separator } from '@/components/ui/separator';
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import type { MetricKey } from '@/modules/player/chart/chart-types';
 import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-chart-lazy';
+import { isDenyah } from '@/modules/player/denyah/denyah';
+import { DenyahCursorTrail } from '@/modules/player/denyah/denyah-cursor-trail';
+import { DenyahModeProvider } from '@/modules/player/denyah/denyah-mode-context';
+import { DenyahPeePee } from '@/modules/player/denyah/denyah-pee-pee';
+import { DenyahTilt } from '@/modules/player/denyah/denyah-tilt';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
 import { PlayerPinnedScoresSection } from '@/modules/player/profile/player-pinned-scores-section';
@@ -189,75 +194,97 @@ function PlayerProfileRouteContent({
    data: Awaited<ReturnType<typeof getPlayerProfilePageData>>;
 }) {
    const { result, scores, history, aliases, patreonConnected, plusOneRawPP, sanitizedBio, hasBioContent } = data;
+   const denyahContainerRef = useRef<HTMLDivElement | null>(null);
 
    useVanityBrowserUrl(result.ok ? result.data.vanity : null);
 
    if (!result.ok) return <PageError status={result.status} />;
 
    const player = result.data;
+   const denyahMode = isDenyah(player.id);
 
    return (
-      <div className="relative flex-1 overflow-hidden">
-         <div className="app-container relative z-10 p-4 md:p-8">
-            <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
-               {({ extraActions, profileCustomization, renderScoreAction }) => {
-                  const profileBackgroundImage = profileCustomization.backgroundImage
-                     ? versionedImageUrl(profileCustomization.backgroundImage, profileCustomization.backgroundImageVersion)
-                     : null;
-                  const profileSections = player.banned
-                     ? []
-                     : buildProfileSections({
-                          player,
-                          history,
-                          scores,
-                          input,
-                          parseSearch,
-                          sanitizedBio,
-                          hasBioContent,
-                          chartMetricIds: profileCustomization.chartMetricIds,
-                          profileCustomization,
-                          sectionOrder: profileCustomization.sectionOrder,
-                          renderScoreAction
-                       });
+      <DenyahModeProvider value={denyahMode}>
+         <div className="relative flex-1 overflow-hidden">
+            <div
+               ref={denyahContainerRef}
+               className="app-container relative z-10 p-4 md:p-8"
+               style={
+                  denyahMode
+                     ? {
+                          fontFamily: '"Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive',
+                          rotate: '2deg',
+                          cursor: 'wait',
+                          filter: 'hue-rotate(180deg) blur(0.4px) saturate(0.85) contrast(1.06)',
+                          imageRendering: 'pixelated',
+                          WebkitFontSmoothing: 'none'
+                       }
+                     : undefined
+               }
+            >
+               {denyahMode && <DenyahPeePee targetRef={denyahContainerRef} />}
+               {denyahMode && <DenyahTilt targetRef={denyahContainerRef} />}
+               <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
+                  {({ extraActions, profileCustomization, renderScoreAction }) => {
+                     const profileBackgroundImage = profileCustomization.backgroundImage
+                        ? versionedImageUrl(profileCustomization.backgroundImage, profileCustomization.backgroundImageVersion)
+                        : null;
+                     const profileSections = player.banned
+                        ? []
+                        : buildProfileSections({
+                             player,
+                             history,
+                             scores,
+                             input,
+                             parseSearch,
+                             sanitizedBio,
+                             hasBioContent,
+                             chartMetricIds: profileCustomization.chartMetricIds,
+                             profileCustomization,
+                             sectionOrder: profileCustomization.sectionOrder,
+                             renderScoreAction
+                          });
 
-                  return (
-                     <PlayerProfileAccentScope customization={profileCustomization}>
-                        <SetPageBackground
-                           src={profileBackgroundImage ?? player.avatar}
-                           candidates={profileBackgroundImage ? [profileBackgroundImage, player.avatar] : [player.avatar]}
-                        />
-                        <PlayerProfileHeader
-                           player={player}
-                           aliases={aliases}
-                           customization={profileCustomization}
-                           plusOneRawPP={plusOneRawPP}
-                           actions={
-                              <PlayerActions
-                                 playerId={player.id}
-                                 playerBanned={player.banned}
-                                 playerPermissions={player.permissions}
-                                 playerRole={player.role}
-                                 extraActions={extraActions}
-                              />
-                           }
-                        >
-                           {player.banned ? (
-                              <div className="py-6 text-center">
-                                 <Separator variant="gradient" className="via-destructive/15 mb-4" />
-                                 <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
-                              </div>
-                           ) : null}
+                     return (
+                        <PlayerProfileAccentScope customization={profileCustomization}>
+                           {denyahMode && <DenyahCursorTrail />}
+                           <SetPageBackground
+                              src={profileBackgroundImage ?? player.avatar}
+                              candidates={profileBackgroundImage ? [profileBackgroundImage, player.avatar] : [player.avatar]}
+                           />
+                           <PlayerProfileHeader
+                              player={player}
+                              aliases={aliases}
+                              customization={profileCustomization}
+                              plusOneRawPP={plusOneRawPP}
+                              actions={
+                                 <PlayerActions
+                                    playerId={player.id}
+                                    playerBanned={player.banned}
+                                    playerPermissions={player.permissions}
+                                    playerRole={player.role}
+                                    extraActions={extraActions}
+                                 />
+                              }
+                           >
+                              {player.banned ? (
+                                 <div className="py-6 text-center">
+                                    <Separator variant="gradient" className="via-destructive/15 mb-4" />
+                                    <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
+                                 </div>
+                              ) : null}
 
-                           {profileSections.map((section, index) => (
-                              <Fragment key={section.id}>{section.render(index > 0)}</Fragment>
-                           ))}
-                        </PlayerProfileHeader>
-                     </PlayerProfileAccentScope>
-                  );
-               }}
-            </PlayerProfileCustomization>
+                              {profileSections.map((section, index) => (
+                                 <Fragment key={section.id}>{section.render(index > 0)}</Fragment>
+                              ))}
+                           </PlayerProfileHeader>
+                        </PlayerProfileAccentScope>
+                     );
+                  }}
+               </PlayerProfileCustomization>
+            </div>
          </div>
-      </div>
+      </DenyahModeProvider>
    );
 }
 

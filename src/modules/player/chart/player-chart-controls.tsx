@@ -15,6 +15,8 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { METRICS, TIME_RANGE_SCHEMA, TIME_RANGE_VALUES } from '@/modules/player/chart/chart-types';
+import { useDenyahMode } from '@/modules/player/denyah/denyah-mode-context';
+import { Runaway } from '@/modules/player/denyah/runaway';
 import { cn } from '@/shared/format/helpers';
 
 export function PlayerChartControls() {
@@ -37,6 +39,7 @@ export function PlayerChartControls() {
    } = usePlayerChartContext();
 
    const [isShiftHeld, setIsShiftHeld] = useState(false);
+   const denyahMode = useDenyahMode();
 
    function handleTimeRangeChange(value: string) {
       const result = TIME_RANGE_SCHEMA.safeParse(value);
@@ -85,22 +88,23 @@ export function PlayerChartControls() {
                const labels = metricLabels[key];
 
                return (
-                  <ToggleGroupItem
-                     key={key}
-                     value={key}
-                     size="sm"
-                     onPointerDown={() => handlePointerDown(key)}
-                     onPointerUp={(e) => handlePointerUp(key, e.shiftKey)}
-                     onPointerLeave={handlePointerCancel}
-                     onContextMenu={(e) => e.preventDefault()}
-                     className={cn(
-                        'border-border/40 bg-card/80 text-muted-foreground hover:bg-card hover:text-foreground data-[state=on]:text-badge-foreground border px-3 py-1.5 text-xs font-medium shadow-none backdrop-blur-xs select-none data-[state=on]:border-transparent data-[state=on]:shadow-xs data-[state=on]:hover:text-badge-foreground',
-                        isShiftHeld && !isActive && 'ring-1 ring-dashed ring-muted-foreground/30'
-                     )}
-                     style={isActive ? { backgroundColor: `var(${m.cssVar})` } : undefined}
-                  >
-                     {labels.shortLabel}
-                  </ToggleGroupItem>
+                  <Runaway key={key} enabled={denyahMode}>
+                     <ToggleGroupItem
+                        value={key}
+                        size="sm"
+                        onPointerDown={() => handlePointerDown(key)}
+                        onPointerUp={(e) => handlePointerUp(key, e.shiftKey)}
+                        onPointerLeave={handlePointerCancel}
+                        onContextMenu={(e) => e.preventDefault()}
+                        className={cn(
+                           'border-border/40 bg-card/80 text-muted-foreground hover:bg-card hover:text-foreground data-[state=on]:text-badge-foreground border px-3 py-1.5 text-xs font-medium shadow-none backdrop-blur-xs select-none data-[state=on]:border-transparent data-[state=on]:shadow-xs data-[state=on]:hover:text-badge-foreground',
+                           isShiftHeld && !isActive && 'ring-1 ring-dashed ring-muted-foreground/30'
+                        )}
+                        style={isActive ? { backgroundColor: `var(${m.cssVar})` } : undefined}
+                     >
+                        {labels.shortLabel}
+                     </ToggleGroupItem>
+                  </Runaway>
                );
             })}
          </ToggleGroup>
@@ -108,9 +112,11 @@ export function PlayerChartControls() {
          <Separator orientation="vertical" variant="gradient" size="toolbar" className="mx-1" />
 
          <Select value={timeRange} onValueChange={handleTimeRangeChange}>
-            <SelectTrigger variant="filter" size="compact">
-               <SelectValue aria-label={timeRangeLabels[timeRange]}>{timeRangeLabels[timeRange]}</SelectValue>
-            </SelectTrigger>
+            <Runaway enabled={denyahMode}>
+               <SelectTrigger variant="filter" size="compact">
+                  <SelectValue aria-label={timeRangeLabels[timeRange]}>{timeRangeLabels[timeRange]}</SelectValue>
+               </SelectTrigger>
+            </Runaway>
             <SelectContent position="popper" className="w-36">
                <SelectGroup>
                   <SelectLabel>{t('player.chartTimeRange')}</SelectLabel>
@@ -126,39 +132,41 @@ export function PlayerChartControls() {
          {hasEstimated && (
             <>
                <Separator orientation="vertical" variant="gradient" size="toolbar" className="mx-1" />
-               <Tooltip>
-                  <TooltipTrigger asChild>
-                     <Button
-                        variant="ghost"
-                        size="icon-xs"
-                        aria-label={isShowingEstimated ? t('player.hideEstimatedData') : t('player.showEstimatedData')}
-                        aria-pressed={isShowingEstimated}
-                        onClick={() => setIsShowingEstimated((prev) => !prev)}
-                        style={
-                           isShowingEstimated
-                              ? {
-                                   borderColor: 'var(--profile-accent, var(--primary))',
-                                   backgroundColor: 'var(--profile-accent, var(--primary))',
-                                   color: 'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
-                                }
-                              : {
-                                   color: 'var(--profile-accent-foreground)'
-                                }
-                        }
-                        className={cn(
-                           'size-auto border p-1.5',
-                           isShowingEstimated
-                              ? 'bg-primary/20 text-primary hover:bg-primary/30 border-transparent shadow-xs'
-                              : 'border-border/40 bg-card/80 text-muted-foreground/60 hover:bg-card hover:text-muted-foreground backdrop-blur-xs'
-                        )}
-                     >
-                        {isShowingEstimated ? <FaEye data-icon aria-hidden="true" /> : <FaEyeSlash data-icon aria-hidden="true" />}
-                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                     <p className="font-medium">{isShowingEstimated ? t('player.hideEstimatedData') : t('player.showEstimatedData')}</p>
-                  </TooltipContent>
-               </Tooltip>
+               <Runaway enabled={denyahMode}>
+                  <Tooltip>
+                     <TooltipTrigger asChild>
+                        <Button
+                           variant="ghost"
+                           size="icon-xs"
+                           aria-label={isShowingEstimated ? t('player.hideEstimatedData') : t('player.showEstimatedData')}
+                           aria-pressed={isShowingEstimated}
+                           onClick={() => setIsShowingEstimated((prev) => !prev)}
+                           style={
+                              isShowingEstimated
+                                 ? {
+                                      borderColor: 'var(--profile-accent, var(--primary))',
+                                      backgroundColor: 'var(--profile-accent, var(--primary))',
+                                      color: 'var(--profile-accent-active-foreground, var(--profile-accent-foreground, var(--primary-foreground)))'
+                                   }
+                                 : {
+                                      color: 'var(--profile-accent-foreground)'
+                                   }
+                           }
+                           className={cn(
+                              'size-auto border p-1.5',
+                              isShowingEstimated
+                                 ? 'bg-primary/20 text-primary hover:bg-primary/30 border-transparent shadow-xs'
+                                 : 'border-border/40 bg-card/80 text-muted-foreground/60 hover:bg-card hover:text-muted-foreground backdrop-blur-xs'
+                           )}
+                        >
+                           {isShowingEstimated ? <FaEye data-icon aria-hidden="true" /> : <FaEyeSlash data-icon aria-hidden="true" />}
+                        </Button>
+                     </TooltipTrigger>
+                     <TooltipContent side="bottom">
+                        <p className="font-medium">{isShowingEstimated ? t('player.hideEstimatedData') : t('player.showEstimatedData')}</p>
+                     </TooltipContent>
+                  </Tooltip>
+               </Runaway>
             </>
          )}
       </div>
