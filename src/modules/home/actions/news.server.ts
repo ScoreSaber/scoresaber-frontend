@@ -11,8 +11,6 @@ import { env } from '@/env';
 
 const NEWS_FEED_POST_LIMIT = 15;
 const FEED_CACHE_MS = 10 * 60 * 1000;
-// retry sooner when a source failed so recovery doesn't wait a full cache window
-const FEED_RETRY_MS = 60 * 1000;
 const REQUEST_TIMEOUT_MS = 8_000;
 const POST_BODY_LENGTH = 500;
 const YOUTUBE_POST_BODY_WORD_LIMIT = 22;
@@ -87,7 +85,7 @@ const xMediaSchema = z.object({
       )
       .optional()
 });
-const xUserSchema = z.object({ id: z.string(), username: z.string() });
+const xUserSchema = z.object({ id: z.string(), username: z.string().optional() });
 const xPostsResponseSchema = z.object({
    data: z.array(xTweetSchema).optional(),
    includes: z
@@ -123,7 +121,6 @@ const youtubePlaylistResponseSchema = z.object({ items: z.array(youtubePlaylistI
 type PatreonPost = z.infer<typeof patreonPostSchema>;
 type XTweet = z.infer<typeof xTweetSchema>;
 type XMedia = z.infer<typeof xMediaSchema>;
-type XUser = z.infer<typeof xUserSchema>;
 type YouTubeThumbnails = z.infer<typeof youtubeThumbnailsSchema>;
 
 type YouTubeVideo = {
@@ -142,63 +139,72 @@ type XPost = {
 
 let cachedFeed: { expiresAt: number; feed: HomeNewsFeed } | null = null;
 let pendingRefresh: Promise<HomeNewsFeed> | null = null;
+const cachedSources: {
+   patreon: HomeNewsPost[] | null;
+   youtube: YouTubeVideo[] | null;
+   x: XPost[] | null;
+} = {
+   patreon: null,
+   youtube: null,
+   x: null
+};
 
 export async function getHomeNewsFeed() {
    if (cachedFeed && cachedFeed.expiresAt > Date.now()) return cachedFeed.feed;
 
-   pendingRefresh ??= refreshHomeNewsFeed().finally(() => {
-      pendingRefresh = null;
-   });
-
-   // serve the stale feed while the refresh runs in the background
-   if (cachedFeed) {
-      // nothing awaits the background refresh, so keep a rejection from going unhandled
+   if (!pendingRefresh) {
+      pendingRefresh = refreshHomeNewsFeed().finally(() => {
+         pendingRefresh = null;
+      });
       void pendingRefresh.catch((cause) => console.warn('[home news] background refresh failed', cause));
-      return cachedFeed.feed;
    }
 
-   return pendingRefresh;
+   // external news is optional, so never hold a page response open for it
+   return cachedFeed?.feed ?? emptyHomeNewsFeed();
 }
 
 async function refreshHomeNewsFeed() {
-   const { feed, degraded } = await loadHomeNewsFeed();
-
-   // a degraded fetch never overwrites good data, e.g. youtube vanishing for a day on quota errors
-   if (degraded && cachedFeed) {
-      cachedFeed = {
-         expiresAt: Date.now() + FEED_RETRY_MS,
-         feed: cachedFeed.feed
-      };
-   } else {
-      cachedFeed = {
-         expiresAt: Date.now() + (degraded ? FEED_RETRY_MS : FEED_CACHE_MS),
-         feed
-      };
-   }
+   const feed = await loadHomeNewsFeed();
+   cachedFeed = {
+      expiresAt: Date.now() + FEED_CACHE_MS,
+      feed
+   };
 
    return cachedFeed.feed;
 }
 
-async function loadHomeNewsFeed(): Promise<{ feed: HomeNewsFeed; degraded: boolean }> {
+async function loadHomeNewsFeed(): Promise<HomeNewsFeed> {
    const [patreonPosts, youtubeVideos, xPosts] = await Promise.all([
       fetchOptional('patreon', fetchPatreonPosts),
       fetchOptional('youtube', fetchYouTubeVideos),
       fetchOptional('x', fetchXPosts)
    ]);
-   const degraded = patreonPosts == null || youtubeVideos == null || xPosts == null;
-   const latestRankedBatchVideo = await findLatestRankedBatchVideo(youtubeVideos ?? []);
-   const filteredXPosts = await removeDuplicateXPosts(xPosts ?? [], latestRankedBatchVideo);
-   const posts = [...(patreonPosts ?? []), ...(youtubeVideos ?? []).map(toYouTubePost), ...filteredXPosts]
+
+   if (patreonPosts != null) cachedSources.patreon = patreonPosts;
+   if (youtubeVideos != null) cachedSources.youtube = youtubeVideos;
+   if (xPosts != null) cachedSources.x = xPosts;
+
+   const currentPatreonPosts = cachedSources.patreon ?? [];
+   const currentYouTubeVideos = cachedSources.youtube ?? [];
+   const currentXPosts = cachedSources.x ?? [];
+   const latestRankedBatchVideo = await findLatestRankedBatchVideo(currentYouTubeVideos);
+   const filteredXPosts = await removeDuplicateXPosts(currentXPosts, latestRankedBatchVideo);
+   const posts = [...currentPatreonPosts, ...currentYouTubeVideos.map(toYouTubePost), ...filteredXPosts]
       .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt))
       .slice(0, NEWS_FEED_POST_LIMIT);
 
    return {
-      feed: {
-         posts,
-         latestRankedBatchVideo,
-         generatedAt: new Date().toISOString()
-      },
-      degraded
+      posts,
+      latestRankedBatchVideo,
+      generatedAt: new Date().toISOString()
+   };
+}
+
+function emptyHomeNewsFeed(): HomeNewsFeed {
+   return {
+      posts: [],
+      latestRankedBatchVideo: null,
+      generatedAt: new Date().toISOString()
    };
 }
 
@@ -230,19 +236,9 @@ async function fetchPatreonPosts(): Promise<HomeNewsPost[]> {
    url.searchParams.set('fields[post]', 'title,content,published_at,url,is_public');
    url.searchParams.set('page[count]', String(NEWS_FEED_POST_LIMIT));
 
-   const posts: PatreonPost[] = [];
-   let nextUrl: URL | null = url;
-   while (nextUrl) {
-      const response: z.output<typeof patreonPostsResponseSchema> = await fetchJson('patreon', nextUrl, patreonPostsResponseSchema, {
-         headers: patreonHeaders()
-      });
+   const response = await fetchJson('patreon', url, patreonPostsResponseSchema, { headers: patreonHeaders() });
 
-      posts.push(...(response.data ?? []));
-      const next: string | null | undefined = response.links?.next;
-      nextUrl = next ? new URL(next) : null;
-   }
-
-   return posts
+   return (response.data ?? [])
       .filter((post) => post.attributes.is_public)
       .sort((a, b) => Date.parse(b.attributes.published_at ?? '') - Date.parse(a.attributes.published_at ?? ''))
       .map((post) => ({
@@ -287,7 +283,7 @@ async function fetchXPosts(): Promise<XPost[]> {
       const quoteReference = contentTweet.referenced_tweets?.find((reference) => reference.type === 'quoted');
       const quotedTweet = quoteReference ? tweetsById.get(quoteReference.id) : undefined;
       const quotedAuthor = quotedTweet?.author_id ? usersById.get(quotedTweet.author_id) : undefined;
-      const quotedPost = quotedTweet && quotedAuthor ? toQuotedPost(quotedTweet, quotedAuthor, mediaByKey) : undefined;
+      const quotedPost = quotedTweet && quotedAuthor?.username ? toQuotedPost(quotedTweet, quotedAuthor.username, mediaByKey) : undefined;
       const text = tweetText(contentTweet, quotedPost?.id);
       const { images, video } = tweetMedia(contentTweet, mediaByKey);
       if (!text && images.length === 0 && !video && !quotedPost) return [];
@@ -325,15 +321,15 @@ async function fetchXPosts(): Promise<XPost[]> {
    });
 }
 
-function toQuotedPost(tweet: XTweet, author: XUser, mediaByKey: Map<string, XMedia>): HomeNewsQuotedPost {
+function toQuotedPost(tweet: XTweet, authorUsername: string, mediaByKey: Map<string, XMedia>): HomeNewsQuotedPost {
    const { images, video } = tweetMedia(tweet, mediaByKey);
 
    return {
       id: tweet.id,
-      sourceLabel: `@${author.username}`,
-      sourceHref: `https://x.com/${author.username}`,
+      sourceLabel: `@${authorUsername}`,
+      sourceHref: `https://x.com/${authorUsername}`,
       body: excerpt(tweetText(tweet), POST_BODY_LENGTH),
-      href: `https://x.com/${author.username}/status/${tweet.id}`,
+      href: `https://x.com/${authorUsername}/status/${tweet.id}`,
       publishedAt: tweet.created_at ?? new Date(0).toISOString(),
       images,
       video
@@ -551,7 +547,7 @@ function isRankedBatchVideo(video: YouTubeVideo) {
 }
 
 function tweetLinkedUrls(tweet: XTweet) {
-   return tweet.entities?.urls?.flatMap((url) => [url.unwound_url, url.expanded_url, url.url].filter((value) => value != null)) ?? [];
+   return tweet.entities?.urls?.map((url) => url.unwound_url ?? url.expanded_url ?? url.url) ?? [];
 }
 
 function isPatreonPostUrl(value: string) {
