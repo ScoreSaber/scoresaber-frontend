@@ -123,10 +123,7 @@ export function BswcLiveNotice({ promo, previewLive = false }: { promo: HomeBswc
    if (pathname === '/' || !promo || !featuredMatch || !live || !open) return null;
 
    return (
-      <Card
-         variant="settings"
-         className="bg-card/95 fixed right-3 bottom-[calc(var(--content-offset-bottom)+0.75rem)] z-[1600] w-[min(22rem,calc(100vw-1.5rem))] gap-0 overflow-hidden border-white/20 py-0 shadow-2xl shadow-black/20 backdrop-blur sm:right-4 sm:bottom-4"
-      >
+      <Card variant="settings" className="bg-card/95 w-full gap-0 overflow-hidden border-white/20 py-0 shadow-2xl shadow-black/20 backdrop-blur">
          <div className="relative aspect-video overflow-hidden">
             <BswcPromoImage promo={promo} linked={false} />
             <Button
