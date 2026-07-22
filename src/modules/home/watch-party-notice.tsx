@@ -11,7 +11,7 @@ import { Card } from '@/components/ui/card';
 
 import { readStorageValue, writeStorageValue } from '@/shared/result/storage';
 
-const WATCH_PARTY_URL = 'https://watch.scoresaber.com/?playerId=76561198283584459';
+const WATCH_PARTY_URL = 'https://watch.scoresaber.com/?party=76561198283584459';
 const WATCH_PARTY_NOTICE_DISMISSED_STORAGE_KEY = 'scoresaber-watch-party-notice-dismissed-2026-07';
 
 export function WatchPartyNotice() {
