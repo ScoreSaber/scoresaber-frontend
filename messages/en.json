@@ -176,11 +176,6 @@
             "seconds": "s"
          }
       },
-      "watchParty": {
-         "title": "Something is happening.",
-         "action": "Take a look",
-         "dismiss": "Dismiss live notice"
-      },
       "install": {
          "title": "Ready to compete?",
          "description": "Get ScoreSaber installed on your platform and your scores start counting on leaderboards right away",

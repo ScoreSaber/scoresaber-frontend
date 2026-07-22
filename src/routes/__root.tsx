@@ -13,7 +13,6 @@ import { getLocale, getMessages, getVisibleLocales } from '@/i18n/server';
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import { getHomeBswcPromo } from '@/modules/home/actions/bswc.server';
 import { BswcLiveNotice } from '@/modules/home/bswc-promo-section';
-import { WatchPartyNotice } from '@/modules/home/watch-party-notice';
 import type { RouterContext } from '@/router';
 import { api } from '@/shared/api/server-api';
 import { cn } from '@/shared/format/helpers';
@@ -117,10 +116,7 @@ function RootComponent() {
                debugBreakpoints={data.debugBreakpoints}
                debugPageBackground={data.debugPageBackground}
             >
-               <div className="fixed right-3 bottom-[calc(var(--content-offset-bottom)+0.75rem)] z-[1600] flex w-[min(22rem,calc(100vw-1.5rem))] flex-col gap-3 sm:right-4 sm:bottom-4">
-                  <BswcLiveNotice promo={data.bswc} previewLive={previewBswcLive} />
-                  <WatchPartyNotice />
-               </div>
+               <BswcLiveNotice promo={data.bswc} previewLive={previewBswcLive} />
                <Outlet />
             </AppShell>
          </IntlProvider>
