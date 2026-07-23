@@ -1,5 +1,7 @@
 'use client';
 
+import type { QueryClient } from '@tanstack/react-query';
+
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
@@ -10,6 +12,7 @@ import type { UserControllerGetMeResponse } from '@/shared/api/generated/ApiPara
 import { dynamic } from '@/shared/components/dynamic';
 import { TranslationContextHighlighter, type TranslationMessages } from '@/shared/i18n/translation-context-highlighter';
 import { ConsentManagerGate } from '@/shared/privacy/consent-manager-gate';
+import { QueryProvider } from '@/shared/query/query-provider';
 import { ThemeProvider } from '@/shared/ui-adjacent/theme-provider';
 import { Breakpoints } from '@/shell/debug-breakpoints';
 import { MainContent } from '@/shell/main-content';
@@ -26,6 +29,7 @@ export function AppShell({
    messages,
    visibleLocales,
    initialSidebarCollapsed,
+   queryClient,
    debugBreakpoints,
    debugPageBackground,
    children
@@ -34,6 +38,7 @@ export function AppShell({
    messages: TranslationMessages;
    visibleLocales: Locale[];
    initialSidebarCollapsed: boolean | null;
+   queryClient: QueryClient;
    debugBreakpoints: boolean;
    debugPageBackground: boolean;
    children: React.ReactNode;
@@ -41,22 +46,24 @@ export function AppShell({
    return (
       <ThemeProvider>
          {debugBreakpoints && <Breakpoints />}
-         <AuthProvider initialUser={initialUser}>
-            <TooltipProvider>
-               <OmniSearchProvider>
-                  <RouteTopLoader />
-                  <SidebarProvider visibleLocales={visibleLocales} initialSidebarCollapsed={initialSidebarCollapsed}>
-                     <Sidebar />
-                     <MobileTopBar />
-                     <TranslationContextHighlighter messages={messages} />
-                     <MainContent debugPageBackground={debugPageBackground}>{children}</MainContent>
-                     <MobileBottomBar />
-                  </SidebarProvider>
-                  <OmniSearch />
-                  <Toaster />
-               </OmniSearchProvider>
-            </TooltipProvider>
-         </AuthProvider>
+         <QueryProvider queryClient={queryClient}>
+            <AuthProvider initialUser={initialUser}>
+               <TooltipProvider>
+                  <OmniSearchProvider>
+                     <RouteTopLoader />
+                     <SidebarProvider visibleLocales={visibleLocales} initialSidebarCollapsed={initialSidebarCollapsed}>
+                        <Sidebar />
+                        <MobileTopBar />
+                        <TranslationContextHighlighter messages={messages} />
+                        <MainContent debugPageBackground={debugPageBackground}>{children}</MainContent>
+                        <MobileBottomBar />
+                     </SidebarProvider>
+                     <OmniSearch />
+                     <Toaster />
+                  </OmniSearchProvider>
+               </TooltipProvider>
+            </AuthProvider>
+         </QueryProvider>
          <ConsentManagerGate />
       </ThemeProvider>
    );

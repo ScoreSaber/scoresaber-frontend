@@ -11,7 +11,3 @@ export function mergeMessages(base: Messages, override: Messages): Messages {
       })
    );
 }
-
-export function selectMessages(messages: Messages, namespaces: readonly string[]): Messages {
-   return Object.fromEntries(namespaces.map((namespace) => [namespace, messages[namespace]]).filter(([, value]) => value !== undefined));
-}
