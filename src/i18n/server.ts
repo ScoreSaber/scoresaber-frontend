@@ -18,10 +18,9 @@ import zhCnMessages from '../../messages/zh-CN.json';
 import zhTwMessages from '../../messages/zh-TW.json';
 
 import { defaultLocale, locales, parseLocale, type Locale } from '@/i18n/config';
+import { mergeMessages, selectMessages, type Messages } from '@/shared/i18n/messages';
+import { getRouteNamespaces } from '@/shared/i18n/route-namespaces';
 
-interface Messages {
-   [key: string]: string | Messages;
-}
 type AcceptedLocale = {
    value: string;
    quality: number;
@@ -60,22 +59,15 @@ export async function getLocale(): Promise<Locale> {
    return getAcceptedLocale(getRequestHeaders().get('accept-language')) ?? defaultLocale;
 }
 
-export async function getMessages(): Promise<Messages> {
+export async function getMessages(pathname = '/'): Promise<Messages> {
    const locale = await getLocale();
-   return locale === defaultLocale ? enMessages : mergeMessages(enMessages, localeMessages[locale]);
+   const namespaces = getRouteNamespaces(pathname);
+   const messages = selectMessages(enMessages, namespaces);
+   return locale === defaultLocale ? messages : mergeMessages(messages, selectMessages(localeMessages[locale], namespaces));
 }
 
 export function getVisibleLocales(): Locale[] {
    return locales.filter((locale) => locale === defaultLocale || hasMessages(localeMessages[locale]));
-}
-
-function mergeMessages(base: Messages, override: Messages): Messages {
-   return Object.fromEntries(Object.entries(base).map(([key, value]) => [key, mergeMessage(value, override[key])]));
-}
-
-function mergeMessage(base: string | Messages, override: string | Messages | undefined) {
-   if (typeof base === 'string') return typeof override === 'string' && override.trim() ? override : base;
-   return mergeMessages(base, typeof override === 'string' ? {} : (override ?? {}));
 }
 
 function hasMessages(value: string | Messages): boolean {

@@ -31,15 +31,17 @@ export function NewsColumn({ posts }: { posts: HomeNewsPost[] }) {
    }
 
    return (
-      <div className="relative min-h-0 flex-1">
+      <div
+         className={cn(
+            'relative min-h-0 min-w-0 flex-1',
+            showTopScrollFade && showBottomScrollFade && 'home-news-scroll-fade-both',
+            showTopScrollFade && !showBottomScrollFade && 'home-news-scroll-fade-top',
+            !showTopScrollFade && showBottomScrollFade && 'home-news-scroll-fade-bottom'
+         )}
+      >
          <div
             ref={scrollRef}
-            className={cn(
-               'grid max-h-[19.25rem] auto-rows-min gap-2.5 overflow-y-auto pr-1',
-               showTopScrollFade && showBottomScrollFade && 'home-news-scroll-fade-both',
-               showTopScrollFade && !showBottomScrollFade && 'home-news-scroll-fade-top',
-               !showTopScrollFade && showBottomScrollFade && 'home-news-scroll-fade-bottom'
-            )}
+            className="grid max-h-[19.25rem] min-w-0 auto-rows-min gap-2.5 overflow-x-hidden overflow-y-auto pr-1 [scrollbar-gutter:stable]"
          >
             {posts.map((post) => (
                <NewsCard key={post.id} post={post} />
@@ -90,7 +92,7 @@ function NewsCard({ post }: { post: HomeNewsPost }) {
    const showReadMore = post.source !== 'youtube' && !expanded && (clamped || (hasMedia && !mediaAlwaysVisible));
 
    return (
-      <Card variant="settings" className="min-h-0 gap-2 border-white/20 p-4">
+      <Card variant="settings" className="min-h-0 min-w-0 gap-2 border-white/20 p-4">
          {post.repostedBy && (
             <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
                <Repeat2 className="size-3.5" aria-hidden />
@@ -99,13 +101,13 @@ function NewsCard({ post }: { post: HomeNewsPost }) {
                </a>
             </div>
          )}
-         <div className="text-muted-foreground flex items-center gap-2 text-xs">
+         <div className="text-muted-foreground flex min-w-0 items-center gap-2 text-xs">
             <Icon className="size-3.5 shrink-0 fill-current" aria-hidden />
             <a
                href={post.sourceHref ?? post.href}
                target="_blank"
                rel="noreferrer"
-               className="text-foreground hover:text-primary font-semibold transition-colors"
+               className="text-foreground hover:text-primary min-w-0 truncate font-semibold transition-colors"
             >
                {post.sourceLabel}
             </a>

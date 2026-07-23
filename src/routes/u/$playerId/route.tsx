@@ -80,6 +80,21 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
       const numericId = isPlayerId.safeParse(data.playerId);
       const token = readAuthCookie();
       const aliasApi = token ? api : publicApi;
+      const knownPlayerId = numericId.success ? numericId.data.toString() : null;
+      const scoresPromise = knownPlayerId
+         ? optionalApiData(
+              publicApi.player.playerControllerGetPlayerScores({
+                 id: knownPlayerId,
+                 limit: 8,
+                 page: data.search.page ?? 1,
+                 sort: data.search.sort ?? 'top',
+                 search: data.search.search
+              })
+           )
+         : null;
+      const historyPromise = knownPlayerId ? optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: knownPlayerId })) : null;
+      const aliasesPromise = knownPlayerId ? optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: knownPlayerId })) : null;
+      const connectionsPromise = token ? optionalApi(api.user.userControllerGetConnections().then((r) => r.data)) : null;
       const playerResult = numericId.success
          ? await pageApiData(publicApi.player.playerControllerGetPlayer({ id: numericId.data.toString() }))
          : await pageApiData(publicApi.player.playerControllerGetPlayerByVanity({ slug: data.playerId.toLowerCase() }));
@@ -103,15 +118,16 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
       const apiPlusOnePP = playerResult.data.stats.plusOnePP;
 
       const [scores, plusOneScores, history, aliases, connections] = await Promise.all([
-         optionalApiData(
-            publicApi.player.playerControllerGetPlayerScores({
-               id: apiPlayerId,
-               limit: 8,
-               page: data.search.page ?? 1,
-               sort: data.search.sort ?? 'top',
-               search: data.search.search
-            })
-         ),
+         scoresPromise ??
+            optionalApiData(
+               publicApi.player.playerControllerGetPlayerScores({
+                  id: apiPlayerId,
+                  limit: 8,
+                  page: data.search.page ?? 1,
+                  sort: data.search.sort ?? 'top',
+                  search: data.search.search
+               })
+            ),
          apiPlusOnePP == null
             ? optionalApiData(
                  publicApi.player.playerControllerGetPlayerScores({
@@ -122,9 +138,9 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
                  })
               )
             : null,
-         optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
-         optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId })),
-         token ? optionalApi(api.user.userControllerGetConnections().then((r) => r.data)) : null
+         historyPromise ?? optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
+         aliasesPromise ?? optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId })),
+         connectionsPromise
       ]);
       const plusOneRawPP =
          apiPlusOnePP ??

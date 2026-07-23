@@ -54,16 +54,15 @@ let pendingRefresh: Promise<HomeBswcPromo | null> | null = null;
 export async function getHomeBswcPromo() {
    if (cachedPromo && cachedPromo.expiresAt > Date.now()) return cachedPromo.promo;
 
-   pendingRefresh ??= refreshHomeBswcPromo().finally(() => {
-      pendingRefresh = null;
-   });
-
-   if (cachedPromo) {
+   if (!pendingRefresh) {
+      pendingRefresh = refreshHomeBswcPromo().finally(() => {
+         pendingRefresh = null;
+      });
       void pendingRefresh.catch((cause) => console.warn('[home bswc] background refresh failed', cause));
-      return cachedPromo.promo;
    }
 
-   return pendingRefresh;
+   // tournament data is optional, so never hold a page response open for it
+   return cachedPromo?.promo ?? null;
 }
 
 async function refreshHomeBswcPromo() {

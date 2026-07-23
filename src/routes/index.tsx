@@ -24,6 +24,8 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 
 const optionalSearchString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
 const BSWC_PROMO_PRIORITY_WINDOW_MS = 24 * 60 * 60 * 1000;
+const HOME_AGGREGATES_CACHE_MS = 60 * 1000;
+const HOME_AGGREGATES_RETRY_MS = 15 * 1000;
 
 const homeSearchSchema = z.object({
    accountMergeChallengeId: optionalSearchString,
@@ -38,8 +40,38 @@ type HomePageData = {
    prioritizeBswc: boolean;
 };
 
+type HomeAggregates = Pick<HomePageData, 'topPlayers' | 'trendingMaps'>;
+
+let cachedHomeAggregates: { expiresAt: number; data: HomeAggregates } | null = null;
+let pendingHomeAggregatesRefresh: Promise<HomeAggregates> | null = null;
+
 const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Promise<HomePageData> => {
-   const [playersResponse, mapsResponse, news, bswc] = await Promise.all([
+   const [aggregates, news, bswc] = await Promise.all([getHomeAggregates(), getHomeNewsFeed(), getHomeBswcPromo()]);
+
+   return {
+      ...aggregates,
+      news,
+      bswc,
+      prioritizeBswc:
+         bswc?.liveMatch != null || (bswc?.nextMatch != null && Date.parse(bswc.nextMatch.startsAt) <= Date.now() + BSWC_PROMO_PRIORITY_WINDOW_MS)
+   };
+});
+
+async function getHomeAggregates() {
+   if (cachedHomeAggregates && cachedHomeAggregates.expiresAt > Date.now()) return cachedHomeAggregates.data;
+
+   if (!pendingHomeAggregatesRefresh) {
+      pendingHomeAggregatesRefresh = refreshHomeAggregates().finally(() => {
+         pendingHomeAggregatesRefresh = null;
+      });
+   }
+
+   // retain stale data during refresh, but let the first request populate the page normally
+   return cachedHomeAggregates?.data ?? pendingHomeAggregatesRefresh;
+}
+
+async function refreshHomeAggregates(): Promise<HomeAggregates> {
+   const [playersResponse, mapsResponse] = await Promise.all([
       optionalApi(
          publicApi.player
             .playerControllerGetPlayers({
@@ -62,20 +94,20 @@ const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Prom
                sortDirection: HOME_TRENDING_MAP_SEARCH.sortDirection
             })
             .then((response) => response.data)
-      ),
-      getHomeNewsFeed(),
-      getHomeBswcPromo()
+      )
    ]);
-
-   return {
+   const data = {
       topPlayers: playersResponse?.data ?? [],
-      trendingMaps: mapsResponse?.data ?? [],
-      news,
-      bswc,
-      prioritizeBswc:
-         bswc?.liveMatch != null || (bswc?.nextMatch != null && Date.parse(bswc.nextMatch.startsAt) <= Date.now() + BSWC_PROMO_PRIORITY_WINDOW_MS)
+      trendingMaps: mapsResponse?.data ?? []
    };
-});
+
+   cachedHomeAggregates = {
+      expiresAt: Date.now() + (playersResponse || mapsResponse ? HOME_AGGREGATES_CACHE_MS : HOME_AGGREGATES_RETRY_MS),
+      data
+   };
+
+   return data;
+}
 
 export const Route = createFileRoute('/')({
    validateSearch: (search) => homeSearchSchema.parse(search),
