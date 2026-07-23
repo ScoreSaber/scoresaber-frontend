@@ -243,6 +243,7 @@ interface RankingItemProps {
    className?: string;
    avatarPriority?: boolean;
    showLivePresence?: boolean;
+   showRankChange?: boolean;
 }
 
 export function RankingCard({
@@ -337,7 +338,13 @@ function RankingCardSummary({ player, countryFiltered, isDefaultSort, listPositi
 
    return (
       <div className="flex items-center gap-2.5">
-         <RankingCardRank player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
+         <RankingCardRank
+            player={player}
+            countryFiltered={countryFiltered}
+            isDefaultSort={isDefaultSort}
+            listPosition={listPosition}
+            showRankChange={false}
+         />
          <span className="relative inline-flex shrink-0">
             <PlayerAvatar
                src={player.avatar}
@@ -364,7 +371,7 @@ function RankingCardSummary({ player, countryFiltered, isDefaultSort, listPositi
    );
 }
 
-function RankingCardRank({ player, countryFiltered, isDefaultSort, listPosition }: RankingItemProps) {
+function RankingCardRank({ player, countryFiltered, isDefaultSort, listPosition, showRankChange = true }: RankingItemProps) {
    const stats = player.stats;
 
    return (
@@ -375,7 +382,7 @@ function RankingCardRank({ player, countryFiltered, isDefaultSort, listPosition 
             listPosition={listPosition}
             globalRank={stats.rank}
             countryRank={stats.countryRank}
-            rankChange={stats.rankChange}
+            rankChange={showRankChange ? stats.rankChange : null}
             country={player.country}
          />
       </span>
