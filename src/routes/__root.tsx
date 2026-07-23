@@ -16,7 +16,6 @@ import { BswcLiveNotice } from '@/modules/home/bswc-promo-section';
 import type { RouterContext } from '@/router';
 import { api } from '@/shared/api/server-api';
 import { cn } from '@/shared/format/helpers';
-import { getRouteNamespaces } from '@/shared/i18n/route-namespaces';
 import { optionalApi } from '@/shared/result/api';
 import { absoluteSiteUrl, SITE_DESCRIPTION, SITE_NAME, buildSeoHead } from '@/shared/seo/metadata';
 import { parseServerTheme, THEME_COOKIE_NAME, THEME_MEDIA_QUERY, THEME_STORAGE_KEY } from '@/shared/ui-adjacent/theme';
@@ -55,28 +54,25 @@ const getRootShellData = createServerFn({ method: 'GET' }).handler(async () => {
    };
 });
 
-const getRouteMessages = createServerFn({ method: 'GET' })
-   .inputValidator(z.object({ pathname: z.string() }))
-   .handler(({ data: { pathname } }) => getMessages(pathname));
+const getRouteMessages = createServerFn({ method: 'GET' }).handler(() => getMessages());
 
 export const Route = createRootRouteWithContext<RouterContext>()({
    validateSearch: (search) => rootSearchSchema.parse(search),
    loader: {
       staleReloadMode: 'blocking',
-      handler: async ({ context, location }) => {
+      handler: async ({ context }) => {
          const shell = await context.queryClient.ensureQueryData({
             queryKey: ROOT_SHELL_QUERY_KEY,
             queryFn: () => getRootShellData(),
             staleTime: ROOT_DATA_STALE_MS
          });
-         const namespaces = getRouteNamespaces(location.pathname);
          const messages = await context.queryClient.ensureQueryData({
-            queryKey: ['root-messages', shell.locale, ...namespaces],
-            queryFn: () => getRouteMessages({ data: { pathname: location.pathname } }),
+            queryKey: ['root-messages', shell.locale],
+            queryFn: () => getRouteMessages(),
             staleTime: Infinity
          });
 
-         return { ...shell, messages, namespaces };
+         return { ...shell, messages };
       }
    },
    preload: false,
@@ -125,11 +121,11 @@ function RootComponent() {
    const previewBswcLive = search.bswcLive === '1';
 
    if (!queryClient.getQueryData(ROOT_SHELL_QUERY_KEY)) {
-      const { messages: _, namespaces: __, ...shell } = data;
+      const { messages: _, ...shell } = data;
       queryClient.setQueryData(ROOT_SHELL_QUERY_KEY, shell);
    }
-   if (!queryClient.getQueryData(['root-messages', data.locale, ...data.namespaces])) {
-      queryClient.setQueryData(['root-messages', data.locale, ...data.namespaces], data.messages);
+   if (!queryClient.getQueryData(['root-messages', data.locale])) {
+      queryClient.setQueryData(['root-messages', data.locale], data.messages);
    }
 
    return (

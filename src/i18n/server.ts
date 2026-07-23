@@ -18,8 +18,7 @@ import zhCnMessages from '../../messages/zh-CN.json';
 import zhTwMessages from '../../messages/zh-TW.json';
 
 import { defaultLocale, locales, parseLocale, type Locale } from '@/i18n/config';
-import { mergeMessages, selectMessages, type Messages } from '@/shared/i18n/messages';
-import { getRouteNamespaces } from '@/shared/i18n/route-namespaces';
+import { mergeMessages, type Messages } from '@/shared/i18n/messages';
 
 type AcceptedLocale = {
    value: string;
@@ -59,11 +58,9 @@ export async function getLocale(): Promise<Locale> {
    return getAcceptedLocale(getRequestHeaders().get('accept-language')) ?? defaultLocale;
 }
 
-export async function getMessages(pathname = '/'): Promise<Messages> {
+export async function getMessages(): Promise<Messages> {
    const locale = await getLocale();
-   const namespaces = getRouteNamespaces(pathname);
-   const messages = selectMessages(enMessages, namespaces);
-   return locale === defaultLocale ? messages : mergeMessages(messages, selectMessages(localeMessages[locale], namespaces));
+   return locale === defaultLocale ? enMessages : mergeMessages(enMessages, localeMessages[locale]);
 }
 
 export function getVisibleLocales(): Locale[] {
