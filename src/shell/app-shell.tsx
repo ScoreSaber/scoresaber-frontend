@@ -28,7 +28,6 @@ export function AppShell({
    initialUser,
    messages,
    visibleLocales,
-   initialSeenHome,
    initialSidebarCollapsed,
    queryClient,
    debugBreakpoints,
@@ -38,7 +37,6 @@ export function AppShell({
    initialUser: UserControllerGetMeResponse | null;
    messages: TranslationMessages;
    visibleLocales: Locale[];
-   initialSeenHome: boolean;
    initialSidebarCollapsed: boolean | null;
    queryClient: QueryClient;
    debugBreakpoints: boolean;
@@ -53,11 +51,7 @@ export function AppShell({
                <TooltipProvider>
                   <OmniSearchProvider>
                      <RouteTopLoader />
-                     <SidebarProvider
-                        visibleLocales={visibleLocales}
-                        initialSeenHome={initialSeenHome}
-                        initialSidebarCollapsed={initialSidebarCollapsed}
-                     >
+                     <SidebarProvider visibleLocales={visibleLocales} initialSidebarCollapsed={initialSidebarCollapsed}>
                         <Sidebar />
                         <MobileTopBar />
                         <TranslationContextHighlighter messages={messages} />

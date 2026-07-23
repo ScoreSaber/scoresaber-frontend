@@ -20,7 +20,7 @@ import { optionalApi } from '@/shared/result/api';
 import { absoluteSiteUrl, SITE_DESCRIPTION, SITE_NAME, buildSeoHead } from '@/shared/seo/metadata';
 import { parseServerTheme, THEME_COOKIE_NAME, THEME_MEDIA_QUERY, THEME_STORAGE_KEY } from '@/shared/ui-adjacent/theme';
 import { AppShell } from '@/shell/app-shell';
-import { parseSidebarCollapsedCookie, SEEN_HOME_COOKIE_NAME, SIDEBAR_COLLAPSED_COOKIE_NAME } from '@/shell/sidebar-state';
+import { parseSidebarCollapsedCookie, SIDEBAR_COLLAPSED_COOKIE_NAME } from '@/shell/sidebar-state';
 
 const themeInitScript = `(function(){var theme='system';try{var stored=localStorage.getItem('${THEME_STORAGE_KEY}');if(stored==='light'||stored==='dark'||stored==='system')theme=stored}catch(e){}var resolved=theme==='system'?(window.matchMedia('${THEME_MEDIA_QUERY}').matches?'dark':'light'):theme;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved;try{document.cookie='${THEME_COOKIE_NAME}='+theme+'; Path=/; Max-Age=31536000; SameSite=Lax'}catch(e){}})()`;
 const criticalPaintStyles = `@layer theme,base,components,utilities;@layer base{*,::after,::before,::backdrop,::file-selector-button{border-color:var(--border,hsl(0 0% 20%))}body{background:var(--background,hsl(240 10% 4%));color:var(--foreground,hsl(60 7% 90%))}}@layer utilities{.app-container{margin-inline:auto;padding-inline:2rem;max-width:1300px}}`;
@@ -36,7 +36,6 @@ const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
    const token = readAuthCookie();
    const [user, bswc] = await Promise.all([token ? optionalApi(api.user.userControllerGetMe().then((r) => r.data)) : null, getHomeBswcPromo()]);
    const initialTheme = parseServerTheme(getCookie(THEME_COOKIE_NAME)) ?? null;
-   const seenHome = getCookie(SEEN_HOME_COOKIE_NAME) === 'true';
    const sidebarCollapsed = parseSidebarCollapsedCookie(getCookie(SIDEBAR_COLLAPSED_COOKIE_NAME));
    const locale = await getLocale();
    const messages = await getMessages();
@@ -45,7 +44,6 @@ const getRootData = createServerFn({ method: 'GET' }).handler(async () => {
    return {
       user,
       initialTheme,
-      seenHome,
       sidebarCollapsed,
       locale,
       messages,
@@ -110,7 +108,6 @@ function RootComponent() {
                initialUser={data.user}
                messages={data.messages}
                visibleLocales={data.visibleLocales}
-               initialSeenHome={data.seenHome}
                initialSidebarCollapsed={data.sidebarCollapsed}
                queryClient={queryClient}
                debugBreakpoints={data.debugBreakpoints}
