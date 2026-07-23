@@ -2,13 +2,15 @@ import '@/styles/globals.css';
 
 import type { ReactNode } from 'react';
 
-import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { createRootRouteWithContext, HeadContent, Outlet, Scripts, useLocation } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getCookie } from '@tanstack/react-start/server';
 import { IntlProvider } from 'use-intl';
 import { z } from 'zod';
 
 import { env } from '@/env';
+import { parseLocale, type Locale } from '@/i18n/config';
 import { getLocale, getMessages, getVisibleLocales } from '@/i18n/server';
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import { getHomeBswcPromo } from '@/modules/home/actions/bswc.server';
@@ -16,6 +18,14 @@ import { BswcLiveNotice } from '@/modules/home/bswc-promo-section';
 import type { RouterContext } from '@/router';
 import { api } from '@/shared/api/server-api';
 import { cn } from '@/shared/format/helpers';
+import {
+   getRouteMessagesQueryKey,
+   getRouteNamespaces,
+   rootShellQueryKey,
+   translationNamespaceSchema,
+   type TranslationNamespace
+} from '@/shared/i18n/route-namespaces';
+import { QueryProvider } from '@/shared/query/query-provider';
 import { optionalApi } from '@/shared/result/api';
 import { absoluteSiteUrl, SITE_DESCRIPTION, SITE_NAME, buildSeoHead } from '@/shared/seo/metadata';
 import { parseServerTheme, THEME_COOKIE_NAME, THEME_MEDIA_QUERY, THEME_STORAGE_KEY } from '@/shared/ui-adjacent/theme';
@@ -33,7 +43,6 @@ const rootSearchSchema = z
    .passthrough();
 
 const ROOT_DATA_STALE_MS = 5 * 60 * 1000;
-const ROOT_SHELL_QUERY_KEY = ['root-shell'] as const;
 
 const getRootShellData = createServerFn({ method: 'GET' }).handler(async () => {
    const token = readAuthCookie();
@@ -54,29 +63,50 @@ const getRootShellData = createServerFn({ method: 'GET' }).handler(async () => {
    };
 });
 
-const getRouteMessages = createServerFn({ method: 'GET' }).handler(() => getMessages());
+const getRouteMessages = createServerFn({ method: 'GET' })
+   .validator(
+      z.object({
+         locale: z.string().transform(parseLocale),
+         namespaces: z.array(translationNamespaceSchema)
+      })
+   )
+   .handler(({ data: { locale, namespaces } }) => getMessages(locale, namespaces));
+
+function rootShellQueryOptions() {
+   return {
+      queryKey: rootShellQueryKey,
+      queryFn: () => getRootShellData(),
+      staleTime: ROOT_DATA_STALE_MS
+   };
+}
+
+function routeMessagesQueryOptions(locale: Locale, namespaces: TranslationNamespace[]) {
+   return {
+      queryKey: getRouteMessagesQueryKey(locale, namespaces),
+      queryFn: () => getRouteMessages({ data: { locale, namespaces } }),
+      staleTime: Infinity
+   };
+}
 
 export const Route = createRootRouteWithContext<RouterContext>()({
    validateSearch: (search) => rootSearchSchema.parse(search),
+   beforeLoad: async ({ context, location }) => {
+      const shell = await context.queryClient.ensureQueryData(rootShellQueryOptions());
+      await context.queryClient.ensureQueryData(routeMessagesQueryOptions(shell.locale, getRouteNamespaces(location.pathname)));
+   },
    loader: {
       staleReloadMode: 'blocking',
-      handler: async ({ context }) => {
-         const shell = await context.queryClient.ensureQueryData({
-            queryKey: ROOT_SHELL_QUERY_KEY,
-            queryFn: () => getRootShellData(),
-            staleTime: ROOT_DATA_STALE_MS
-         });
-         const messages = await context.queryClient.ensureQueryData({
-            queryKey: ['root-messages', shell.locale],
-            queryFn: () => getRouteMessages(),
-            staleTime: Infinity
-         });
+      handler: async ({ context, location }) => {
+         const shell = await context.queryClient.ensureQueryData(rootShellQueryOptions());
+         const namespaces = getRouteNamespaces(location.pathname);
+         const messages = await context.queryClient.ensureQueryData(routeMessagesQueryOptions(shell.locale, namespaces));
 
-         return { ...shell, messages };
+         return { shell, messages, namespaces };
       }
    },
    preload: false,
-   shouldReload: true,
+   // the loader bootstraps hydration; beforeLoad warms each destination independently
+   shouldReload: false,
    head: () => ({
       meta: [
          { charSet: 'utf-8' },
@@ -116,31 +146,43 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
    const data = Route.useLoaderData();
-   const search = Route.useSearch();
    const { queryClient } = Route.useRouteContext();
-   const previewBswcLive = search.bswcLive === '1';
 
-   if (!queryClient.getQueryData(ROOT_SHELL_QUERY_KEY)) {
-      const { messages: _, ...shell } = data;
-      queryClient.setQueryData(ROOT_SHELL_QUERY_KEY, shell);
+   if (!queryClient.getQueryData(rootShellQueryKey)) {
+      queryClient.setQueryData(rootShellQueryKey, data.shell);
    }
-   if (!queryClient.getQueryData(['root-messages', data.locale])) {
-      queryClient.setQueryData(['root-messages', data.locale], data.messages);
+   const initialMessagesQueryKey = getRouteMessagesQueryKey(data.shell.locale, data.namespaces);
+   if (!queryClient.getQueryData(initialMessagesQueryKey)) {
+      queryClient.setQueryData(initialMessagesQueryKey, data.messages);
    }
 
    return (
-      <RootDocument locale={data.locale} initialTheme={data.initialTheme} debugReactScan={data.debugReactScan}>
-         <IntlProvider locale={data.locale} messages={data.messages} timeZone="UTC">
+      <QueryProvider queryClient={queryClient}>
+         <RootApplication />
+      </QueryProvider>
+   );
+}
+
+function RootApplication() {
+   const search = Route.useSearch();
+   const pathname = useLocation({ select: (location) => location.pathname });
+   const { data: shell } = useSuspenseQuery(rootShellQueryOptions());
+   const namespaces = getRouteNamespaces(pathname);
+   const { data: messages } = useSuspenseQuery(routeMessagesQueryOptions(shell.locale, namespaces));
+   const previewBswcLive = search.bswcLive === '1';
+
+   return (
+      <RootDocument locale={shell.locale} initialTheme={shell.initialTheme} debugReactScan={shell.debugReactScan}>
+         <IntlProvider locale={shell.locale} messages={messages} timeZone="UTC">
             <AppShell
-               initialUser={data.user}
-               messages={data.messages}
-               visibleLocales={data.visibleLocales}
-               initialSidebarCollapsed={data.sidebarCollapsed}
-               queryClient={queryClient}
-               debugBreakpoints={data.debugBreakpoints}
-               debugPageBackground={data.debugPageBackground}
+               initialUser={shell.user}
+               messages={messages}
+               visibleLocales={shell.visibleLocales}
+               initialSidebarCollapsed={shell.sidebarCollapsed}
+               debugBreakpoints={shell.debugBreakpoints}
+               debugPageBackground={shell.debugPageBackground}
             >
-               <BswcLiveNotice promo={data.bswc} previewLive={previewBswcLive} />
+               <BswcLiveNotice promo={shell.bswc} previewLive={previewBswcLive} />
                <Outlet />
             </AppShell>
          </IntlProvider>

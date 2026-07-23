@@ -2,6 +2,7 @@
 
 import { useTransition } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
 import { Languages } from 'lucide-react';
@@ -12,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { localeNames } from '@/i18n/config';
 import { cn } from '@/shared/format/helpers';
 import { setLocale } from '@/shared/i18n/actions/public';
+import { rootShellQueryKey, routeMessagesQueryKeyPrefix } from '@/shared/i18n/route-namespaces';
 import { useSidebar } from '@/shell/sidebar-provider';
 
 const navLinkClass = 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors';
@@ -27,6 +29,7 @@ type LanguageSwitcherProps = {
 export function LanguageSwitcher({ className, contentClassName, open, onOpenChangeAction }: LanguageSwitcherProps) {
    const locale = useLocale();
    const router = useRouter();
+   const queryClient = useQueryClient();
    const { visibleLocales } = useSidebar();
    const setLocaleAction = useServerFn(setLocale);
    const [pending, startTransition] = useTransition();
@@ -34,7 +37,9 @@ export function LanguageSwitcher({ className, contentClassName, open, onOpenChan
    function handleChange(value: string) {
       startTransition(async () => {
          await setLocaleAction({ data: value });
-         router.invalidate();
+         queryClient.removeQueries({ queryKey: routeMessagesQueryKeyPrefix });
+         await queryClient.invalidateQueries({ queryKey: rootShellQueryKey, exact: true });
+         await router.invalidate();
       });
    }
 

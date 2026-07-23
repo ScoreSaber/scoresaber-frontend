@@ -18,7 +18,8 @@ import zhCnMessages from '../../messages/zh-CN.json';
 import zhTwMessages from '../../messages/zh-TW.json';
 
 import { defaultLocale, locales, parseLocale, type Locale } from '@/i18n/config';
-import { mergeMessages, type Messages } from '@/shared/i18n/messages';
+import { mergeMessages, selectMessages, type Messages } from '@/shared/i18n/messages';
+import type { TranslationNamespace } from '@/shared/i18n/route-namespaces';
 
 type AcceptedLocale = {
    value: string;
@@ -47,9 +48,10 @@ const localeMessages: Record<Locale, Messages> = {
 };
 
 const totalMessageCount = countMessages(enMessages);
-const localeCompletion = Object.fromEntries(
-   locales.map((locale) => [locale, locale === defaultLocale ? 1 : countTranslatedMessages(enMessages, localeMessages[locale]) / totalMessageCount])
-) as Record<Locale, number>;
+const localeCompletion = new Map<Locale, number>();
+for (const locale of locales) {
+   localeCompletion.set(locale, locale === defaultLocale ? 1 : countTranslatedMessages(enMessages, localeMessages[locale]) / totalMessageCount);
+}
 
 export async function getLocale(): Promise<Locale> {
    const cookieLocale = getCookie('locale');
@@ -58,9 +60,9 @@ export async function getLocale(): Promise<Locale> {
    return getAcceptedLocale(getRequestHeaders().get('accept-language')) ?? defaultLocale;
 }
 
-export async function getMessages(): Promise<Messages> {
-   const locale = await getLocale();
-   return locale === defaultLocale ? enMessages : mergeMessages(enMessages, localeMessages[locale]);
+export function getMessages(locale: Locale, namespaces: readonly TranslationNamespace[]): Messages {
+   const messages = selectMessages(enMessages, namespaces);
+   return locale === defaultLocale ? messages : mergeMessages(messages, selectMessages(localeMessages[locale], namespaces));
 }
 
 export function getVisibleLocales(): Locale[] {
@@ -74,7 +76,7 @@ function hasMessages(value: string | Messages): boolean {
 function getAcceptedLocale(header: string | null): Locale | null {
    for (const { value } of parseAcceptedLocales(header)) {
       const locale = matchLocale(value);
-      if (locale && localeCompletion[locale] >= MIN_AUTO_LOCALE_COMPLETION) return locale;
+      if (locale && (localeCompletion.get(locale) ?? 0) >= MIN_AUTO_LOCALE_COMPLETION) return locale;
    }
 
    return null;
