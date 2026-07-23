@@ -23,6 +23,7 @@ import { optionalApi } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
 
 const optionalSearchString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
+const BSWC_PROMO_PRIORITY_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 const homeSearchSchema = z.object({
    accountMergeChallengeId: optionalSearchString,
@@ -34,6 +35,7 @@ type HomePageData = {
    trendingMaps: MapControllerGetMapListingsDataItem[];
    news: HomeNewsFeed;
    bswc: HomeBswcPromo | null;
+   prioritizeBswc: boolean;
 };
 
 const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Promise<HomePageData> => {
@@ -69,7 +71,9 @@ const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Prom
       topPlayers: playersResponse?.data ?? [],
       trendingMaps: mapsResponse?.data ?? [],
       news,
-      bswc
+      bswc,
+      prioritizeBswc:
+         bswc?.liveMatch != null || (bswc?.nextMatch != null && Date.parse(bswc.nextMatch.startsAt) <= Date.now() + BSWC_PROMO_PRIORITY_WINDOW_MS)
    };
 });
 
@@ -105,6 +109,7 @@ function HomeRoute() {
    const search = Route.useSearch();
    const t = useTranslations('home');
    const previewBswcLive = search.bswcLive === '1';
+   const showBswcFirst = previewBswcLive || data.prioritizeBswc;
 
    return (
       <div className="dark bg-background text-foreground relative flex-1 overflow-hidden">
@@ -113,9 +118,11 @@ function HomeRoute() {
          <HeroSection />
 
          <div className="relative z-10 mx-auto flex w-full max-w-[1180px] flex-col gap-14 px-4 pt-0 pb-16 sm:px-6 lg:px-10">
-            <section>
-               <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
-            </section>
+            {showBswcFirst && (
+               <section>
+                  <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
+               </section>
+            )}
 
             <section className="grid items-stretch gap-4 lg:grid-cols-[minmax(18rem,1.45fr)_minmax(0,1fr)_minmax(19rem,1.08fr)]">
                <HomeColumn title={t('sections.news')} action={<NewsSocialLinks />}>
@@ -144,6 +151,12 @@ function HomeRoute() {
                   <TrendingMapsColumn maps={data.trendingMaps} />
                </HomeColumn>
             </section>
+
+            {!showBswcFirst && (
+               <section>
+                  <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
+               </section>
+            )}
 
             <section>
                <RankedBatchSection video={data.news.latestRankedBatchVideo} />
