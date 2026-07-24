@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Icons } from '@/shared/components/icons';
 import { generateNavigationOptions } from '@/shared/components/pagination-options';
 import { cn, formatNumber } from '@/shared/format/helpers';
-import { navigateToRoute, type RouteLocation } from '@/shared/url-state/route-location';
+import { isRouterClick, navigateToRoute, type RouteLocation } from '@/shared/url-state/route-location';
 import { useRouteHrefPreload } from '@/shared/url-state/use-route-href-preload';
 
 type PaginationProps<TLocation> = {
@@ -252,16 +252,3 @@ type PaginationArrowsProps<TLocation> = {
    totalPages: number;
    getPageLocation: (page: number) => RouteLocation<TLocation>;
 };
-
-function isRouterClick(event: MouseEvent<HTMLAnchorElement>) {
-   const target = event.currentTarget.getAttribute('target');
-   return (
-      !event.defaultPrevented &&
-      event.button === 0 &&
-      !event.metaKey &&
-      !event.altKey &&
-      !event.ctrlKey &&
-      !event.shiftKey &&
-      (!target || target === '_self')
-   );
-}

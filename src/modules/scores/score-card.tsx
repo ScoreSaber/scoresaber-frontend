@@ -138,7 +138,12 @@ export function ScoreCard({ playerScore, className, overlayAction, presentation 
                         useContainerQueries={presentation}
                      />
                      <div className="min-w-0 items-center justify-center">
-                        <SongInfoCard {...buildSongInfoProps(leaderboard)} showCreatedDate={false} useContainerQueries={presentation} />
+                        <SongInfoCard
+                           {...buildSongInfoProps(leaderboard)}
+                           showCreatedDate={false}
+                           useContainerQueries={presentation}
+                           tapTarget={!presentation}
+                        />
                      </div>
                   </div>
 

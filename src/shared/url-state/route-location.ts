@@ -1,3 +1,5 @@
+import type { MouseEvent } from 'react';
+
 import type { RegisteredRouter, ValidateNavigateOptions } from '@tanstack/react-router';
 
 type BuildLocationOptions = Parameters<RegisteredRouter['buildLocation']>[0];
@@ -20,4 +22,17 @@ export function navigateToRoute<const TLocation>(router: RegisteredRouter, locat
 
 export function preloadRouteLocation<const TLocation>(router: RegisteredRouter, location: RouteLocation<TLocation>) {
    return router.preloadRoute(location);
+}
+
+export function isRouterClick(event: MouseEvent<HTMLAnchorElement>) {
+   const target = event.currentTarget.getAttribute('target');
+   return (
+      !event.defaultPrevented &&
+      event.button === 0 &&
+      !event.metaKey &&
+      !event.altKey &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      (!target || target === '_self')
+   );
 }

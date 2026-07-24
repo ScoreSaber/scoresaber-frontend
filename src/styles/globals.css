@@ -261,7 +261,7 @@
 
 #nprogress .bar {
    position: fixed;
-   top: 0;
+   top: env(safe-area-inset-top, 0px);
    left: 0;
    z-index: 1600;
    width: 100%;

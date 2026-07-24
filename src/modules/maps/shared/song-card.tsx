@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
 import { LinkedNames } from '@/modules/search/search-link';
 import { FadeInImage } from '@/shared/components/fade-in-image';
+import { NAV_CARD_ABOVE_OVERLAY, NAV_CARD_PRESS, NavCardChevron, NavCardOverlay } from '@/shared/components/nav-card';
 import { Time } from '@/shared/components/time';
 import { cn } from '@/shared/format/helpers';
 import { BLURRED_BG_IMAGE_CLASSES, CARD_GRADIENT_CLASSES } from '@/shared/format/styling';
@@ -62,12 +63,15 @@ export function SongCard({
    const tc = useTranslations('common');
    const accent = <div className={cn('absolute top-0 bottom-0 left-0 z-30 w-0.75', accentTooltip && 'cursor-help', accentClass)} />;
    const transparentBackground = background === 'transparent';
+   const linkParams = { id: mapId };
+   const linkSearchWithPage = { ...linkSearch, page: linkSearch.page ?? 1 };
 
    return (
       <div
          className={cn(
             transparentBackground ? 'relative overflow-hidden rounded border bg-card/35' : CARD_GRADIENT_CLASSES,
-            'flex items-center',
+            'flex flex-col md:flex-row md:items-center',
+            !compact && NAV_CARD_PRESS,
             className
          )}
       >
@@ -90,61 +94,87 @@ export function SongCard({
             <div className="from-background/75 via-background/50 to-background/75 absolute inset-0 hidden bg-linear-to-r dark:block" />
          )}
 
-         <div
-            className={cn(
-               'relative z-20 m-2.5 ml-3.5 aspect-square shrink-0 overflow-hidden rounded-md shadow-lg outline outline-1 outline-black/10 dark:outline-white/10',
-               compact ? 'h-14 w-14' : 'h-18 w-18 md:h-21.5 md:w-21.5',
-               coverClassName
-            )}
-         >
-            <FadeInImage src={coverUrl} alt={songName} fill className="object-cover" sizes={compact ? '56px' : '86px'} priority={coverPriority} />
-            {coverBadge && <div className="absolute right-0.75 bottom-0.75 left-0.75 z-10 flex justify-center">{coverBadge}</div>}
-         </div>
+         {!compact && <NavCardOverlay location={{ to: '/map/$id', params: linkParams, search: linkSearchWithPage }} />}
 
-         <div className={cn('relative z-20 flex min-w-0 flex-1 flex-col justify-center py-2.5 pr-3', !compact && 'md:flex-row md:justify-between')}>
-            <div className="flex min-w-0 flex-1 flex-col justify-center">
-               <h3 className={cn('min-w-0 leading-snug', compact ? 'text-sm' : 'text-[15px]')}>
-                  <mapRoute.Link
-                     params={{ id: mapId }}
-                     search={{ ...linkSearch, page: linkSearch.page ?? 1 }}
-                     className="text-foreground block truncate font-bold transition-colors"
-                  >
-                     {songName}
-                     {songSubName ? ` ${songSubName}` : ''}
-                  </mapRoute.Link>
-               </h3>
-               <p className={cn('text-muted-foreground truncate leading-snug', compact ? 'text-xs' : 'text-sm')}>
-                  {tc('by')}{' '}
-                  {compact ? <span className="text-foreground font-semibold">{songAuthorName}</span> : <LinkedNames name={songAuthorName} />}
-               </p>
-               <p className="text-muted-foreground truncate text-xs">
-                  {tc('mappedBy')}{' '}
-                  {compact ? (
-                     <span className="text-foreground font-semibold">{levelAuthorName}</span>
-                  ) : (
-                     <LinkedNames name={levelAuthorName} splitCommas />
+         <div className="flex min-w-0 flex-1 items-center">
+            <div
+               className={cn(
+                  'relative m-2.5 ml-3.5 aspect-square shrink-0 overflow-hidden rounded-md shadow-lg outline outline-1 outline-black/10 dark:outline-white/10',
+                  compact ? 'h-14 w-14' : 'h-24 w-24 md:h-21.5 md:w-21.5',
+                  coverClassName
+               )}
+            >
+               <FadeInImage
+                  src={coverUrl}
+                  alt={songName}
+                  fill
+                  className="object-cover"
+                  sizes={compact ? '56px' : '(min-width: 768px) 86px, 96px'}
+                  priority={coverPriority}
+               />
+               {coverBadge && <div className="absolute right-0.75 bottom-0.75 left-0.75 z-40 flex justify-center">{coverBadge}</div>}
+            </div>
+
+            <div
+               className={cn(
+                  'relative flex min-w-0 flex-1 flex-col justify-center py-2.5 pr-2 md:pr-3',
+                  !compact && 'md:flex-row md:justify-between'
+               )}
+            >
+               <div className="flex min-w-0 flex-1 flex-col justify-center">
+                  <h3 className={cn('min-w-0 leading-snug', compact ? 'text-sm' : 'text-base md:text-[15px]')}>
+                     <mapRoute.Link
+                        params={linkParams}
+                        search={linkSearchWithPage}
+                        className={cn('text-foreground block truncate font-bold transition-colors', NAV_CARD_ABOVE_OVERLAY)}
+                     >
+                        {songName}
+                        {songSubName ? ` ${songSubName}` : ''}
+                     </mapRoute.Link>
+                  </h3>
+                  <p className={cn('text-muted-foreground truncate leading-snug', compact ? 'text-xs' : 'text-sm')}>
+                     {tc('by')}{' '}
+                     {compact ? (
+                        <span className="text-foreground font-semibold">{songAuthorName}</span>
+                     ) : (
+                        <LinkedNames className={NAV_CARD_ABOVE_OVERLAY} name={songAuthorName} />
+                     )}
+                  </p>
+                  <p className={cn('text-muted-foreground truncate', compact ? 'text-xs' : 'text-[13px] md:text-xs')}>
+                     {tc('mappedBy')}{' '}
+                     {compact ? (
+                        <span className="text-foreground font-semibold">{levelAuthorName}</span>
+                     ) : (
+                        <LinkedNames className={NAV_CARD_ABOVE_OVERLAY} name={levelAuthorName} splitCommas />
+                     )}
+                     {showMappedAt && (
+                        <>
+                           {' '}
+                           &middot; <Time date={createdAt} short />
+                        </>
+                     )}
+                  </p>
+
+                  {pills && <div className={cn('flex flex-nowrap items-center gap-1.5 pt-1.5', NAV_CARD_ABOVE_OVERLAY)}>{pills}</div>}
+
+                  {mobileMetadata && compact && (
+                     <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 pt-1.5 text-xs">{mobileMetadata}</div>
                   )}
-                  {showMappedAt && (
-                     <>
-                        {' '}
-                        &middot; <Time date={createdAt} short />
-                     </>
-                  )}
-               </p>
+               </div>
 
-               {pills && <div className="flex flex-nowrap items-center gap-1.5 pt-1.5">{pills}</div>}
-
-               {mobileMetadata && (
-                  <div className={cn('text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 pt-1.5 text-xs', !compact && 'md:hidden')}>
-                     {mobileMetadata}
-                  </div>
+               {desktopMetadata && !compact && (
+                  <div className="hidden shrink-0 md:flex md:flex-col md:items-end md:justify-center md:gap-1 md:pl-3">{desktopMetadata}</div>
                )}
             </div>
 
-            {desktopMetadata && !compact && (
-               <div className="hidden shrink-0 md:flex md:flex-col md:items-end md:justify-center md:gap-1 md:pl-3">{desktopMetadata}</div>
-            )}
+            {!compact && <NavCardChevron className="mr-3" />}
          </div>
+
+         {mobileMetadata && !compact && (
+            <div className="text-muted-foreground border-border/60 relative flex items-center justify-between gap-x-3 border-t px-3.5 py-2.5 text-xs md:hidden">
+               {mobileMetadata}
+            </div>
+         )}
       </div>
    );
 }

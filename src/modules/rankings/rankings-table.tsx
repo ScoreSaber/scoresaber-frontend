@@ -22,6 +22,7 @@ import type {
 } from '@/shared/api/generated/ApiParams';
 import { CountryImage } from '@/shared/components/country-image';
 import { FilterPill } from '@/shared/components/filter-pill';
+import { NAV_CARD_ABOVE_OVERLAY, NAV_CARD_PRESS, NavCardChevron, NavCardOverlay } from '@/shared/components/nav-card';
 import type { CountryRegionFilterValue } from '@/shared/country-region';
 import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
 import { navigateToRoute, type RouteLocationBuilder } from '@/shared/url-state/route-location';
@@ -271,7 +272,8 @@ export function RankingCard({
       <div
          ref={ref}
          className={cn(
-            'group flex cursor-pointer flex-col px-3 transition-colors',
+            NAV_CARD_PRESS,
+            'group relative flex cursor-pointer flex-col px-3 transition-[color,background-color,border-color,scale]',
             variant === 'summary'
                ? cn(cardSurfaceVariants.settings, 'hover:border-primary/35')
                : 'bg-secondary/40 rounded-lg border hover:border-primary/35',
@@ -282,6 +284,7 @@ export function RankingCard({
          )}
          onClick={() => router.navigate({ to: '/u/$playerId', params: { playerId: player.id } })}
       >
+         <NavCardOverlay location={{ to: '/u/$playerId', params: { playerId: player.id } }} />
          {variant === 'summary' ? (
             <RankingCardSummary
                player={player}
@@ -308,28 +311,31 @@ function RankingCardDefault({ player, countryFiltered, isDefaultSort, listPositi
    const stats = player.stats;
 
    return (
-      <>
-         <div className="flex items-center gap-2">
-            <RankingCardRank player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
-            <div className="min-w-0 flex-1">
-               <PlayerLink withPFP player={player} isInactive={player.inactive} showLivePresence={showLivePresence} />
+      <div className="flex items-center gap-2">
+         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+            <div className="flex items-center gap-2">
+               <RankingCardRank player={player} countryFiltered={countryFiltered} isDefaultSort={isDefaultSort} listPosition={listPosition} />
+               <div className={cn('min-w-0 flex-1', NAV_CARD_ABOVE_OVERLAY)}>
+                  <PlayerLink withPFP player={player} isInactive={player.inactive} showLivePresence={showLivePresence} />
+               </div>
+            </div>
+
+            <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-0.5 pl-1 text-[13px] md:text-xs">
+               {[
+                  { key: 'pp', Icon: FaStar, value: `${formatPP(stats.totalPP)}pp`, extra: 'font-semibold text-score-pp' },
+                  { key: 'accuracy', Icon: FaBullseye, value: formatAccuracy(stats.averageAccuracy) },
+                  { key: 'plays', Icon: FaPlay, value: formatNumber(stats.totalSubmittedPlays) },
+                  { key: 'ranked-plays', Icon: FaTrophy, value: formatNumber(stats.totalPlayedRankedLeaderboards) }
+               ].map(({ key, Icon, value, extra }) => (
+                  <span key={key} className={cn('inline-flex items-center gap-1', extra)}>
+                     <Icon className="size-2.5" />
+                     {value}
+                  </span>
+               ))}
             </div>
          </div>
-
-         <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-0.5 pl-1 text-xs">
-            {[
-               { key: 'pp', Icon: FaStar, value: `${formatPP(stats.totalPP)}pp`, extra: 'font-semibold text-score-pp' },
-               { key: 'accuracy', Icon: FaBullseye, value: formatAccuracy(stats.averageAccuracy) },
-               { key: 'plays', Icon: FaPlay, value: formatNumber(stats.totalSubmittedPlays) },
-               { key: 'ranked-plays', Icon: FaTrophy, value: formatNumber(stats.totalPlayedRankedLeaderboards) }
-            ].map(({ key, Icon, value, extra }) => (
-               <span key={key} className={cn('inline-flex items-center gap-1', extra)}>
-                  <Icon className="size-2.5" />
-                  {value}
-               </span>
-            ))}
-         </div>
-      </>
+         <NavCardChevron />
+      </div>
    );
 }
 
@@ -367,6 +373,7 @@ function RankingCardSummary({ player, countryFiltered, isDefaultSort, listPositi
                </span>
             </div>
          </div>
+         <NavCardChevron className="size-3.5" />
       </div>
    );
 }

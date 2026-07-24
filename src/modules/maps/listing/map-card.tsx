@@ -94,7 +94,7 @@ export function MapCard({
                         href={`https://beatsaver.com/maps/${map.bsid}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:text-primary z-20 flex items-center gap-1 transition-colors"
+                        className="hover:text-primary relative z-40 flex items-center gap-1 transition-colors"
                      >
                         <FaKey className="size-2.5" />
                         <span className="font-mono">{map.bsid}</span>
@@ -118,7 +118,7 @@ export function MapCard({
                      href={`https://beatsaver.com/maps/${map.bsid}`}
                      target="_blank"
                      rel="noopener noreferrer"
-                     className="text-muted-foreground hover:text-primary z-20 flex items-center gap-1.5 text-xs transition-colors"
+                     className="text-muted-foreground hover:text-primary relative z-40 flex items-center gap-1.5 text-xs transition-colors"
                   >
                      <span className="font-mono">{map.bsid}</span>
                      <FaKey className="size-2.5" />
