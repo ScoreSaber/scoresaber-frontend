@@ -33,6 +33,8 @@ export function MapLeaderboardHero({ mapInfo, leaderboardInfo, linkSearchParams 
                alt={mapInfo.songName}
                width={96}
                height={96}
+               priority
+               crossOrigin="anonymous"
                className="h-20 w-20 shrink-0 rounded-md object-cover shadow-md outline outline-1 outline-black/10 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:outline-white/10"
             />
 

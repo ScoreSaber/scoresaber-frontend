@@ -237,6 +237,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                         src={player.avatar}
                         version={player.avatarVersion}
                         priority
+                        crossOrigin="anonymous"
                      />
                      {player.banned && (
                         <div className="bg-destructive/20 absolute inset-0 flex items-center justify-center rounded-full">

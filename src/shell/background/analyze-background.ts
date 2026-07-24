@@ -263,26 +263,8 @@ export function analyzeImage(url: string) {
          });
       };
       img.onerror = () => resolve({ score: -1, intensity: 1, diagnostics: emptyDiagnostics() });
-      img.src = getAnalysisImageUrl(url);
+      img.src = url;
    });
 }
 
 export type ScoredImage = { url: string; score: number; intensity: number; diagnostics: Diagnostics };
-
-function getAnalysisImageUrl(url: string) {
-   if (url.startsWith('blob:') || url.startsWith('data:')) {
-      return url;
-   }
-
-   const parsed = Result.unwrapOr(
-      Result.try(() => new URL(url, window.location.href)),
-      null
-   );
-
-   if (!parsed) {
-      return url;
-   }
-
-   parsed.searchParams.set('cors-analysis', '1');
-   return parsed.toString();
-}

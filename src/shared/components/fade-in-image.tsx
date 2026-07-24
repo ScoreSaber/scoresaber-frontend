@@ -54,11 +54,11 @@ function FadeInImageImpl({
       }
    }, []);
 
-   const mergedStyle = fill ? (style ? { ...FILL_STYLE, ...style } : FILL_STYLE) : style;
+   const mergedStyle: CSSProperties = fill ? { ...FILL_STYLE, color: 'transparent', ...style } : { color: 'transparent', ...style };
 
    return (
-      <div className={cn('relative', fill ? 'absolute inset-0' : 'inline-flex')}>
-         {!isLoaded && <Skeleton className={cn('absolute inset-0', roundedClasses)} />}
+      <div className={cn('relative isolate', fill ? 'absolute inset-0' : 'inline-flex')}>
+         {!isLoaded && <Skeleton className={cn('absolute inset-0 -z-10', roundedClasses)} />}
          {/* oxlint-disable-next-line nextjs/no-img-element */}
          <img
             {...props}
@@ -67,7 +67,7 @@ function FadeInImageImpl({
             loading={priority ? 'eager' : (loading ?? 'lazy')}
             fetchPriority={priority ? 'high' : fetchPriority}
             style={mergedStyle}
-            className={cn(className, 'transition-opacity duration-300', isLoaded ? 'opacity-100' : 'opacity-0')}
+            className={className}
             onLoad={(e) => {
                setIsLoaded(true);
                onLoad?.(e);

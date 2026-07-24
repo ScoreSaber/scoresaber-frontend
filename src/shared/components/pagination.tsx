@@ -78,7 +78,7 @@ export function Pagination<TLocation>({
             const atBounds =
                option.type === 'symbol' &&
                ((option.symbol === 'NEXT_PAGE' && currentPage >= totalPages) || (option.symbol === 'PREVIOUS_PAGE' && currentPage <= 1));
-            const disabled = isLoading || atBounds;
+            const disabled = atBounds;
             const label = option.type === 'number' ? formatNumber(option.value!) : option.symbol === 'PREVIOUS_PAGE' ? '<' : '>';
             const active = option.type === 'number' && option.value === currentPage;
             const loading = isLoading && pendingPage?.value === option.value && pendingPage?.type === option.type;

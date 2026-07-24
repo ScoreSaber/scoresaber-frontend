@@ -2,11 +2,9 @@ import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
 import { buildMapLeaderboardHead, getMapLeaderboardPageData, leaderboardSearchSchema } from '../../-leaderboard';
+import { MapLeaderboardRouteContent } from '../../-leaderboard-content';
 
-import { dynamic } from '@/shared/components/dynamic';
 import { isNumber, validateRequest } from '@/shared/url-state/params';
-
-const MapLeaderboardRouteContent = dynamic(() => import('../../-leaderboard-content').then((mod) => mod.MapLeaderboardRouteContent));
 
 const mapDifficultyParamsSchema = z.object({
    id: isNumber,
