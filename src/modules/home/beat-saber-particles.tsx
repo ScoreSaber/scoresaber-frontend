@@ -1,178 +1,274 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-
-import { loadBasic } from '@tsparticles/basic';
-import type { Container, Engine, ISourceOptions } from '@tsparticles/engine';
-import { Particles, ParticlesProvider } from '@tsparticles/react';
+import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/shared/format/helpers';
 
-const PARTICLE_OPTIONS = {
-   background: {
-      color: {
-         value: 'transparent'
-      }
-   },
-   detectRetina: true,
-   fpsLimit: 60,
-   fullScreen: {
-      enable: false
-   },
-   resize: {
-      enable: true
-   },
-   particles: {
-      color: {
-         value: ['#8feaff', '#39f4ff', '#ff4869']
-      },
-      links: {
-         enable: false
-      },
-      move: {
-         direction: 'top',
-         enable: true,
-         outModes: {
-            default: 'out'
-         },
-         random: true,
-         speed: {
-            min: 0.08,
-            max: 0.36
-         },
-         straight: false
-      },
-      number: {
-         density: {
-            enable: true,
-            height: 900,
-            width: 1100
-         },
-         value: 96
-      },
-      opacity: {
-         animation: {
-            enable: true,
-            minimumValue: 0.08,
-            speed: 0.45,
-            sync: false
-         },
-         value: {
-            min: 0.16,
-            max: 0.85
-         }
-      },
-      shape: {
-         type: 'circle'
-      },
-      size: {
-         animation: {
-            enable: true,
-            minimumValue: 0.2,
-            speed: 1.8,
-            sync: false
-         },
-         value: {
-            min: 0.7,
-            max: 2.3
-         }
-      },
-      zIndex: {
-         opacityRate: 0.7,
-         sizeRate: 1,
-         value: {
-            min: 0,
-            max: 8
-         }
-      }
-   },
-   pauseOnBlur: true,
-   pauseOnOutsideViewport: true
-} satisfies ISourceOptions;
+const COLOR = '#fff';
+const DENSITY_AREA = 1100 * 900;
+const DENSITY_COUNT = 96;
+const SPEED_MIN = 0.08;
+const SPEED_MAX = 0.36;
+const OPACITY_MIN = 0.16;
+const OPACITY_MAX = 0.85;
+const OPACITY_SPEED = 0.45;
+const SIZE_MIN = 0.7;
+const SIZE_MAX = 2.3;
+const SIZE_SPEED = 1.8;
+const Z_LAYERS = 100;
+const Z_VALUE_MAX = 8;
+const Z_OPACITY_RATE = 0.7;
+const ANIMATION_SPEED_SCALE = 1 / 100;
+const MOVE_SPEED_SCALE = 0.5;
+const SPREAD = Math.PI / 4;
+const FRAME_MS = 1000 / 60;
+const MAX_FRAME_STEP = 5;
+const SLACK = 240;
+const RESIZE_SHRINK_THRESHOLD = 200;
+const TAU = Math.PI * 2;
 
-const STATIC_PARTICLE_OPTIONS = {
-   ...PARTICLE_OPTIONS,
-   particles: {
-      ...PARTICLE_OPTIONS.particles,
-      move: {
-         ...PARTICLE_OPTIONS.particles.move,
-         enable: false
-      },
-      opacity: {
-         ...PARTICLE_OPTIONS.particles.opacity,
-         animation: {
-            ...PARTICLE_OPTIONS.particles.opacity.animation,
-            enable: false
-         }
-      },
-      size: {
-         ...PARTICLE_OPTIONS.particles.size,
-         animation: {
-            ...PARTICLE_OPTIONS.particles.size.animation,
-            enable: false
-         }
-      }
-   }
-} satisfies ISourceOptions;
+type Particle = {
+   x: number;
+   y: number;
+   vx: number;
+   vy: number;
+   size: number;
+   sizeVelocity: number;
+   opacity: number;
+   opacityVelocity: number;
+   depthScale: number;
+   depthAlpha: number;
+};
 
-async function loadParticles(engine: Engine) {
-   await loadBasic(engine);
+function createParticle(width: number, height: number, animated: boolean): Particle {
+   const depth = 1 - Math.floor(Math.random() * Z_VALUE_MAX) / Z_LAYERS;
+   const angle = -Math.PI / 2 - SPREAD + Math.random() * SPREAD * 2;
+   const step = (SPEED_MIN + Math.random() * (SPEED_MAX - SPEED_MIN)) * MOVE_SPEED_SCALE * depth;
+
+   return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: animated ? Math.cos(angle) * step : 0,
+      vy: animated ? Math.sin(angle) * step : 0,
+      size: SIZE_MIN + Math.random() * (SIZE_MAX - SIZE_MIN),
+      sizeVelocity: animated ? SIZE_SPEED * ANIMATION_SPEED_SCALE * Math.random() * (Math.random() >= 0.5 ? 1 : -1) : 0,
+      opacity: OPACITY_MIN + Math.random() * (OPACITY_MAX - OPACITY_MIN),
+      opacityVelocity: animated ? OPACITY_SPEED * ANIMATION_SPEED_SCALE * Math.random() * (Math.random() >= 0.5 ? 1 : -1) : 0,
+      depthScale: depth,
+      depthAlpha: depth ** Z_OPACITY_RATE
+   };
 }
 
-function prefersReducedMotion() {
-   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function fitParticles(particles: Particle[], width: number, height: number, animated: boolean) {
+   const count = Math.round((DENSITY_COUNT * width * height) / DENSITY_AREA);
+
+   while (particles.length > count) particles.pop();
+   while (particles.length < count) particles.push(createParticle(width, height, animated));
+
+   for (const particle of particles) {
+      if (particle.x > width) particle.x = Math.random() * width;
+      if (particle.y > height) particle.y = Math.random() * height;
+   }
+}
+
+function updateParticles(particles: Particle[], width: number, height: number, factor: number) {
+   for (const particle of particles) {
+      particle.x += particle.vx * factor;
+      particle.y += particle.vy * factor;
+
+      const radius = particle.size;
+
+      if (particle.y + radius < 0) {
+         particle.y = height + radius;
+         particle.x = Math.random() * width;
+      } else if (particle.x + radius < 0) {
+         particle.x = width + radius;
+         particle.y = Math.random() * height;
+      } else if (particle.x - radius > width) {
+         particle.x = -radius;
+         particle.y = Math.random() * height;
+      }
+
+      particle.opacity += particle.opacityVelocity * factor;
+      if (particle.opacity >= OPACITY_MAX) {
+         particle.opacity = OPACITY_MAX;
+         particle.opacityVelocity = -particle.opacityVelocity;
+      } else if (particle.opacity <= OPACITY_MIN) {
+         particle.opacity = OPACITY_MIN;
+         particle.opacityVelocity = -particle.opacityVelocity;
+      }
+
+      particle.size += particle.sizeVelocity * factor;
+      if (particle.size >= SIZE_MAX) {
+         particle.size = SIZE_MAX;
+         particle.sizeVelocity = -particle.sizeVelocity;
+      } else if (particle.size <= SIZE_MIN) {
+         particle.size = SIZE_MIN;
+         particle.sizeVelocity = -particle.sizeVelocity;
+      }
+   }
+}
+
+function drawParticles(ctx: CanvasRenderingContext2D, particles: Particle[], width: number, height: number, offset: number) {
+   ctx.clearRect(0, 0, width, height);
+   ctx.fillStyle = COLOR;
+
+   for (const particle of particles) {
+      const y = particle.y - offset;
+      const radius = particle.size * particle.depthScale;
+
+      if (y + radius < 0 || y - radius > height) continue;
+
+      ctx.globalAlpha = particle.opacity * particle.depthAlpha;
+      ctx.beginPath();
+      ctx.arc(particle.x, y, radius, 0, TAU);
+      ctx.fill();
+   }
+
+   ctx.globalAlpha = 1;
 }
 
 export function BeatSaberParticles() {
-   const [options] = useState(() => (prefersReducedMotion() ? STATIC_PARTICLE_OPTIONS : PARTICLE_OPTIONS));
-   const [loaded, setLoaded] = useState(false);
-   const containerRef = useRef<Container | null>(null);
-   const wrapperRef = useRef<HTMLDivElement | null>(null);
-
-   const handleLoaded = useCallback((container?: Container) => {
-      if (container) {
-         containerRef.current = container;
-      }
-
-      setLoaded(true);
-   }, []);
+   const wrapperRef = useRef<HTMLDivElement>(null);
+   const canvasRef = useRef<HTMLCanvasElement>(null);
+   const [ready, setReady] = useState(false);
 
    useEffect(() => {
-      const container = containerRef.current;
       const wrapper = wrapperRef.current;
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext('2d');
 
-      if (!loaded || !container || !wrapper || typeof IntersectionObserver === 'undefined') {
-         return;
-      }
+      if (!wrapper || !canvas || !ctx) return;
 
-      const observer = new IntersectionObserver(([entry]) => {
-         if (container.destroyed || !entry) {
-            return;
+      const animated = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const particles: Particle[] = [];
+
+      let fieldWidth = 0;
+      let fieldHeight = 0;
+      let canvasHeight = 0;
+      let offset = 0;
+      let frame = 0;
+      let running = false;
+      let lastTime = 0;
+
+      const measure = () => {
+         const width = wrapper.clientWidth;
+         const height = wrapper.clientHeight;
+
+         if (!width || !height) return;
+
+         const wanted = Math.min(height, window.innerHeight + SLACK * 2);
+         const resizeCanvas = width !== fieldWidth || wanted > canvasHeight || wanted < canvasHeight - RESIZE_SHRINK_THRESHOLD;
+
+         fieldWidth = width;
+         fieldHeight = height;
+         fitParticles(particles, fieldWidth, fieldHeight, animated);
+
+         if (!resizeCanvas) return;
+
+         const ratio = window.devicePixelRatio || 1;
+
+         canvasHeight = wanted;
+         canvas.style.height = `${canvasHeight}px`;
+         canvas.width = Math.round(fieldWidth * ratio);
+         canvas.height = Math.round(canvasHeight * ratio);
+         ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      };
+
+      const render = () => {
+         const limit = fieldHeight - canvasHeight;
+         let next = 0;
+
+         if (limit > 0) {
+            const top = -wrapper.getBoundingClientRect().top;
+            const covered = top >= offset && top + window.innerHeight <= offset + canvasHeight;
+
+            next = covered ? offset : Math.min(Math.max(top - SLACK, 0), limit);
          }
 
-         if (entry.isIntersecting) {
-            container.play();
-         } else {
-            container.pause();
+         if (next !== offset) {
+            offset = next;
+            canvas.style.transform = `translate3d(0, ${offset}px, 0)`;
          }
-      });
 
+         drawParticles(ctx, particles, fieldWidth, canvasHeight, offset);
+      };
+
+      const tick = (time: number) => {
+         frame = requestAnimationFrame(tick);
+
+         const elapsed = time - lastTime;
+
+         if (elapsed < FRAME_MS - 1) return;
+
+         lastTime = time;
+         updateParticles(particles, fieldWidth, fieldHeight, Math.min(elapsed / FRAME_MS, MAX_FRAME_STEP));
+         render();
+      };
+
+      const start = () => {
+         if (running || !animated) return;
+
+         running = true;
+         lastTime = performance.now();
+         frame = requestAnimationFrame(tick);
+      };
+
+      const stop = () => {
+         running = false;
+
+         if (frame) cancelAnimationFrame(frame);
+         frame = 0;
+      };
+
+      const scheduleRender = () => {
+         if (running || frame) return;
+
+         frame = requestAnimationFrame(() => {
+            frame = 0;
+            render();
+         });
+      };
+
+      const handleResize = () => {
+         measure();
+         scheduleRender();
+      };
+
+      canvas.style.transform = 'translate3d(0, 0, 0)';
+
+      measure();
+      render();
+
+      const readyFrame = requestAnimationFrame(() => setReady(true));
+
+      if (document.hasFocus()) start();
+
+      const observer = new ResizeObserver(handleResize);
       observer.observe(wrapper);
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('scroll', scheduleRender, { passive: true });
+      window.addEventListener('focus', start);
+      window.addEventListener('blur', stop);
 
       return () => {
+         stop();
+         cancelAnimationFrame(readyFrame);
          observer.disconnect();
+         window.removeEventListener('resize', handleResize);
+         window.removeEventListener('scroll', scheduleRender);
+         window.removeEventListener('focus', start);
+         window.removeEventListener('blur', stop);
       };
-   }, [loaded]);
+   }, []);
 
    return (
-      <ParticlesProvider init={loadParticles}>
-         <div
-            ref={wrapperRef}
-            className={cn(
-               'pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-1000 ease-out motion-reduce:transition-none',
-               loaded && 'opacity-85'
-            )}
-         >
-            <Particles id="home-beat-saber-particles" className="absolute inset-0" options={options} particlesLoaded={handleLoaded} />
-         </div>
-      </ParticlesProvider>
+      <div
+         ref={wrapperRef}
+         className={cn(
+            'pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-1000 ease-out motion-reduce:transition-none',
+            ready && 'opacity-85'
+         )}
+      >
+         <canvas ref={canvasRef} className="absolute inset-x-0 top-0 w-full" aria-hidden />
+      </div>
    );
 }
