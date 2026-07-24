@@ -48,6 +48,8 @@ export function ScoreCardActions({
       bottomRowDesktopBreakpoint === 'md'
          ? 'max-md:pointer-coarse:min-h-8 max-md:pointer-coarse:min-w-8'
          : 'max-lg:pointer-coarse:min-h-8 max-lg:pointer-coarse:min-w-8';
+   const bottomRowOffsetClassName =
+      bottomRowDesktopBreakpoint === 'md' ? 'bottom-2 max-md:pointer-coarse:bottom-0' : 'bottom-2 max-lg:pointer-coarse:bottom-0';
    const iconButtonClassName = cn(
       'h-auto w-auto cursor-default p-0 text-muted-foreground hover:bg-transparent hover:text-foreground',
       mobileBottomRow && bottomRowTouchTargetClassName
@@ -180,7 +182,11 @@ export function ScoreCardActions({
          className={cn(
             'absolute z-20 flex items-center',
             mobileBottomRow ? bottomRowDesktopClassName : 'flex-col gap-1.5',
-            mobileBottomRow ? 'bottom-2' : shouldCenterSingleAction ? 'top-1/2 right-2 -translate-y-1/2' : 'top-1/2 right-3 -translate-y-1/2',
+            mobileBottomRow
+               ? bottomRowOffsetClassName
+               : shouldCenterSingleAction
+                 ? 'top-1/2 right-2 -translate-y-1/2'
+                 : 'top-1/2 right-3 -translate-y-1/2',
             className
          )}
       >
