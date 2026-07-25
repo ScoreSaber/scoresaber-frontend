@@ -500,6 +500,12 @@
       0 0 0.16em rgb(255 198 56 / 0.18);
 }
 
+@supports (hanging-punctuation: first) {
+   .home-brand-text {
+      text-shadow: none;
+   }
+}
+
 .home-brand-flicker-letter {
    color: inherit;
    display: inline-block;
