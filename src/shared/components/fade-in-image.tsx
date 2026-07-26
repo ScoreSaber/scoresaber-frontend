@@ -67,7 +67,11 @@ function FadeInImageImpl({
             loading={priority ? 'eager' : (loading ?? 'lazy')}
             fetchPriority={priority ? 'high' : fetchPriority}
             style={mergedStyle}
-            className={className}
+            className={cn(
+               'motion-safe:transition-opacity motion-safe:duration-300 motion-safe:ease-out',
+               isLoaded ? 'opacity-100' : 'opacity-0',
+               className
+            )}
             onLoad={(e) => {
                setIsLoaded(true);
                onLoad?.(e);

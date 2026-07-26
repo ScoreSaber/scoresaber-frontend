@@ -131,8 +131,8 @@ function MapsRoute() {
             />
 
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-               {maps.map((map) => (
-                  <MapCard key={map.id} map={map} expandLowest={expandLowest} starRange={starRange} />
+               {maps.map((map, index) => (
+                  <MapCard key={map.id} map={map} expandLowest={expandLowest} starRange={starRange} coverPriority={index === 0} />
                ))}
             </div>
 

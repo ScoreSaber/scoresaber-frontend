@@ -14,14 +14,14 @@ export function TrendingMapsColumn({ maps }: { maps: MapControllerGetMapListings
 
    return (
       <div className="flex min-h-0 flex-1 flex-col gap-2.5">
-         {maps.map((map) => (
+         {maps.map((map, index) => (
             <MapCard
                key={map.id}
                map={map}
                compact
                variant="home"
                background="transparent"
-               coverPriority
+               coverPriority={index === 0}
                className="min-h-0 flex-1 rounded-lg border-white/20"
             />
          ))}
