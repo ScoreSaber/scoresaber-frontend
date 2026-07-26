@@ -492,7 +492,8 @@
       "ranked": "Ranked",
       "averageRankedAccuracy": "Avg Ranked Acc",
       "acc": "Acc",
-      "live": "Live"
+      "live": "Live",
+      "liveUnavailable": "No players are online right now"
    },
    "score": {
       "share": {

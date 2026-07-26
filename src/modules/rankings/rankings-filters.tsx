@@ -69,7 +69,7 @@ export function RankingsFilters<TLocation>({
 }: RankingsFiltersProps<TLocation>) {
    const { user } = useAuth();
    const t = useTranslations();
-   const showLiveFilter = useLivePlayersAvailable() || live;
+   const liveAvailable = useLivePlayersAvailable() || live;
    const { navigate, preload, preloadClearAll, cancelPreload, loadStorage, saveStorage } = usePersistedParams({
       storageKey: rankingFilterPreferences.storageKey,
       search,
@@ -296,7 +296,7 @@ export function RankingsFilters<TLocation>({
                      </FilterPill>
 
                      {/* live */}
-                     {showLiveFilter && (
+                     {liveAvailable ? (
                         <FilterPill
                            className="cursor-pointer"
                            active={live}
@@ -306,6 +306,17 @@ export function RankingsFilters<TLocation>({
                         >
                            {t('rankings.live')}
                         </FilterPill>
+                     ) : (
+                        <Tooltip>
+                           <TooltipTrigger asChild>
+                              <span className="inline-flex" tabIndex={0}>
+                                 <FilterPill icon={FaBroadcastTower} disabled>
+                                    {t('rankings.live')}
+                                 </FilterPill>
+                              </span>
+                           </TooltipTrigger>
+                           <TooltipContent>{t('rankings.liveUnavailable')}</TooltipContent>
+                        </Tooltip>
                      )}
 
                      {/* country */}
