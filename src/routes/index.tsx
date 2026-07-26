@@ -13,7 +13,7 @@ import { HeroSection } from '@/modules/home/hero-section';
 import { HomeColumn, HomeColumnLink } from '@/modules/home/home-column';
 import { HOME_TRENDING_MAP_SEARCH, TOP_PLAYER_COUNT, TRENDING_MAP_COUNT } from '@/modules/home/home-constants';
 import { InstallSection } from '@/modules/home/install-section';
-import { NewsColumn, NewsSocialLinks } from '@/modules/home/news-column';
+import { NewsColumn, NewsColumnActions } from '@/modules/home/news-column';
 import { RankedBatchSection } from '@/modules/home/ranked-batch-section';
 import { TopPlayersColumn } from '@/modules/home/top-players-column';
 import { TrendingMapsColumn } from '@/modules/home/trending-maps-column';
@@ -157,7 +157,7 @@ function HomeRoute() {
             )}
 
             <section className="grid items-stretch gap-4 lg:grid-cols-[minmax(18rem,1.45fr)_minmax(0,1fr)_minmax(19rem,1.08fr)]">
-               <HomeColumn title={t('sections.news')} action={<NewsSocialLinks />}>
+               <HomeColumn title={t('sections.news')} action={<NewsColumnActions posts={data.news.posts} />}>
                   <NewsColumn posts={data.news.posts} />
                </HomeColumn>
 

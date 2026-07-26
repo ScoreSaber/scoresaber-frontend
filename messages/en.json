@@ -140,6 +140,7 @@
          "browse": "Browse"
       },
       "news": {
+         "allNews": "All news",
          "readMore": "Read more...",
          "repostedBy": "{name} reposted",
          "imageLabel": "Image {number} of {count}",
