@@ -5,7 +5,6 @@ import type { ReactNode } from 'react';
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getCookie } from '@tanstack/react-start/server';
-import { Loader2 } from 'lucide-react';
 import { preconnect, preload } from 'react-dom';
 import { IntlProvider } from 'use-intl';
 import { z } from 'zod';
@@ -27,12 +26,12 @@ import { parseSidebarCollapsedCookie, SIDEBAR_COLLAPSED_COOKIE_NAME } from '@/sh
 
 const themeInitScript = `(function(){var theme='system';try{var stored=localStorage.getItem('${THEME_STORAGE_KEY}');if(stored==='light'||stored==='dark'||stored==='system')theme=stored}catch(e){}var resolved=theme==='system'?(window.matchMedia('${THEME_MEDIA_QUERY}').matches?'dark':'light'):theme;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved;try{document.cookie='${THEME_COOKIE_NAME}='+theme+'; Path=/; Max-Age=31536000; SameSite=Lax'}catch(e){}})()`;
 const criticalPaintStyles = `@layer theme,base,components,utilities;@layer base{*,::after,::before,::backdrop,::file-selector-button{border-color:var(--border,hsl(0 0% 20%))}body{background:var(--background,hsl(240 10% 4%));color:var(--foreground,hsl(60 7% 90%))}}@layer utilities{.app-container{margin-inline:auto;padding-inline:2rem;max-width:1300px}}`;
-const preloaderStyles = `#app-preloader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--background,hsl(240 10% 4%));transition:opacity .4s ease,visibility 0s linear .4s;animation:app-preloader-bail 0s linear 4s forwards}html[data-app-ready] #app-preloader{opacity:0;visibility:hidden;pointer-events:none}#app-preloader svg{width:32px;height:32px;color:var(--muted-foreground,hsl(0 0% 55%));opacity:0;animation:app-preloader-in .3s ease .3s forwards,app-preloader-spin 1s linear infinite}@keyframes app-preloader-in{to{opacity:1}}@keyframes app-preloader-spin{to{transform:rotate(360deg)}}@keyframes app-preloader-bail{to{opacity:0;visibility:hidden}}@media print{#app-preloader{display:none}}@media (prefers-reduced-motion:reduce){#app-preloader{transition:opacity .01s linear,visibility 0s linear .01s}#app-preloader svg{animation:app-preloader-in .01s linear forwards}}`;
+const preloaderStyles = `html::before{content:'';position:fixed;inset:0;z-index:9999;background:var(--background,hsl(240 10% 4%));transition:opacity .4s ease,visibility 0s linear .4s;animation:app-preloader-bail 0s linear 4s forwards}html::after{content:'';box-sizing:border-box;position:fixed;top:50%;left:50%;z-index:10000;width:32px;height:32px;margin:-16px 0 0 -16px;border:3px solid var(--muted-foreground,hsl(0 0% 55%));border-top-color:transparent;border-radius:50%;opacity:0;animation:app-preloader-in .3s ease .3s forwards,app-preloader-spin .8s linear infinite,app-preloader-bail 0s linear 4s forwards}html[data-app-ready]::before{opacity:0;visibility:hidden}html[data-app-ready]::after{visibility:hidden}@keyframes app-preloader-in{to{opacity:1}}@keyframes app-preloader-spin{to{transform:rotate(360deg)}}@keyframes app-preloader-bail{to{opacity:0;visibility:hidden}}@media print{html::before,html::after{display:none}}@media (prefers-reduced-motion:reduce){html::before{transition:opacity .01s linear,visibility 0s linear .01s}html::after{animation:app-preloader-in .01s linear forwards,app-preloader-bail 0s linear 4s forwards}}`;
 const preloaderFaces = ['400 1rem Geist', '500 1rem Geist', '600 1rem Geist', '700 1rem Geist', "500 1rem 'Geist Pixel'"];
 const preloaderFamilies = ['Geist', 'Geist Pixel'];
 const PRELOADER_SETTLE_MS = 60;
 const preloaderScript = `(function(){var d=document,r=d.documentElement,done=false,t=setTimeout(reveal,2800);function reveal(){if(done)return;done=true;clearTimeout(t);r.setAttribute('data-app-ready','')}function paintThenReveal(){if(typeof requestAnimationFrame!=='function'){reveal();return}requestAnimationFrame(function(){requestAnimationFrame(reveal)})}function settleThenReveal(){setTimeout(paintThenReveal,${PRELOADER_SETTLE_MS})}var f=d.fonts;if(!f||!f.load||!f.forEach){settleThenReveal();return}var faces=${JSON.stringify(preloaderFaces)},fams=${JSON.stringify(preloaderFamilies)};function registered(){var n=0;f.forEach(function(ff){if(fams.indexOf(ff.family)>=0)n++});return n>=faces.length}function load(){var pending=[];for(var i=0;i<faces.length;i++){try{pending.push(f.load(faces[i]))}catch(e){}}Promise.all(pending).then(function(){return f.ready}).then(settleThenReveal,settleThenReveal)}function wait(){if(done)return;if(registered()){load();return}setTimeout(wait,40)}wait()})()`;
-const preloaderNoScriptStyles = `#app-preloader{display:none}`;
+const preloaderNoScriptStyles = `<style>html::before,html::after{display:none}</style>`;
 const criticalFonts = [
    '/fonts/geist-latin-400-normal.woff2',
    '/fonts/geist-latin-500-normal.woff2',
@@ -189,16 +188,11 @@ function RootDocument({
             <style id="critical-paint" dangerouslySetInnerHTML={{ __html: criticalPaintStyles }} />
             <style id="app-preloader-style" dangerouslySetInnerHTML={{ __html: preloaderStyles }} />
             <script id="app-preloader-init" dangerouslySetInnerHTML={{ __html: preloaderScript }} suppressHydrationWarning />
-            <noscript>
-               <style dangerouslySetInnerHTML={{ __html: preloaderNoScriptStyles }} />
-            </noscript>
+            <noscript dangerouslySetInnerHTML={{ __html: preloaderNoScriptStyles }} />
             <HeadContent />
             {debugReactScan && <script src="https://unpkg.com/react-scan/dist/auto.global.js" crossOrigin="anonymous" async />}
          </head>
          <body className={cn('bg-background relative min-h-screen font-sans antialiased')}>
-            <div id="app-preloader" aria-hidden="true">
-               <Loader2 />
-            </div>
             {children}
             <Scripts />
          </body>
