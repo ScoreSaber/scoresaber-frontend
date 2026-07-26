@@ -122,6 +122,15 @@ export interface PlayerControllerGetPlayerParams {
    id: string;
 }
 
+export interface PlayerControllerGetPlayerProfileParams {
+   /**
+    * Realm ID (defaults to the active realm)
+    * @min 0
+    */
+   realmId?: number;
+   id: string;
+}
+
 export interface PlayerControllerGetPlayerBasicParams {
    /**
     * Realm ID (defaults to the active realm)
@@ -3469,6 +3478,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -3682,6 +3692,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         maxCombo: number;
                         fullCombo: boolean;
                         hasReplay: boolean;
+                        replayViewCount?: number;
                         personalBest: boolean;
                         legacyHmdId: number | null;
                         version: string | null;
@@ -3889,6 +3900,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -4102,6 +4114,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         maxCombo: number;
                         fullCombo: boolean;
                         hasReplay: boolean;
+                        replayViewCount?: number;
                         personalBest: boolean;
                         legacyHmdId: number | null;
                         version: string | null;
@@ -4219,6 +4232,497 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
               }
          >({
             path: `/api/v2/players/${id}`,
+            method: 'GET',
+            query: query,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Player
+ * @name PlayerControllerGetPlayerProfile
+ * @request GET:/api/v2/players/{id}/profile
+ * @response `200` `{
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+    banned: boolean,
+    silenced: boolean,
+    inactive: boolean,
+    stats: {
+    realmId: number,
+    realmName: string,
+    rank: number,
+    countryRank: number,
+    rankChange: number | null,
+    totalPP: number,
+    plusOnePP: number | null,
+    totalScore: string,
+    totalRankedScore: string,
+    totalPlayedLeaderboards: number,
+    totalPlayedRankedLeaderboards: number,
+    totalSubmittedPlays: number,
+    totalReplayViews: number,
+    averageAccuracy: number,
+    weightedAverageAccuracy: number,
+    completionAccuracy: number,
+    device: {
+    hmd: string | null,
+    controllerLeft: string | null,
+    controllerRight: string | null,
+
+} | null,
+
+},
+    bio: string | null,
+    vanity: string | null,
+    profileCustomization: {
+    backgroundImage: string | null,
+    backgroundImageVersion: number | null,
+    accentColor: string | null,
+    accentForegroundColor: string | null,
+    accentForegroundActiveColor: string | null,
+    supporterNameColorEnabled: boolean,
+    badgeOrder: (number)[] | null,
+    badgeComments: Record<string,string> | null,
+    statOrder: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    enabledStatIds: ("rankedPlays" | "rankedScore" | "rankedAcc" | "plusOnePP" | "totalPlays" | "totalScore" | "joined" | "replayViews" | "role")[] | null,
+    chartMetricIds: ("rank" | "totalPP" | "averageAccuracy" | "totalSubmittedPlays")[] | null,
+    sectionOrder: ("charts" | "bio" | "pinnedScores" | "scores")[] | null,
+
+},
+    createdAt: string,
+    lastSeenAt: string,
+    badges: ({
+    id: number,
+    image: string,
+    description: string,
+
+})[],
+    pinnedScores: ({
+    score: {
+    score: {
+    id: number,
+    rank: number,
+    unmodifiedScore: number,
+    modifiedScore: number,
+    accuracy: number,
+    pp: number,
+    weight: number,
+    mods: (string)[],
+    badCuts: number,
+    missedNotes: number,
+    maxCombo: number,
+    fullCombo: boolean,
+    hasReplay: boolean,
+    replayViewCount?: number,
+    personalBest: boolean,
+    legacyHmdId: number | null,
+    version: string | null,
+    playOutcome: "CLEAR" | "FAIL" | "QUIT" | "RESTART",
+    playOutcomeTime: number | null,
+    createdAt: string,
+    hasHistory?: boolean,
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+},
+    device: {
+    hmd: string | null,
+    controllerLeft: string | null,
+    controllerRight: string | null,
+
+} | null,
+
+},
+    leaderboard: {
+    id: number,
+    map: {
+    id: number,
+    hash: string,
+    bsid: string | null,
+    songName: string,
+    songSubName: string,
+    songAuthorName: string,
+    levelAuthorName: string,
+    bpm: number,
+    coverUrl: string,
+    verified: boolean,
+
+},
+    difficulty: {
+    id: number,
+    difficulty: number,
+    rawDifficulty: string,
+    gameMode: string,
+
+},
+    maxScore: number,
+    totalScores: number,
+    dailyScores: number,
+    createdAt: string,
+    realm: {
+    realmId: number,
+    realmName: string,
+    leaderboardStatus: "UNRANKED" | "RANKED" | "QUALIFIED" | "LOVED",
+    positiveModifiers: boolean,
+    stars: number,
+    rankedAt: string | null,
+    qualifiedAt: string | null,
+    lovedAt: string | null,
+
+},
+
+},
+
+},
+    comment: string,
+
+})[],
+    followers: number,
+    following: number,
+
+},
+    history: ({
+    rank: number,
+    totalPP: number,
+    totalScore: string,
+    totalRankedScore: string,
+    totalPlayedLeaderboards: number,
+    totalPlayedRankedLeaderboards: number,
+    totalSubmittedPlays: number,
+    totalReplayViews: number,
+    averageAccuracy: number,
+    weightedAverageAccuracy: number,
+    completionAccuracy: number,
+    estimated: boolean,
+    createdAt: string,
+
+})[],
+    aliases: ({
+    id: number,
+    alias: string,
+    disabled: boolean,
+    createdAt: string,
+
+})[],
+
+}` Player profile bundle: profile, realm history and aliases
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      playerControllerGetPlayerProfile: ({ id, ...query }: PlayerControllerGetPlayerProfileParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               player: {
+                  id: string;
+                  name: string;
+                  playerNameInGame: string;
+                  country: string;
+                  role: string | null;
+                  avatar: string;
+                  avatarVersion: number;
+                  permissions: number;
+                  banned: boolean;
+                  silenced: boolean;
+                  inactive: boolean;
+                  stats: {
+                     realmId: number;
+                     realmName: string;
+                     rank: number;
+                     countryRank: number;
+                     rankChange: number | null;
+                     totalPP: number;
+                     plusOnePP: number | null;
+                     totalScore: string;
+                     totalRankedScore: string;
+                     totalPlayedLeaderboards: number;
+                     totalPlayedRankedLeaderboards: number;
+                     totalSubmittedPlays: number;
+                     totalReplayViews: number;
+                     averageAccuracy: number;
+                     weightedAverageAccuracy: number;
+                     completionAccuracy: number;
+                     device: {
+                        hmd: string | null;
+                        controllerLeft: string | null;
+                        controllerRight: string | null;
+                     } | null;
+                  };
+                  bio: string | null;
+                  vanity: string | null;
+                  profileCustomization: {
+                     backgroundImage: string | null;
+                     backgroundImageVersion: number | null;
+                     accentColor: string | null;
+                     accentForegroundColor: string | null;
+                     accentForegroundActiveColor: string | null;
+                     supporterNameColorEnabled: boolean;
+                     badgeOrder: number[] | null;
+                     badgeComments: Record<string, string> | null;
+                     statOrder:
+                        | (
+                             | 'rankedPlays'
+                             | 'rankedScore'
+                             | 'rankedAcc'
+                             | 'plusOnePP'
+                             | 'totalPlays'
+                             | 'totalScore'
+                             | 'joined'
+                             | 'replayViews'
+                             | 'role'
+                          )[]
+                        | null;
+                     enabledStatIds:
+                        | (
+                             | 'rankedPlays'
+                             | 'rankedScore'
+                             | 'rankedAcc'
+                             | 'plusOnePP'
+                             | 'totalPlays'
+                             | 'totalScore'
+                             | 'joined'
+                             | 'replayViews'
+                             | 'role'
+                          )[]
+                        | null;
+                     chartMetricIds: ('rank' | 'totalPP' | 'averageAccuracy' | 'totalSubmittedPlays')[] | null;
+                     sectionOrder: ('charts' | 'bio' | 'pinnedScores' | 'scores')[] | null;
+                  };
+                  createdAt: string;
+                  lastSeenAt: string;
+                  badges: {
+                     id: number;
+                     image: string;
+                     description: string;
+                  }[];
+                  pinnedScores: {
+                     score: {
+                        score: {
+                           id: number;
+                           rank: number;
+                           unmodifiedScore: number;
+                           modifiedScore: number;
+                           accuracy: number;
+                           pp: number;
+                           weight: number;
+                           mods: string[];
+                           badCuts: number;
+                           missedNotes: number;
+                           maxCombo: number;
+                           fullCombo: boolean;
+                           hasReplay: boolean;
+                           replayViewCount?: number;
+                           personalBest: boolean;
+                           legacyHmdId: number | null;
+                           version: string | null;
+                           playOutcome: 'CLEAR' | 'FAIL' | 'QUIT' | 'RESTART';
+                           playOutcomeTime: number | null;
+                           createdAt: string;
+                           hasHistory?: boolean;
+                           player: {
+                              id: string;
+                              name: string;
+                              playerNameInGame: string;
+                              country: string;
+                              role: string | null;
+                              avatar: string;
+                              avatarVersion: number;
+                              permissions: number;
+                           };
+                           device: {
+                              hmd: string | null;
+                              controllerLeft: string | null;
+                              controllerRight: string | null;
+                           } | null;
+                        };
+                        leaderboard: {
+                           id: number;
+                           map: {
+                              id: number;
+                              hash: string;
+                              bsid: string | null;
+                              songName: string;
+                              songSubName: string;
+                              songAuthorName: string;
+                              levelAuthorName: string;
+                              bpm: number;
+                              coverUrl: string;
+                              verified: boolean;
+                           };
+                           difficulty: {
+                              id: number;
+                              difficulty: number;
+                              rawDifficulty: string;
+                              gameMode: string;
+                           };
+                           maxScore: number;
+                           totalScores: number;
+                           dailyScores: number;
+                           createdAt: string;
+                           realm: {
+                              realmId: number;
+                              realmName: string;
+                              leaderboardStatus: 'UNRANKED' | 'RANKED' | 'QUALIFIED' | 'LOVED';
+                              positiveModifiers: boolean;
+                              stars: number;
+                              rankedAt: string | null;
+                              qualifiedAt: string | null;
+                              lovedAt: string | null;
+                           };
+                        };
+                     };
+                     comment: string;
+                  }[];
+                  followers: number;
+                  following: number;
+               };
+               history: {
+                  rank: number;
+                  totalPP: number;
+                  totalScore: string;
+                  totalRankedScore: string;
+                  totalPlayedLeaderboards: number;
+                  totalPlayedRankedLeaderboards: number;
+                  totalSubmittedPlays: number;
+                  totalReplayViews: number;
+                  averageAccuracy: number;
+                  weightedAverageAccuracy: number;
+                  completionAccuracy: number;
+                  estimated: boolean;
+                  createdAt: string;
+               }[];
+               aliases: {
+                  id: number;
+                  alias: string;
+                  disabled: boolean;
+                  createdAt: string;
+               }[];
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/players/${id}/profile`,
             method: 'GET',
             query: query,
             format: 'json',
@@ -4737,6 +5241,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -4841,6 +5346,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                maxCombo: number;
                fullCombo: boolean;
                hasReplay: boolean;
+               replayViewCount?: number;
                personalBest: boolean;
                legacyHmdId: number | null;
                version: string | null;
@@ -4945,6 +5451,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -5098,6 +5605,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      maxCombo: number;
                      fullCombo: boolean;
                      hasReplay: boolean;
+                     replayViewCount?: number;
                      personalBest: boolean;
                      legacyHmdId: number | null;
                      version: string | null;
@@ -6680,6 +7188,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -6794,6 +7303,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   maxCombo: number;
                   fullCombo: boolean;
                   hasReplay: boolean;
+                  replayViewCount?: number;
                   personalBest: boolean;
                   legacyHmdId: number | null;
                   version: string | null;
@@ -7249,6 +7759,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -7296,6 +7807,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -7403,6 +7915,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   maxCombo: number;
                   fullCombo: boolean;
                   hasReplay: boolean;
+                  replayViewCount?: number;
                   personalBest: boolean;
                   legacyHmdId: number | null;
                   version: string | null;
@@ -7446,6 +7959,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   maxCombo: number;
                   fullCombo: boolean;
                   hasReplay: boolean;
+                  replayViewCount?: number;
                   personalBest: boolean;
                   legacyHmdId: number | null;
                   version: string | null;
@@ -24420,6 +24934,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -24693,6 +25208,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   maxCombo: number;
                   fullCombo: boolean;
                   hasReplay: boolean;
+                  replayViewCount?: number;
                   personalBest: boolean;
                   legacyHmdId: number | null;
                   version: string | null;
@@ -24947,6 +25463,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     maxCombo: number,
     fullCombo: boolean,
     hasReplay: boolean,
+    replayViewCount?: number,
     personalBest: boolean,
     legacyHmdId: number | null,
     version: string | null,
@@ -25100,6 +25617,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      maxCombo: number;
                      fullCombo: boolean;
                      hasReplay: boolean;
+                     replayViewCount?: number;
                      personalBest: boolean;
                      legacyHmdId: number | null;
                      version: string | null;

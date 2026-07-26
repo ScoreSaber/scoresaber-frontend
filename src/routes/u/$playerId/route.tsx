@@ -75,31 +75,27 @@ const REQUIRED_PROFILE_SECTION_IDS: readonly PlayerProfileSectionId[] = ['scores
 const getPlayerProfilePageData = createServerFn({ method: 'GET' })
    .inputValidator((data: PlayerProfileRouteInput) => data)
    .handler(async ({ data }) => {
-      const numericId = isPlayerId.safeParse(data.playerId);
       const token = readAuthCookie();
-      const aliasApi = token ? api : publicApi;
-      const knownPlayerId = numericId.success ? numericId.data.toString() : null;
-      const scoresPromise = knownPlayerId
-         ? optionalApiData(
-              publicApi.player.playerControllerGetPlayerScores({
-                 id: knownPlayerId,
-                 limit: 8,
-                 page: data.search.page ?? 1,
-                 sort: data.search.sort ?? 'top',
-                 search: data.search.search
-              })
-           )
-         : null;
-      const historyPromise = knownPlayerId ? optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: knownPlayerId })) : null;
-      const aliasesPromise = knownPlayerId ? optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: knownPlayerId })) : null;
-      const connectionsPromise = token ? optionalApi(api.user.userControllerGetConnections().then((r) => r.data)) : null;
-      const playerResult = numericId.success
-         ? await pageApiData(publicApi.player.playerControllerGetPlayer({ id: numericId.data.toString() }))
-         : await pageApiData(publicApi.player.playerControllerGetPlayerByVanity({ slug: data.playerId.toLowerCase() }));
+      const profileApi = token ? api : publicApi;
+      const playerId = isPlayerId.safeParse(data.playerId).success ? data.playerId : data.playerId.toLowerCase();
 
-      if (!playerResult.ok) {
+      const [profileResult, scores, connections] = await Promise.all([
+         pageApiData(profileApi.player.playerControllerGetPlayerProfile({ id: playerId })),
+         optionalApiData(
+            publicApi.player.playerControllerGetPlayerScores({
+               id: playerId,
+               limit: 8,
+               page: data.search.page ?? 1,
+               sort: data.search.sort ?? 'top',
+               search: data.search.search
+            })
+         ),
+         token ? optionalApi(api.user.userControllerGetConnections().then((r) => r.data)) : null
+      ]);
+
+      if (!profileResult.ok) {
          return {
-            result: playerResult,
+            result: profileResult,
             scores: null,
             history: null,
             aliases: [],
@@ -110,34 +106,16 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
          };
       }
 
-      const apiPlayerId = playerResult.data.id;
-      const bio = playerResult.data.bio ?? '';
-      const sanitizedBio = sanitizeRichTextHtml(bio);
-      const apiPlusOnePP = playerResult.data.stats.plusOnePP;
-
-      const [scores, history, aliases, connections] = await Promise.all([
-         scoresPromise ??
-            optionalApiData(
-               publicApi.player.playerControllerGetPlayerScores({
-                  id: apiPlayerId,
-                  limit: 8,
-                  page: data.search.page ?? 1,
-                  sort: data.search.sort ?? 'top',
-                  search: data.search.search
-               })
-            ),
-         historyPromise ?? optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
-         aliasesPromise ?? optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId })),
-         connectionsPromise
-      ]);
+      const { player, history, aliases } = profileResult.data;
+      const sanitizedBio = sanitizeRichTextHtml(player.bio ?? '');
 
       return {
-         result: playerResult,
+         result: { ok: true as const, data: player },
          scores,
          history,
-         aliases: aliases ?? [],
+         aliases,
          patreonConnected: connections?.some((connection) => connection.provider === 'PATREON' && connection.state === 'CONNECTED') ?? false,
-         plusOneRawPP: apiPlusOnePP,
+         plusOneRawPP: player.stats.plusOnePP,
          sanitizedBio,
          hasBioContent: hasRichTextContent(sanitizedBio)
       };

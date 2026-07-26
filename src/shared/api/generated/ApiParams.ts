@@ -193,6 +193,8 @@ export type PlayerControllerGetPlayerByVanityResponse = _R<_Player['playerContro
 
 export type PlayerControllerGetPlayerResponse = _R<_Player['playerControllerGetPlayer']>;
 
+export type PlayerControllerGetPlayerProfileResponse = _R<_Player['playerControllerGetPlayerProfile']>;
+
 export type PlayerControllerGetPlayerBasicResponse = _R<_Player['playerControllerGetPlayerBasic']>;
 
 export type PlayerControllerGetPlayerHistoryResponse = _R<_Player['playerControllerGetPlayerHistory']>;
