@@ -350,12 +350,14 @@ function NewsFeedDialog({ posts }: { posts: HomeNewsPost[] }) {
          </DialogTrigger>
          <DialogContent
             aria-describedby={undefined}
-            className="flex flex-col gap-3 overflow-hidden p-4 sm:h-[min(46rem,calc(100dvh-4rem))] sm:max-h-[calc(100dvh-4rem)] sm:p-6"
+            className="h-dvh max-h-dvh max-w-none overflow-hidden rounded-none border-0 p-0 sm:h-[min(46rem,calc(100dvh-4rem))] sm:max-h-[calc(100dvh-4rem)] sm:rounded-lg sm:border"
          >
-            <DialogHeader>
-               <DialogTitle>{t('news.allNews')}</DialogTitle>
-            </DialogHeader>
-            <NewsColumn posts={posts} fullFeed />
+            <div className="flex h-full min-h-0 flex-col gap-3 p-4 sm:p-6">
+               <DialogHeader className="pr-8">
+                  <DialogTitle>{t('news.allNews')}</DialogTitle>
+               </DialogHeader>
+               <NewsColumn posts={posts} fullFeed />
+            </div>
          </DialogContent>
       </Dialog>
    );
