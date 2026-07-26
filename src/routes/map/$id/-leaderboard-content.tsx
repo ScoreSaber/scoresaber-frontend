@@ -17,7 +17,7 @@ export function MapLeaderboardRouteContent({
    if (!result.ok) return <PageError status={result.status} />;
 
    const currentPage = searchParams.page ?? 1;
-   const { mapInfo, leaderboardInfo, leaderboardScores, leaderboardId } = result.data;
+   const { mapInfo, leaderboard, leaderboardScores, leaderboardId } = result.data;
    const buildLocation = (search?: LeaderboardSearchParams) =>
       buildMapLeaderboardLocation({ routeName: input.routeName, mapId: input.mapId, leaderboardId, search });
 
@@ -28,7 +28,7 @@ export function MapLeaderboardRouteContent({
             <MapLeaderboardView
                routeName={input.routeName}
                mapInfo={mapInfo}
-               leaderboardInfo={leaderboardInfo}
+               leaderboard={leaderboard}
                leaderboardScores={leaderboardScores}
                search={searchParams}
                currentPage={currentPage}

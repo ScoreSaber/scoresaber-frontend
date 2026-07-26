@@ -23,9 +23,12 @@ import { cn, formatNumber, getHmdName, isLegacyAccuracyScore } from '@/shared/fo
 import { starsToPP } from '@/shared/format/star-conversion';
 import { isLeaderboardRanked } from '@/shared/format/styling';
 
+// only the scoring bits, so both map-detail leaderboards and score leaderboards fit
+export type ScoredLeaderboard = Pick<LeaderboardControllerGetLeaderboardByIdResponse, 'maxScore' | 'realm'>;
+
 interface LeaderboardScoresTableProps {
    scores: LeaderboardControllerGetLeaderboardScoresByIdDataItem[];
-   leaderboard: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboard: ScoredLeaderboard;
    highlight?: number;
    // when filtering by scope/search, pass pagination info to compute relative ranks
    scopedPage?: number;
@@ -72,7 +75,7 @@ interface LeaderboardScoreCardProps {
    isRanked: boolean;
    isHighlighted: boolean;
    showAccuracy: boolean;
-   leaderboard: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboard: ScoredLeaderboard;
    relativeRank?: number;
    showHistory: boolean;
    historyContext: boolean;

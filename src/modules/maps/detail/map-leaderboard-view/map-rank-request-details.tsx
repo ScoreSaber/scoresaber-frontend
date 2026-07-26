@@ -11,23 +11,22 @@ import { getRankRequestDifficulty, isActiveRankRequest } from '@/modules/rank-re
 import { RankRequestComment } from '@/modules/rank-requests/rank-request-comment';
 import { RankRequestCommentForm } from '@/modules/rank-requests/rank-request-comment-form';
 import { VoteSection } from '@/modules/rank-requests/vote-section';
-import type { LeaderboardControllerGetLeaderboardByIdResponse } from '@/shared/api/generated/ApiParams';
 import { decodeHtmlEntities } from '@/shared/format/helpers';
 import Permissions from '@/shared/permissions';
 
 const rankRequestRoute = getRouteApi('/ranking/request/$requestId');
 
 interface MapRankRequestDetailsProps {
-   leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboardId: number;
    rankRequest: RankRequest;
    userPermissions: number;
 }
 
 type CommentGroup = 'RT' | 'QAT';
 
-export function MapRankRequestDetails({ leaderboardInfo, rankRequest, userPermissions }: MapRankRequestDetailsProps) {
+export function MapRankRequestDetails({ leaderboardId, rankRequest, userPermissions }: MapRankRequestDetailsProps) {
    const t = useTranslations();
-   const activeDifficulty = getRankRequestDifficulty(rankRequest, leaderboardInfo.id);
+   const activeDifficulty = getRankRequestDifficulty(rankRequest, leaderboardId);
    const canModifyRequest = isActiveRankRequest(rankRequest);
 
    const canRtVote = canModifyRequest && Permissions.checkPermissionNumber(userPermissions, Permissions.security.RT | Permissions.security.RTR);

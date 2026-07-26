@@ -1,12 +1,12 @@
-import { linkOptions } from '@tanstack/react-router';
+import { linkOptions, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
-import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
+import type { LeaderboardSearchParams, MapLeaderboard } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
 import { getDisplayLeaderboards } from '@/modules/maps/map-leaderboards';
 import { getDefaultMapLeaderboardId, getRankRequestDisplayStatus, getRankRequestStatusLabel } from '@/modules/rank-requests/lib/model';
-import { LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT, type MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
+import { LEADERBOARD_CONTROLLER_GET_LEADERBOARD_SCORES_BY_ID_PIVOT } from '@/shared/api/generated/ApiParams';
 import { api, publicApi } from '@/shared/api/server-api';
 import { countryRegionSearchSchema, formatCountryRegionParam } from '@/shared/country-region';
 import { formatStars } from '@/shared/format/helpers';
@@ -30,7 +30,6 @@ export const leaderboardSearchSchema = z.object({
 });
 
 type MapLeaderboardRouteName = 'map' | 'mapDifficulty';
-type MapLeaderboard = MapControllerGetMapByIdResponse['leaderboards'][number];
 type MapLeaderboardSearch = z.output<typeof leaderboardSearchSchema>;
 
 type MapLeaderboardRouteInput = {
@@ -144,32 +143,32 @@ async function loadMapLeaderboardPageData({
       const mapInfo = mapResult.data;
       const activeLeaderboardId = getDefaultMapLeaderboardId(mapInfo, searchParams.tab === 'rank-request' ? 'rank-request' : 'leaderboard');
       const shouldLoadScores = searchParams.tab !== 'insights' && (searchParams.tab !== 'rank-request' || mapInfo.rankRequest == null);
-      const [leaderboardInfoResult, leaderboardScores] = await Promise.all([
-         pageApiData(publicApi.leaderboard.leaderboardControllerGetLeaderboardById({ id: activeLeaderboardId })),
-         shouldLoadScores ? getLeaderboardScores(scoreApi, activeLeaderboardId, page, searchParams) : null
-      ]);
+      const leaderboardScores = shouldLoadScores ? await getLeaderboardScores(scoreApi, activeLeaderboardId, page, searchParams) : null;
+      const leaderboard = mapInfo.leaderboards.find((entry) => entry.id === activeLeaderboardId);
 
-      if (!leaderboardInfoResult.ok) return leaderboardInfoResult;
+      if (!leaderboard) throw notFound();
 
       return pageDataOk({
          mapInfo,
-         leaderboardInfo: leaderboardInfoResult.data,
+         leaderboard,
          leaderboardScores,
          leaderboardId: activeLeaderboardId
       });
    }
 
-   const leaderboardInfoResultPromise = pageApiData(publicApi.leaderboard.leaderboardControllerGetLeaderboardById({ id: leaderboardId }));
    const leaderboardScoresPromise =
       searchParams.tab === 'insights' || searchParams.tab === 'rank-request'
          ? null
          : getLeaderboardScores(scoreApi, leaderboardId, page, searchParams);
-   const [mapResult, leaderboardInfoResult] = await Promise.all([mapResultPromise, leaderboardInfoResultPromise]);
+   const mapResult = await mapResultPromise;
 
    if (!mapResult.ok) return mapResult;
-   if (!leaderboardInfoResult.ok) return leaderboardInfoResult;
 
    const mapInfo = mapResult.data;
+   const leaderboard = mapInfo.leaderboards.find((entry) => entry.id === leaderboardId);
+
+   if (!leaderboard) throw notFound();
+
    const shouldLoadScores = searchParams.tab !== 'insights' && (searchParams.tab !== 'rank-request' || mapInfo.rankRequest == null);
    const leaderboardScores = shouldLoadScores
       ? await (leaderboardScoresPromise ?? getLeaderboardScores(scoreApi, leaderboardId, page, searchParams))
@@ -177,7 +176,7 @@ async function loadMapLeaderboardPageData({
 
    return pageDataOk({
       mapInfo,
-      leaderboardInfo: leaderboardInfoResult.data,
+      leaderboard,
       leaderboardScores,
       leaderboardId
    });
@@ -198,12 +197,12 @@ function getLeaderboardScores(scoreApi: typeof api, leaderboardId: number, page:
 function buildMapLeaderboardTitle(loaderData: Awaited<ReturnType<typeof getMapLeaderboardPageData>> | undefined, routeName: MapLeaderboardRouteName) {
    if (!loaderData?.result.ok) return 'Map';
 
-   const { mapInfo, leaderboardInfo } = loaderData.result.data;
+   const { mapInfo, leaderboard } = loaderData.result.data;
    if (routeName === 'map') return mapInfo.songName;
 
-   const hasStars = leaderboardInfo.realm.leaderboardStatus !== 'UNRANKED' && leaderboardInfo.realm.stars > 0;
-   const difficultyName = getDifficultyLabel(leaderboardInfo.difficulty.difficulty);
-   return hasStars ? `${mapInfo.songName} | ${difficultyName} (${formatStars(leaderboardInfo.realm.stars)})` : mapInfo.songName;
+   const hasStars = leaderboard.realm.leaderboardStatus !== 'UNRANKED' && leaderboard.realm.stars > 0;
+   const difficultyName = getDifficultyLabel(leaderboard.difficulty);
+   return hasStars ? `${mapInfo.songName} | ${difficultyName} (${formatStars(leaderboard.realm.stars)})` : mapInfo.songName;
 }
 
 function buildMapLeaderboardDescription(
@@ -212,13 +211,13 @@ function buildMapLeaderboardDescription(
 ) {
    if (!loaderData?.result.ok) return undefined;
 
-   const { mapInfo, leaderboardInfo, leaderboardId } = loaderData.result.data;
+   const { mapInfo, leaderboard, leaderboardId } = loaderData.result.data;
    const rankRequest = loaderData.searchParams.tab === 'rank-request' ? mapInfo.rankRequest : null;
    const requestStatus = rankRequest ? getRankRequestDisplayStatus(rankRequest, leaderboardId) : null;
    const statusLabel =
       rankRequest && requestStatus
          ? `${rankRequest.requestType === 'UNRANK' ? 'Unrank Request' : 'Rank Request'}: ${getRankRequestStatusLabel(requestStatus)}`
-         : getStatusLabel(leaderboardInfo.realm.leaderboardStatus);
+         : getStatusLabel(leaderboard.realm.leaderboardStatus);
 
    return buildMapEmbedDescription({
       songAuthorName: mapInfo.songAuthorName,

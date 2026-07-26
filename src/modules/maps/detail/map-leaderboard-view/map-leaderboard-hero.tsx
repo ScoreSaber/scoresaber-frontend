@@ -8,11 +8,11 @@ import { useTranslations } from 'use-intl';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
+import type { LeaderboardSearchParams, MapLeaderboard } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
 import { MapReuploadVersionSelection } from '@/modules/maps/detail/map-reupload-version-selection';
 import { BeatSaverKeyPill } from '@/modules/maps/shared/beatsaver-key-pill';
 import { LinkedNames } from '@/modules/search/search-link';
-import type { LeaderboardControllerGetLeaderboardByIdResponse, MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
+import type { MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
 import { CopyButton } from '@/shared/components/copy-button';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { Stat } from '@/shared/components/stat';
@@ -21,9 +21,9 @@ import { cn, formatNumber } from '@/shared/format/helpers';
 import { getStatusAccentClass } from '@/shared/format/styling';
 import { isLeaderboardPersonalizationParam } from '@/shared/url-state/persisted-filter-preferences';
 
-export function MapLeaderboardHero({ mapInfo, leaderboardInfo, linkSearchParams }: MapLeaderboardHeroProps) {
+export function MapLeaderboardHero({ mapInfo, leaderboard, linkSearchParams }: MapLeaderboardHeroProps) {
    const tc = useTranslations();
-   const status = leaderboardInfo.realm.leaderboardStatus;
+   const status = leaderboard.realm.leaderboardStatus;
 
    return (
       <div className="flex flex-col gap-1.5">
@@ -58,7 +58,7 @@ export function MapLeaderboardHero({ mapInfo, leaderboardInfo, linkSearchParams 
                   <CopyMapHashButton hash={mapInfo.hash} />
                   <MapReuploadVersionSelection
                      mapInfo={mapInfo}
-                     activeLeaderboardId={leaderboardInfo.id}
+                     activeLeaderboardId={leaderboard.id}
                      linkSearchParams={linkSearchParams}
                      triggerVariant="icon"
                   />
@@ -187,6 +187,6 @@ function CopyMapHashButton({ hash }: { hash: string }) {
 
 interface MapLeaderboardHeroProps {
    mapInfo: MapControllerGetMapByIdResponse;
-   leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboard: MapLeaderboard;
    linkSearchParams?: LeaderboardSearchParams;
 }

@@ -7,7 +7,7 @@ import { FaChartBar, FaCheck, FaExchangeAlt, FaHourglassHalf, FaTimes, FaTrophy 
 import { useTranslations } from 'use-intl';
 
 import { MapLeaderboardFilters } from './map-leaderboard-filters';
-import type { LeaderboardScores, MapLeaderboardRouteName, MapLeaderboardTab, RankRequest } from './map-leaderboard-view-types';
+import type { LeaderboardScores, MapLeaderboard, MapLeaderboardRouteName, MapLeaderboardTab, RankRequest } from './map-leaderboard-view-types';
 import { MapRankRequestDetails } from './map-rank-request-details';
 
 import { Button } from '@/components/ui/button';
@@ -19,8 +19,8 @@ import { MapGameModeSelection } from '@/modules/maps/detail/map-game-mode-select
 import { MapInsights } from '@/modules/maps/detail/map-insights/map-insights';
 import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
 import { getRankRequestDisplayStatus } from '@/modules/rank-requests/lib/model';
-import { LeaderboardScoresTable } from '@/modules/scores/leaderboard/leaderboard-scores-table';
-import type { LeaderboardControllerGetLeaderboardByIdResponse, MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
+import { LeaderboardScoresTable, type ScoredLeaderboard } from '@/modules/scores/leaderboard/leaderboard-scores-table';
+import type { MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
 import { Pagination } from '@/shared/components/pagination';
 import { useHorizontalScrollFade } from '@/shared/components/use-horizontal-scroll-fade';
 import { cn } from '@/shared/format/helpers';
@@ -47,7 +47,7 @@ const mapDifficultyRoute = getRouteApi('/map/$id/difficulty/$leaderboardId');
 export function MapLeaderboardContent<TLocation>({
    mapInfo,
    routeName,
-   leaderboardInfo,
+   leaderboard,
    leaderboardScores,
    search,
    currentPage,
@@ -82,7 +82,7 @@ export function MapLeaderboardContent<TLocation>({
             <div className="shrink-0 md:order-1">
                <DifficultyToolbar
                   mapInfo={mapInfo}
-                  leaderboardInfo={leaderboardInfo}
+                  activeLeaderboardId={leaderboard.id}
                   hasMultipleGameModes={hasMultipleGameModes}
                   activeGameMode={activeGameMode}
                   activeTab={activeTab}
@@ -94,7 +94,7 @@ export function MapLeaderboardContent<TLocation>({
                <MapTabLink
                   routeName={routeName}
                   mapId={mapInfo.id}
-                  leaderboardId={leaderboardInfo.id}
+                  leaderboardId={leaderboard.id}
                   search={getTabSearch('leaderboard')}
                   active={activeTab === 'leaderboard'}
                   ariaLabel={t('map.leaderboard')}
@@ -105,7 +105,7 @@ export function MapLeaderboardContent<TLocation>({
                <MapTabLink
                   routeName={routeName}
                   mapId={mapInfo.id}
-                  leaderboardId={leaderboardInfo.id}
+                  leaderboardId={leaderboard.id}
                   search={getTabSearch('insights')}
                   active={activeTab === 'insights'}
                   ariaLabel={t('map.insights')}
@@ -117,13 +117,13 @@ export function MapLeaderboardContent<TLocation>({
                   <MapTabLink
                      routeName={routeName}
                      mapId={mapInfo.id}
-                     leaderboardId={leaderboardInfo.id}
+                     leaderboardId={leaderboard.id}
                      search={getTabSearch('rank-request')}
                      active={activeTab === 'rank-request'}
                      ariaLabel={isUnrank ? t('rankRequest.unrankRequest') : t('map.rankRequest')}
                      className={isUnrank ? 'data-[state=active]:text-destructive' : undefined}
                   >
-                     <RankRequestStatusIcon status={getRankRequestDisplayStatus(rankRequest, leaderboardInfo.id)} />
+                     <RankRequestStatusIcon status={getRankRequestDisplayStatus(rankRequest, leaderboard.id)} />
                      <span className="hidden md:inline">{isUnrank ? t('rankRequest.unrankRequest') : t('map.rankRequest')}</span>
                   </MapTabLink>
                )}
@@ -143,7 +143,7 @@ export function MapLeaderboardContent<TLocation>({
          {activeTab === 'leaderboard' && (
             <div className="mt-0">
                <ScoresList
-                  leaderboardInfo={leaderboardInfo}
+                  leaderboard={leaderboard}
                   leaderboardScores={leaderboardScores}
                   currentPage={currentPage}
                   highlight={highlight}
@@ -155,13 +155,13 @@ export function MapLeaderboardContent<TLocation>({
 
          {activeTab === 'insights' && (
             <div className="mt-0">
-               <MapInsights leaderboardId={leaderboardInfo.id} />
+               <MapInsights leaderboardId={leaderboard.id} />
             </div>
          )}
 
          {activeTab === 'rank-request' && rankRequest && (
             <div className="mt-0">
-               <MapRankRequestDetails leaderboardInfo={leaderboardInfo} rankRequest={rankRequest} userPermissions={userPermissions} />
+               <MapRankRequestDetails leaderboardId={leaderboard.id} rankRequest={rankRequest} userPermissions={userPermissions} />
             </div>
          )}
       </div>
@@ -244,14 +244,14 @@ function RankRequestStatusIcon({ status }: { status: RankRequestStatus }) {
 
 function DifficultyToolbar({
    mapInfo,
-   leaderboardInfo,
+   activeLeaderboardId,
    hasMultipleGameModes,
    activeGameMode,
    activeTab,
    search
 }: {
    mapInfo: MapControllerGetMapByIdResponse;
-   leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
+   activeLeaderboardId: number;
    hasMultipleGameModes: boolean;
    activeGameMode: string;
    activeTab?: MapLeaderboardTab;
@@ -269,7 +269,7 @@ function DifficultyToolbar({
       <div className="flex min-w-0 items-center gap-1 md:gap-1.5">
          <MapDifficultySelection
             mapInfo={mapInfo}
-            activeLeaderboardId={leaderboardInfo.id}
+            activeLeaderboardId={activeLeaderboardId}
             activeGameMode={activeGameMode}
             linkSearchParams={linkSearchParams}
             className="w-auto max-w-36 md:max-w-none"
@@ -280,14 +280,14 @@ function DifficultyToolbar({
 }
 
 function ScoresList<TLocation>({
-   leaderboardInfo,
+   leaderboard,
    leaderboardScores,
    currentPage,
    highlight,
    search,
    buildLocation
 }: {
-   leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboard: ScoredLeaderboard;
    leaderboardScores: LeaderboardScores;
    currentPage: number;
    highlight?: number;
@@ -313,7 +313,7 @@ function ScoresList<TLocation>({
       <div className="flex flex-col gap-3">
          <LeaderboardScoresTable
             scores={leaderboardScores.data}
-            leaderboard={leaderboardInfo}
+            leaderboard={leaderboard}
             highlight={highlight}
             scopedPage={isScoped ? currentPage : undefined}
             scopedPageSize={isScoped ? leaderboardScores.metadata.itemsPerPage : undefined}
@@ -333,7 +333,7 @@ function ScoresList<TLocation>({
 interface MapLeaderboardContentProps<TLocation> {
    mapInfo: MapControllerGetMapByIdResponse;
    routeName: MapLeaderboardRouteName;
-   leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboard: MapLeaderboard;
    leaderboardScores: LeaderboardScores;
    search: LeaderboardSearchParams;
    currentPage: number;

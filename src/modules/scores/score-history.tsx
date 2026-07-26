@@ -11,13 +11,9 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { LeaderboardScoresTable } from '@/modules/scores/leaderboard/leaderboard-scores-table';
+import { LeaderboardScoresTable, type ScoredLeaderboard } from '@/modules/scores/leaderboard/leaderboard-scores-table';
 import { api } from '@/shared/api/ApiInstance';
-import {
-   SCORE_CONTROLLER_GET_SCORE_HISTORY_OUTCOMES,
-   type LeaderboardControllerGetLeaderboardByIdResponse,
-   type ScoreControllerGetScoreHistoryOutcomes
-} from '@/shared/api/generated/ApiParams';
+import { SCORE_CONTROLLER_GET_SCORE_HISTORY_OUTCOMES, type ScoreControllerGetScoreHistoryOutcomes } from '@/shared/api/generated/ApiParams';
 import { Icons } from '@/shared/components/icons';
 import { cn } from '@/shared/format/helpers';
 import { queryApiData } from '@/shared/result/api';
@@ -25,7 +21,7 @@ import { readStorageJson, writeStorageJson } from '@/shared/result/storage';
 
 interface ScoreHistoryProps {
    scoreId: number;
-   leaderboard: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboard: ScoredLeaderboard;
    onReadyAction?: () => void;
 }
 
