@@ -41,6 +41,13 @@ export function PlayerLivePresenceProvider({ children, enabled = true }: { child
    return <PlayerLivePresenceContext.Provider value={ludus}>{children}</PlayerLivePresenceContext.Provider>;
 }
 
+export function useLivePlayersAvailable() {
+   const ludus = useContext(PlayerLivePresenceContext);
+   if (!ludus) return false;
+
+   return ludus.status === 'connected' && ludus.rooms.some((room) => room.playerIds.length > 0);
+}
+
 export function PlayerLivePresenceIndicator({ playerId, className, size }: PlayerLivePresenceIndicatorProps) {
    const ludus = useLudus({
       enabled: true,

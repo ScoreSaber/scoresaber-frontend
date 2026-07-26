@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useAuth } from '@/modules/auth';
+import { useLivePlayersAvailable } from '@/modules/player/profile/player-live-presence-indicator';
 import type {
    PlayerControllerGetPlayersPivot,
    PlayerControllerGetPlayersSort,
@@ -50,7 +51,6 @@ interface RankingsFiltersProps<TLocation> {
    totalPages: number;
    includeInactive: boolean;
    live: boolean;
-   showLiveFilter: boolean;
    search: RankingsFiltersSearch;
    buildLocation: RouteLocationBuilder<RankingsFiltersSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => RankingsFiltersSearch | null;
@@ -62,7 +62,6 @@ export function RankingsFilters<TLocation>({
    totalPages,
    includeInactive,
    live,
-   showLiveFilter,
    search,
    buildLocation,
    parseSearch,
@@ -70,6 +69,7 @@ export function RankingsFilters<TLocation>({
 }: RankingsFiltersProps<TLocation>) {
    const { user } = useAuth();
    const t = useTranslations();
+   const showLiveFilter = useLivePlayersAvailable() || live;
    const { navigate, preload, preloadClearAll, cancelPreload, loadStorage, saveStorage } = usePersistedParams({
       storageKey: rankingFilterPreferences.storageKey,
       search,

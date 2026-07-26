@@ -10,7 +10,7 @@ import { useTranslations } from 'use-intl';
 import { cardSurfaceVariants } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-import { PlayerListLivePresenceIndicator, PlayerLivePresenceProvider } from '@/modules/player/profile/player-live-presence-indicator';
+import { PlayerListLivePresenceIndicator } from '@/modules/player/profile/player-live-presence-indicator';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
 import { WeeklyRankChange } from '@/modules/player/shared/weekly-rank-change';
@@ -128,43 +128,96 @@ export function RankingsTable<TLocation>({
    const sharedProps = { countryFiltered, isDefaultSort, highlight };
 
    return (
-      <PlayerLivePresenceProvider enabled={players.length > 0}>
-         <div id="rankings" className="scroll-mt-20">
-            {/* mobile: sort pills + card list */}
-            <div className="lg:hidden">
-               {!isPlayerPivot && (
-                  <div className={cn('flex flex-wrap justify-center gap-1.5 pb-3', isPending && 'pointer-events-none opacity-50')}>
+      <div id="rankings" className="scroll-mt-20">
+         {/* mobile: sort pills + card list */}
+         <div className="lg:hidden">
+            {!isPlayerPivot && (
+               <div className={cn('flex flex-wrap justify-center gap-1.5 pb-3', isPending && 'pointer-events-none opacity-50')}>
+                  {SORTABLE_COLUMNS.map((col) => {
+                     const isActive = activeField === col.sortField;
+                     return (
+                        <FilterPill
+                           className="cursor-pointer"
+                           key={col.sortField}
+                           active={isActive}
+                           icon={col.icon}
+                           onMouseEnter={() => schedulePreload(getSortLocation(col.sortField))}
+                           onFocus={() => schedulePreload(getSortLocation(col.sortField))}
+                           onMouseLeave={cancelPreload}
+                           onBlur={cancelPreload}
+                           onClick={() => handleSort(col.sortField)}
+                        >
+                           {col.sortField === 'totalPP'
+                              ? t('common.pp')
+                              : col.sortField === 'totalSubmittedPlays'
+                                ? t('rankings.plays')
+                                : col.sortField === 'totalPlayedRankedLeaderboards'
+                                  ? t('rankings.ranked')
+                                  : t('rankings.acc')}
+                           {isActive && <SortArrow className="size-2.5" />}
+                        </FilterPill>
+                     );
+                  })}
+               </div>
+            )}
+
+            <div className="flex flex-col gap-1.5">
+               {players.map((player, index) => (
+                  <RankingCard
+                     key={player.id}
+                     player={player}
+                     {...sharedProps}
+                     listPosition={(currentPage - 1) * PAGE_SIZE + index + 1}
+                     showLivePresence
+                  />
+               ))}
+            </div>
+         </div>
+
+         {/* desktop: full table */}
+         <div className="hidden lg:block">
+            <Table className="border-separate border-spacing-y-1.5 text-center whitespace-nowrap">
+               <TableHeader>
+                  <TableRow className="after:from-border/60 relative border-b-0 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-linear-to-l after:to-transparent hover:bg-transparent">
+                     <TableHead className="h-auto px-3 py-2.5 text-center" />
+                     <TableHead className="h-auto px-3 py-2.5 text-center" />
                      {SORTABLE_COLUMNS.map((col) => {
                         const isActive = activeField === col.sortField;
                         return (
-                           <FilterPill
-                              className="cursor-pointer"
+                           <TableHead
                               key={col.sortField}
-                              active={isActive}
-                              icon={col.icon}
-                              onMouseEnter={() => schedulePreload(getSortLocation(col.sortField))}
-                              onFocus={() => schedulePreload(getSortLocation(col.sortField))}
-                              onMouseLeave={cancelPreload}
-                              onBlur={cancelPreload}
-                              onClick={() => handleSort(col.sortField)}
+                              className={cn(
+                                 'h-auto px-4 py-2.5 text-center text-xs font-medium tracking-wide transition-colors select-none',
+                                 isPlayerPivot
+                                    ? 'text-muted-foreground'
+                                    : cn('hover:text-foreground cursor-pointer', isActive ? 'text-foreground' : 'text-muted-foreground'),
+                                 isPending && !isPlayerPivot && 'pointer-events-none opacity-50'
+                              )}
+                              onClick={isPlayerPivot ? undefined : () => handleSort(col.sortField)}
+                              onMouseEnter={isPlayerPivot ? undefined : () => schedulePreload(getSortLocation(col.sortField))}
+                              onFocus={isPlayerPivot ? undefined : () => schedulePreload(getSortLocation(col.sortField))}
+                              onMouseLeave={isPlayerPivot ? undefined : cancelPreload}
+                              onBlur={isPlayerPivot ? undefined : cancelPreload}
                            >
-                              {col.sortField === 'totalPP'
-                                 ? t('common.pp')
-                                 : col.sortField === 'totalSubmittedPlays'
-                                   ? t('rankings.plays')
-                                   : col.sortField === 'totalPlayedRankedLeaderboards'
-                                     ? t('rankings.ranked')
-                                     : t('rankings.acc')}
-                              {isActive && <SortArrow className="size-2.5" />}
-                           </FilterPill>
+                              <span className="inline-flex items-center gap-1.5">
+                                 <col.icon className="size-3" />
+                                 {col.sortField === 'totalPP'
+                                    ? t('common.pp')
+                                    : col.sortField === 'totalSubmittedPlays'
+                                      ? t('rankings.totalPlayCount')
+                                      : col.sortField === 'totalPlayedRankedLeaderboards'
+                                        ? t('rankings.rankedPlayCount')
+                                        : t('rankings.averageRankedAccuracy')}
+                                 {isActive && !isPlayerPivot && <SortArrow className="size-3" />}
+                              </span>
+                           </TableHead>
                         );
                      })}
-                  </div>
-               )}
-
-               <div className="flex flex-col gap-1.5">
+                  </TableRow>
+               </TableHeader>
+               <TableBody>
                   {players.map((player, index) => (
-                     <RankingCard
+                     <RankingRow
                         key={player.id}
                         player={player}
                         {...sharedProps}
@@ -172,65 +225,10 @@ export function RankingsTable<TLocation>({
                         showLivePresence
                      />
                   ))}
-               </div>
-            </div>
-
-            {/* desktop: full table */}
-            <div className="hidden lg:block">
-               <Table className="border-separate border-spacing-y-1.5 text-center whitespace-nowrap">
-                  <TableHeader>
-                     <TableRow className="after:from-border/60 relative border-b-0 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-linear-to-l after:to-transparent hover:bg-transparent">
-                        <TableHead className="h-auto px-3 py-2.5 text-center" />
-                        <TableHead className="h-auto px-3 py-2.5 text-center" />
-                        {SORTABLE_COLUMNS.map((col) => {
-                           const isActive = activeField === col.sortField;
-                           return (
-                              <TableHead
-                                 key={col.sortField}
-                                 className={cn(
-                                    'h-auto px-4 py-2.5 text-center text-xs font-medium tracking-wide transition-colors select-none',
-                                    isPlayerPivot
-                                       ? 'text-muted-foreground'
-                                       : cn('hover:text-foreground cursor-pointer', isActive ? 'text-foreground' : 'text-muted-foreground'),
-                                    isPending && !isPlayerPivot && 'pointer-events-none opacity-50'
-                                 )}
-                                 onClick={isPlayerPivot ? undefined : () => handleSort(col.sortField)}
-                                 onMouseEnter={isPlayerPivot ? undefined : () => schedulePreload(getSortLocation(col.sortField))}
-                                 onFocus={isPlayerPivot ? undefined : () => schedulePreload(getSortLocation(col.sortField))}
-                                 onMouseLeave={isPlayerPivot ? undefined : cancelPreload}
-                                 onBlur={isPlayerPivot ? undefined : cancelPreload}
-                              >
-                                 <span className="inline-flex items-center gap-1.5">
-                                    <col.icon className="size-3" />
-                                    {col.sortField === 'totalPP'
-                                       ? t('common.pp')
-                                       : col.sortField === 'totalSubmittedPlays'
-                                         ? t('rankings.totalPlayCount')
-                                         : col.sortField === 'totalPlayedRankedLeaderboards'
-                                           ? t('rankings.rankedPlayCount')
-                                           : t('rankings.averageRankedAccuracy')}
-                                    {isActive && !isPlayerPivot && <SortArrow className="size-3" />}
-                                 </span>
-                              </TableHead>
-                           );
-                        })}
-                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                     {players.map((player, index) => (
-                        <RankingRow
-                           key={player.id}
-                           player={player}
-                           {...sharedProps}
-                           listPosition={(currentPage - 1) * PAGE_SIZE + index + 1}
-                           showLivePresence
-                        />
-                     ))}
-                  </TableBody>
-               </Table>
-            </div>
+               </TableBody>
+            </Table>
          </div>
-      </PlayerLivePresenceProvider>
+      </div>
    );
 }
 
