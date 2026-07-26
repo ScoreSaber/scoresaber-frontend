@@ -9,98 +9,58 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TeamRouteImport } from './routes/team'
-import { Route as SupportRouteImport } from './routes/support'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
-import { Route as RankingsRouteImport } from './routes/rankings'
-import { Route as QuestRouteImport } from './routes/quest'
-import { Route as MapsRouteImport } from './routes/maps'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as LiveRouteImport } from './routes/live'
-import { Route as HealthRouteImport } from './routes/health'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SettingsIndexRouteImport } from './routes/settings/index'
-import { Route as LiveIndexRouteImport } from './routes/live/index'
-import { Route as SettingsPerksRouteImport } from './routes/settings/perks'
-import { Route as SettingsDeveloperRouteImport } from './routes/settings/developer'
-import { Route as SettingsConnectionsRouteImport } from './routes/settings/connections'
-import { Route as SettingsAccountRouteImport } from './routes/settings/account'
-import { Route as RankingRequestsRouteImport } from './routes/ranking/requests'
-import { Route as QuestPairRouteImport } from './routes/quest_/pair'
-import { Route as QuestVersionsRouteImport } from './routes/quest/versions'
-import { Route as QuestDownloadRouteImport } from './routes/quest/download'
-import { Route as OauthAuthorizeRouteImport } from './routes/oauth/authorize'
-import { Route as LiveTournamentIdRouteImport } from './routes/live/$tournamentId'
-import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
-import { Route as LegalCopyrightRouteImport } from './routes/legal/copyright'
-import { Route as LegalCookiesPolicyRouteImport } from './routes/legal/cookies-policy'
-import { Route as AuthSteamRouteImport } from './routes/auth/steam'
-import { Route as AuthPatreonRouteImport } from './routes/auth/patreon'
-import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
+import { Route as HealthRouteImport } from './routes/health'
+import { Route as LiveRouteImport } from './routes/live'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as MapsRouteImport } from './routes/maps'
+import { Route as QuestRouteImport } from './routes/quest'
+import { Route as RankingsRouteImport } from './routes/rankings'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as TeamRouteImport } from './routes/team'
 import { Route as legacyLeaderboardsRouteImport } from './routes/(legacy)/leaderboards'
-import { Route as UPlayerIdRouteRouteImport } from './routes/u/$playerId/route'
+import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
+import { Route as AuthPatreonRouteImport } from './routes/auth/patreon'
+import { Route as AuthSteamRouteImport } from './routes/auth/steam'
+import { Route as LegalCookiesPolicyRouteImport } from './routes/legal/cookies-policy'
+import { Route as LegalCopyrightRouteImport } from './routes/legal/copyright'
+import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
+import { Route as LiveIndexRouteImport } from './routes/live/index'
+import { Route as LiveTournamentIdRouteImport } from './routes/live/$tournamentId'
 import { Route as MapIdRouteRouteImport } from './routes/map/$id/route'
-import { Route as SettingsPerksIndexRouteImport } from './routes/settings/perks/index'
-import { Route as MapIdIndexRouteImport } from './routes/map/$id/index'
-import { Route as LiveTournamentIdIndexRouteImport } from './routes/live/$tournamentId/index'
-import { Route as SettingsPerksReplaysRouteImport } from './routes/settings/perks/replays'
-import { Route as RankingRequestRequestIdRouteImport } from './routes/ranking/request/$requestId'
-import { Route as LiveTournamentIdTeamsRouteImport } from './routes/live/$tournamentId/teams'
-import { Route as LiveTournamentIdSettingsRouteImport } from './routes/live/$tournamentId/settings'
-import { Route as LiveTournamentIdRoomsRouteImport } from './routes/live/$tournamentId/rooms'
-import { Route as LiveTournamentIdRolesRouteImport } from './routes/live/$tournamentId/roles'
-import { Route as LiveTournamentIdPlayersRouteImport } from './routes/live/$tournamentId/players'
-import { Route as AuthPatreonCallbackRouteImport } from './routes/auth/patreon/callback'
-import { Route as AuthDiscordCallbackRouteImport } from './routes/auth/discord/callback'
+import { Route as OauthAuthorizeRouteImport } from './routes/oauth/authorize'
+import { Route as QuestDownloadRouteImport } from './routes/quest/download'
+import { Route as QuestVersionsRouteImport } from './routes/quest/versions'
+import { Route as QuestPairRouteImport } from './routes/quest_/pair'
+import { Route as RankingRequestsRouteImport } from './routes/ranking/requests'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as SettingsAccountRouteImport } from './routes/settings/account'
+import { Route as SettingsConnectionsRouteImport } from './routes/settings/connections'
+import { Route as SettingsDeveloperRouteImport } from './routes/settings/developer'
+import { Route as SettingsPerksRouteImport } from './routes/settings/perks'
+import { Route as UPlayerIdRouteRouteImport } from './routes/u/$playerId/route'
 import { Route as legacyLeaderboardLeaderboardIdRouteImport } from './routes/(legacy)/leaderboard/$leaderboardId'
+import { Route as AuthDiscordCallbackRouteImport } from './routes/auth/discord/callback'
+import { Route as AuthPatreonCallbackRouteImport } from './routes/auth/patreon/callback'
+import { Route as LiveTournamentIdIndexRouteImport } from './routes/live/$tournamentId/index'
+import { Route as LiveTournamentIdPlayersRouteImport } from './routes/live/$tournamentId/players'
+import { Route as LiveTournamentIdRolesRouteImport } from './routes/live/$tournamentId/roles'
+import { Route as LiveTournamentIdRoomsRouteImport } from './routes/live/$tournamentId/rooms'
+import { Route as LiveTournamentIdSettingsRouteImport } from './routes/live/$tournamentId/settings'
+import { Route as LiveTournamentIdTeamsRouteImport } from './routes/live/$tournamentId/teams'
+import { Route as MapIdIndexRouteImport } from './routes/map/$id/index'
+import { Route as RankingRequestRequestIdRouteImport } from './routes/ranking/request/$requestId'
+import { Route as SettingsPerksIndexRouteImport } from './routes/settings/perks/index'
+import { Route as SettingsPerksReplaysRouteImport } from './routes/settings/perks/replays'
 import { Route as LiveTournamentIdRoomsIndexRouteImport } from './routes/live/$tournamentId/rooms/index'
 import { Route as LiveTournamentIdRoomsMatchIdRouteImport } from './routes/live/$tournamentId/rooms/$matchId'
 import { Route as MapIdDifficultyLeaderboardIdRouteRouteImport } from './routes/map/$id/difficulty/$leaderboardId/route'
 
-const TeamRoute = TeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SupportRoute = SupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
-  id: '/robots.txt',
-  path: '/robots.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RankingsRoute = RankingsRouteImport.update({
-  id: '/rankings',
-  path: '/rankings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QuestRoute = QuestRouteImport.update({
-  id: '/quest',
-  path: '/quest',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MapsRoute = MapsRouteImport.update({
-  id: '/maps',
-  path: '/maps',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LiveRoute = LiveRouteImport.update({
-  id: '/live',
-  path: '/live',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HealthRoute = HealthRouteImport.update({
@@ -108,99 +68,49 @@ const HealthRoute = HealthRouteImport.update({
   path: '/health',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const LiveRoute = LiveRouteImport.update({
+  id: '/live',
+  path: '/live',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsIndexRoute = SettingsIndexRouteImport.update({
-  id: '/settings/',
-  path: '/settings/',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LiveIndexRoute = LiveIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => LiveRoute,
-} as any)
-const SettingsPerksRoute = SettingsPerksRouteImport.update({
-  id: '/settings/perks',
-  path: '/settings/perks',
+const MapsRoute = MapsRouteImport.update({
+  id: '/maps',
+  path: '/maps',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsDeveloperRoute = SettingsDeveloperRouteImport.update({
-  id: '/settings/developer',
-  path: '/settings/developer',
+const QuestRoute = QuestRouteImport.update({
+  id: '/quest',
+  path: '/quest',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsConnectionsRoute = SettingsConnectionsRouteImport.update({
-  id: '/settings/connections',
-  path: '/settings/connections',
+const RankingsRoute = RankingsRouteImport.update({
+  id: '/rankings',
+  path: '/rankings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsAccountRoute = SettingsAccountRouteImport.update({
-  id: '/settings/account',
-  path: '/settings/account',
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RankingRequestsRoute = RankingRequestsRouteImport.update({
-  id: '/ranking/requests',
-  path: '/ranking/requests',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const QuestPairRoute = QuestPairRouteImport.update({
-  id: '/quest_/pair',
-  path: '/quest/pair',
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
-const QuestVersionsRoute = QuestVersionsRouteImport.update({
-  id: '/versions',
-  path: '/versions',
-  getParentRoute: () => QuestRoute,
-} as any)
-const QuestDownloadRoute = QuestDownloadRouteImport.update({
-  id: '/download',
-  path: '/download',
-  getParentRoute: () => QuestRoute,
-} as any)
-const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
-  id: '/oauth/authorize',
-  path: '/oauth/authorize',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LiveTournamentIdRoute = LiveTournamentIdRouteImport.update({
-  id: '/$tournamentId',
-  path: '/$tournamentId',
-  getParentRoute: () => LiveRoute,
-} as any)
-const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
-  id: '/legal/privacy',
-  path: '/legal/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalCopyrightRoute = LegalCopyrightRouteImport.update({
-  id: '/legal/copyright',
-  path: '/legal/copyright',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalCookiesPolicyRoute = LegalCookiesPolicyRouteImport.update({
-  id: '/legal/cookies-policy',
-  path: '/legal/cookies-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthSteamRoute = AuthSteamRouteImport.update({
-  id: '/auth/steam',
-  path: '/auth/steam',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthPatreonRoute = AuthPatreonRouteImport.update({
-  id: '/auth/patreon',
-  path: '/auth/patreon',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthDiscordRoute = AuthDiscordRouteImport.update({
-  id: '/auth/discord',
-  path: '/auth/discord',
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const legacyLeaderboardsRoute = legacyLeaderboardsRouteImport.update({
@@ -208,44 +118,140 @@ const legacyLeaderboardsRoute = legacyLeaderboardsRouteImport.update({
   path: '/leaderboards',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UPlayerIdRouteRoute = UPlayerIdRouteRouteImport.update({
-  id: '/u/$playerId',
-  path: '/u/$playerId',
+const AuthDiscordRoute = AuthDiscordRouteImport.update({
+  id: '/auth/discord',
+  path: '/auth/discord',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthPatreonRoute = AuthPatreonRouteImport.update({
+  id: '/auth/patreon',
+  path: '/auth/patreon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSteamRoute = AuthSteamRouteImport.update({
+  id: '/auth/steam',
+  path: '/auth/steam',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCookiesPolicyRoute = LegalCookiesPolicyRouteImport.update({
+  id: '/legal/cookies-policy',
+  path: '/legal/cookies-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCopyrightRoute = LegalCopyrightRouteImport.update({
+  id: '/legal/copyright',
+  path: '/legal/copyright',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveIndexRoute = LiveIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LiveRoute,
+} as any)
+const LiveTournamentIdRoute = LiveTournamentIdRouteImport.update({
+  id: '/$tournamentId',
+  path: '/$tournamentId',
+  getParentRoute: () => LiveRoute,
 } as any)
 const MapIdRouteRoute = MapIdRouteRouteImport.update({
   id: '/map/$id',
   path: '/map/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsPerksIndexRoute = SettingsPerksIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => SettingsPerksRoute,
+const OauthAuthorizeRoute = OauthAuthorizeRouteImport.update({
+  id: '/oauth/authorize',
+  path: '/oauth/authorize',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const MapIdIndexRoute = MapIdIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => MapIdRouteRoute,
+const QuestDownloadRoute = QuestDownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
+  getParentRoute: () => QuestRoute,
+} as any)
+const QuestVersionsRoute = QuestVersionsRouteImport.update({
+  id: '/versions',
+  path: '/versions',
+  getParentRoute: () => QuestRoute,
+} as any)
+const QuestPairRoute = QuestPairRouteImport.update({
+  id: '/quest_/pair',
+  path: '/quest/pair',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingRequestsRoute = RankingRequestsRouteImport.update({
+  id: '/ranking/requests',
+  path: '/ranking/requests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsAccountRoute = SettingsAccountRouteImport.update({
+  id: '/settings/account',
+  path: '/settings/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsConnectionsRoute = SettingsConnectionsRouteImport.update({
+  id: '/settings/connections',
+  path: '/settings/connections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsDeveloperRoute = SettingsDeveloperRouteImport.update({
+  id: '/settings/developer',
+  path: '/settings/developer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsPerksRoute = SettingsPerksRouteImport.update({
+  id: '/settings/perks',
+  path: '/settings/perks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UPlayerIdRouteRoute = UPlayerIdRouteRouteImport.update({
+  id: '/u/$playerId',
+  path: '/u/$playerId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const legacyLeaderboardLeaderboardIdRoute =
+  legacyLeaderboardLeaderboardIdRouteImport.update({
+    id: '/(legacy)/leaderboard/$leaderboardId',
+    path: '/leaderboard/$leaderboardId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthDiscordCallbackRoute = AuthDiscordCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthDiscordRoute,
+} as any)
+const AuthPatreonCallbackRoute = AuthPatreonCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthPatreonRoute,
 } as any)
 const LiveTournamentIdIndexRoute = LiveTournamentIdIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LiveTournamentIdRoute,
 } as any)
-const SettingsPerksReplaysRoute = SettingsPerksReplaysRouteImport.update({
-  id: '/replays',
-  path: '/replays',
-  getParentRoute: () => SettingsPerksRoute,
+const LiveTournamentIdPlayersRoute = LiveTournamentIdPlayersRouteImport.update({
+  id: '/players',
+  path: '/players',
+  getParentRoute: () => LiveTournamentIdRoute,
 } as any)
-const RankingRequestRequestIdRoute = RankingRequestRequestIdRouteImport.update({
-  id: '/ranking/request/$requestId',
-  path: '/ranking/request/$requestId',
-  getParentRoute: () => rootRouteImport,
+const LiveTournamentIdRolesRoute = LiveTournamentIdRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => LiveTournamentIdRoute,
 } as any)
-const LiveTournamentIdTeamsRoute = LiveTournamentIdTeamsRouteImport.update({
-  id: '/teams',
-  path: '/teams',
+const LiveTournamentIdRoomsRoute = LiveTournamentIdRoomsRouteImport.update({
+  id: '/rooms',
+  path: '/rooms',
   getParentRoute: () => LiveTournamentIdRoute,
 } as any)
 const LiveTournamentIdSettingsRoute =
@@ -254,37 +260,31 @@ const LiveTournamentIdSettingsRoute =
     path: '/settings',
     getParentRoute: () => LiveTournamentIdRoute,
   } as any)
-const LiveTournamentIdRoomsRoute = LiveTournamentIdRoomsRouteImport.update({
-  id: '/rooms',
-  path: '/rooms',
+const LiveTournamentIdTeamsRoute = LiveTournamentIdTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
   getParentRoute: () => LiveTournamentIdRoute,
 } as any)
-const LiveTournamentIdRolesRoute = LiveTournamentIdRolesRouteImport.update({
-  id: '/roles',
-  path: '/roles',
-  getParentRoute: () => LiveTournamentIdRoute,
+const MapIdIndexRoute = MapIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MapIdRouteRoute,
 } as any)
-const LiveTournamentIdPlayersRoute = LiveTournamentIdPlayersRouteImport.update({
-  id: '/players',
-  path: '/players',
-  getParentRoute: () => LiveTournamentIdRoute,
+const RankingRequestRequestIdRoute = RankingRequestRequestIdRouteImport.update({
+  id: '/ranking/request/$requestId',
+  path: '/ranking/request/$requestId',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthPatreonCallbackRoute = AuthPatreonCallbackRouteImport.update({
-  id: '/callback',
-  path: '/callback',
-  getParentRoute: () => AuthPatreonRoute,
+const SettingsPerksIndexRoute = SettingsPerksIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SettingsPerksRoute,
 } as any)
-const AuthDiscordCallbackRoute = AuthDiscordCallbackRouteImport.update({
-  id: '/callback',
-  path: '/callback',
-  getParentRoute: () => AuthDiscordRoute,
+const SettingsPerksReplaysRoute = SettingsPerksReplaysRouteImport.update({
+  id: '/replays',
+  path: '/replays',
+  getParentRoute: () => SettingsPerksRoute,
 } as any)
-const legacyLeaderboardLeaderboardIdRoute =
-  legacyLeaderboardLeaderboardIdRouteImport.update({
-    id: '/(legacy)/leaderboard/$leaderboardId',
-    path: '/leaderboard/$leaderboardId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const LiveTournamentIdRoomsIndexRoute =
   LiveTournamentIdRoomsIndexRouteImport.update({
     id: '/',
@@ -633,67 +633,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/team': {
-      id: '/team'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof TeamRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/support': {
-      id: '/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof SupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/robots.txt': {
-      id: '/robots.txt'
-      path: '/robots.txt'
-      fullPath: '/robots.txt'
-      preLoaderRoute: typeof RobotsDottxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rankings': {
-      id: '/rankings'
-      path: '/rankings'
-      fullPath: '/rankings'
-      preLoaderRoute: typeof RankingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/quest': {
-      id: '/quest'
-      path: '/quest'
-      fullPath: '/quest'
-      preLoaderRoute: typeof QuestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/maps': {
-      id: '/maps'
-      path: '/maps'
-      fullPath: '/maps'
-      preLoaderRoute: typeof MapsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/live': {
-      id: '/live'
-      path: '/live'
-      fullPath: '/live'
-      preLoaderRoute: typeof LiveRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/health': {
@@ -703,137 +647,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HealthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/live': {
+      id: '/live'
+      path: '/live'
+      fullPath: '/live'
+      preLoaderRoute: typeof LiveRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/': {
-      id: '/settings/'
-      path: '/settings'
-      fullPath: '/settings/'
-      preLoaderRoute: typeof SettingsIndexRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/live/': {
-      id: '/live/'
-      path: '/'
-      fullPath: '/live/'
-      preLoaderRoute: typeof LiveIndexRouteImport
-      parentRoute: typeof LiveRoute
-    }
-    '/settings/perks': {
-      id: '/settings/perks'
-      path: '/settings/perks'
-      fullPath: '/settings/perks'
-      preLoaderRoute: typeof SettingsPerksRouteImport
+    '/maps': {
+      id: '/maps'
+      path: '/maps'
+      fullPath: '/maps'
+      preLoaderRoute: typeof MapsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/developer': {
-      id: '/settings/developer'
-      path: '/settings/developer'
-      fullPath: '/settings/developer'
-      preLoaderRoute: typeof SettingsDeveloperRouteImport
+    '/quest': {
+      id: '/quest'
+      path: '/quest'
+      fullPath: '/quest'
+      preLoaderRoute: typeof QuestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/connections': {
-      id: '/settings/connections'
-      path: '/settings/connections'
-      fullPath: '/settings/connections'
-      preLoaderRoute: typeof SettingsConnectionsRouteImport
+    '/rankings': {
+      id: '/rankings'
+      path: '/rankings'
+      fullPath: '/rankings'
+      preLoaderRoute: typeof RankingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/account': {
-      id: '/settings/account'
-      path: '/settings/account'
-      fullPath: '/settings/account'
-      preLoaderRoute: typeof SettingsAccountRouteImport
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ranking/requests': {
-      id: '/ranking/requests'
-      path: '/ranking/requests'
-      fullPath: '/ranking/requests'
-      preLoaderRoute: typeof RankingRequestsRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/quest_/pair': {
-      id: '/quest_/pair'
-      path: '/quest/pair'
-      fullPath: '/quest/pair'
-      preLoaderRoute: typeof QuestPairRouteImport
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/quest/versions': {
-      id: '/quest/versions'
-      path: '/versions'
-      fullPath: '/quest/versions'
-      preLoaderRoute: typeof QuestVersionsRouteImport
-      parentRoute: typeof QuestRoute
-    }
-    '/quest/download': {
-      id: '/quest/download'
-      path: '/download'
-      fullPath: '/quest/download'
-      preLoaderRoute: typeof QuestDownloadRouteImport
-      parentRoute: typeof QuestRoute
-    }
-    '/oauth/authorize': {
-      id: '/oauth/authorize'
-      path: '/oauth/authorize'
-      fullPath: '/oauth/authorize'
-      preLoaderRoute: typeof OauthAuthorizeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/live/$tournamentId': {
-      id: '/live/$tournamentId'
-      path: '/$tournamentId'
-      fullPath: '/live/$tournamentId'
-      preLoaderRoute: typeof LiveTournamentIdRouteImport
-      parentRoute: typeof LiveRoute
-    }
-    '/legal/privacy': {
-      id: '/legal/privacy'
-      path: '/legal/privacy'
-      fullPath: '/legal/privacy'
-      preLoaderRoute: typeof LegalPrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/legal/copyright': {
-      id: '/legal/copyright'
-      path: '/legal/copyright'
-      fullPath: '/legal/copyright'
-      preLoaderRoute: typeof LegalCopyrightRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/legal/cookies-policy': {
-      id: '/legal/cookies-policy'
-      path: '/legal/cookies-policy'
-      fullPath: '/legal/cookies-policy'
-      preLoaderRoute: typeof LegalCookiesPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/steam': {
-      id: '/auth/steam'
-      path: '/auth/steam'
-      fullPath: '/auth/steam'
-      preLoaderRoute: typeof AuthSteamRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/patreon': {
-      id: '/auth/patreon'
-      path: '/auth/patreon'
-      fullPath: '/auth/patreon'
-      preLoaderRoute: typeof AuthPatreonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/discord': {
-      id: '/auth/discord'
-      path: '/auth/discord'
-      fullPath: '/auth/discord'
-      preLoaderRoute: typeof AuthDiscordRouteImport
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(legacy)/leaderboards': {
@@ -843,12 +717,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof legacyLeaderboardsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/u/$playerId': {
-      id: '/u/$playerId'
-      path: '/u/$playerId'
-      fullPath: '/u/$playerId'
-      preLoaderRoute: typeof UPlayerIdRouteRouteImport
+    '/auth/discord': {
+      id: '/auth/discord'
+      path: '/auth/discord'
+      fullPath: '/auth/discord'
+      preLoaderRoute: typeof AuthDiscordRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/auth/patreon': {
+      id: '/auth/patreon'
+      path: '/auth/patreon'
+      fullPath: '/auth/patreon'
+      preLoaderRoute: typeof AuthPatreonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/steam': {
+      id: '/auth/steam'
+      path: '/auth/steam'
+      fullPath: '/auth/steam'
+      preLoaderRoute: typeof AuthSteamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/cookies-policy': {
+      id: '/legal/cookies-policy'
+      path: '/legal/cookies-policy'
+      fullPath: '/legal/cookies-policy'
+      preLoaderRoute: typeof LegalCookiesPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/copyright': {
+      id: '/legal/copyright'
+      path: '/legal/copyright'
+      fullPath: '/legal/copyright'
+      preLoaderRoute: typeof LegalCopyrightRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live/': {
+      id: '/live/'
+      path: '/'
+      fullPath: '/live/'
+      preLoaderRoute: typeof LiveIndexRouteImport
+      parentRoute: typeof LiveRoute
+    }
+    '/live/$tournamentId': {
+      id: '/live/$tournamentId'
+      path: '/$tournamentId'
+      fullPath: '/live/$tournamentId'
+      preLoaderRoute: typeof LiveTournamentIdRouteImport
+      parentRoute: typeof LiveRoute
     }
     '/map/$id': {
       id: '/map/$id'
@@ -857,67 +780,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/perks/': {
-      id: '/settings/perks/'
-      path: '/'
-      fullPath: '/settings/perks/'
-      preLoaderRoute: typeof SettingsPerksIndexRouteImport
-      parentRoute: typeof SettingsPerksRoute
+    '/oauth/authorize': {
+      id: '/oauth/authorize'
+      path: '/oauth/authorize'
+      fullPath: '/oauth/authorize'
+      preLoaderRoute: typeof OauthAuthorizeRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/map/$id/': {
-      id: '/map/$id/'
-      path: '/'
-      fullPath: '/map/$id/'
-      preLoaderRoute: typeof MapIdIndexRouteImport
-      parentRoute: typeof MapIdRouteRoute
+    '/quest/download': {
+      id: '/quest/download'
+      path: '/download'
+      fullPath: '/quest/download'
+      preLoaderRoute: typeof QuestDownloadRouteImport
+      parentRoute: typeof QuestRoute
+    }
+    '/quest/versions': {
+      id: '/quest/versions'
+      path: '/versions'
+      fullPath: '/quest/versions'
+      preLoaderRoute: typeof QuestVersionsRouteImport
+      parentRoute: typeof QuestRoute
+    }
+    '/quest_/pair': {
+      id: '/quest_/pair'
+      path: '/quest/pair'
+      fullPath: '/quest/pair'
+      preLoaderRoute: typeof QuestPairRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ranking/requests': {
+      id: '/ranking/requests'
+      path: '/ranking/requests'
+      fullPath: '/ranking/requests'
+      preLoaderRoute: typeof RankingRequestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/account': {
+      id: '/settings/account'
+      path: '/settings/account'
+      fullPath: '/settings/account'
+      preLoaderRoute: typeof SettingsAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/connections': {
+      id: '/settings/connections'
+      path: '/settings/connections'
+      fullPath: '/settings/connections'
+      preLoaderRoute: typeof SettingsConnectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/developer': {
+      id: '/settings/developer'
+      path: '/settings/developer'
+      fullPath: '/settings/developer'
+      preLoaderRoute: typeof SettingsDeveloperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/perks': {
+      id: '/settings/perks'
+      path: '/settings/perks'
+      fullPath: '/settings/perks'
+      preLoaderRoute: typeof SettingsPerksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/u/$playerId': {
+      id: '/u/$playerId'
+      path: '/u/$playerId'
+      fullPath: '/u/$playerId'
+      preLoaderRoute: typeof UPlayerIdRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(legacy)/leaderboard/$leaderboardId': {
+      id: '/(legacy)/leaderboard/$leaderboardId'
+      path: '/leaderboard/$leaderboardId'
+      fullPath: '/leaderboard/$leaderboardId'
+      preLoaderRoute: typeof legacyLeaderboardLeaderboardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/discord/callback': {
+      id: '/auth/discord/callback'
+      path: '/callback'
+      fullPath: '/auth/discord/callback'
+      preLoaderRoute: typeof AuthDiscordCallbackRouteImport
+      parentRoute: typeof AuthDiscordRoute
+    }
+    '/auth/patreon/callback': {
+      id: '/auth/patreon/callback'
+      path: '/callback'
+      fullPath: '/auth/patreon/callback'
+      preLoaderRoute: typeof AuthPatreonCallbackRouteImport
+      parentRoute: typeof AuthPatreonRoute
     }
     '/live/$tournamentId/': {
       id: '/live/$tournamentId/'
       path: '/'
       fullPath: '/live/$tournamentId/'
       preLoaderRoute: typeof LiveTournamentIdIndexRouteImport
-      parentRoute: typeof LiveTournamentIdRoute
-    }
-    '/settings/perks/replays': {
-      id: '/settings/perks/replays'
-      path: '/replays'
-      fullPath: '/settings/perks/replays'
-      preLoaderRoute: typeof SettingsPerksReplaysRouteImport
-      parentRoute: typeof SettingsPerksRoute
-    }
-    '/ranking/request/$requestId': {
-      id: '/ranking/request/$requestId'
-      path: '/ranking/request/$requestId'
-      fullPath: '/ranking/request/$requestId'
-      preLoaderRoute: typeof RankingRequestRequestIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/live/$tournamentId/teams': {
-      id: '/live/$tournamentId/teams'
-      path: '/teams'
-      fullPath: '/live/$tournamentId/teams'
-      preLoaderRoute: typeof LiveTournamentIdTeamsRouteImport
-      parentRoute: typeof LiveTournamentIdRoute
-    }
-    '/live/$tournamentId/settings': {
-      id: '/live/$tournamentId/settings'
-      path: '/settings'
-      fullPath: '/live/$tournamentId/settings'
-      preLoaderRoute: typeof LiveTournamentIdSettingsRouteImport
-      parentRoute: typeof LiveTournamentIdRoute
-    }
-    '/live/$tournamentId/rooms': {
-      id: '/live/$tournamentId/rooms'
-      path: '/rooms'
-      fullPath: '/live/$tournamentId/rooms'
-      preLoaderRoute: typeof LiveTournamentIdRoomsRouteImport
-      parentRoute: typeof LiveTournamentIdRoute
-    }
-    '/live/$tournamentId/roles': {
-      id: '/live/$tournamentId/roles'
-      path: '/roles'
-      fullPath: '/live/$tournamentId/roles'
-      preLoaderRoute: typeof LiveTournamentIdRolesRouteImport
       parentRoute: typeof LiveTournamentIdRoute
     }
     '/live/$tournamentId/players': {
@@ -927,26 +892,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiveTournamentIdPlayersRouteImport
       parentRoute: typeof LiveTournamentIdRoute
     }
-    '/auth/patreon/callback': {
-      id: '/auth/patreon/callback'
-      path: '/callback'
-      fullPath: '/auth/patreon/callback'
-      preLoaderRoute: typeof AuthPatreonCallbackRouteImport
-      parentRoute: typeof AuthPatreonRoute
+    '/live/$tournamentId/roles': {
+      id: '/live/$tournamentId/roles'
+      path: '/roles'
+      fullPath: '/live/$tournamentId/roles'
+      preLoaderRoute: typeof LiveTournamentIdRolesRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
     }
-    '/auth/discord/callback': {
-      id: '/auth/discord/callback'
-      path: '/callback'
-      fullPath: '/auth/discord/callback'
-      preLoaderRoute: typeof AuthDiscordCallbackRouteImport
-      parentRoute: typeof AuthDiscordRoute
+    '/live/$tournamentId/rooms': {
+      id: '/live/$tournamentId/rooms'
+      path: '/rooms'
+      fullPath: '/live/$tournamentId/rooms'
+      preLoaderRoute: typeof LiveTournamentIdRoomsRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
     }
-    '/(legacy)/leaderboard/$leaderboardId': {
-      id: '/(legacy)/leaderboard/$leaderboardId'
-      path: '/leaderboard/$leaderboardId'
-      fullPath: '/leaderboard/$leaderboardId'
-      preLoaderRoute: typeof legacyLeaderboardLeaderboardIdRouteImport
+    '/live/$tournamentId/settings': {
+      id: '/live/$tournamentId/settings'
+      path: '/settings'
+      fullPath: '/live/$tournamentId/settings'
+      preLoaderRoute: typeof LiveTournamentIdSettingsRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
+    }
+    '/live/$tournamentId/teams': {
+      id: '/live/$tournamentId/teams'
+      path: '/teams'
+      fullPath: '/live/$tournamentId/teams'
+      preLoaderRoute: typeof LiveTournamentIdTeamsRouteImport
+      parentRoute: typeof LiveTournamentIdRoute
+    }
+    '/map/$id/': {
+      id: '/map/$id/'
+      path: '/'
+      fullPath: '/map/$id/'
+      preLoaderRoute: typeof MapIdIndexRouteImport
+      parentRoute: typeof MapIdRouteRoute
+    }
+    '/ranking/request/$requestId': {
+      id: '/ranking/request/$requestId'
+      path: '/ranking/request/$requestId'
+      fullPath: '/ranking/request/$requestId'
+      preLoaderRoute: typeof RankingRequestRequestIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/settings/perks/': {
+      id: '/settings/perks/'
+      path: '/'
+      fullPath: '/settings/perks/'
+      preLoaderRoute: typeof SettingsPerksIndexRouteImport
+      parentRoute: typeof SettingsPerksRoute
+    }
+    '/settings/perks/replays': {
+      id: '/settings/perks/replays'
+      path: '/replays'
+      fullPath: '/settings/perks/replays'
+      preLoaderRoute: typeof SettingsPerksReplaysRouteImport
+      parentRoute: typeof SettingsPerksRoute
     }
     '/live/$tournamentId/rooms/': {
       id: '/live/$tournamentId/rooms/'
