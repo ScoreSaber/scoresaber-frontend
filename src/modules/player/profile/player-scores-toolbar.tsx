@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
 
+import { useLocation } from '@tanstack/react-router';
 import { FaClock, FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
@@ -23,6 +24,12 @@ type PlayerScoresSearch = SearchParamsRecord & {
    page?: number;
    sort?: PlayerControllerGetPlayerScoresSort;
    search?: string;
+};
+
+type PendingSort = {
+   sort: PlayerControllerGetPlayerScoresSort;
+   fromSort: PlayerControllerGetPlayerScoresSort;
+   fromPathname: string;
 };
 
 export function PlayerScoresToolbar<TLocation>({
@@ -47,14 +54,19 @@ export function PlayerScoresToolbar<TLocation>({
       buildLocation,
       parseSearch
    });
+   const pathname = useLocation({ select: (location) => location.pathname });
    const currentSort = search.sort ?? 'top';
    const currentSearch = search.search;
 
-   const [newSort, setNewSort] = useState<PlayerControllerGetPlayerScoresSort>(currentSort);
+   const [pendingSort, setPendingSort] = useState<PendingSort | null>(null);
 
-   const loading = newSort !== currentSort;
-   const topLoading = loading && newSort === 'top';
-   const recentLoading = loading && newSort === 'recent';
+   const settled = pendingSort != null && (pendingSort.fromSort !== currentSort || pendingSort.fromPathname !== pathname);
+   if (settled) setPendingSort(null);
+
+   const activeSort = settled ? null : pendingSort;
+   const loading = activeSort != null;
+   const topLoading = activeSort?.sort === 'top';
+   const recentLoading = activeSort?.sort === 'recent';
    const accentProperties = getProfileAccentProperties(customization);
    const activeSortStyle: CSSProperties = {
       backgroundColor: accentProperties?.['--profile-accent'] ?? 'var(--profile-accent, var(--primary))',
@@ -74,7 +86,7 @@ export function PlayerScoresToolbar<TLocation>({
    }
 
    function handleSort(sort: PlayerControllerGetPlayerScoresSort) {
-      setNewSort(sort);
+      setPendingSort({ sort, fromSort: currentSort, fromPathname: pathname });
       navigate({ sort }, { scroll: false });
    }
 
