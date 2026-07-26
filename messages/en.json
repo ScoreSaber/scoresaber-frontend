@@ -493,6 +493,7 @@
       "averageRankedAccuracy": "Avg Ranked Acc",
       "acc": "Acc",
       "live": "Live",
+      "liveLoading": "Checking who's online",
       "liveUnavailable": "No players are online right now"
    },
    "score": {

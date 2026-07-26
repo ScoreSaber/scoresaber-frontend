@@ -22,7 +22,7 @@ import { isMobileViewport } from '@/shared/ui-adjacent/viewport';
 
 type PlayerLivePresenceState = Pick<LudusState, 'status' | 'rooms' | 'scores'>;
 
-const PlayerLivePresenceContext = createContext<PlayerLivePresenceState | null>(null);
+const PlayerLivePresenceContext = createContext<(PlayerLivePresenceState & { enabled: boolean }) | null>(null);
 
 interface PlayerLivePresenceIndicatorProps {
    playerId: string;
@@ -38,14 +38,17 @@ export function PlayerLivePresenceProvider({ children, enabled = true }: { child
       clientType: 'WEBSITE'
    });
 
-   return <PlayerLivePresenceContext.Provider value={ludus}>{children}</PlayerLivePresenceContext.Provider>;
+   const value = useMemo(() => ({ ...ludus, enabled }), [ludus, enabled]);
+
+   return <PlayerLivePresenceContext.Provider value={value}>{children}</PlayerLivePresenceContext.Provider>;
 }
 
-export function useLivePlayersAvailable() {
+export function useLivePlayersState() {
    const ludus = useContext(PlayerLivePresenceContext);
-   if (!ludus) return false;
+   if (!ludus || !ludus.enabled) return 'unavailable';
+   if (ludus.status === 'idle' || ludus.status === 'connecting') return 'loading';
 
-   return ludus.status === 'connected' && ludus.rooms.some((room) => room.playerIds.length > 0);
+   return ludus.rooms.some((room) => room.playerIds.length > 0) ? 'available' : 'unavailable';
 }
 
 export function PlayerLivePresenceIndicator({ playerId, className, size }: PlayerLivePresenceIndicatorProps) {
