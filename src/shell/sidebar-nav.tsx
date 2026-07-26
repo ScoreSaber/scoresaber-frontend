@@ -25,6 +25,7 @@ import { getPlayerRoleStyleAndTitle } from '@/shared/format/styling';
 import Permissions from '@/shared/permissions';
 import { isNavActive, navItems, secondaryItems, socialLinks } from '@/shell/nav-data';
 import { SidebarNavLink } from '@/shell/sidebar-nav-link';
+import { useSidebar } from '@/shell/sidebar-provider';
 import { SidebarMoreMenu } from '@/shell/sidebar/sidebar-more-menu';
 
 const homeRoute = getRouteApi('/');
@@ -65,12 +66,12 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
    const pathname = location.pathname;
    const { user } = useAuth();
    const { setOpen: setSearchOpen } = useOmniSearch();
-   const [isMac, setIsMac] = useState<boolean | null>(null);
+   const { isMac } = useSidebar();
+   const [mounted, setMounted] = useState(false);
    const t = useTranslations();
    const tNav = useTranslations('nav');
    const [playerNameClass] = getPlayerRoleStyleAndTitle(user);
    const currentPath = location.href;
-   const mounted = isMac != null;
    const visibleNavItems = navItems.filter((item) => item.route !== 'live' || canUseLivePlatform(user?.permissions));
    const visibleSecondaryItems = secondaryItems.filter((item) => item.key !== 'support' || !Permissions.isSupporter(user?.permissions ?? 0));
 
@@ -81,7 +82,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
    );
 
    useEffect(() => {
-      setIsMac(/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent));
+      setMounted(true);
    }, []);
 
    return (
@@ -163,7 +164,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
             >
                <Search data-icon />
                <span className="flex-1 text-left">{t('common.searchPlaceholder')}</span>
-               <Kbd>{isMac === false ? 'Ctrl+K' : '⌘K'}</Kbd>
+               <Kbd>{isMac ? '⌘K' : 'Ctrl+K'}</Kbd>
             </Button>
          </div>
 

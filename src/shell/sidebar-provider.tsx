@@ -5,19 +5,22 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { Locale } from '@/i18n/config';
 import { SIDEBAR_COLLAPSED_COOKIE_NAME, SIDEBAR_COOKIE_MAX_AGE } from '@/shell/sidebar-state';
 
-const SidebarContext = createContext<{ collapsed: boolean; toggle: () => void; visibleLocales: Locale[] }>({
+const SidebarContext = createContext<{ collapsed: boolean; toggle: () => void; visibleLocales: Locale[]; isMac: boolean }>({
    collapsed: false,
    toggle: () => {},
-   visibleLocales: []
+   visibleLocales: [],
+   isMac: false
 });
 
 export function SidebarProvider({
    visibleLocales,
    initialSidebarCollapsed,
+   isMac,
    children
 }: {
    visibleLocales: Locale[];
    initialSidebarCollapsed: boolean | null;
+   isMac: boolean;
    children: React.ReactNode;
 }) {
    const [collapsed, setCollapsed] = useState(initialSidebarCollapsed ?? false);
@@ -40,7 +43,7 @@ export function SidebarProvider({
       return () => document.removeEventListener('keydown', handleKeyDown);
    }, [toggle]);
 
-   const value = useMemo(() => ({ collapsed, toggle, visibleLocales }), [collapsed, toggle, visibleLocales]);
+   const value = useMemo(() => ({ collapsed, toggle, visibleLocales, isMac }), [collapsed, toggle, visibleLocales, isMac]);
 
    return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>;
 }

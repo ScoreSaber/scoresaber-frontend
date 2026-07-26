@@ -29,6 +29,7 @@ export function AppShell({
    messages,
    visibleLocales,
    initialSidebarCollapsed,
+   isMac,
    queryClient,
    debugBreakpoints,
    debugPageBackground,
@@ -38,6 +39,7 @@ export function AppShell({
    messages: TranslationMessages;
    visibleLocales: Locale[];
    initialSidebarCollapsed: boolean | null;
+   isMac: boolean;
    queryClient: QueryClient;
    debugBreakpoints: boolean;
    debugPageBackground: boolean;
@@ -51,7 +53,7 @@ export function AppShell({
                <TooltipProvider>
                   <OmniSearchProvider>
                      <RouteTopLoader />
-                     <SidebarProvider visibleLocales={visibleLocales} initialSidebarCollapsed={initialSidebarCollapsed}>
+                     <SidebarProvider visibleLocales={visibleLocales} initialSidebarCollapsed={initialSidebarCollapsed} isMac={isMac}>
                         <Sidebar />
                         <MobileTopBar />
                         <TranslationContextHighlighter messages={messages} />

@@ -20,6 +20,7 @@ import { optionalApi } from '@/shared/result/api';
 import { absoluteSiteUrl, SITE_DESCRIPTION, SITE_NAME, buildSeoHead } from '@/shared/seo/metadata';
 import { parseServerTheme, THEME_COOKIE_NAME, THEME_MEDIA_QUERY, THEME_STORAGE_KEY } from '@/shared/ui-adjacent/theme';
 import { AppShell } from '@/shell/app-shell';
+import { isMacRequest } from '@/shell/platform.server';
 import { parseSidebarCollapsedCookie, SIDEBAR_COLLAPSED_COOKIE_NAME } from '@/shell/sidebar-state';
 
 const themeInitScript = `(function(){var theme='system';try{var stored=localStorage.getItem('${THEME_STORAGE_KEY}');if(stored==='light'||stored==='dark'||stored==='system')theme=stored}catch(e){}var resolved=theme==='system'?(window.matchMedia('${THEME_MEDIA_QUERY}').matches?'dark':'light'):theme;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved;try{document.cookie='${THEME_COOKIE_NAME}='+theme+'; Path=/; Max-Age=31536000; SameSite=Lax'}catch(e){}})()`;
@@ -45,6 +46,7 @@ const getRootShellData = createServerFn({ method: 'GET' }).handler(async () => {
       user,
       initialTheme,
       sidebarCollapsed,
+      isMac: isMacRequest(),
       locale: await getLocale(),
       visibleLocales: getVisibleLocales(),
       bswc,
@@ -136,6 +138,7 @@ function RootComponent() {
                messages={data.messages}
                visibleLocales={data.visibleLocales}
                initialSidebarCollapsed={data.sidebarCollapsed}
+               isMac={data.isMac}
                queryClient={queryClient}
                debugBreakpoints={data.debugBreakpoints}
                debugPageBackground={data.debugPageBackground}
