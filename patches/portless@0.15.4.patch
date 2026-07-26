@@ -1,5 +1,5 @@
 diff --git a/dist/chunk-JSJUKQRJ.js b/dist/chunk-JSJUKQRJ.js
-index 3b470962526a26cb45aea9f5c938ae4c266577f8..24c0fcc15435f7a9d2653f091b802c3ad8afe31d 100644
+index 3b470962526a26cb45aea9f5c938ae4c266577f8..10c76bf395750867382b6288f03c84d04124e71d 100644
 --- a/dist/chunk-JSJUKQRJ.js
 +++ b/dist/chunk-JSJUKQRJ.js
 @@ -345,6 +345,8 @@ var HOP_BY_HOP_HEADERS = /* @__PURE__ */ new Set([
@@ -43,14 +43,15 @@ index 3b470962526a26cb45aea9f5c938ae4c266577f8..24c0fcc15435f7a9d2653f091b802c3a
          path: req.url,
          method: req.method,
          headers: proxyReqHeaders
-@@ -486,9 +491,16 @@ function createProxyServer(options) {
+@@ -486,9 +491,17 @@ function createProxyServer(options) {
        }
      );
      proxyReq.on("error", (err) => {
 +      const errWithCode = err;
 +      // backend closed the pooled socket as we yoinked it.
-+      // replay once instead of a 502
-+      if (!isReplay && proxyReq.reusedSocket && errWithCode.code === "ECONNRESET" && !res.headersSent && REPLAYABLE_METHODS.has(req.method || "")) {
++      // replay once instead of a 502, but only when there was no body since the
++      // first pipe already ate it
++      if (!isReplay && proxyReq.reusedSocket && errWithCode.code === "ECONNRESET" && !res.headersSent && REPLAYABLE_METHODS.has(req.method || "") && !req.headers["transfer-encoding"] && !Number(req.headers["content-length"])) {
 +        req.unpipe(proxyReq);
 +        handleRequest(req, res, true);
 +        return;
@@ -61,7 +62,7 @@ index 3b470962526a26cb45aea9f5c938ae4c266577f8..24c0fcc15435f7a9d2653f091b802c3a
          const detail = errWithCode.code === "ECONNREFUSED" ? "The target app is not responding. It may have crashed." : "The target app may not be running.";
          res.writeHead(502, { "Content-Type": "text/html" });
          res.end(
-@@ -510,7 +522,11 @@ function createProxyServer(options) {
+@@ -510,7 +523,11 @@ function createProxyServer(options) {
          proxyReq.destroy();
        }
      });
@@ -74,7 +75,7 @@ index 3b470962526a26cb45aea9f5c938ae4c266577f8..24c0fcc15435f7a9d2653f091b802c3a
    };
    const handleUpgrade = (req, socket, head) => {
      socket.on("error", () => socket.destroy());
-@@ -658,12 +674,14 @@ function createProxyServer(options) {
+@@ -658,12 +675,14 @@ function createProxyServer(options) {
      wrapper.close = function(cb) {
        h2Server.close();
        plainServer.close();
