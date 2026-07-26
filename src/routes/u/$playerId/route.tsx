@@ -36,7 +36,6 @@ import { api, publicApi } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
 import { PageError } from '@/shared/components/error/page-error';
 import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
-import { calculateRawPPForTotalPPGain } from '@/shared/format/weighted-pp';
 import { optionalApi, optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
 import { buildSeoHead } from '@/shared/seo/metadata';
@@ -68,7 +67,6 @@ type PlayerProfileRouteInput = {
 
 type ParsePlayerSearch = (search: SearchParamsRecord) => PlayerProfileSearch | null;
 
-const PLUS_ONE_PP_SCORE_LIMIT = 100;
 const DEFAULT_PROFILE_SECTION_ORDER = ['charts', 'bio', 'pinnedScores', 'scores'] as const;
 
 type PlayerProfileSectionId = (typeof DEFAULT_PROFILE_SECTION_ORDER)[number];
@@ -117,7 +115,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
       const sanitizedBio = sanitizeRichTextHtml(bio);
       const apiPlusOnePP = playerResult.data.stats.plusOnePP;
 
-      const [scores, plusOneScores, history, aliases, connections] = await Promise.all([
+      const [scores, history, aliases, connections] = await Promise.all([
          scoresPromise ??
             optionalApiData(
                publicApi.player.playerControllerGetPlayerScores({
@@ -128,27 +126,10 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
                   search: data.search.search
                })
             ),
-         apiPlusOnePP == null
-            ? optionalApiData(
-                 publicApi.player.playerControllerGetPlayerScores({
-                    id: apiPlayerId,
-                    limit: PLUS_ONE_PP_SCORE_LIMIT,
-                    page: 1,
-                    sort: 'top'
-                 })
-              )
-            : null,
          historyPromise ?? optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
          aliasesPromise ?? optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId })),
          connectionsPromise
       ]);
-      const plusOneRawPP =
-         apiPlusOnePP ??
-         calculateRawPPForTotalPPGain({
-            scores: plusOneScores?.data.map(({ score }) => ({ pp: score.pp, weight: score.weight })) ?? [],
-            totalPP: playerResult.data.stats.totalPP,
-            totalRankedScores: playerResult.data.stats.totalPlayedRankedLeaderboards
-         });
 
       return {
          result: playerResult,
@@ -156,7 +137,7 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
          history,
          aliases: aliases ?? [],
          patreonConnected: connections?.some((connection) => connection.provider === 'PATREON' && connection.state === 'CONNECTED') ?? false,
-         plusOneRawPP,
+         plusOneRawPP: apiPlusOnePP,
          sanitizedBio,
          hasBioContent: hasRichTextContent(sanitizedBio)
       };
