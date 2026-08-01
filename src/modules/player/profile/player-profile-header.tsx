@@ -316,27 +316,25 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                      <div className="flex flex-wrap items-stretch justify-center gap-2 sm:justify-start">
                         {[
                            {
-                              search: { page: rankToPage(stats.rank, 50), highlight: player.id },
+                              page: rankToPage(stats.rank, 50),
+                              countries: undefined,
                               icon: <FaGlobe className="text-muted-foreground size-3" />,
                               value: stats.rank,
                               change: stats.rankChange,
                               label: t('player.global')
                            },
                            {
-                              search: {
-                                 page: rankToPage(stats.countryRank, 50),
-                                 countries: parseCountryRegionParam(player.country),
-                                 highlight: player.id
-                              },
+                              page: rankToPage(stats.countryRank, 50),
+                              countries: parseCountryRegionParam(player.country),
                               icon: <CountryImage country={player.country} size={16} />,
                               value: stats.countryRank,
                               change: null,
                               label: t('player.countryRank')
                            }
-                        ].map(({ search, icon, value, change, label }) => (
+                        ].map(({ page, countries, icon, value, change, label }) => (
                            <rankingsRoute.Link
                               key={label}
-                              search={search}
+                              search={{ page, countries, highlight: player.id, includeInactive: 'false' }}
                               className={hasCustomAccent ? rankPillAccentClass : rankPillClass}
                               style={rankPillStyle}
                            >

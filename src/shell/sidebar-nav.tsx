@@ -243,7 +243,7 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                            {!user.banned && !user.inactive && (
                               <div className="text-muted-foreground mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] leading-none sm:text-xs">
                                  <rankingsRoute.Link
-                                    search={{ page: rankToPage(user.stats.rank, 50), highlight: user.id }}
+                                    search={{ page: rankToPage(user.stats.rank, 50), highlight: user.id, includeInactive: 'false' }}
                                     onClick={onNavigateAction}
                                     className="hover:text-foreground flex items-center gap-0.5 whitespace-nowrap transition-colors"
                                  >
@@ -254,7 +254,8 @@ export function SidebarNav({ onNavigateAction }: { onNavigateAction?: () => void
                                     search={{
                                        page: rankToPage(user.stats.countryRank, 50),
                                        countries: parseCountryRegionParam(user.country),
-                                       highlight: user.id
+                                       highlight: user.id,
+                                       includeInactive: 'false'
                                     }}
                                     onClick={onNavigateAction}
                                     className="hover:text-foreground flex items-center gap-0.5 whitespace-nowrap transition-colors"

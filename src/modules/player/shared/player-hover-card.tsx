@@ -182,7 +182,7 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
                   {stats && !player.banned && !player.inactive && (
                      <div className="text-muted-foreground flex items-center gap-1 text-xs">
                         <rankingsRoute.Link
-                           search={{ page: rankToPage(stats.rank, 50), highlight: player.id }}
+                           search={{ page: rankToPage(stats.rank, 50), highlight: player.id, includeInactive: 'false' }}
                            className="hover:text-foreground flex items-center gap-1 transition-colors"
                         >
                            <FaGlobe className="size-2.5 shrink-0" />
@@ -193,7 +193,8 @@ function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerR
                            search={{
                               page: rankToPage(stats.countryRank, 50),
                               countries: parseCountryRegionParam(player.country),
-                              highlight: player.id
+                              highlight: player.id,
+                              includeInactive: 'false'
                            }}
                            className="hover:text-foreground flex items-center gap-1 transition-colors"
                         >
