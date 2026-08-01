@@ -86,6 +86,16 @@
          "patreon": "Vous pouvez soutenir ScoreSaber sur Patreon si vous le souhaitez ❤️",
          "patreonPerks": "Vous pouvez avoir sur votre profil une bio personnalisée, une couleur spéciale dans le classement ainsi qu'un badge et un rôle",
          "sourceCode": "Code Source"
+      },
+      "pairing": {
+         "title": "",
+         "signedOutDescription": "",
+         "signedInDescription": "",
+         "loginAction": "",
+         "signupAction": "",
+         "loading": "",
+         "copied": "",
+         "claimedDescription": ""
       }
    },
    "nav": {
@@ -98,10 +108,11 @@
       "requests": "Demandes",
       "wiki": "Wiki",
       "feedbackHub": "Centre des retours",
-      "livePlatform": "",
+      "livePlatform": "En direct",
       "apiDocs": "Docs API",
       "questInstaller": "Installateur Quest",
-      "team": "Équipe"
+      "team": "Équipe",
+      "support": ""
    },
    "home": {
       "hero": {
@@ -115,9 +126,9 @@
       "stats": {
          "playersValue": "",
          "playersLabel": "",
-         "scoresValue": "",
+         "scoresValue": "90M",
          "scoresLabel": "",
-         "leaderboardsValue": "",
+         "leaderboardsValue": "300K",
          "leaderboardsLabel": "",
          "tickerAria": ""
       },
@@ -129,7 +140,12 @@
          "browse": ""
       },
       "news": {
-         "readMore": ""
+         "allNews": "",
+         "readMore": "",
+         "repostedBy": "",
+         "imageLabel": "",
+         "videoLabel": "",
+         "playVideoOnX": ""
       },
       "rankedBatch": {
          "eyebrow": "",
@@ -189,9 +205,95 @@
       "subscribeDescription": "Abonnez-vous sur Patreon pour déverrouiller des avantages comme les bios personnalisées",
       "connect": "Lier votre Patreon",
       "subscribe": "Soutenir sur Patreon",
-      "supportUs": "Support us on Patreon",
-      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
-      "connectSupporterLink": "here"
+      "supportUs": "",
+      "connectSupporterText": "",
+      "connectSupporterLink": ""
+   },
+   "support": {
+      "title": "",
+      "subtitle": "",
+      "logoAlt": "",
+      "supportCta": "",
+      "connect": {
+         "text": "",
+         "link": ""
+      },
+      "why": {
+         "title": "",
+         "platform": {
+            "title": "",
+            "description": ""
+         },
+         "servers": {
+            "title": "",
+            "description": ""
+         },
+         "replays": {
+            "title": "",
+            "description": ""
+         }
+      },
+      "tiers": {
+         "title": "",
+         "subtitle": "",
+         "everythingIn": "",
+         "moreSoon": "",
+         "supporter": {
+            "name": "",
+            "price": ""
+         },
+         "ppFarmer": {
+            "name": "",
+            "price": ""
+         }
+      },
+      "perks": {
+         "adFree": {
+            "title": "",
+            "description": ""
+         },
+         "bio": {
+            "title": ""
+         },
+         "vanity": {
+            "title": "",
+            "description": ""
+         },
+         "nameColor": {
+            "title": "",
+            "description": ""
+         },
+         "replays5k": {
+            "title": "",
+            "description": ""
+         },
+         "supporterRole": {
+            "title": "",
+            "description": ""
+         },
+         "replays20k": {
+            "title": "",
+            "description": ""
+         },
+         "background": {
+            "title": ""
+         },
+         "accent": {
+            "title": ""
+         },
+         "pinned": {
+            "title": "",
+            "description": ""
+         },
+         "customization": {
+            "title": "",
+            "description": ""
+         },
+         "ppFarmerBadge": {
+            "title": "",
+            "description": ""
+         }
+      }
    },
    "login": {
       "titlePrefix": "Se connecter à",
@@ -391,27 +493,65 @@
       "ranked": "Classé",
       "averageRankedAccuracy": "Précision moyenne en Classé",
       "acc": "Précision",
-      "live": ""
+      "live": "",
+      "liveLoading": "",
+      "liveUnavailable": ""
    },
    "score": {
+      "share": {
+         "title": "",
+         "description": "",
+         "shareRow": "",
+         "width": "",
+         "padding": "",
+         "addBackground": "",
+         "selectAll": "",
+         "rows": "",
+         "emptyPreview": "",
+         "copy": "",
+         "copied": "",
+         "copyFailed": "",
+         "save": "",
+         "saveFailed": ""
+      },
       "legacyAccuracy": "Le score a été réalisé avant le changement de score maximal",
       "weighted": "Pondéré {weightedPercent}",
+      "accuracyPreview": "",
+      "resetAccuracyPreview": "",
       "score": "Score",
+      "mods": "",
       "watchReplay": "Voir le Replay",
       "noReplayAvailable": "Aucun replay disponible",
       "hideDetails": "Masquer les détails",
       "showDetails": "Voir les détails",
       "scoreDetails": "Détails du score",
       "noDetailsAvailable": "Aucun détail disponible",
-      "collapseLeaderboard": "Réduire le classement",
-      "expandLeaderboard": "Développer le classement",
+      "detailsTab": "",
+      "leaderboardTab": "",
+      "scoreHistory": "",
+      "showHistory": "",
+      "hideHistory": "",
+      "noScoreHistory": "",
+      "historyFilterClears": "",
+      "historyFilterRestarts": "",
+      "historyFilterQuits": "",
+      "historyFilterFails": "",
+      "totalPlays": "",
+      "replayViews": "",
+      "outcomeFailAt": "",
+      "outcomeQuitAt": "",
+      "outcomeRestartAt": "",
       "replayViewer": "Visionneuse de replay",
       "openReplayNewTab": "Ouvrir la visionneuse de replay dans un nouvel onglet",
       "gridAccuracy": "Grille de précision",
+      "jumpDistance": "",
+      "pauses": "",
+      "paused": "",
       "badCuts": "Mauvaises coupes",
       "bombs": "Bombes",
       "streak115": "Série de 115",
-      "estFCAccuracy": "Précision estimée en FC",
+      "estFCAccuracy": "",
+      "estFCPP": "",
       "timeDependenceShort": "TD",
       "leftShort": "G",
       "rightShort": "D",
@@ -454,6 +594,17 @@
       "playsCount": "{count} parties",
       "leaderboard": "Classement",
       "rankRequest": "Demande de Classement",
+      "insights": "",
+      "insightsTimeline": "",
+      "insightsComingSoon": "",
+      "insightsSuccessRate": "",
+      "insightsNoStats": "",
+      "insightsNoStatsHint": "",
+      "insightsNoOutcomeData": "",
+      "insightsNoneSelected": "",
+      "insightsTooltipCount": "",
+      "insightsUnknownTime": "",
+      "insightsDataSince": "",
       "noScoresFound": "Aucun score trouvé",
       "noScoresYet": "Pas encore de scores",
       "adjustFilters": "Essayez de modifier vos filtres",
@@ -463,9 +614,18 @@
       "totalScores": "Scores Totaux",
       "scoresToday": "Scores du jour",
       "activeRankRequest": "Demande de classement active",
+      "version": "",
+      "currentVersion": "",
       "difficulty": "Difficulté",
       "gameMode": "Mode de jeu",
       "starRatingRange": "Fourchette de difficulté en étoiles",
+      "downloadPlaylist": "",
+      "downloadPlaylistAction": "",
+      "playlistDownloadDescription": "",
+      "playlistTitle": "",
+      "playlistDescription": "",
+      "playlistMapLimit": "",
+      "playlistMapLimitValue": "",
       "copyShareLink": "Copier le lien de partage",
       "shareLinkCopyFailed": "La copie du lien de partage a échoué",
       "copyMapHash": "",
@@ -493,6 +653,8 @@
       "rankedPlays": "Parties Classées",
       "rankedScore": "Scores Classés",
       "rankedAcc": "Précision en Classé",
+      "plusOnePP": "",
+      "plusOnePPHint": "",
       "totalScore": "Score Total",
       "joined": "Inscrit",
       "replayViews": "Replays vus",
@@ -517,6 +679,21 @@
       "platformFriendsTooltip": "Les amis d'une plateforme ne peuvent pas être gérés ici. Veuillez les gérer sur la plateforme concernée",
       "failedToFollow": "Échec de l'abonnement",
       "failedToUnfollow": "Échec du désabonnement",
+      "reportProfile": "",
+      "reportProfileDesc": "",
+      "submitReport": "",
+      "reportReason": "",
+      "reportDetails": "",
+      "reportDetailsPlaceholder": "",
+      "reportSubmitted": "",
+      "failedToReport": "",
+      "reportReasons": {
+         "inappropriateProfile": "",
+         "impersonation": "",
+         "harassment": "",
+         "cheating": "",
+         "other": ""
+      },
       "playerActions": "Actions du joueur",
       "unbanPlayer": "Débannir le joueur",
       "banPlayer": "Bannir le joueur",
@@ -550,6 +727,7 @@
       "hideEstimatedData": "Cacher les données estimées",
       "showEstimatedData": "Afficher les données estimées",
       "peakRecorded": "Meilleur classement",
+      "weeklyRankChangeTooltip": "",
       "previousNames": "Noms précédents",
       "viewPreviousNames": "Afficher les noms précédents",
       "aliasRemoved": "Alias retiré",
@@ -593,7 +771,104 @@
       "chartTooltipPP": "PP : {pp}pp",
       "chartTooltipAcc": "Précision Moy. : {acc}%",
       "chartTooltipPlays": "Parties : {plays}",
-      "chartTimeRange": "Période"
+      "chartTimeRange": "Période",
+      "customization": {
+         "title": "",
+         "description": "",
+         "open": "",
+         "unsaved": "",
+         "noChanges": "",
+         "saved": "",
+         "saveFailed": "",
+         "tabs": {
+            "account": "",
+            "style": "",
+            "layout": "",
+            "pinnedScores": "",
+            "badges": ""
+         },
+         "account": {
+            "title": "",
+            "description": "",
+            "open": ""
+         },
+         "pinnedScores": {
+            "title": "",
+            "profileTitle": "",
+            "description": "",
+            "lockTitle": "",
+            "lockDescription": "",
+            "selected": "",
+            "selectedCount": "",
+            "emptySelected": "",
+            "pinScore": "",
+            "editPinnedScore": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         },
+         "badges": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "empty": "",
+            "position": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": ""
+         },
+         "layout": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "sectionsTitle": "",
+            "sectionsDescription": "",
+            "statsTitle": "",
+            "statsDescription": "",
+            "chartMetricsTitle": "",
+            "chartMetricsDescription": "",
+            "sectionCharts": "",
+            "sectionBio": "",
+            "sectionPinnedScores": "",
+            "sectionScores": "",
+            "position": "",
+            "moveUp": "",
+            "moveDown": ""
+         },
+         "style": {
+            "accentLockTitle": "",
+            "accentLockDescription": "",
+            "backgroundImage": "",
+            "backgroundDescription": "",
+            "backgroundUpload": "",
+            "backgroundSelected": "",
+            "backgroundTooLarge": "",
+            "resetBackground": "",
+            "accentColor": "",
+            "accentForeground": "",
+            "accentForegroundActive": "",
+            "hexColorInput": "",
+            "accentDescription": "",
+            "useAccent": "",
+            "resetAccent": "",
+            "nameColor": "",
+            "nameColorDescription": "",
+            "supporterNameColor": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         }
+      }
    },
    "comments": {
       "edited": "(édité)",
@@ -681,7 +956,10 @@
       "noCommentsOrNotes": "Aucun commentaire ni aucune note pour cette difficulté",
       "noRequestsFound": "Aucune demande trouvée",
       "upNext": "À suivre",
-      "openRequests": "En file d'attente"
+      "openRequests": "En file d'attente",
+      "queueIndicatorReady": "",
+      "queueIndicatorNeedsVotes": "",
+      "queueIndicatorDownvoted": ""
    },
    "leaderboard": {
       "admin": "Administrateur",
@@ -813,12 +1091,20 @@
       "roomName": "",
       "roomCode": "",
       "roomMode": "",
+      "participation": "",
+      "active": "",
+      "inactive": "",
+      "activeInactiveSummary": "",
       "playerAlreadyInRoom": "",
       "noRoomPlayers": "",
       "addRoomPlayer": "",
       "addRoomTeam": "",
       "manageRoom": "",
       "roomPlayersSaved": "",
+      "playerMarkedActive": "",
+      "playerMarkedInactive": "",
+      "markPlayerActive": "",
+      "markPlayerInactive": "",
       "teamMode": "",
       "flatMode": "",
       "state": "",
@@ -1082,9 +1368,9 @@
          },
          "vanity": {
             "title": "",
-            "description": "",
             "loadFailed": "",
             "current": "",
+            "infoLabel": "",
             "changeLabel": "",
             "claimLabel": "",
             "placeholder": "",
@@ -1093,7 +1379,9 @@
             "claimed": "",
             "claimFailed": "",
             "cooldown": "",
-            "rules": ""
+            "rules": "",
+            "lockTitle": "",
+            "lockDescription": ""
          }
       },
       "security": {
