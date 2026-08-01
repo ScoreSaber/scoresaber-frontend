@@ -86,6 +86,16 @@
          "patreon": "Overweeg ScoreSaber te steunen op Patreon",
          "patreonPerks": "Je krijgt aangepaste profielbio's, een chique leaderboard-kleur, een badge en een rol",
          "sourceCode": "Broncode"
+      },
+      "pairing": {
+         "title": "",
+         "signedOutDescription": "",
+         "signedInDescription": "",
+         "loginAction": "",
+         "signupAction": "",
+         "loading": "",
+         "copied": "",
+         "claimedDescription": ""
       }
    },
    "nav": {
@@ -98,10 +108,11 @@
       "requests": "Verzoeken",
       "wiki": "Wiki",
       "feedbackHub": "Feedback Hub",
-      "livePlatform": "",
+      "livePlatform": "Live",
       "apiDocs": "API-docs",
       "questInstaller": "Quest installatie",
-      "team": "Team"
+      "team": "Team",
+      "support": ""
    },
    "home": {
       "hero": {
@@ -129,7 +140,12 @@
          "browse": "Bladeren"
       },
       "news": {
-         "readMore": "Lees meer..."
+         "allNews": "",
+         "readMore": "Lees meer...",
+         "repostedBy": "",
+         "imageLabel": "",
+         "videoLabel": "",
+         "playVideoOnX": ""
       },
       "rankedBatch": {
          "eyebrow": "Recentste gerangschikte batch",
@@ -142,7 +158,7 @@
          "description": "",
          "liveNow": "",
          "nextUp": "",
-         "versus": "",
+         "versus": "vs",
          "noMatch": "",
          "infoAction": "",
          "scheduleAction": "",
@@ -155,10 +171,10 @@
             "dismiss": ""
          },
          "countdown": {
-            "days": "",
-            "hours": "",
-            "minutes": "",
-            "seconds": ""
+            "days": "d",
+            "hours": "u",
+            "minutes": "m",
+            "seconds": "s"
          }
       },
       "install": {
@@ -189,9 +205,95 @@
       "subscribeDescription": "Abonneer je op Patreon om profielvoordelen zoals aangepaste bio's te ontgrendelen",
       "connect": "Patreon koppelen",
       "subscribe": "Abonneren op Patreon",
-      "supportUs": "Support us on Patreon",
-      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
-      "connectSupporterLink": "here"
+      "supportUs": "",
+      "connectSupporterText": "",
+      "connectSupporterLink": ""
+   },
+   "support": {
+      "title": "",
+      "subtitle": "",
+      "logoAlt": "",
+      "supportCta": "",
+      "connect": {
+         "text": "",
+         "link": ""
+      },
+      "why": {
+         "title": "",
+         "platform": {
+            "title": "",
+            "description": ""
+         },
+         "servers": {
+            "title": "",
+            "description": ""
+         },
+         "replays": {
+            "title": "",
+            "description": ""
+         }
+      },
+      "tiers": {
+         "title": "",
+         "subtitle": "",
+         "everythingIn": "",
+         "moreSoon": "",
+         "supporter": {
+            "name": "",
+            "price": ""
+         },
+         "ppFarmer": {
+            "name": "",
+            "price": ""
+         }
+      },
+      "perks": {
+         "adFree": {
+            "title": "",
+            "description": ""
+         },
+         "bio": {
+            "title": ""
+         },
+         "vanity": {
+            "title": "",
+            "description": ""
+         },
+         "nameColor": {
+            "title": "",
+            "description": ""
+         },
+         "replays5k": {
+            "title": "",
+            "description": ""
+         },
+         "supporterRole": {
+            "title": "",
+            "description": ""
+         },
+         "replays20k": {
+            "title": "",
+            "description": ""
+         },
+         "background": {
+            "title": ""
+         },
+         "accent": {
+            "title": ""
+         },
+         "pinned": {
+            "title": "",
+            "description": ""
+         },
+         "customization": {
+            "title": "",
+            "description": ""
+         },
+         "ppFarmerBadge": {
+            "title": "",
+            "description": ""
+         }
+      }
    },
    "login": {
       "titlePrefix": "Inloggen bij",
@@ -391,27 +493,65 @@
       "ranked": "Gerangschikt",
       "averageRankedAccuracy": "Gem. ranked acc",
       "acc": "Acc",
-      "live": ""
+      "live": "",
+      "liveLoading": "",
+      "liveUnavailable": ""
    },
    "score": {
+      "share": {
+         "title": "",
+         "description": "",
+         "shareRow": "",
+         "width": "",
+         "padding": "",
+         "addBackground": "",
+         "selectAll": "",
+         "rows": "",
+         "emptyPreview": "",
+         "copy": "",
+         "copied": "",
+         "copyFailed": "",
+         "save": "",
+         "saveFailed": ""
+      },
       "legacyAccuracy": "Score is gezet voor de wijziging van de maximale score",
       "weighted": "Gewogen {weightedPercent}",
+      "accuracyPreview": "",
+      "resetAccuracyPreview": "",
       "score": "Score",
+      "mods": "",
       "watchReplay": "Replay bekijken",
       "noReplayAvailable": "Geen replay beschikbaar",
       "hideDetails": "Details verbergen",
       "showDetails": "Details tonen",
       "scoreDetails": "Scoredetails",
       "noDetailsAvailable": "Geen details beschikbaar",
-      "collapseLeaderboard": "Leaderboard inklappen",
-      "expandLeaderboard": "Leaderboard uitklappen",
+      "detailsTab": "",
+      "leaderboardTab": "",
+      "scoreHistory": "",
+      "showHistory": "",
+      "hideHistory": "",
+      "noScoreHistory": "",
+      "historyFilterClears": "",
+      "historyFilterRestarts": "",
+      "historyFilterQuits": "",
+      "historyFilterFails": "",
+      "totalPlays": "",
+      "replayViews": "",
+      "outcomeFailAt": "",
+      "outcomeQuitAt": "",
+      "outcomeRestartAt": "",
       "replayViewer": "Replayviewer",
       "openReplayNewTab": "Replayviewer openen in een nieuw tabblad",
       "gridAccuracy": "Grid-accuracy",
+      "jumpDistance": "",
+      "pauses": "",
+      "paused": "",
       "badCuts": "Bad cuts",
       "bombs": "Bommen",
       "streak115": "115-streak",
-      "estFCAccuracy": "Geschatte FC-accuracy",
+      "estFCAccuracy": "",
+      "estFCPP": "",
       "timeDependenceShort": "TD",
       "leftShort": "L",
       "rightShort": "R",
@@ -454,6 +594,17 @@
       "playsCount": "{count} Pogingen",
       "leaderboard": "Ranglijst",
       "rankRequest": "Rankverzoek",
+      "insights": "",
+      "insightsTimeline": "",
+      "insightsComingSoon": "",
+      "insightsSuccessRate": "",
+      "insightsNoStats": "",
+      "insightsNoStatsHint": "",
+      "insightsNoOutcomeData": "",
+      "insightsNoneSelected": "",
+      "insightsTooltipCount": "",
+      "insightsUnknownTime": "",
+      "insightsDataSince": "",
       "noScoresFound": "Geen scores gevonden",
       "noScoresYet": "Nog geen scores",
       "adjustFilters": "Pas je filters aan",
@@ -463,9 +614,18 @@
       "totalScores": "Totaal aantal scores",
       "scoresToday": "Scores vandaag",
       "activeRankRequest": "Actief rankverzoek",
+      "version": "",
+      "currentVersion": "",
       "difficulty": "Moeilijkheidsgraad",
       "gameMode": "Game mode",
       "starRatingRange": "Bereik voor sterrenrating",
+      "downloadPlaylist": "",
+      "downloadPlaylistAction": "",
+      "playlistDownloadDescription": "",
+      "playlistTitle": "",
+      "playlistDescription": "",
+      "playlistMapLimit": "",
+      "playlistMapLimitValue": "",
       "copyShareLink": "Deellink kopieren",
       "shareLinkCopyFailed": "Deellink kopieren mislukt",
       "copyMapHash": "",
@@ -493,6 +653,8 @@
       "rankedPlays": "Ranked plays",
       "rankedScore": "Ranked score",
       "rankedAcc": "Ranked acc",
+      "plusOnePP": "",
+      "plusOnePPHint": "",
       "totalScore": "Totale score",
       "joined": "Lid sinds",
       "replayViews": "Replay-weergaven",
@@ -517,6 +679,21 @@
       "platformFriendsTooltip": "Platformvrienden kun je hier niet beheren. Beheer ze op het betreffende platform",
       "failedToFollow": "Volgen mislukt",
       "failedToUnfollow": "Ontvolgen mislukt",
+      "reportProfile": "",
+      "reportProfileDesc": "",
+      "submitReport": "",
+      "reportReason": "",
+      "reportDetails": "",
+      "reportDetailsPlaceholder": "",
+      "reportSubmitted": "",
+      "failedToReport": "",
+      "reportReasons": {
+         "inappropriateProfile": "",
+         "impersonation": "",
+         "harassment": "",
+         "cheating": "",
+         "other": ""
+      },
       "playerActions": "Speleracties",
       "unbanPlayer": "Speler ontbannen",
       "banPlayer": "Speler verbannen",
@@ -550,6 +727,7 @@
       "hideEstimatedData": "Geschatte data verbergen",
       "showEstimatedData": "Geschatte data tonen",
       "peakRecorded": "Hoogste waarde",
+      "weeklyRankChangeTooltip": "",
       "previousNames": "Vorige namen",
       "viewPreviousNames": "Vorige namen bekijken",
       "aliasRemoved": "Alias verwijderd",
@@ -593,7 +771,104 @@
       "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "Gem. acc.: {acc}%",
       "chartTooltipPlays": "Afspeelzaken: {plays}",
-      "chartTimeRange": "Periode"
+      "chartTimeRange": "Periode",
+      "customization": {
+         "title": "",
+         "description": "",
+         "open": "",
+         "unsaved": "",
+         "noChanges": "",
+         "saved": "",
+         "saveFailed": "",
+         "tabs": {
+            "account": "",
+            "style": "",
+            "layout": "",
+            "pinnedScores": "",
+            "badges": ""
+         },
+         "account": {
+            "title": "",
+            "description": "",
+            "open": ""
+         },
+         "pinnedScores": {
+            "title": "",
+            "profileTitle": "",
+            "description": "",
+            "lockTitle": "",
+            "lockDescription": "",
+            "selected": "",
+            "selectedCount": "",
+            "emptySelected": "",
+            "pinScore": "",
+            "editPinnedScore": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         },
+         "badges": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "empty": "",
+            "position": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": ""
+         },
+         "layout": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "sectionsTitle": "",
+            "sectionsDescription": "",
+            "statsTitle": "",
+            "statsDescription": "",
+            "chartMetricsTitle": "",
+            "chartMetricsDescription": "",
+            "sectionCharts": "",
+            "sectionBio": "",
+            "sectionPinnedScores": "",
+            "sectionScores": "",
+            "position": "",
+            "moveUp": "",
+            "moveDown": ""
+         },
+         "style": {
+            "accentLockTitle": "",
+            "accentLockDescription": "",
+            "backgroundImage": "",
+            "backgroundDescription": "",
+            "backgroundUpload": "",
+            "backgroundSelected": "",
+            "backgroundTooLarge": "",
+            "resetBackground": "",
+            "accentColor": "",
+            "accentForeground": "",
+            "accentForegroundActive": "",
+            "hexColorInput": "",
+            "accentDescription": "",
+            "useAccent": "",
+            "resetAccent": "",
+            "nameColor": "",
+            "nameColorDescription": "",
+            "supporterNameColor": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         }
+      }
    },
    "comments": {
       "edited": "(bewerkt)",
@@ -681,7 +956,10 @@
       "noCommentsOrNotes": "Geen reacties of notities voor deze moeilijkheidsgraad",
       "noRequestsFound": "Geen verzoeken gevonden",
       "upNext": "Aan de beurt",
-      "openRequests": "In de wachtrij"
+      "openRequests": "In de wachtrij",
+      "queueIndicatorReady": "",
+      "queueIndicatorNeedsVotes": "",
+      "queueIndicatorDownvoted": ""
    },
    "leaderboard": {
       "admin": "Beheerder",
@@ -813,12 +1091,20 @@
       "roomName": "",
       "roomCode": "",
       "roomMode": "",
+      "participation": "",
+      "active": "",
+      "inactive": "",
+      "activeInactiveSummary": "",
       "playerAlreadyInRoom": "",
       "noRoomPlayers": "",
       "addRoomPlayer": "",
       "addRoomTeam": "",
       "manageRoom": "",
       "roomPlayersSaved": "",
+      "playerMarkedActive": "",
+      "playerMarkedInactive": "",
+      "markPlayerActive": "",
+      "markPlayerInactive": "",
       "teamMode": "",
       "flatMode": "",
       "state": "",
@@ -1082,9 +1368,9 @@
          },
          "vanity": {
             "title": "",
-            "description": "",
             "loadFailed": "",
             "current": "",
+            "infoLabel": "",
             "changeLabel": "",
             "claimLabel": "",
             "placeholder": "",
@@ -1093,7 +1379,9 @@
             "claimed": "",
             "claimFailed": "",
             "cooldown": "",
-            "rules": ""
+            "rules": "",
+            "lockTitle": "",
+            "lockDescription": ""
          }
       },
       "security": {
