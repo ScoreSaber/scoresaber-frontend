@@ -3398,6 +3398,101 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * No description
  *
  * @tags Player
+ * @name PlayerControllerGetLivePlayerIdAliases
+ * @request GET:/api/v2/players/live-ids
+ * @response `200` `({
+  /** Primary public player id used across the site *\/
+    playerId: string,
+  /** Public id the player is connected to live presence with *\/
+    livePlayerId: string,
+
+})[]` Id aliases for players whose live presence connection id differs from their primary public player id
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      playerControllerGetLivePlayerIdAliases: (params: RequestParams = {}) =>
+         this.request<
+            {
+               /** Primary public player id used across the site */
+               playerId: string;
+               /** Public id the player is connected to live presence with */
+               livePlayerId: string;
+            }[],
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/players/live-ids`,
+            method: 'GET',
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Player
  * @name PlayerControllerGetPlayerByVanity
  * @request GET:/api/v2/players/vanity/{slug}
  * @response `200` `{

@@ -189,6 +189,9 @@ export type PlayerControllerGetPlayersDataItem = PlayerControllerGetPlayersRespo
 
 export type PlayerControllerGetPlayerCountResponse = _R<_Player['playerControllerGetPlayerCount']>;
 
+export type PlayerControllerGetLivePlayerIdAliasesResponse = _R<_Player['playerControllerGetLivePlayerIdAliases']>;
+export type PlayerControllerGetLivePlayerIdAliasesItem = PlayerControllerGetLivePlayerIdAliasesResponse[number];
+
 export type PlayerControllerGetPlayerByVanityResponse = _R<_Player['playerControllerGetPlayerByVanity']>;
 
 export type PlayerControllerGetPlayerResponse = _R<_Player['playerControllerGetPlayer']>;
