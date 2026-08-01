@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from 'use-intl';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { cn } from '@/shared/format/helpers';
+import { createRelativeTimeFormatters } from '@/shared/format/relative-time';
 
 type TimeProps = {
    date: Date | string | number | null | undefined;
@@ -30,7 +31,6 @@ const RELATIVE_UNITS: { seconds: number; unit: Intl.RelativeTimeFormatUnit }[] =
 
 const LONG_SHORT_TIME_LENGTH = 11;
 const MIN_SHORT_TIME_SCALE = 0.65;
-const SHORT_RELATIVE_TIME_LOCALES = ['fr', 'ru'];
 
 export function Time({
    date,
@@ -116,11 +116,8 @@ function timeAgo(date: Date, isShort: boolean, formatters: TimeFormatters, justN
 type TimeFormatters = ReturnType<typeof createTimeFormatters>;
 
 function createTimeFormatters(locale: string) {
-   const shortRelativeStyle: Intl.RelativeTimeFormatStyle = usesShortRelativeTime(locale) ? 'short' : 'narrow';
-
    return {
-      relativeLong: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'long' }),
-      relativeShort: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: shortRelativeStyle }),
+      ...createRelativeTimeFormatters(locale),
       fullDate: new Intl.DateTimeFormat(locale, {
          weekday: 'long',
          year: 'numeric',
@@ -146,9 +143,4 @@ function createTimeFormatters(locale: string) {
          dateStyle: 'long'
       })
    };
-}
-
-function usesShortRelativeTime(locale: string) {
-   const normalizedLocale = locale.toLowerCase();
-   return SHORT_RELATIVE_TIME_LOCALES.some((shortLocale) => normalizedLocale === shortLocale || normalizedLocale.startsWith(`${shortLocale}-`));
 }

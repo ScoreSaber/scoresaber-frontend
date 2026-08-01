@@ -24,6 +24,7 @@ import { useDenyahOverlay } from '@/modules/player/chart/use-denyah-overlay';
 import { useLongPress } from '@/modules/player/chart/use-long-press';
 import type { PlayerControllerGetPlayerHistoryItem } from '@/shared/api/generated/ApiParams';
 import { useChartColors } from '@/shared/components/chart/use-chart-colors';
+import { createRelativeTimeFormatters } from '@/shared/format/relative-time';
 import { readStorageJson, writeStorageJson } from '@/shared/result/storage';
 
 const STORAGE_KEY = 'player-chart-prefs:v1';
@@ -65,26 +66,17 @@ function getIsMobile() {
    return mobileQuery?.matches ?? false;
 }
 
-function formatDaysAgo(formatters: ChartDateFormatters, daysAgo: number, short: boolean) {
-   if (daysAgo < 7) return formatters[short ? 'short' : 'long'].format(-daysAgo, 'day');
+function formatDaysAgo(formatters: ReturnType<typeof createRelativeTimeFormatters>, date: Date, now: Date, short: boolean) {
+   const daysAgo = Math.max(0, Math.round((now.getTime() - date.getTime()) / DAY_MS));
+   const formatter = short ? formatters.relativeShort : formatters.relativeLong;
+   if (daysAgo < 7) return formatter.format(-daysAgo, 'day');
    if (short) {
-      if (daysAgo < 30) return formatters.short.format(-Math.round(daysAgo / 7), 'week');
-      return formatters.short.format(-Math.round(daysAgo / 30), 'month');
+      if (daysAgo < 30) return formatter.format(-Math.round(daysAgo / 7), 'week');
+      return formatter.format(-Math.round(daysAgo / 30), 'month');
    }
-   return formatters.long.format(-daysAgo, 'day');
-}
-
-function getDaysAgo(date: Date, now: Date) {
-   return Math.max(0, Math.round((now.getTime() - date.getTime()) / DAY_MS));
-}
-
-type ChartDateFormatters = ReturnType<typeof createChartDateFormatters>;
-
-function createChartDateFormatters(locale: string) {
-   return {
-      long: new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' }),
-      short: new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'narrow' })
-   };
+   if (daysAgo === 7 || daysAgo === 14) return formatter.format(-daysAgo / 7, 'week');
+   if (daysAgo === 30) return formatter.format(-1, 'month');
+   return formatter.format(-daysAgo, 'day');
 }
 
 export function usePlayerChart(
@@ -215,7 +207,7 @@ export function usePlayerChart(
    const visibleDays = useMemo(() => getVisibleChartDayCount(sortedHistory, now), [sortedHistory, now]);
    const minTime = sortedHistory.length > 0 ? new Date(sortedHistory[0].createdAt).getTime() : nowTime;
    const maxTime = nowTime;
-   const chartDateFormatters = useMemo(() => createChartDateFormatters(locale), [locale]);
+   const chartDateFormatters = useMemo(() => createRelativeTimeFormatters(locale, 'auto'), [locale]);
 
    const chartPadding = useMemo(() => getPlayerChartPadding(sortedHistory.length + 1), [sortedHistory.length]);
 
@@ -280,8 +272,7 @@ export function usePlayerChart(
    ]);
 
    const scales = useMemo(() => {
-      const formatTick = (value: number) =>
-         value === maxTime ? t('chartNow') : formatDaysAgo(chartDateFormatters, getDaysAgo(new Date(value), now), isMobile);
+      const formatTick = (value: number) => (value === maxTime ? t('chartNow') : formatDaysAgo(chartDateFormatters, new Date(value), now, isMobile));
       return buildPlayerChartScales({
          activeKeys,
          chartColors,
@@ -321,7 +312,7 @@ export function usePlayerChart(
             const x = context[0]?.parsed.x;
             if (x == null) return '';
             if (x === nowTime) return t('chartNow');
-            return formatDaysAgo(chartDateFormatters, getDaysAgo(new Date(x), now), false);
+            return formatDaysAgo(chartDateFormatters, new Date(x), now, false);
          },
          label: (context: { datasetIndex: number; dataIndex: number; parsed: { y: number | null } }) => {
             const key = activeKeys[context.datasetIndex];
