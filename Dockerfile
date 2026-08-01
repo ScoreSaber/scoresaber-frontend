@@ -11,6 +11,7 @@ WORKDIR /app
 ARG BUILD_CACHE_SCOPE
 
 COPY package.json bun.lock ./
+COPY patches ./patches
 RUN --mount=type=cache,id=scoresaber-website-${BUILD_CACHE_SCOPE}-bun,target=/root/.bun/install/cache,sharing=locked \
     bun install --frozen-lockfile
 
