@@ -366,7 +366,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Meta로 로그인"
    },
    "sidebar": {
       "activeRealm": "활성 렐름",
@@ -405,12 +405,12 @@
       "goHome": "홈으로",
       "searchPlaceholder": "검색...",
       "clearSearch": "검색 초기화",
-      "openInNewTab": "",
+      "openInNewTab": "새 탭에서 열기",
       "filters": "필터",
       "hideFilters": "필터 숨기기",
       "showFilters": "필터 표시",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "개인정보 처리방침",
+      "cookiesPolicy": "쿠키 정책",
       "global": "전체",
       "friends": "친구",
       "aroundMe": "내 주변",
@@ -428,8 +428,8 @@
       "justNow": "방금",
       "performancePoints": "Performance Points",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "정확도",
+      "misses": "미스",
       "totalPlays": "총 플레이 수",
       "actions": "Actions",
       "rankRequestActions": "랭크 요청 작업",
@@ -1519,7 +1519,7 @@
          "necessaryTitle": "필수 쿠키",
          "necessaryDescription": "로그인, 보안, 요청 제한, 언어, 테마, 저장된 필터 및 핵심 사이트 기능에 필요합니다. 이 항목은 항상 활성화되어 있습니다."
       },
-      "lastUpdated": ""
+      "lastUpdated": "마지막 업데이트: {date}"
    },
    "oauth": {
       "consent": {

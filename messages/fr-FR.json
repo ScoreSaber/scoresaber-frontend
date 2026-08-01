@@ -366,7 +366,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Se connecter avec Meta"
    },
    "sidebar": {
       "activeRealm": "Realm actif",
@@ -405,12 +405,12 @@
       "goHome": "Aller à l'accueil",
       "searchPlaceholder": "Recherche...",
       "clearSearch": "Vider la recherche",
-      "openInNewTab": "",
+      "openInNewTab": "Ouvrir dans un nouvel onglet",
       "filters": "Filtres",
       "hideFilters": "Masquer les filtres",
       "showFilters": "Afficher les filtres",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "Politique de confidentialité",
+      "cookiesPolicy": "Politique relative aux cookies",
       "global": "Général",
       "friends": "Amis",
       "aroundMe": "Autour de moi",
@@ -428,8 +428,8 @@
       "justNow": "à l'instant",
       "performancePoints": "Points de Performance",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "Précision",
+      "misses": "Manqués",
       "totalPlays": "Nombre total de Parties",
       "actions": "Actions",
       "rankRequestActions": "Actions sur la demande de classement",
@@ -1519,7 +1519,7 @@
          "necessaryTitle": "Cookies requis",
          "necessaryDescription": "Nécessaires pour la connexion, la sécurité, la limitation des débits, la langue, le thème, la sauvegarde des filtres et les fonctionnalités principales du site. Ils sont toujours activés."
       },
-      "lastUpdated": ""
+      "lastUpdated": "Dernière mise à jour : {date}"
    },
    "oauth": {
       "consent": {

@@ -366,7 +366,7 @@
          "emailCallToAction": "新しいアカウントを作成する"
       },
       "subtitle": "",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Metaでサインイン"
    },
    "sidebar": {
       "activeRealm": "アクティブレルム",
@@ -405,12 +405,12 @@
       "goHome": "ホームに戻る",
       "searchPlaceholder": "検索…",
       "clearSearch": "検索をクリア",
-      "openInNewTab": "",
+      "openInNewTab": "新しいタブでひらく",
       "filters": "絞り込み",
       "hideFilters": "フィルターを非表示",
       "showFilters": "フィルターを表示",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "プライバシーポリシー",
+      "cookiesPolicy": "Cookieポリシー",
       "global": "グローバル",
       "friends": "フレンド",
       "aroundMe": "自分の周囲",
@@ -428,8 +428,8 @@
       "justNow": "たった今",
       "performancePoints": "パフォーマンスポイント",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "精度",
+      "misses": "ミス",
       "totalPlays": "総プレイ回数",
       "actions": "操作",
       "rankRequestActions": "ランク申請の操作",

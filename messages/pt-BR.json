@@ -366,7 +366,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Entrar com Meta"
    },
    "sidebar": {
       "activeRealm": "Realm ativo",
@@ -405,12 +405,12 @@
       "goHome": "Ir para a página inicial",
       "searchPlaceholder": "Pesquisar...",
       "clearSearch": "Limpar pesquisa",
-      "openInNewTab": "",
+      "openInNewTab": "Abrir em uma nova aba",
       "filters": "Filtros",
       "hideFilters": "Ocultar Filtros",
       "showFilters": "Mostrar filtros",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "Política de Privacidade",
+      "cookiesPolicy": "Política de cookies",
       "global": "Global",
       "friends": "Amigos",
       "aroundMe": "Ao Meu Redor",
@@ -428,8 +428,8 @@
       "justNow": "Agora mesmo",
       "performancePoints": "Pontos de Desempenho",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "Precisão",
+      "misses": "Erros",
       "totalPlays": "Jogadas totais",
       "actions": "Ações",
       "rankRequestActions": "Ações de pedido de classificação",
@@ -1519,7 +1519,7 @@
          "necessaryTitle": "Cookies necessários",
          "necessaryDescription": "Necessário para iniciar sessão, segurança, limitação de taxas, idioma, tema, filtros salvos e recursos principais do site. Estes são sempre ativos."
       },
-      "lastUpdated": ""
+      "lastUpdated": "Última atualização: {date}"
    },
    "oauth": {
       "consent": {

@@ -366,7 +366,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Inloggen met Meta"
    },
    "sidebar": {
       "activeRealm": "Actieve realm",
@@ -405,12 +405,12 @@
       "goHome": "Naar home",
       "searchPlaceholder": "Zoeken...",
       "clearSearch": "Zoekopdracht wissen",
-      "openInNewTab": "",
+      "openInNewTab": "Openen in nieuw tabblad",
       "filters": "Filters",
       "hideFilters": "Filters verbergen",
       "showFilters": "Filters tonen",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "Privacybeleid",
+      "cookiesPolicy": "Cookiebeleid",
       "global": "Wereldwijd",
       "friends": "Vrienden",
       "aroundMe": "In de buurt",
@@ -428,8 +428,8 @@
       "justNow": "zojuist",
       "performancePoints": "Prestatie Punten",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "Nauwkeurigheid",
+      "misses": "Gemist",
       "totalPlays": "Totaal aantal plays",
       "actions": "Acties",
       "rankRequestActions": "Acties voor rankverzoeken",
@@ -1519,7 +1519,7 @@
          "necessaryTitle": "Noodzakelijke cookies",
          "necessaryDescription": "Nodig voor inloggen, beveiliging, snelheidslimieten, taal, thema, opgeslagen filters en kernfuncties van de site. Deze staan altijd aan."
       },
-      "lastUpdated": ""
+      "lastUpdated": "Laatst bijgewerkt: {date}"
    },
    "oauth": {
       "consent": {

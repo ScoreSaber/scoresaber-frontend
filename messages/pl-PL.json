@@ -366,7 +366,7 @@
          "emailCallToAction": "Stwórz nowe konto"
       },
       "subtitle": "Zaloguj się lub utwórz konto używając ScoreSaber",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Zaloguj się przez Meta"
    },
    "sidebar": {
       "activeRealm": "Aktywny realm",
@@ -405,12 +405,12 @@
       "goHome": "Wróć na stronę główną",
       "searchPlaceholder": "Wyszukaj...",
       "clearSearch": "Wyczyść wyszukiwanie",
-      "openInNewTab": "",
+      "openInNewTab": "Otwórz w nowej karcie",
       "filters": "Filtry",
       "hideFilters": "Ukryj filtry",
       "showFilters": "Pokaż filtry",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "Polityka prywatności",
+      "cookiesPolicy": "Polityka cookies",
       "global": "Globalnie",
       "friends": "Przyjaciele",
       "aroundMe": "W mojej okolicy",
@@ -428,8 +428,8 @@
       "justNow": "przed chwilą",
       "performancePoints": "Punkty Performance'u",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "Celność",
+      "misses": "Pudła",
       "totalPlays": "Liczba zagrań",
       "actions": "Działania",
       "rankRequestActions": "Działania żądań o rangę",
@@ -1519,7 +1519,7 @@
          "necessaryTitle": "Wymagane pliki cookie",
          "necessaryDescription": "Wymagane do logowania, bezpieczeństwa, ograniczania prędkości, zapamiętywania wyboru języka, motywu, zapisanych filtrów i podstawowych funkcji strony. Są zawsze włączone"
       },
-      "lastUpdated": ""
+      "lastUpdated": "Ostatnia aktualizacja: {date}"
    },
    "oauth": {
       "consent": {

@@ -366,7 +366,7 @@
          "emailCallToAction": "Neuen Account erstellen"
       },
       "subtitle": "Melde dich an oder erstelle einen Account bei ScoreSaber",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Anmelden mit Meta"
    },
    "sidebar": {
       "activeRealm": "Aktiver Realm",
@@ -405,12 +405,12 @@
       "goHome": "Zur Startseite",
       "searchPlaceholder": "Suchen...",
       "clearSearch": "Suche löschen",
-      "openInNewTab": "",
+      "openInNewTab": "In neuem Tab öffnen",
       "filters": "Filter",
       "hideFilters": "Filter ausblenden",
       "showFilters": "Filter anzeigen",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "Datenschutzerklärung",
+      "cookiesPolicy": "Cookie-Richtlinie",
       "global": "Global",
       "friends": "Freunde",
       "aroundMe": "In meiner Nähe",
@@ -1519,7 +1519,7 @@
          "necessaryTitle": "Erforderliche Cookies",
          "necessaryDescription": "Erforderlich für Anmeldung, Sicherheit, Begrenzung der Zugriffsanfragen, Sprache, Design, gespeicherte Filter und grundlegende Funktionen der Website. Diese sind immer aktiviert."
       },
-      "lastUpdated": ""
+      "lastUpdated": "Zuletzt aktualisiert: {date}"
    },
    "oauth": {
       "consent": {
