@@ -12,7 +12,7 @@ const CUBE_SCHEDULE_URL = `${CUBE_TOURNAMENT_URL}/schedule`;
 const CUBE_TWITCH_CHANNEL = 'cubecommunity';
 const CUBE_TWITCH_URL = `https://www.twitch.tv/${CUBE_TWITCH_CHANNEL}`;
 const BSWC_CACHE_MS = 60 * 1000;
-const BSWC_RETRY_MS = 15 * 1000;
+const BSWC_RETRY_MS = 5 * 60 * 1000;
 const REQUEST_TIMEOUT_MS = 8_000;
 const DELAYED_MATCH_GRACE_MS = 2 * 60 * 60 * 1000;
 

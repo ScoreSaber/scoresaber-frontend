@@ -76,6 +76,6 @@ USER node
 EXPOSE 4000
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=20s --retries=5 \
-  CMD node -e "const socket = require('node:net').connect(process.env.PORT || 4000, '127.0.0.1'); socket.setTimeout(2000); socket.on('connect', () => { socket.destroy(); process.exit(0) }); socket.on('timeout', () => { socket.destroy(); process.exit(1) }); socket.on('error', () => process.exit(1))"
+  CMD node -e "const socket = require('node:net').connect(process.env.PORT || 4000, '127.0.0.1'); socket.setTimeout(2000); socket.on('connect', () => { socket.destroy(); process.exit(0) }); socket.on('timeout', () => { console.error('listener timed out'); socket.destroy(); process.exit(1) }); socket.on('error', (error) => { console.error(error.message); process.exit(1) })"
 
 CMD ["node", ".output/server/index.mjs"]
