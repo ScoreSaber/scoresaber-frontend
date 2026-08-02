@@ -11,6 +11,7 @@ import { env } from '@/env';
 
 const NEWS_FEED_POST_LIMIT = 15;
 const FEED_CACHE_MS = 10 * 60 * 1000;
+const FEED_RETRY_MS = 15 * 1000;
 const REQUEST_TIMEOUT_MS = 8_000;
 const POST_BODY_LENGTH = 500;
 const YOUTUBE_POST_BODY_WORD_LIMIT = 22;
@@ -138,7 +139,7 @@ type XPost = {
 };
 
 let cachedFeed: { expiresAt: number; feed: HomeNewsFeed } | null = null;
-let pendingRefresh: Promise<HomeNewsFeed> | null = null;
+let pendingRefresh: Promise<void> | null = null;
 const cachedSources: {
    patreon: HomeNewsPost[] | null;
    youtube: YouTubeVideo[] | null;
@@ -153,10 +154,9 @@ export async function getHomeNewsFeed() {
    if (cachedFeed && cachedFeed.expiresAt > Date.now()) return cachedFeed.feed;
 
    if (!pendingRefresh) {
-      pendingRefresh = refreshHomeNewsFeed().finally(() => {
+      pendingRefresh = refreshHomeNewsFeed().then(() => {
          pendingRefresh = null;
       });
-      void pendingRefresh.catch((cause) => console.warn('[home news] background refresh failed', cause));
    }
 
    // external news is optional, so never hold a page response open for it
@@ -164,13 +164,28 @@ export async function getHomeNewsFeed() {
 }
 
 async function refreshHomeNewsFeed() {
-   const feed = await loadHomeNewsFeed();
+   const result = await Result.tryPromise({
+      try: loadHomeNewsFeed,
+      catch: (cause) =>
+         new HomeNewsFetchError({
+            source: 'url',
+            message: 'background refresh failed',
+            cause
+         })
+   });
+
+   const feed = Result.match(result, {
+      ok: (value) => value,
+      err: (error) => {
+         logHomeNewsError(error);
+         return cachedFeed?.feed ?? emptyHomeNewsFeed();
+      }
+   });
+
    cachedFeed = {
-      expiresAt: Date.now() + FEED_CACHE_MS,
+      expiresAt: Date.now() + (result.isOk() ? FEED_CACHE_MS : FEED_RETRY_MS),
       feed
    };
-
-   return cachedFeed.feed;
 }
 
 async function loadHomeNewsFeed(): Promise<HomeNewsFeed> {
@@ -223,10 +238,15 @@ async function fetchOptional<T>(source: SocialSource, load: () => Promise<T>) {
    return Result.match(result, {
       ok: (value) => value,
       err: (error) => {
-         console.warn('[home news]', error.message, error.cause);
+         logHomeNewsError(error);
          return null;
       }
    });
+}
+
+function logHomeNewsError(error: HomeNewsFetchError) {
+   const cause = error.cause instanceof Error ? error.cause.message : String(error.cause);
+   console.warn(`[home news] ${error.message}: ${cause}`);
 }
 
 async function fetchPatreonPosts(): Promise<HomeNewsPost[]> {

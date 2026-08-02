@@ -49,16 +49,15 @@ type CubeTeam = z.infer<typeof cubeTeamSchema>;
 type CubeMatch = z.infer<typeof cubeMatchSchema>;
 
 let cachedPromo: { expiresAt: number; promo: HomeBswcPromo | null } | null = null;
-let pendingRefresh: Promise<HomeBswcPromo | null> | null = null;
+let pendingRefresh: Promise<void> | null = null;
 
 export async function getHomeBswcPromo() {
    if (cachedPromo && cachedPromo.expiresAt > Date.now()) return cachedPromo.promo;
 
    if (!pendingRefresh) {
-      pendingRefresh = refreshHomeBswcPromo().finally(() => {
+      pendingRefresh = refreshHomeBswcPromo().then(() => {
          pendingRefresh = null;
       });
-      void pendingRefresh.catch((cause) => console.warn('[home bswc] background refresh failed', cause));
    }
 
    // tournament data is optional, so never hold a page response open for it
@@ -66,13 +65,28 @@ export async function getHomeBswcPromo() {
 }
 
 async function refreshHomeBswcPromo() {
-   const promo = await loadHomeBswcPromo();
+   const result = await Result.tryPromise({
+      try: loadHomeBswcPromo,
+      catch: (cause) =>
+         new BswcFetchError({
+            procedure: 'refresh',
+            message: 'background refresh failed',
+            status: null,
+            cause
+         })
+   });
+   const promo = Result.match(result, {
+      ok: (value) => value,
+      err: (error) => {
+         logBswcError(error);
+         return null;
+      }
+   });
+
    cachedPromo = {
       expiresAt: Date.now() + (promo ? BSWC_CACHE_MS : BSWC_RETRY_MS),
       promo
    };
-
-   return promo;
 }
 
 async function loadHomeBswcPromo(): Promise<HomeBswcPromo | null> {
@@ -123,10 +137,15 @@ async function fetchOptional<T>(procedure: string, load: () => Promise<T>) {
    return Result.match(result, {
       ok: (value) => value,
       err: (error) => {
-         console.warn('[home bswc]', error.message, error.cause);
+         logBswcError(error);
          return null;
       }
    });
+}
+
+function logBswcError(error: BswcFetchError) {
+   const cause = error.cause instanceof Error ? error.cause.message : String(error.cause);
+   console.warn(`[home bswc] ${error.message}: ${cause}`);
 }
 
 async function fetchCubeTrpc<TSchema extends z.ZodType>(procedure: string, dataSchema: TSchema) {
