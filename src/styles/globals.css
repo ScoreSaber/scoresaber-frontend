@@ -373,11 +373,6 @@
    -webkit-background-clip: text;
 }
 
-.home-stat-feed {
-   mask-image: linear-gradient(to bottom, transparent, black 28%, black 72%, transparent);
-   -webkit-mask-image: linear-gradient(to bottom, transparent, black 28%, black 72%, transparent);
-}
-
 .home-stat-feed-tick {
    animation: home-stat-feed-tick 1600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -415,22 +410,18 @@
 @keyframes home-stat-feed-tick {
    0% {
       opacity: 0;
-      filter: blur(2px);
       transform: translateY(0.55rem) scale(0.92);
    }
    18% {
       opacity: 1;
-      filter: blur(0);
       transform: translateY(-50%) scale(1);
    }
    58% {
       opacity: 1;
-      filter: blur(0);
       transform: translateY(-50%) scale(1);
    }
    100% {
       opacity: 0;
-      filter: blur(1px);
       transform: translateY(-1.25rem) scale(0.96);
    }
 }
