@@ -20,6 +20,7 @@ const ANIMATION_SPEED_SCALE = 1 / 100;
 const MOVE_SPEED_SCALE = 0.5;
 const SPREAD = Math.PI / 4;
 const FRAME_MS = 1000 / 60;
+const RENDER_INTERVAL_MS = 1000 / 15;
 const MAX_FRAME_STEP = 5;
 const SLACK = 240;
 const RESIZE_SHRINK_THRESHOLD = 200;
@@ -146,6 +147,7 @@ export function BeatSaberParticles() {
       let canvasHeight = 0;
       let offset = 0;
       let frame = 0;
+      let timer: ReturnType<typeof setTimeout> | undefined;
       let running = false;
       let lastTime = 0;
 
@@ -164,7 +166,7 @@ export function BeatSaberParticles() {
 
          if (!resizeCanvas) return;
 
-         const ratio = window.devicePixelRatio || 1;
+         const ratio = 1;
 
          canvasHeight = wanted;
          canvas.style.height = `${canvasHeight}px`;
@@ -193,15 +195,14 @@ export function BeatSaberParticles() {
       };
 
       const tick = (time: number) => {
-         frame = requestAnimationFrame(tick);
-
          const elapsed = time - lastTime;
-
-         if (elapsed < FRAME_MS - 1) return;
-
          lastTime = time;
          updateParticles(particles, fieldWidth, fieldHeight, Math.min(elapsed / FRAME_MS, MAX_FRAME_STEP));
          render();
+         timer = setTimeout(() => {
+            timer = undefined;
+            if (running) frame = requestAnimationFrame(tick);
+         }, RENDER_INTERVAL_MS);
       };
 
       const start = () => {
@@ -216,7 +217,9 @@ export function BeatSaberParticles() {
          running = false;
 
          if (frame) cancelAnimationFrame(frame);
+         if (timer !== undefined) clearTimeout(timer);
          frame = 0;
+         timer = undefined;
       };
 
       const scheduleRender = () => {
