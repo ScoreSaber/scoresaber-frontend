@@ -4,6 +4,20 @@ import { z } from 'zod';
 
 import { PLAYER_CONTROLLER_GET_PLAYER_SCORES_SORT } from '@/shared/api/generated/ApiParams';
 
+function firstSearchParamValue(value: unknown) {
+   return Array.isArray(value) ? value[0] : value;
+}
+
+export function searchParam<TSchema extends z.ZodType>(schema: TSchema) {
+   return z.preprocess(firstSearchParamValue, schema);
+}
+
+export const optionalSearchParamString = searchParam(z.string().optional());
+
+export function optionalSearchParamEnum<TValues extends readonly [string, ...string[]]>(values: TValues) {
+   return searchParam(z.enum(values).optional().catch(undefined));
+}
+
 export const isNumber = z.preprocess((val) => {
    if (typeof val === 'string' && val.trim() === '') return undefined;
    return val;

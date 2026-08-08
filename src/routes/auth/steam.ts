@@ -4,13 +4,12 @@ import { z } from 'zod';
 import { handleSteamLogin } from './-oauth';
 
 import { AUTH_CONTROLLER_STEAM_LOGIN_INTENT } from '@/shared/api/generated/ApiParams';
-
-const searchParamString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
+import { optionalSearchParamString, searchParam } from '@/shared/url-state/params';
 
 const steamLoginSearchSchema = z.object({
-   intent: z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.enum(AUTH_CONTROLLER_STEAM_LOGIN_INTENT).default('login').catch('login')),
-   returnUrl: searchParamString,
-   redirectTo: searchParamString
+   intent: searchParam(z.enum(AUTH_CONTROLLER_STEAM_LOGIN_INTENT).default('login').catch('login')),
+   returnUrl: optionalSearchParamString,
+   redirectTo: optionalSearchParamString
 });
 
 export const Route = createFileRoute('/auth/steam')({

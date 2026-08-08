@@ -21,15 +21,15 @@ import type { MapControllerGetMapListingsDataItem, PlayerControllerGetPlayersDat
 import { publicApi } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
+import { optionalSearchParamString } from '@/shared/url-state/params';
 
-const optionalSearchString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
 const BSWC_PROMO_PRIORITY_WINDOW_MS = 24 * 60 * 60 * 1000;
 const HOME_AGGREGATES_CACHE_MS = 60 * 1000;
 const HOME_AGGREGATES_RETRY_MS = 15 * 1000;
 
 const homeSearchSchema = z.object({
-   accountMergeChallengeId: optionalSearchString,
-   bswcLive: optionalSearchString
+   accountMergeChallengeId: optionalSearchParamString,
+   bswcLive: optionalSearchParamString
 });
 
 type HomePageData = {

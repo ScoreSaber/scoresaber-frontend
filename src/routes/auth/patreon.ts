@@ -4,12 +4,11 @@ import { z } from 'zod';
 import { handlePatreonLogin } from './-oauth';
 
 import { AUTH_CONTROLLER_PATREON_LOGIN_INTENT } from '@/shared/api/generated/ApiParams';
-
-const searchParamString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
+import { optionalSearchParamString, searchParam } from '@/shared/url-state/params';
 
 const patreonLoginSearchSchema = z.object({
-   intent: z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.enum(AUTH_CONTROLLER_PATREON_LOGIN_INTENT).default('link').catch('link')),
-   redirectTo: searchParamString
+   intent: searchParam(z.enum(AUTH_CONTROLLER_PATREON_LOGIN_INTENT).default('link').catch('link')),
+   redirectTo: optionalSearchParamString
 });
 
 export const Route = createFileRoute('/auth/patreon')({

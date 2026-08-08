@@ -13,20 +13,19 @@ import { useAuth } from '@/modules/auth';
 import { approveAuthorization, getAuthorizeInfo, type AuthorizeRequest } from '@/modules/auth/actions/oauth';
 import { unwrapAction } from '@/shared/result/action';
 import { buildNoindexHead } from '@/shared/seo/metadata';
+import { optionalSearchParamString } from '@/shared/url-state/params';
 import { getRouteHref } from '@/shared/url-state/route-location';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const loginRoute = getRouteApi('/login');
 
-const searchParamString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
-
 const authorizeSearchSchema = z.object({
-   client_id: searchParamString,
-   redirect_uri: searchParamString,
-   scope: searchParamString,
-   state: searchParamString,
-   code_challenge: searchParamString,
-   code_challenge_method: searchParamString
+   client_id: optionalSearchParamString,
+   redirect_uri: optionalSearchParamString,
+   scope: optionalSearchParamString,
+   state: optionalSearchParamString,
+   code_challenge: optionalSearchParamString,
+   code_challenge_method: optionalSearchParamString
 });
 
 export const Route = createFileRoute('/oauth/authorize')({

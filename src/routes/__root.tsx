@@ -21,6 +21,7 @@ import { cn } from '@/shared/format/helpers';
 import { optionalApi } from '@/shared/result/api';
 import { absoluteSiteUrl, SITE_DESCRIPTION, SITE_NAME, buildSeoHead } from '@/shared/seo/metadata';
 import { parseServerTheme, THEME_COOKIE_NAME, THEME_MEDIA_QUERY, THEME_STORAGE_KEY } from '@/shared/ui-adjacent/theme';
+import { optionalSearchParamString } from '@/shared/url-state/params';
 import { AppShell } from '@/shell/app-shell';
 import { isMacRequest } from '@/shell/platform.server';
 import { parseSidebarCollapsedCookie, SIDEBAR_COLLAPSED_COOKIE_NAME } from '@/shell/sidebar-state';
@@ -40,11 +41,9 @@ const criticalFonts = [
    '/fonts/geist-latin-700-normal.woff2',
    '/fonts/GeistPixel-Square.woff2'
 ];
-const optionalSearchString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
-
 const rootSearchSchema = z
    .object({
-      bswcLive: optionalSearchString
+      bswcLive: optionalSearchParamString
    })
    .passthrough();
 
