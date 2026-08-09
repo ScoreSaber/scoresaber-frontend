@@ -16,6 +16,7 @@ const REQUEST_TIMEOUT_MS = 8_000;
 const POST_BODY_LENGTH = 500;
 const YOUTUBE_POST_BODY_WORD_LIMIT = 22;
 const SHORT_URL_TIMEOUT_MS = 4_000;
+const YOUTUBE_SHORT_MAX_SECONDS = 3 * 60;
 
 type SocialSource = HomeNewsSource | 'url';
 
@@ -118,6 +119,16 @@ const youtubePlaylistItemSchema = z.object({
    contentDetails: z.object({ videoPublishedAt: z.string().optional() }).optional()
 });
 const youtubePlaylistResponseSchema = z.object({ items: z.array(youtubePlaylistItemSchema).optional() });
+const youtubeVideosResponseSchema = z.object({
+   items: z
+      .array(
+         z.object({
+            id: z.string(),
+            contentDetails: z.object({ duration: z.string() })
+         })
+      )
+      .optional()
+});
 
 type PatreonPost = z.infer<typeof patreonPostSchema>;
 type XTweet = z.infer<typeof xTweetSchema>;
@@ -130,6 +141,7 @@ type YouTubeVideo = {
    description: string;
    publishedAt: string;
    imageUrl?: string;
+   durationSeconds: number | null;
 };
 
 // x posts carry their linked urls until duplicate filtering, then only the post is published
@@ -404,21 +416,29 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
    url.searchParams.set('maxResults', String(NEWS_FEED_POST_LIMIT));
 
    const response = await fetchJson('youtube', url, youtubePlaylistResponseSchema);
+   const items = (response.items ?? []).flatMap((item) => {
+      const id = item.snippet.resourceId.videoId;
+      if (!id || item.snippet.title === 'Private video' || item.snippet.title === 'Deleted video') return [];
+      return [{ id, item }];
+   });
+   if (items.length === 0) return [];
 
-   return (response.items ?? [])
-      .map((item) => {
-         const id = item.snippet.resourceId.videoId;
-         if (!id || item.snippet.title === 'Private video' || item.snippet.title === 'Deleted video') return null;
+   const videosUrl = new URL('https://www.googleapis.com/youtube/v3/videos');
+   videosUrl.searchParams.set('key', env.HOME_NEWS_YOUTUBE_API_KEY);
+   videosUrl.searchParams.set('part', 'contentDetails');
+   videosUrl.searchParams.set('id', items.map(({ id }) => id).join(','));
 
-         return {
-            id,
-            title: item.snippet.title,
-            description: item.snippet.description,
-            publishedAt: item.contentDetails?.videoPublishedAt ?? item.snippet.publishedAt,
-            imageUrl: getBestYouTubeThumbnail(item.snippet.thumbnails)
-         };
-      })
-      .filter((video) => video != null);
+   const videosResponse = await fetchJson('youtube', videosUrl, youtubeVideosResponseSchema);
+   const durations = new Map(videosResponse.items?.map((item) => [item.id, parseYouTubeDuration(item.contentDetails.duration)]));
+
+   return items.map(({ id, item }) => ({
+      id,
+      title: item.snippet.title,
+      description: item.snippet.description,
+      publishedAt: item.contentDetails?.videoPublishedAt ?? item.snippet.publishedAt,
+      imageUrl: getBestYouTubeThumbnail(item.snippet.thumbnails),
+      durationSeconds: durations.get(id) ?? null
+   }));
 }
 
 // drop tweets that only relay content the feed already shows: patreon posts or the ranked batch video
@@ -563,7 +583,19 @@ async function fetchMaxResThumbnail(videoId: string) {
 }
 
 function isRankedBatchVideo(video: YouTubeVideo) {
-   return /\b(?:ranked\s+(?:maps?\s+)?batch|ranking\s+batch|batch\s+overview)\b/i.test(`${video.title}\n${video.description}`);
+   return (
+      video.durationSeconds != null &&
+      video.durationSeconds > YOUTUBE_SHORT_MAX_SECONDS &&
+      /\b(?:ranked\s+(?:maps?\s+)?batch|ranking\s+batch|batch\s+overview)\b/i.test(`${video.title}\n${video.description}`)
+   );
+}
+
+function parseYouTubeDuration(value: string) {
+   const match = value.match(/^P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?$/);
+   if (!match) return null;
+
+   const [, days = '0', hours = '0', minutes = '0', seconds = '0'] = match;
+   return Number(days) * 86_400 + Number(hours) * 3_600 + Number(minutes) * 60 + Number(seconds);
 }
 
 function tweetLinkedUrls(tweet: XTweet) {

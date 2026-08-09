@@ -24,6 +24,7 @@ import { buildSeoHead } from '@/shared/seo/metadata';
 import { optionalSearchParamString } from '@/shared/url-state/params';
 
 const BSWC_PROMO_PRIORITY_WINDOW_MS = 24 * 60 * 60 * 1000;
+const RANKED_BATCH_PRIORITY_WINDOW_MS = 48 * 60 * 60 * 1000;
 const HOME_AGGREGATES_CACHE_MS = 60 * 1000;
 const HOME_AGGREGATES_RETRY_MS = 15 * 1000;
 
@@ -38,6 +39,7 @@ type HomePageData = {
    news: HomeNewsFeed;
    bswc: HomeBswcPromo | null;
    prioritizeBswc: boolean;
+   prioritizeRankedBatch: boolean;
 };
 
 type HomeAggregates = Pick<HomePageData, 'topPlayers' | 'trendingMaps'>;
@@ -47,13 +49,16 @@ let pendingHomeAggregatesRefresh: Promise<HomeAggregates> | null = null;
 
 const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Promise<HomePageData> => {
    const [aggregates, news, bswc] = await Promise.all([getHomeAggregates(), getHomeNewsFeed(), BSWC_PROMO_ENABLED ? getHomeBswcPromo() : null]);
+   const now = Date.now();
 
    return {
       ...aggregates,
       news,
       bswc,
       prioritizeBswc:
-         bswc?.liveMatch != null || (bswc?.nextMatch != null && Date.parse(bswc.nextMatch.startsAt) <= Date.now() + BSWC_PROMO_PRIORITY_WINDOW_MS)
+         bswc?.liveMatch != null || (bswc?.nextMatch != null && Date.parse(bswc.nextMatch.startsAt) <= now + BSWC_PROMO_PRIORITY_WINDOW_MS),
+      prioritizeRankedBatch:
+         news.latestRankedBatchVideo != null && Date.parse(news.latestRankedBatchVideo.publishedAt) >= now - RANKED_BATCH_PRIORITY_WINDOW_MS
    };
 });
 
@@ -150,6 +155,12 @@ function HomeRoute() {
          <HeroSection />
 
          <div className="relative z-10 mx-auto flex w-full max-w-[1180px] flex-col gap-14 px-4 pt-0 pb-16 sm:px-6 lg:px-10">
+            {data.prioritizeRankedBatch && (
+               <section>
+                  <RankedBatchSection video={data.news.latestRankedBatchVideo} />
+               </section>
+            )}
+
             {showBswcFirst && (
                <section>
                   <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
@@ -190,9 +201,11 @@ function HomeRoute() {
                </section>
             )}
 
-            <section>
-               <RankedBatchSection video={data.news.latestRankedBatchVideo} />
-            </section>
+            {!data.prioritizeRankedBatch && (
+               <section>
+                  <RankedBatchSection video={data.news.latestRankedBatchVideo} />
+               </section>
+            )}
 
             <InstallSection />
          </div>
