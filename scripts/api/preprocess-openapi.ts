@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
-const INPUT = resolve(import.meta.dir, '..', 'orbis-openapi.json');
-const OUTPUT = resolve(import.meta.dir, '..', 'orbis-openapi-processed.json');
+const INPUT = resolve(import.meta.dir, 'openapi.json');
+const OUTPUT = resolve(import.meta.dir, 'openapi.processed.json');
 
 // Map new tag names back to the old module-name convention (singular, no spaces/colons)
 const TAG_MAP: Record<string, string> = {

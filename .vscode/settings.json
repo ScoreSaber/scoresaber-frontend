@@ -1,11 +1,11 @@
 {
    "files.exclude": {
-      ".next": true,
+      ".output": true,
       "coverage": true,
       "node_modules": true
    },
    "search.exclude": {
-      ".next": true,
+      ".output": true,
       "coverage": true,
       "node_modules": true
    },
@@ -27,7 +27,7 @@
    "tailwindCSS.experimental.configFile": {
       "src/styles/globals.css": "src/**/*.{css,ts,tsx}"
    },
-   "tailwindCSS.files.exclude": ["**/.git/**", "**/.next/**", "**/.output/**", "**/coverage/**", "**/dist/**", "**/node_modules/**"],
+   "tailwindCSS.files.exclude": ["**/.git/**", "**/.output/**", "**/coverage/**", "**/node_modules/**"],
    "i18n-ally.enabledFrameworks": ["next-intl"],
    "i18n-ally.localesPaths": ["messages"],
    "i18n-ally.sourceLanguage": "en"

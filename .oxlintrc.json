@@ -1,7 +1,7 @@
 {
    "$schema": "./node_modules/oxlint/configuration_schema.json",
    "plugins": ["typescript", "unicorn", "oxc"],
-   "ignorePatterns": [".next/**", "dist/**", "node_modules/**", "scoresaber-frontend-legacy/**", "src/routeTree.gen.ts"],
+   "ignorePatterns": [".output/**", "node_modules/**", "src/routeTree.gen.ts"],
    "categories": {
       "correctness": "error"
    },
@@ -22,54 +22,24 @@
    },
    "overrides": [
       {
-         "files": ["src/modules/**/*.{ts,tsx}", "src/shared/**/*.{ts,tsx}"],
-         "rules": {
-            "no-restricted-imports": [
-               "error",
-               {
-                  "patterns": [
-                     {
-                        "group": ["@/app/**"],
-                        "message": "app is the route layer; modules and shared code must not import from it"
-                     }
-                  ]
-               }
-            ]
-         }
-      },
-      {
-         "files": ["src/shared/routing/index.ts"],
-         "rules": {
-            "no-restricted-imports": "off"
-         }
-      },
-      {
-         "files": ["src/modules/**/*.tsx", "src/shared/components/**/*.{ts,tsx}"],
+         "files": ["src/modules/**/*.tsx", "src/components/**/*.{ts,tsx}"],
          "rules": {
             "no-restricted-imports": [
                "error",
                {
                   "paths": [
                      {
-                        "name": "@/app/_providers/page-background-provider",
-                        "message": "page background orchestration belongs in the app layer"
-                     },
-                     {
                         "name": "@/shared/api/server-api",
-                        "message": "server page data loading belongs in the app layer"
+                        "message": "server page data loading belongs in the route layer"
                      },
                      {
                         "name": "@/shared/metadata",
-                        "message": "metadata construction belongs in the app layer"
-                     },
-                     {
-                        "name": "next/headers",
-                        "message": "request header and cookie access belongs in the app layer"
+                        "message": "metadata construction belongs in the route layer"
                      },
                      {
                         "name": "@/shared/result/api",
                         "importNames": ["pageApiData"],
-                        "message": "pageApiData belongs in the app layer"
+                        "message": "pageApiData belongs in the route layer"
                      }
                   ]
                }

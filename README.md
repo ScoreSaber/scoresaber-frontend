@@ -10,10 +10,10 @@ The frontend for [ScoreSaber](https://scoresaber.com)
 
 ## Getting Started
 
-See [SETUP.md](SETUP.md) for the local development guide
+See the [setup guide](.github/SETUP.md) for local development
 
 The default setup points at production ScoreSaber services, so most website work does not need a backend environment
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for code standards and pull request expectations
+See the [contribution guide](.github/CONTRIBUTING.md) for code standards and pull request expectations

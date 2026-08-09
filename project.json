@@ -8,7 +8,7 @@
       "build": {
          "executor": "nx:run-script",
          "cache": true,
-         "outputs": ["{projectRoot}/dist"],
+         "outputs": ["{projectRoot}/.output"],
          "inputs": [
             "production",
             { "env": "NEXT_PUBLIC_API_URL" },
@@ -46,12 +46,12 @@
       "lint": {
          "executor": "nx:run-commands",
          "cache": true,
-         "inputs": ["default", "{projectRoot}/.oxlintrc.json", "{workspaceRoot}/.oxlintrc.website-boundary.json"],
+         "inputs": ["default", "{projectRoot}/.oxlintrc.json", "{workspaceRoot}/.oxlintrc.json"],
          "outputs": ["{options.outputFile}"],
          "options": {
             "commands": [
                "bun run --cwd apps/website lint",
-               "env -u NO_COLOR oxlint apps/website/src apps/website/scripts apps/website/vite.config.ts apps/website/postcss.config.js apps/website/generator.config.js apps/website/lint-staged.config.mjs --disable-nested-config -c .oxlintrc.website-boundary.json"
+               "env -u NO_COLOR oxlint apps/website/src apps/website/scripts apps/website/vite.config.ts apps/website/lint-staged.config.mjs --disable-nested-config"
             ],
             "parallel": false
          }

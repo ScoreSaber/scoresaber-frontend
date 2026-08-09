@@ -9,6 +9,6 @@ export default {
 
       const args = filteredFiles.map((file) => JSON.stringify(file)).join(' ');
 
-      return [`bunx oxfmt ${args}`, `bunx oxlint --fix ${args}`];
+      return [`oxfmt ${args}`, `oxlint --fix ${args}`];
    }
 };

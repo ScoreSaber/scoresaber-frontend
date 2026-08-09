@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-ARG BUN_VERSION=1.3.13
+ARG BUN_VERSION=1.3.14
 ARG NODE_VERSION=24.15.0
 ARG BUILD_CACHE_SCOPE=shared
 
