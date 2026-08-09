@@ -1,4 +1,4 @@
-export const BSWC_PROMO_ENABLED = false;
+export const BSWC_PROMO_ENABLED = true;
 
 export type HomeBswcTeam = {
    name: string;
