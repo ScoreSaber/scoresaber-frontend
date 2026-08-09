@@ -1,7 +1,6 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useMemo } from 'react';
 
 import { useLocale, useTranslations } from 'use-intl';
 
@@ -31,6 +30,8 @@ const RELATIVE_UNITS: { seconds: number; unit: Intl.RelativeTimeFormatUnit }[] =
 
 const LONG_SHORT_TIME_LENGTH = 11;
 const MIN_SHORT_TIME_SCALE = 0.65;
+type TimeFormatters = ReturnType<typeof createTimeFormatters>;
+const timeFormattersByLocale = new Map<string, TimeFormatters>();
 
 export function Time({
    date,
@@ -45,7 +46,7 @@ export function Time({
    const dateObj = date == null ? null : new Date(date);
    const locale = useLocale();
    const t = useTranslations('common');
-   const formatters = useMemo(() => createTimeFormatters(locale), [locale]);
+   const formatters = getTimeFormatters(locale);
 
    if (!dateObj || isNaN(dateObj.getTime())) {
       return <span className={className}>{t('unknownDate')}</span>;
@@ -113,7 +114,14 @@ function timeAgo(date: Date, isShort: boolean, formatters: TimeFormatters, justN
    return justNow;
 }
 
-type TimeFormatters = ReturnType<typeof createTimeFormatters>;
+function getTimeFormatters(locale: string) {
+   const cached = timeFormattersByLocale.get(locale);
+   if (cached) return cached;
+
+   const formatters = createTimeFormatters(locale);
+   timeFormattersByLocale.set(locale, formatters);
+   return formatters;
+}
 
 function createTimeFormatters(locale: string) {
    return {
