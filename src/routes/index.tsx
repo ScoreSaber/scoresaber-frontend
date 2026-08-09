@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { useTranslations } from 'use-intl';
 import { z } from 'zod';
 
-import type { HomeBswcPromo } from '@/modules/home/actions/bswc';
+import { BSWC_PROMO_ENABLED, type HomeBswcPromo } from '@/modules/home/actions/bswc';
 import { getHomeBswcPromo } from '@/modules/home/actions/bswc.server';
 import type { HomeNewsFeed } from '@/modules/home/actions/news';
 import { getHomeNewsFeed } from '@/modules/home/actions/news.server';
@@ -46,7 +46,7 @@ let cachedHomeAggregates: { expiresAt: number; data: HomeAggregates } | null = n
 let pendingHomeAggregatesRefresh: Promise<HomeAggregates> | null = null;
 
 const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Promise<HomePageData> => {
-   const [aggregates, news, bswc] = await Promise.all([getHomeAggregates(), getHomeNewsFeed(), getHomeBswcPromo()]);
+   const [aggregates, news, bswc] = await Promise.all([getHomeAggregates(), getHomeNewsFeed(), BSWC_PROMO_ENABLED ? getHomeBswcPromo() : null]);
 
    return {
       ...aggregates,
@@ -141,7 +141,7 @@ function HomeRoute() {
    const search = Route.useSearch();
    const t = useTranslations('home');
    const previewBswcLive = search.bswcLive === '1';
-   const showBswcFirst = previewBswcLive || data.prioritizeBswc;
+   const showBswcFirst = BSWC_PROMO_ENABLED && (previewBswcLive || data.prioritizeBswc);
 
    return (
       <div className="dark bg-background text-foreground relative flex-1 overflow-hidden">
@@ -184,7 +184,7 @@ function HomeRoute() {
                </HomeColumn>
             </section>
 
-            {!showBswcFirst && (
+            {BSWC_PROMO_ENABLED && !showBswcFirst && (
                <section>
                   <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
                </section>

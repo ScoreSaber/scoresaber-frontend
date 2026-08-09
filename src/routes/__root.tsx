@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { env } from '@/env';
 import { getLocale, getMessages, getVisibleLocales } from '@/i18n/server';
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
+import { BSWC_PROMO_ENABLED } from '@/modules/home/actions/bswc';
 import { getHomeBswcPromo } from '@/modules/home/actions/bswc.server';
 import { BswcLiveNotice } from '@/modules/home/bswc-promo-section';
 import type { RouterContext } from '@/router';
@@ -52,7 +53,10 @@ const ROOT_SHELL_QUERY_KEY = ['root-shell'] as const;
 
 const getRootShellData = createServerFn({ method: 'GET' }).handler(async () => {
    const token = readAuthCookie();
-   const [user, bswc] = await Promise.all([token ? optionalApi(api.user.userControllerGetMe().then((r) => r.data)) : null, getHomeBswcPromo()]);
+   const [user, bswc] = await Promise.all([
+      token ? optionalApi(api.user.userControllerGetMe().then((r) => r.data)) : null,
+      BSWC_PROMO_ENABLED ? getHomeBswcPromo() : null
+   ]);
    const initialTheme = parseServerTheme(getCookie(THEME_COOKIE_NAME)) ?? null;
    const sidebarCollapsed = parseSidebarCollapsedCookie(getCookie(SIDEBAR_COLLAPSED_COOKIE_NAME));
 
@@ -151,7 +155,7 @@ function RootComponent() {
                debugBreakpoints={data.debugBreakpoints}
                debugPageBackground={data.debugPageBackground}
             >
-               <BswcLiveNotice promo={data.bswc} previewLive={previewBswcLive} />
+               {BSWC_PROMO_ENABLED && <BswcLiveNotice promo={data.bswc} previewLive={previewBswcLive} />}
                <Outlet />
             </AppShell>
          </IntlProvider>
