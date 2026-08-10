@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 
-import { getEmailLoginHeaders, setAuthCookie } from '@/modules/auth/actions/session.server';
+import { setAuthCookie } from '@/modules/auth/actions/session.server';
+import { getClientRequestHeaders } from '@/shared/api/client-request.server';
 import type { PasswordAuthControllerGetPasswordCredentialResponse } from '@/shared/api/generated/ApiParams';
 import { api } from '@/shared/api/server-api';
 import { actionApiData, actionSuccess, type ActionResult } from '@/shared/result/action';
@@ -11,7 +12,7 @@ export type PasswordCredentialSummary = PasswordAuthControllerGetPasswordCredent
 type CredentialAuthResponse = Awaited<ReturnType<typeof api.auth.passwordAuthControllerCompleteSignup>>['data'];
 
 function requestOptions() {
-   return { cache: 'no-store' as const, headers: getEmailLoginHeaders() };
+   return { cache: 'no-store' as const, headers: getClientRequestHeaders() };
 }
 
 function finishAuth(result: ActionResult<CredentialAuthResponse>): ActionResult<CredentialAuthActionValue> {

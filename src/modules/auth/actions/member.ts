@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 
-import { clearAuthCookie, getEmailLoginHeaders, setAuthCookie } from '@/modules/auth/actions/session.server';
+import { clearAuthCookie, setAuthCookie } from '@/modules/auth/actions/session.server';
+import { getClientRequestHeaders } from '@/shared/api/client-request.server';
 import { api } from '@/shared/api/server-api';
 import { actionApiData, actionSuccess, type ActionResult } from '@/shared/result/action';
 import { apiResult } from '@/shared/result/api';
@@ -29,7 +30,7 @@ const startEmailLoginFn = createServerFn({ method: 'POST' })
             { email },
             {
                cache: 'no-store',
-               headers: getEmailLoginHeaders()
+               headers: getClientRequestHeaders()
             }
          )
       )
@@ -47,7 +48,7 @@ const verifyEmailLoginFn = createServerFn({ method: 'POST' })
             { challengeId: data.challengeId, code: data.code },
             {
                cache: 'no-store',
-               headers: getEmailLoginHeaders()
+               headers: getClientRequestHeaders()
             }
          )
       );

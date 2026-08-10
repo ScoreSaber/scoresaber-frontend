@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start';
 
+import { getClientRequestHeaders } from '@/shared/api/client-request.server';
 import { api } from '@/shared/api/server-api';
 import { actionFailure, actionResultVoid } from '@/shared/result/action';
 import { sanitizeRichTextHtml } from '@/shared/rich-text/server';
@@ -19,7 +20,9 @@ const updateNameFn = createServerFn({ method: 'POST' })
    .inputValidator((name: string) => name)
    .handler(({ data }) => actionResultVoid(api.user.userControllerUpdateName({ name: data })));
 
-const requestCountryResetFn = createServerFn({ method: 'POST' }).handler(() => actionResultVoid(api.user.userControllerResetCountry()));
+const requestCountryResetFn = createServerFn({ method: 'POST' }).handler(() =>
+   actionResultVoid(api.user.userControllerResetCountry({ headers: getClientRequestHeaders() }))
+);
 
 function uploadAvatarData(formData: FormData) {
    const avatar = formData.get('avatar');
