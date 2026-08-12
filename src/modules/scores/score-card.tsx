@@ -169,6 +169,7 @@ export function ScoreCard({ playerScore, className, overlayAction, presentation 
                      detailsExpanded={showDetails}
                      onToggleDetailsAction={() => toggle('details')}
                      onShareAction={showShare ? onShare : undefined}
+                     deleteContext={{ mapName: leaderboard.map.songName }}
                      tooltipSide="right"
                      mobileBottomRow
                      className="bottom-2 left-1/2 -translate-x-1/2 lg:top-1/2 lg:right-3 lg:bottom-auto lg:left-auto lg:translate-x-0 lg:-translate-y-1/2"
@@ -187,7 +188,9 @@ export function ScoreCard({ playerScore, className, overlayAction, presentation 
                   {showDetails && (
                      <ScoreDetailsInline score={score} fcPPContext={fcPPContext} leaderboard={leaderboard} onReadyAction={onPanelReady} />
                   )}
-                  {showHistory && <ScoreHistory scoreId={score.id} leaderboard={leaderboard} onReadyAction={onPanelReady} />}
+                  {showHistory && (
+                     <ScoreHistory scoreId={score.id} leaderboard={leaderboard} mapName={leaderboard.map.songName} onReadyAction={onPanelReady} />
+                  )}
                </div>
             </div>
          )}

@@ -22,6 +22,7 @@ import { readStorageJson, writeStorageJson } from '@/shared/result/storage';
 interface ScoreHistoryProps {
    scoreId: number;
    leaderboard: ScoredLeaderboard;
+   mapName?: string;
    onReadyAction?: () => void;
 }
 
@@ -37,7 +38,7 @@ const OUTCOME_FILTERS = [
 const OUTCOME_STORAGE_KEY = 'score-history-outcome-filters';
 const outcomeFiltersSchema = z.array(z.enum(SCORE_CONTROLLER_GET_SCORE_HISTORY_OUTCOMES));
 
-export function ScoreHistory({ scoreId, leaderboard, onReadyAction }: ScoreHistoryProps) {
+export function ScoreHistory({ scoreId, leaderboard, mapName, onReadyAction }: ScoreHistoryProps) {
    const t = useTranslations();
    const [page, setPage] = useState(1);
    const [selected, setSelected] = useState<Set<ScoreControllerGetScoreHistoryOutcomes>>(() => {
@@ -140,6 +141,7 @@ export function ScoreHistory({ scoreId, leaderboard, onReadyAction }: ScoreHisto
                   highlight={scoreId}
                   showHistory={false}
                   historyContext
+                  mapName={mapName}
                />
                {totalPages > 1 && (
                   <div className="mt-2 flex items-center justify-center gap-2">

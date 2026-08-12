@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as LiveRouteImport } from './routes/live'
 import { Route as LoginRouteImport } from './routes/login'
@@ -21,6 +22,9 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as legacyLeaderboardsRouteImport } from './routes/(legacy)/leaderboards'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminBadgesRouteImport } from './routes/admin/badges'
+import { Route as AdminVersionsRouteImport } from './routes/admin/versions'
 import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
 import { Route as AuthPatreonRouteImport } from './routes/auth/patreon'
 import { Route as AuthSteamRouteImport } from './routes/auth/steam'
@@ -61,6 +65,11 @@ import { Route as MapIdDifficultyLeaderboardIdRouteRouteImport } from './routes/
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HealthRoute = HealthRouteImport.update({
@@ -117,6 +126,21 @@ const legacyLeaderboardsRoute = legacyLeaderboardsRouteImport.update({
   id: '/(legacy)/leaderboards',
   path: '/leaderboards',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminBadgesRoute = AdminBadgesRouteImport.update({
+  id: '/badges',
+  path: '/badges',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminVersionsRoute = AdminVersionsRouteImport.update({
+  id: '/versions',
+  path: '/versions',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AuthDiscordRoute = AuthDiscordRouteImport.update({
   id: '/auth/discord',
@@ -306,6 +330,7 @@ const MapIdDifficultyLeaderboardIdRouteRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/health': typeof HealthRoute
   '/live': typeof LiveRouteWithChildren
   '/login': typeof LoginRoute
@@ -319,6 +344,8 @@ export interface FileRoutesByFullPath {
   '/map/$id': typeof MapIdRouteRouteWithChildren
   '/u/$playerId': typeof UPlayerIdRouteRoute
   '/leaderboards': typeof legacyLeaderboardsRoute
+  '/admin/badges': typeof AdminBadgesRoute
+  '/admin/versions': typeof AdminVersionsRoute
   '/auth/discord': typeof AuthDiscordRouteWithChildren
   '/auth/patreon': typeof AuthPatreonRouteWithChildren
   '/auth/steam': typeof AuthSteamRoute
@@ -335,6 +362,7 @@ export interface FileRoutesByFullPath {
   '/settings/connections': typeof SettingsConnectionsRoute
   '/settings/developer': typeof SettingsDeveloperRoute
   '/settings/perks': typeof SettingsPerksRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
   '/live/': typeof LiveIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
@@ -367,6 +395,8 @@ export interface FileRoutesByTo {
   '/team': typeof TeamRoute
   '/u/$playerId': typeof UPlayerIdRouteRoute
   '/leaderboards': typeof legacyLeaderboardsRoute
+  '/admin/badges': typeof AdminBadgesRoute
+  '/admin/versions': typeof AdminVersionsRoute
   '/auth/discord': typeof AuthDiscordRouteWithChildren
   '/auth/patreon': typeof AuthPatreonRouteWithChildren
   '/auth/steam': typeof AuthSteamRoute
@@ -381,6 +411,7 @@ export interface FileRoutesByTo {
   '/settings/account': typeof SettingsAccountRoute
   '/settings/connections': typeof SettingsConnectionsRoute
   '/settings/developer': typeof SettingsDeveloperRoute
+  '/admin': typeof AdminIndexRoute
   '/live': typeof LiveIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
@@ -402,6 +433,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/health': typeof HealthRoute
   '/live': typeof LiveRouteWithChildren
   '/login': typeof LoginRoute
@@ -415,6 +447,8 @@ export interface FileRoutesById {
   '/map/$id': typeof MapIdRouteRouteWithChildren
   '/u/$playerId': typeof UPlayerIdRouteRoute
   '/(legacy)/leaderboards': typeof legacyLeaderboardsRoute
+  '/admin/badges': typeof AdminBadgesRoute
+  '/admin/versions': typeof AdminVersionsRoute
   '/auth/discord': typeof AuthDiscordRouteWithChildren
   '/auth/patreon': typeof AuthPatreonRouteWithChildren
   '/auth/steam': typeof AuthSteamRoute
@@ -431,6 +465,7 @@ export interface FileRoutesById {
   '/settings/connections': typeof SettingsConnectionsRoute
   '/settings/developer': typeof SettingsDeveloperRoute
   '/settings/perks': typeof SettingsPerksRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
   '/live/': typeof LiveIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/(legacy)/leaderboard/$leaderboardId': typeof legacyLeaderboardLeaderboardIdRoute
@@ -454,6 +489,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/health'
     | '/live'
     | '/login'
@@ -467,6 +503,8 @@ export interface FileRouteTypes {
     | '/map/$id'
     | '/u/$playerId'
     | '/leaderboards'
+    | '/admin/badges'
+    | '/admin/versions'
     | '/auth/discord'
     | '/auth/patreon'
     | '/auth/steam'
@@ -483,6 +521,7 @@ export interface FileRouteTypes {
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/perks'
+    | '/admin/'
     | '/live/'
     | '/settings/'
     | '/leaderboard/$leaderboardId'
@@ -515,6 +554,8 @@ export interface FileRouteTypes {
     | '/team'
     | '/u/$playerId'
     | '/leaderboards'
+    | '/admin/badges'
+    | '/admin/versions'
     | '/auth/discord'
     | '/auth/patreon'
     | '/auth/steam'
@@ -529,6 +570,7 @@ export interface FileRouteTypes {
     | '/settings/account'
     | '/settings/connections'
     | '/settings/developer'
+    | '/admin'
     | '/live'
     | '/settings'
     | '/leaderboard/$leaderboardId'
@@ -549,6 +591,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/health'
     | '/live'
     | '/login'
@@ -562,6 +605,8 @@ export interface FileRouteTypes {
     | '/map/$id'
     | '/u/$playerId'
     | '/(legacy)/leaderboards'
+    | '/admin/badges'
+    | '/admin/versions'
     | '/auth/discord'
     | '/auth/patreon'
     | '/auth/steam'
@@ -578,6 +623,7 @@ export interface FileRouteTypes {
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/perks'
+    | '/admin/'
     | '/live/'
     | '/settings/'
     | '/(legacy)/leaderboard/$leaderboardId'
@@ -600,6 +646,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   HealthRoute: typeof HealthRoute
   LiveRoute: typeof LiveRouteWithChildren
   LoginRoute: typeof LoginRoute
@@ -638,6 +685,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/health': {
@@ -716,6 +770,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/leaderboards'
       preLoaderRoute: typeof legacyLeaderboardsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/badges': {
+      id: '/admin/badges'
+      path: '/badges'
+      fullPath: '/admin/badges'
+      preLoaderRoute: typeof AdminBadgesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/versions': {
+      id: '/admin/versions'
+      path: '/versions'
+      fullPath: '/admin/versions'
+      preLoaderRoute: typeof AdminVersionsRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/auth/discord': {
       id: '/auth/discord'
@@ -972,6 +1047,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteRouteChildren {
+  AdminBadgesRoute: typeof AdminBadgesRoute
+  AdminVersionsRoute: typeof AdminVersionsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminBadgesRoute: AdminBadgesRoute,
+  AdminVersionsRoute: AdminVersionsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 interface LiveTournamentIdRoomsRouteChildren {
   LiveTournamentIdRoomsMatchIdRoute: typeof LiveTournamentIdRoomsMatchIdRoute
   LiveTournamentIdRoomsIndexRoute: typeof LiveTournamentIdRoomsIndexRoute
@@ -1087,6 +1178,7 @@ const SettingsPerksRouteWithChildren = SettingsPerksRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   HealthRoute: HealthRoute,
   LiveRoute: LiveRouteWithChildren,
   LoginRoute: LoginRoute,

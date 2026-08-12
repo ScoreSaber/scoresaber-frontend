@@ -192,13 +192,14 @@ function PinnedScoreCard({
                onToggleDetailsAction={() => onTogglePanelAction('details')}
                tooltipSide="left"
                replayTooltipSide="left"
+               deleteContext={{ mapName: leaderboard.map.songName }}
                className={isExpanded ? 'right-3' : 'right-2'}
             />
          </div>
          {activePanel && (
             <div className="mt-2 md:mx-4">
                {showDetails && <ScoreDetailsInline score={score} fcPPContext={fcPPContext} leaderboard={leaderboard} />}
-               {showHistory && <ScoreHistory scoreId={score.id} leaderboard={leaderboard} />}
+               {showHistory && <ScoreHistory scoreId={score.id} leaderboard={leaderboard} mapName={leaderboard.map.songName} />}
             </div>
          )}
       </div>

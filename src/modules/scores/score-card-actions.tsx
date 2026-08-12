@@ -1,19 +1,26 @@
 'use client';
 
-import { Camera, ChartSpline, ChevronDown, History, Play } from 'lucide-react';
+import { useState } from 'react';
+
+import { Camera, ChartSpline, ChevronDown, History, Play, Trash2 } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import { useActionMutation } from '@/hooks/use-action-mutation';
+import { useAuth } from '@/modules/auth';
 import { useDenyahMode } from '@/modules/player/denyah/denyah-mode-context';
 import { Runaway } from '@/modules/player/denyah/runaway';
+import { deleteScore } from '@/modules/scores/actions/admin';
 import { ReplayDialog } from '@/modules/scores/replay-dialog';
 import type {
    LeaderboardControllerGetLeaderboardScoresByIdDataItem,
    PlayerControllerGetPlayerScoresDataItem
 } from '@/shared/api/generated/ApiParams';
+import { ConfirmDialog } from '@/shared/components/confirm-dialog';
 import { cn } from '@/shared/format/helpers';
+import Permissions from '@/shared/permissions';
 
 interface ScoreCardActionsProps {
    score: PlayerControllerGetPlayerScoresDataItem['score'] | LeaderboardControllerGetLeaderboardScoresByIdDataItem;
@@ -27,6 +34,8 @@ interface ScoreCardActionsProps {
    bottomRowDesktopBreakpoint?: 'md' | 'lg';
    tooltipSide?: 'top' | 'right' | 'bottom' | 'left';
    replayTooltipSide?: 'top' | 'right' | 'bottom' | 'left';
+   deleteContext?: { playerName?: string; mapName?: string };
+   allowDelete?: boolean;
 }
 
 export function ScoreCardActions({
@@ -40,10 +49,16 @@ export function ScoreCardActions({
    mobileBottomRow = false,
    bottomRowDesktopBreakpoint = 'lg',
    tooltipSide = 'top',
-   replayTooltipSide
+   replayTooltipSide,
+   deleteContext,
+   allowDelete = true
 }: ScoreCardActionsProps) {
    const t = useTranslations();
+   const { user } = useAuth();
    const denyahMode = useDenyahMode();
+   const deleteAction = useActionMutation();
+   const [deleteOpen, setDeleteOpen] = useState(false);
+   const canDelete = allowDelete && !!user && Permissions.checkPermissionNumber(user.permissions, Permissions.security.ADMIN);
    const bottomRowTouchTargetClassName =
       bottomRowDesktopBreakpoint === 'md'
          ? 'max-md:pointer-coarse:min-h-8 max-md:pointer-coarse:min-w-8'
@@ -55,7 +70,7 @@ export function ScoreCardActions({
       mobileBottomRow && bottomRowTouchTargetClassName
    );
    const disabledClassName = cn(iconButtonClassName, 'text-muted-foreground/30 hover:text-muted-foreground/30');
-   const shouldCenterSingleAction = !score.hasReplay && !onToggleHistoryAction && !onToggleDetailsAction;
+   const shouldCenterSingleAction = !score.hasReplay && !onToggleHistoryAction && !onToggleDetailsAction && !canDelete;
    const bottomRowDesktopClassName =
       bottomRowDesktopBreakpoint === 'md' ? 'flex-row gap-3 md:flex-col md:gap-1.5' : 'flex-row gap-3 lg:flex-col lg:gap-1.5';
    const bottomRowDetailsClassName = bottomRowDesktopBreakpoint === 'md' ? 'gap-2 md:flex-col md:gap-1.5' : 'gap-2 lg:flex-col lg:gap-1.5';
@@ -176,36 +191,81 @@ export function ScoreCardActions({
          {historyButton}
       </Runaway>
    );
+   const deleteButton = canDelete ? (
+      <Tooltip>
+         <TooltipTrigger asChild>
+            <Button
+               type="button"
+               variant="ghost-icon"
+               size="icon-xs"
+               onClick={() => setDeleteOpen(true)}
+               className={cn(iconButtonClassName, 'hover:text-destructive')}
+               aria-label={t('score.delete.action')}
+            >
+               <Trash2 data-icon />
+            </Button>
+         </TooltipTrigger>
+         <TooltipContent side={tooltipSide}>
+            <p>{t('score.delete.action')}</p>
+         </TooltipContent>
+      </Tooltip>
+   ) : null;
+
+   function confirmDelete() {
+      deleteAction.run(
+         () => deleteScore(score.id),
+         t('score.delete.success'),
+         t('score.delete.failed'),
+         () => setDeleteOpen(false)
+      );
+   }
 
    return (
-      <div
-         className={cn(
-            'absolute z-20 flex items-center',
-            mobileBottomRow ? bottomRowDesktopClassName : 'flex-col gap-1.5',
-            mobileBottomRow
-               ? bottomRowOffsetClassName
-               : shouldCenterSingleAction
-                 ? 'top-1/2 right-2 -translate-y-1/2'
-                 : 'top-1/2 right-3 -translate-y-1/2',
-            className
-         )}
-      >
-         {mobileBottomRow ? (
-            <div className={cn('flex items-center', bottomRowDesktopClassName)}>
-               {runawayReplayButton}
-               <div className={cn('flex', bottomRowDetailsClassName)}>
+      <>
+         <div
+            className={cn(
+               'absolute z-20 flex items-center',
+               mobileBottomRow ? bottomRowDesktopClassName : 'flex-col gap-1.5',
+               mobileBottomRow
+                  ? bottomRowOffsetClassName
+                  : shouldCenterSingleAction
+                    ? 'top-1/2 right-2 -translate-y-1/2'
+                    : 'top-1/2 right-3 -translate-y-1/2',
+               className
+            )}
+         >
+            {mobileBottomRow ? (
+               <div className={cn('flex items-center', bottomRowDesktopClassName)}>
+                  {runawayReplayButton}
+                  <div className={cn('flex', bottomRowDetailsClassName)}>
+                     {runawayDetailsButton}
+                     {runawayHistoryButton}
+                  </div>
+                  {shareButton}
+                  {deleteButton}
+               </div>
+            ) : (
+               <>
+                  {runawayReplayButton}
                   {runawayDetailsButton}
                   {runawayHistoryButton}
-               </div>
-               {shareButton}
-            </div>
-         ) : (
-            <>
-               {runawayReplayButton}
-               {runawayDetailsButton}
-               {runawayHistoryButton}
-            </>
-         )}
-      </div>
+                  {deleteButton}
+               </>
+            )}
+         </div>
+         <ConfirmDialog
+            open={deleteOpen}
+            onOpenChangeAction={setDeleteOpen}
+            title={t('score.delete.title')}
+            description={t('score.delete.description', {
+               player: deleteContext?.playerName ?? t('score.delete.unknownPlayer'),
+               map: deleteContext?.mapName ?? t('score.delete.unknownMap')
+            })}
+            confirmLabel={t('score.delete.action')}
+            variant="destructive"
+            pending={deleteAction.isPending}
+            onConfirmAction={confirmDelete}
+         />
+      </>
    );
 }

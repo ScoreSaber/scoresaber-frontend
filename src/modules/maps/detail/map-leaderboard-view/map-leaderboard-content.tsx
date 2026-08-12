@@ -144,6 +144,7 @@ export function MapLeaderboardContent<TLocation>({
             <div className="mt-0">
                <ScoresList
                   leaderboard={leaderboard}
+                  mapName={mapInfo.songName}
                   leaderboardScores={leaderboardScores}
                   currentPage={currentPage}
                   highlight={highlight}
@@ -281,6 +282,7 @@ function DifficultyToolbar({
 
 function ScoresList<TLocation>({
    leaderboard,
+   mapName,
    leaderboardScores,
    currentPage,
    highlight,
@@ -288,6 +290,7 @@ function ScoresList<TLocation>({
    buildLocation
 }: {
    leaderboard: ScoredLeaderboard;
+   mapName: string;
    leaderboardScores: LeaderboardScores;
    currentPage: number;
    highlight?: number;
@@ -314,6 +317,7 @@ function ScoresList<TLocation>({
          <LeaderboardScoresTable
             scores={leaderboardScores.data}
             leaderboard={leaderboard}
+            mapName={mapName}
             highlight={highlight}
             scopedPage={isScoped ? currentPage : undefined}
             scopedPageSize={isScoped ? leaderboardScores.metadata.itemsPerPage : undefined}

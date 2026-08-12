@@ -470,7 +470,14 @@ export type AdminUploadTrustControllerAddOfficialBuildCompatibilityResponse = _R
    _AdminUploadTrust['adminUploadTrustControllerAddOfficialBuildCompatibility']
 >;
 
+export type AdminUploadTrustControllerGetOfficialBuildCompatibilityResponse = _R<
+   _AdminUploadTrust['adminUploadTrustControllerGetOfficialBuildCompatibility']
+>;
+export type AdminUploadTrustControllerGetOfficialBuildCompatibilityItem = AdminUploadTrustControllerGetOfficialBuildCompatibilityResponse[number];
+
 export type AdminUserControllerBanPlayerResponse = _R<_AdminUser['adminUserControllerBanPlayer']>;
+
+export type AdminUserControllerGetActiveBanResponse = _R<_AdminUser['adminUserControllerGetActiveBan']>;
 
 export type AdminUserControllerUnbanPlayerResponse = _R<_AdminUser['adminUserControllerUnbanPlayer']>;
 
@@ -551,3 +558,9 @@ export type UserControllerGetAccountMergeChallengeResponse = _R<_User['userContr
 export type UserControllerConfirmAccountMergeResponse = _R<_User['userControllerConfirmAccountMerge']>;
 
 export type UserControllerRemoveConnectionResponse = _R<_User['userControllerRemoveConnection']>;
+
+export type AdminBadgeControllerGetPlayerBadgesResponse = _R<_AdminBadge['adminBadgeControllerGetPlayerBadges']>;
+export type AdminBadgeControllerGetPlayerBadgesItem = AdminBadgeControllerGetPlayerBadgesResponse[number];
+
+export type AdminBadgeControllerReplacePlayerBadgesResponse = _R<_AdminBadge['adminBadgeControllerReplacePlayerBadges']>;
+export type AdminBadgeControllerReplacePlayerBadgesItem = AdminBadgeControllerReplacePlayerBadgesResponse[number];

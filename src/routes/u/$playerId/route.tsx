@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, type ReactNode } from 'react';
 
 import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Result } from 'better-result';
 import { FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 import { z } from 'zod';
@@ -28,6 +29,7 @@ import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
 import { PlayerScoresToolbar } from '@/modules/player/profile/player-scores-toolbar';
 import { versionedImageUrl } from '@/modules/player/shared/player-avatar';
 import type {
+   AdminUserControllerGetActiveBanResponse,
    PlayerControllerGetPlayerResponse,
    PlayerControllerGetPlayerScoresDataItem,
    PlayerControllerGetPlayerScoresSort
@@ -35,8 +37,9 @@ import type {
 import { api, publicApi } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
 import { PageError } from '@/shared/components/error/page-error';
+import { Time } from '@/shared/components/time';
 import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
-import { optionalApi, optionalApiData, pageApiData } from '@/shared/result/api';
+import { apiResult, optionalApi, optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
 import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber, isPlayerId, isVanitySlug, ScoreEnum, validateRequest } from '@/shared/url-state/params';
@@ -66,6 +69,10 @@ type PlayerProfileRouteInput = {
 };
 
 type ParsePlayerSearch = (search: SearchParamsRecord) => PlayerProfileSearch | null;
+
+type BanMetadataAccess = { visible: false } | { visible: true; record: AdminUserControllerGetActiveBanResponse };
+
+const hiddenBanMetadata: BanMetadataAccess = { visible: false };
 
 const DEFAULT_PROFILE_SECTION_ORDER = ['charts', 'bio', 'pinnedScores', 'scores'] as const;
 
@@ -102,12 +109,18 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
             patreonConnected: false,
             plusOneRawPP: null,
             sanitizedBio: '',
-            hasBioContent: false
+            hasBioContent: false,
+            banMetadata: hiddenBanMetadata
          };
       }
 
       const { player, history, aliases } = profileResult.data;
       const sanitizedBio = sanitizeRichTextHtml(player.bio ?? '');
+      let banMetadata: BanMetadataAccess = hiddenBanMetadata;
+      if (token && player.banned) {
+         const result = await apiResult(api.adminUser.adminUserControllerGetActiveBan({ id: player.id }, { cache: 'no-store' }));
+         if (Result.isOk(result)) banMetadata = { visible: true, record: result.value.data };
+      }
 
       return {
          result: { ok: true as const, data: player },
@@ -117,7 +130,8 @@ const getPlayerProfilePageData = createServerFn({ method: 'GET' })
          patreonConnected: connections?.some((connection) => connection.provider === 'PATREON' && connection.state === 'CONNECTED') ?? false,
          plusOneRawPP: player.stats.plusOnePP,
          sanitizedBio,
-         hasBioContent: hasRichTextContent(sanitizedBio)
+         hasBioContent: hasRichTextContent(sanitizedBio),
+         banMetadata
       };
    });
 
@@ -169,7 +183,8 @@ function PlayerProfileRouteContent({
    parseSearch: ParsePlayerSearch;
    data: Awaited<ReturnType<typeof getPlayerProfilePageData>>;
 }) {
-   const { result, scores, history, aliases, patreonConnected, plusOneRawPP, sanitizedBio, hasBioContent } = data;
+   const { result, scores, history, aliases, patreonConnected, plusOneRawPP, sanitizedBio, hasBioContent, banMetadata } = data;
+   const t = useTranslations();
    const denyahContainerRef = useRef<HTMLDivElement | null>(null);
 
    useVanityBrowserUrl(result.ok ? result.data.vanity : null);
@@ -243,6 +258,13 @@ function PlayerProfileRouteContent({
                                     playerBanned={player.banned}
                                     playerPermissions={player.permissions}
                                     playerRole={player.role}
+                                    mergeTarget={{
+                                       id: player.id,
+                                       name: player.name,
+                                       avatar: player.avatar,
+                                       avatarVersion: player.avatarVersion,
+                                       country: player.country
+                                    }}
                                     extraActions={extraActions}
                                  />
                               }
@@ -250,7 +272,38 @@ function PlayerProfileRouteContent({
                               {player.banned ? (
                                  <div className="py-6 text-center">
                                     <Separator variant="gradient" className="via-destructive/15 mb-4" />
-                                    <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
+                                    <p className="text-muted-foreground text-sm">{t('player.bannedProfileUnavailable')}</p>
+                                    {banMetadata.visible && (
+                                       <div className="border-destructive/25 bg-destructive/5 mx-auto mt-4 max-w-2xl rounded-md border p-4 text-left">
+                                          {banMetadata.record ? (
+                                             <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+                                                <BanMetadata label={t('player.reason')}>{banMetadata.record.reason}</BanMetadata>
+                                                <BanMetadata label={t('player.banMetadata.created')}>
+                                                   <Time date={banMetadata.record.createdAt} />
+                                                </BanMetadata>
+                                                <BanMetadata label={t('player.internalNotes')}>
+                                                   {banMetadata.record.notes || t('player.banMetadata.none')}
+                                                </BanMetadata>
+                                                <BanMetadata label={t('player.banMetadata.automaticUnban')}>
+                                                   {banMetadata.record.autoUnban && banMetadata.record.autoUnbansAt ? (
+                                                      <Time date={banMetadata.record.autoUnbansAt} />
+                                                   ) : (
+                                                      t('player.banMetadata.disabled')
+                                                   )}
+                                                </BanMetadata>
+                                                <BanMetadata label={t('player.earliestAppealDate')}>
+                                                   {banMetadata.record.earliestAppealDate ? (
+                                                      <Time date={banMetadata.record.earliestAppealDate} />
+                                                   ) : (
+                                                      t('player.banMetadata.none')
+                                                   )}
+                                                </BanMetadata>
+                                             </dl>
+                                          ) : (
+                                             <p className="text-muted-foreground text-sm">{t('player.banMetadata.legacy')}</p>
+                                          )}
+                                       </div>
+                                    )}
                                  </div>
                               ) : null}
 
@@ -265,6 +318,15 @@ function PlayerProfileRouteContent({
             </div>
          </div>
       </DenyahModeProvider>
+   );
+}
+
+function BanMetadata({ label, children }: { label: string; children: ReactNode }) {
+   return (
+      <div className="min-w-0">
+         <dt className="text-muted-foreground text-xs font-medium">{label}</dt>
+         <dd className="mt-0.5 break-words">{children}</dd>
+      </div>
    );
 }
 

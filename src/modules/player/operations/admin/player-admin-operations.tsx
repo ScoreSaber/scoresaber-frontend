@@ -4,16 +4,19 @@ import { useEffect, useState } from 'react';
 
 import { useTranslations } from 'use-intl';
 
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 import { adminResetCountry, banPlayer, unbanPlayer, updateRoleText } from '@/modules/player/actions/user/admin';
+import { PlayerBadgeManagerDialog } from '@/modules/player/operations/admin/player-badge-manager-dialog';
+import { PlayerMergeDialog, type AdminMergeTarget } from '@/modules/player/operations/admin/player-merge-dialog';
 import { PlayerPermissionEditor } from '@/modules/player/operations/admin/player-permission-editor';
 import type { OperationAction } from '@/modules/player/operations/operation-action';
 import { ConfirmDialog } from '@/shared/components/confirm-dialog';
 
-type PlayerAdminOperation = 'ban' | 'unban' | 'admin-country' | 'role-text' | 'permissions';
+type PlayerAdminOperation = 'ban' | 'unban' | 'admin-country' | 'role-text' | 'permissions' | 'badges' | 'merge';
 
 interface PlayerAdminOperationsProps {
    activeOperation: PlayerAdminOperation | null;
@@ -21,6 +24,7 @@ interface PlayerAdminOperationsProps {
    playerBanned: boolean;
    playerPermissions: number;
    playerRole: string | null;
+   mergeTarget?: AdminMergeTarget;
    currentUserPermissions: number;
    isOwnProfile: boolean;
    action: OperationAction;
@@ -33,6 +37,7 @@ export function PlayerAdminOperations({
    playerBanned,
    playerPermissions,
    playerRole,
+   mergeTarget,
    currentUserPermissions,
    isOwnProfile,
    action,
@@ -41,9 +46,17 @@ export function PlayerAdminOperations({
    const t = useTranslations();
    const [banReason, setBanReason] = useState('');
    const [banNotes, setBanNotes] = useState('');
+   const [autoUnban, setAutoUnban] = useState(false);
+   const [autoUnbansAt, setAutoUnbansAt] = useState('');
+   const [earliestAppealDate, setEarliestAppealDate] = useState('');
    const [countryValue, setCountryValue] = useState('');
    const [roleTextValue, setRoleTextValue] = useState(playerRole ?? '');
    const pending = action.isPending;
+   const trimmedBanReason = banReason.trim();
+   const autoUnbanDate = autoUnbansAt ? new Date(autoUnbansAt) : null;
+   const autoUnbanDateInvalid = autoUnban && (!autoUnbanDate || Number.isNaN(autoUnbanDate.getTime()) || autoUnbanDate <= new Date());
+   const appealDate = earliestAppealDate ? new Date(earliestAppealDate) : null;
+   const appealDateInvalid = appealDate != null && Number.isNaN(appealDate.getTime());
 
    useEffect(() => {
       if (activeOperation === 'role-text') {
@@ -56,15 +69,26 @@ export function PlayerAdminOperations({
    }
 
    function handleBan() {
-      if (!banReason) return;
+      if (!trimmedBanReason || autoUnbanDateInvalid || appealDateInvalid) return;
       action.run(
-         () => banPlayer(playerId, banReason, banNotes || undefined),
+         () =>
+            banPlayer({
+               playerId,
+               reason: trimmedBanReason,
+               notes: banNotes || undefined,
+               autoUnban,
+               autoUnbansAt: autoUnban && autoUnbansAt ? new Date(autoUnbansAt).toISOString() : undefined,
+               earliestAppealDate: appealDate?.toISOString()
+            }),
          t('player.playerBanned'),
          t('player.failedToBan'),
          () => {
             closeDialog();
             setBanReason('');
             setBanNotes('');
+            setAutoUnban(false);
+            setAutoUnbansAt('');
+            setEarliestAppealDate('');
          }
       );
    }
@@ -111,7 +135,7 @@ export function PlayerAdminOperations({
             confirmLabel={t('player.banPlayer')}
             pending={pending}
             variant="destructive"
-            disabled={!banReason}
+            disabled={!trimmedBanReason || autoUnbanDateInvalid || appealDateInvalid}
             onConfirmAction={handleBan}
          >
             <div className="flex flex-col gap-3">
@@ -137,8 +161,41 @@ export function PlayerAdminOperations({
                      resize="none"
                   />
                </div>
+               <label className="flex items-center gap-2 text-sm font-medium">
+                  <Checkbox checked={autoUnban} onCheckedChange={(value) => setAutoUnban(value === true)} />
+                  {t('player.automaticallyUnban')}
+               </label>
+               {autoUnban && (
+                  <div className="flex flex-col gap-1.5">
+                     <Label htmlFor="auto-unban-date">{t('player.automaticUnbanDate')}</Label>
+                     <Input
+                        id="auto-unban-date"
+                        type="datetime-local"
+                        value={autoUnbansAt}
+                        onChange={(event) => setAutoUnbansAt(event.target.value)}
+                        required
+                        aria-invalid={autoUnbanDateInvalid}
+                     />
+                     {autoUnbanDateInvalid && <p className="text-destructive text-sm">{t('player.automaticUnbanDateError')}</p>}
+                  </div>
+               )}
+               <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="earliest-appeal-date">{t('player.earliestAppealDate')}</Label>
+                  <Input
+                     id="earliest-appeal-date"
+                     type="datetime-local"
+                     value={earliestAppealDate}
+                     onChange={(event) => setEarliestAppealDate(event.target.value)}
+                     aria-invalid={appealDateInvalid}
+                  />
+                  {appealDateInvalid && <p className="text-destructive text-sm">{t('player.appealDateError')}</p>}
+               </div>
             </div>
          </ConfirmDialog>
+
+         <PlayerBadgeManagerDialog open={activeOperation === 'badges'} playerId={playerId} onOpenChangeAction={onOpenChangeAction} />
+
+         {mergeTarget && <PlayerMergeDialog open={activeOperation === 'merge'} target={mergeTarget} onOpenChangeAction={onOpenChangeAction} />}
 
          <PlayerPermissionEditor
             open={activeOperation === 'permissions'}

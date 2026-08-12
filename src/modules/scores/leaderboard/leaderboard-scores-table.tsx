@@ -6,6 +6,7 @@ import { FaGlobeAmericas } from 'react-icons/fa';
 
 import { Separator } from '@/components/ui/separator';
 
+import { useAuth } from '@/modules/auth';
 import { PlayerListLivePresenceIndicator, PlayerLivePresenceProvider } from '@/modules/player/profile/player-live-presence-indicator';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
@@ -22,6 +23,7 @@ import { Time } from '@/shared/components/time';
 import { cn, formatNumber, getHmdName, isLegacyAccuracyScore } from '@/shared/format/helpers';
 import { starsToPP } from '@/shared/format/star-conversion';
 import { isLeaderboardRanked } from '@/shared/format/styling';
+import Permissions from '@/shared/permissions';
 
 // only the scoring bits, so both map-detail leaderboards and score leaderboards fit
 export type ScoredLeaderboard = Pick<LeaderboardControllerGetLeaderboardByIdResponse, 'maxScore' | 'realm'>;
@@ -35,6 +37,7 @@ interface LeaderboardScoresTableProps {
    scopedPageSize?: number;
    showHistory?: boolean;
    historyContext?: boolean;
+   mapName?: string;
 }
 
 export function LeaderboardScoresTable({
@@ -44,7 +47,8 @@ export function LeaderboardScoresTable({
    scopedPage,
    scopedPageSize,
    showHistory = true,
-   historyContext = false
+   historyContext = false,
+   mapName
 }: LeaderboardScoresTableProps) {
    const isRanked = isLeaderboardRanked(leaderboard);
    const isScoped = scopedPage != null && scopedPageSize != null;
@@ -63,6 +67,7 @@ export function LeaderboardScoresTable({
                   relativeRank={isScoped ? (scopedPage - 1) * scopedPageSize + index + 1 : undefined}
                   showHistory={showHistory}
                   historyContext={historyContext}
+                  mapName={mapName}
                />
             ))}
          </div>
@@ -79,6 +84,7 @@ interface LeaderboardScoreCardProps {
    relativeRank?: number;
    showHistory: boolean;
    historyContext: boolean;
+   mapName?: string;
 }
 
 function LeaderboardScoreCard({
@@ -89,8 +95,10 @@ function LeaderboardScoreCard({
    leaderboard,
    relativeRank,
    showHistory,
-   historyContext
+   historyContext,
+   mapName
 }: LeaderboardScoreCardProps) {
+   const { user } = useAuth();
    const [detailsExpanded, setDetailsExpanded] = useState(false);
    const [historyExpanded, setHistoryExpanded] = useState(false);
    const legacyAccuracy = isLegacyAccuracyScore(score.createdAt);
@@ -104,7 +112,8 @@ function LeaderboardScoreCard({
 
    const hmdName = getHmdName(score.device, score.legacyHmdId);
    const hasDevice = !!(hmdName || score.device?.controllerLeft || score.device?.controllerRight);
-   const hasBottomActions = score.hasReplay || showHistory;
+   const canDelete = !historyContext && !!user && Permissions.checkPermissionNumber(user.permissions, Permissions.security.ADMIN);
+   const hasBottomActions = score.hasReplay || showHistory || canDelete;
 
    const deviceIcons = hasDevice ? (
       <DeviceDisplay
@@ -234,9 +243,11 @@ function LeaderboardScoreCard({
                tooltipSide="bottom"
                mobileBottomRow
                bottomRowDesktopBreakpoint="md"
+               allowDelete={!historyContext}
+               deleteContext={{ playerName: score.player.name, mapName }}
                className={cn(
                   'md:top-1/2 md:right-3 md:bottom-auto md:left-auto md:translate-x-0 md:-translate-y-1/2',
-                  score.hasReplay || showHistory ? 'bottom-2 left-1/2 -translate-x-1/2' : 'hidden md:flex'
+                  score.hasReplay || showHistory || canDelete ? 'bottom-2 left-1/2 -translate-x-1/2' : 'hidden md:flex'
                )}
             />
          </div>
@@ -247,7 +258,7 @@ function LeaderboardScoreCard({
          )}
          {historyExpanded && (
             <div className="mt-2 lg:mx-6">
-               <ScoreHistory scoreId={score.id} leaderboard={leaderboard} />
+               <ScoreHistory scoreId={score.id} leaderboard={leaderboard} mapName={mapName} />
             </div>
          )}
       </div>

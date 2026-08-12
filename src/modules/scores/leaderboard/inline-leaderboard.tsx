@@ -78,7 +78,13 @@ export function InlineLeaderboard({
             <p className="text-destructive py-4 text-center text-sm">{t('leaderboard.failedToLoad')}</p>
          ) : scores && scores.length > 0 ? (
             <div className={isPlaceholderData ? 'pointer-events-none opacity-50 transition-opacity' : 'transition-opacity'}>
-               <LeaderboardScoresTable scores={scores} leaderboard={leaderboard} highlight={playerScoreId} showHistory={false} />
+               <LeaderboardScoresTable
+                  scores={scores}
+                  leaderboard={leaderboard}
+                  highlight={playerScoreId}
+                  showHistory={false}
+                  mapName={leaderboard.map.songName}
+               />
                <div className="mt-2 flex items-center justify-center gap-2">
                   {totalPages > 1 && (
                      <>
