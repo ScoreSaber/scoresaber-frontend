@@ -25151,11 +25151,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     left: ({
     count: number,
     avgScore: number,
+    avgCutAngle: number,
+    avgCutOffset: number,
+  /**
+   * @maxItems 3
+   * @minItems 3
+   *\/
+    avgCutScore: ((number))[],
 
 })[],
     right: ({
     count: number,
     avgScore: number,
+    avgCutAngle: number,
+    avgCutOffset: number,
+  /**
+   * @maxItems 3
+   * @minItems 3
+   *\/
+    avgCutScore: ((number))[],
 
 })[],
 
@@ -25417,10 +25431,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                         left: {
                            count: number;
                            avgScore: number;
+                           avgCutAngle: number;
+                           avgCutOffset: number;
+                           /**
+                            * @maxItems 3
+                            * @minItems 3
+                            */
+                           avgCutScore: number[];
                         }[];
                         right: {
                            count: number;
                            avgScore: number;
+                           avgCutAngle: number;
+                           avgCutOffset: number;
+                           /**
+                            * @maxItems 3
+                            * @minItems 3
+                            */
+                           avgCutScore: number[];
                         }[];
                      }[];
                      summaryGrids: {
@@ -26092,11 +26120,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     left: ({
     count: number,
     avgScore: number,
+    avgCutAngle: number,
+    avgCutOffset: number,
+  /**
+   * @maxItems 3
+   * @minItems 3
+   *\/
+    avgCutScore: ((number))[],
 
 })[],
     right: ({
     count: number,
     avgScore: number,
+    avgCutAngle: number,
+    avgCutOffset: number,
+  /**
+   * @maxItems 3
+   * @minItems 3
+   *\/
+    avgCutScore: ((number))[],
 
 })[],
 
@@ -26309,10 +26351,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                      left: {
                         count: number;
                         avgScore: number;
+                        avgCutAngle: number;
+                        avgCutOffset: number;
+                        /**
+                         * @maxItems 3
+                         * @minItems 3
+                         */
+                        avgCutScore: number[];
                      }[];
                      right: {
                         count: number;
                         avgScore: number;
+                        avgCutAngle: number;
+                        avgCutOffset: number;
+                        /**
+                         * @maxItems 3
+                         * @minItems 3
+                         */
+                        avgCutScore: number[];
                      }[];
                   }[];
                   summaryGrids: {
