@@ -1,27 +1,17 @@
 # syntax=docker/dockerfile:1.7
 
-ARG BUN_VERSION=1.3.14
+ARG VITE_PLUS_VERSION=0.2.8
 ARG NODE_VERSION=24.15.0
-ARG BUILD_CACHE_SCOPE=shared
 
-FROM oven/bun:${BUN_VERSION}-alpine AS deps
-
-WORKDIR /app
-
-ARG BUILD_CACHE_SCOPE
-
-COPY package.json bun.lock ./
-COPY patches ./patches
-RUN --mount=type=cache,id=scoresaber-website-${BUILD_CACHE_SCOPE}-bun,target=/root/.bun/install/cache,sharing=locked \
-    bun install --frozen-lockfile
-
-FROM deps AS builder
+FROM ghcr.io/voidzero-dev/vite-plus:${VITE_PLUS_VERSION} AS builder
 
 WORKDIR /app
 
-COPY . .
+COPY --chown=vp:vp package.json pnpm-lock.yaml pnpm-workspace.yaml .node-version ./
+RUN vp install --frozen-lockfile
 
-ARG BUILD_CACHE_SCOPE
+COPY --chown=vp:vp . .
+
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_SITE_URL
 ARG NEXT_PUBLIC_ARCVIEWER_URL
@@ -41,10 +31,9 @@ ENV DEBUG_PAGE_BACKGROUND=${DEBUG_PAGE_BACKGROUND}
 ENV API_URL=${API_URL}
 ENV NODE_ENV=production
 
-RUN --mount=type=cache,id=scoresaber-website-${BUILD_CACHE_SCOPE}-vite,target=/app/node_modules/.vite,sharing=locked \
-    bun run build
+RUN vp build
 
-FROM node:${NODE_VERSION}-alpine AS runner
+FROM node:${NODE_VERSION}-bookworm-slim AS runner
 
 WORKDIR /app
 

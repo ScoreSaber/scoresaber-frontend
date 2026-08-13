@@ -7,7 +7,7 @@ import { publicApi } from '@/shared/api/server-api';
 import { optionalApiData } from '@/shared/result/api';
 
 const getLegacyLeaderboardRedirect = createServerFn({ method: 'GET' })
-   .inputValidator((data: { leaderboardId?: string; search: LegacyLeaderboardQuery }) => data)
+   .validator((data: { leaderboardId?: string; search: LegacyLeaderboardQuery }) => data)
    .handler(async ({ data }) => {
       const id = parseLegacyRouteId(data.leaderboardId);
       if (!id) return { name: 'maps' } as const;

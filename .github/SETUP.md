@@ -2,38 +2,36 @@
 
 ## Before Getting Started
 
-While we do our best & pin dependencies to mitigate these problems, modern js development means installing packages from [npm](https://www.npmjs.com/); and frankly Microsofts security standards as of late have been appalling. Supply chain attacks are becoming common enough that you should protect your machine before installing dependencies in any project, including ours
+While we do our best and pin dependencies to mitigate these problems, modern JS development means installing packages from [npm](https://www.npmjs.com/). Supply chain attacks are common enough that you should protect your machine before installing dependencies in any project, including ours
 
-If you haven't already, we strongly urge y'all to harden your shell environment before going forward; it's not difficult, just follow [this](https://gist.github.com/Umbranoxio/84bb7f284ce8250108274f54dafef98b)
+If you haven't already, we strongly urge y'all to harden your shell environment before going forward. It's not difficult, just follow [this](https://gist.github.com/Umbranoxio/84bb7f284ce8250108274f54dafef98b)
 
 ## Requirements
 
-### Package Manager
+### Vite+
 
-Install Bun:
+Install the Vite+ CLI, which provisions the Node and pnpm versions pinned by this project:
 
 Linux and macOS:
 
 ```sh
-curl -fsSL https://bun.sh/install | bash
+curl -fsSL https://vite.plus | bash
 ```
 
 Windows:
 
 ```sh
-powershell -c "irm bun.sh/install.ps1 | iex"
+powershell -c "irm https://vite.plus/ps1 | iex"
 ```
 
-### Runtime
-
-Use Node `24.x`
-
-We recommend [nvm](https://github.com/nvm-sh/nvm#installing-and-updating). From the project root:
+If you already have the pnpm version pinned in `package.json`, Vite+ doesn’t need to be installed globally:
 
 ```sh
-nvm install
-nvm use
+pnpm install
+pnpm exec vp dev
 ```
+
+`pnpm install` installs the project-local Vite+ CLI. The global CLI is recommended because it also manages the pinned Node and pnpm versions
 
 ## Environment
 
@@ -54,25 +52,25 @@ NEXT_PUBLIC_ARCVIEWER_URL=https://watch.scoresaber.com
 
 This keeps the website local while using production API and replay viewer services
 
-> Sidenote; if you're at all curious about the duplcicated API url. In prod `API_URL` points to a local url & is used over `NEXT_PUBLIC_API_URL` for s2s communication. `NEXT_PUBLIC_API_URL` is still required for client sided mutations
+> Sidenote; if you're at all curious about the duplicated API URL. In production `API_URL` points to a local URL and is used over `NEXT_PUBLIC_API_URL` for server-to-server communication. `NEXT_PUBLIC_API_URL` is still required for client-side mutations
 
 ## Run The Website
 
 Install dependencies:
 
 ```sh
-bun i
+vp install
 ```
 
 Start the dev server:
 
 ```sh
-bun run dev
+vp dev
 ```
 
-Open `https://scoresaber.local`
+Open the local URL printed by Vite+
 
-The dev script uses [portless](https://portless.sh/) to serve the app on the named local domain.
+When launched from the Platform checkout with `vp run website:dev`, Portless serves the website at `https://scoresaber.local`
 
 ## IDE Setup
 
@@ -80,54 +78,51 @@ This project includes recommended VS Code extensions in `.vscode/extensions.json
 
 Install the recommendations when prompted or manually
 
-- [Oxc](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) - linting & formatting
+- [Oxc](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) - linting and formatting
 - [Tailwind CSS Intellisense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 - [i18n Ally](https://marketplace.visualstudio.com/items?itemName=Lokalise.i18n-ally)
 
-You can also install them quickly inside vscode by following these steps:
+You can also install them quickly inside VS Code:
 
-- `cmd` or `ctrl` + `shift` + `p` to open the command pallette
-- type `show recc`
-- select `Extensions: Show Recommended Extensions`
-- you should now see all recommended extensions for the project & be able to install them
+- Open the command palette with `cmd` or `ctrl` + `shift` + `p`
+- Select `Extensions: Show Recommended Extensions`
 
 ## Checks
 
-IDE extensions and pre-commit hooks should handle most formatting and linting for you. If you want to run the same checks manually:
+Run formatting, linting and type-checking with:
 
 ```sh
-bun run lint
-bun run format:check
+vp check
 ```
 
-For behavior, routing, data fetching, config, dependency, or API client changes, a production build is also useful:
+Run the complete validation suite with:
 
 ```sh
-bun run build
+vp run verify
 ```
 
-And as for tests, while we have plenty in our backend services we don't really see the need for them on the frontend. Feel free to prove us wrong though!
+The full verification also checks the generated API client and production website build
 
 ## API Client
 
-Generated API files live in `src/shared/api/generated`. Do not edit them directly.
+Generated API files live in `src/shared/api/generated`. Do not edit them directly
 
 Regenerate from the checked-in OpenAPI file:
 
 ```sh
-bun run api:generate
+vp run api:generate
 ```
 
-If you are also running the local platform API, fetch its OpenAPI JSON and regenerate:
+If you are also running the local Platform API, fetch its OpenAPI JSON and regenerate:
 
 ```sh
-bun run api:regen
+vp run api:regen
 ```
 
-For `api:regen`, start the API from the platform repo first:
+Start the API from the Platform repo first:
 
 ```sh
-bun run api:dev
+vp run api:dev
 ```
 
 Then point `.env` at the local API:
@@ -142,8 +137,8 @@ NEXT_PUBLIC_API_URL=https://api.scoresaber.local
 Build and run the production server locally:
 
 ```sh
-bun run build
-bun run start
+vp build
+vp run start
 ```
 
-`bun run start` serves on port `4000`.
+`vp run start` serves on port `4000`

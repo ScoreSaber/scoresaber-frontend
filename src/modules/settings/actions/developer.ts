@@ -21,7 +21,7 @@ export async function listOAuthClients() {
 }
 
 const createOAuthClientFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: OAuthClientDraft) => data)
+   .validator((data: OAuthClientDraft) => data)
    .handler(({ data }) => actionApiData(api.oAuth.oAuthClientControllerCreateClient(data)));
 
 export async function createOAuthClient(data: OAuthClientDraft) {
@@ -29,7 +29,7 @@ export async function createOAuthClient(data: OAuthClientDraft) {
 }
 
 const updateOAuthClientFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { id: number; patch: Partial<OAuthClientDraft> }) => data)
+   .validator((data: { id: number; patch: Partial<OAuthClientDraft> }) => data)
    .handler(({ data }) => actionApiData(api.oAuth.oAuthClientControllerUpdateClient({ id: data.id }, data.patch)));
 
 export async function updateOAuthClient(id: number, patch: Partial<OAuthClientDraft>) {
@@ -37,7 +37,7 @@ export async function updateOAuthClient(id: number, patch: Partial<OAuthClientDr
 }
 
 const rotateOAuthClientSecretFn = createServerFn({ method: 'POST' })
-   .inputValidator((id: number) => id)
+   .validator((id: number) => id)
    .handler(({ data: id }) => actionApiData(api.oAuth.oAuthClientControllerRotateSecret({ id })));
 
 export async function rotateOAuthClientSecret(id: number) {
@@ -45,7 +45,7 @@ export async function rotateOAuthClientSecret(id: number) {
 }
 
 const revokeOAuthClientFn = createServerFn({ method: 'POST' })
-   .inputValidator((id: number) => id)
+   .validator((id: number) => id)
    .handler(({ data: id }) => actionApiData(api.oAuth.oAuthClientControllerRevokeClient({ id })));
 
 export async function revokeOAuthClient(id: number) {

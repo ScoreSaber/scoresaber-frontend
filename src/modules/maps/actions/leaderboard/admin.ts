@@ -4,29 +4,29 @@ import { api } from '@/shared/api/server-api';
 import { actionResultVoid } from '@/shared/result/action';
 
 const rankLeaderboardFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { leaderboardId: number; maxPP: number }) => data)
+   .validator((data: { leaderboardId: number; maxPP: number }) => data)
    .handler(({ data }) =>
       actionResultVoid(api.adminLeaderboard.adminLeaderboardControllerRankLeaderboard({ id: data.leaderboardId }, { maxPP: data.maxPP }))
    );
 
 const unrankLeaderboardFn = createServerFn({ method: 'POST' })
-   .inputValidator((leaderboardId: number) => leaderboardId)
+   .validator((leaderboardId: number) => leaderboardId)
    .handler(({ data }) => actionResultVoid(api.adminLeaderboard.adminLeaderboardControllerUnrankLeaderboard({ id: data })));
 
 const qualifyLeaderboardFn = createServerFn({ method: 'POST' })
-   .inputValidator((leaderboardId: number) => leaderboardId)
+   .validator((leaderboardId: number) => leaderboardId)
    .handler(({ data }) => actionResultVoid(api.adminLeaderboard.adminLeaderboardControllerQualifyLeaderboard({ id: data })));
 
 const loveLeaderboardFn = createServerFn({ method: 'POST' })
-   .inputValidator((leaderboardId: number) => leaderboardId)
+   .validator((leaderboardId: number) => leaderboardId)
    .handler(({ data }) => actionResultVoid(api.adminLeaderboard.adminLeaderboardControllerLoveLeaderboard({ id: data })));
 
 const recalculatePPFn = createServerFn({ method: 'POST' })
-   .inputValidator((leaderboardId: number) => leaderboardId)
+   .validator((leaderboardId: number) => leaderboardId)
    .handler(({ data }) => actionResultVoid(api.adminLeaderboard.adminLeaderboardControllerRecalculatePP({ id: data })));
 
 const setManualPPFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { leaderboardId: number; maxPP: number }) => data)
+   .validator((data: { leaderboardId: number; maxPP: number }) => data)
    .handler(({ data }) =>
       actionResultVoid(api.adminLeaderboard.adminLeaderboardControllerSetManualPP({ id: data.leaderboardId }, { maxPP: data.maxPP }))
    );

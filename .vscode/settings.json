@@ -1,11 +1,13 @@
 {
    "files.exclude": {
       ".output": true,
+      ".vite-task": true,
       "coverage": true,
       "node_modules": true
    },
    "search.exclude": {
       ".output": true,
+      ".vite-task": true,
       "coverage": true,
       "node_modules": true
    },
@@ -21,8 +23,6 @@
    "oxc.path.oxfmt": "node_modules/.bin/oxfmt",
    "oxc.path.oxlint": "node_modules/.bin/oxlint",
    "oxc.requireConfig": true,
-   "eslint.enable": false,
-   "prettier.enable": false,
    "tailwindCSS.classFunctions": ["clsx", "cva", "twMerge"],
    "tailwindCSS.experimental.configFile": {
       "src/styles/globals.css": "src/**/*.{css,ts,tsx}"

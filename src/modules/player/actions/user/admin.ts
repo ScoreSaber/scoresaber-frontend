@@ -14,7 +14,7 @@ type BanPlayerInput = {
 };
 
 const banPlayerFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: BanPlayerInput) => data)
+   .validator((data: BanPlayerInput) => data)
    .handler(({ data }) => {
       const apiPlayerId = toInt64PathParam(data.playerId);
 
@@ -33,23 +33,23 @@ const banPlayerFn = createServerFn({ method: 'POST' })
    });
 
 const unbanPlayerFn = createServerFn({ method: 'POST' })
-   .inputValidator((playerId: string) => playerId)
+   .validator((playerId: string) => playerId)
    .handler(({ data }) => actionResultVoid(api.adminUser.adminUserControllerUnbanPlayer({ id: toInt64PathParam(data) })));
 
 const adminResetCountryFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { playerId: string; country: string }) => data)
+   .validator((data: { playerId: string; country: string }) => data)
    .handler(({ data }) =>
       actionResultVoid(api.adminUser.adminUserControllerAdminResetCountry({ id: toInt64PathParam(data.playerId) }, { country: data.country }))
    );
 
 const updateRoleTextFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { playerId: string; roleText: string }) => data)
+   .validator((data: { playerId: string; roleText: string }) => data)
    .handler(({ data }) =>
       actionResultVoid(api.adminUser.adminUserControllerUpdateRoleText({ id: toInt64PathParam(data.playerId) }, { roleText: data.roleText }))
    );
 
 const updatePermissionsFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { playerId: string; add?: string[]; remove?: string[] }) => data)
+   .validator((data: { playerId: string; add?: string[]; remove?: string[] }) => data)
    .handler(({ data }) =>
       actionApiData(
          api.adminUser.adminUserControllerUpdatePermissions({ id: toInt64PathParam(data.playerId) }, { add: data.add, remove: data.remove })

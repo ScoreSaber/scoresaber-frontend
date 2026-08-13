@@ -28,10 +28,14 @@ jobs:
            with:
               fetch-depth: 0
 
-         - name: setup bun
-           uses: oven-sh/setup-bun@v2
+         - name: setup Vite+
+           uses: voidzero-dev/setup-vp@v1
            with:
-              bun-version-file: package.json
+              node-version: '24.15.0'
+              cache: true
+
+         - name: install dependencies
+           run: vp install --frozen-lockfile
 
          - name: fetch refs
            run: git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune
@@ -39,7 +43,7 @@ jobs:
          - name: prepare changed translations
            id: patch
            run: >
-              bun scripts/prepare-crowdin-translation-patch.ts
+              vp node scripts/prepare-crowdin-translation-patch.ts
               --base "${{ inputs.base_ref }}"
               --head "${{ inputs.head_ref }}"
               --out .crowdin-translation-patch

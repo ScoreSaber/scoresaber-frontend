@@ -18,13 +18,14 @@ jobs:
          - name: checkout
            uses: actions/checkout@v5
 
-         - name: setup bun
-           uses: oven-sh/setup-bun@v2
+         - name: setup Vite+
+           uses: voidzero-dev/setup-vp@v1
            with:
-              bun-version-file: package.json
+              node-version: '24.15.0'
+              cache: true
 
          - name: install dependencies
-           run: bun install --frozen-lockfile
+           run: vp install --frozen-lockfile
 
          - name: sync with Crowdin
            uses: crowdin/github-action@v2
@@ -46,7 +47,7 @@ jobs:
               CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
          - name: sync Crowdin context
-           run: bun run crowdin:context --apply
+           run: vp run crowdin:context -- --apply
            env:
               CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
               CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}

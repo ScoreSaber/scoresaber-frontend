@@ -23,7 +23,7 @@ export async function logout() {
 }
 
 const startEmailLoginFn = createServerFn({ method: 'POST' })
-   .inputValidator((email: string) => email)
+   .validator((email: string) => email)
    .handler(async ({ data: email }) =>
       actionApiData(
          api.auth.authControllerStartEmailLogin(
@@ -41,7 +41,7 @@ export async function startEmailLogin(email: string) {
 }
 
 const verifyEmailLoginFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { challengeId: string; code: string }) => data)
+   .validator((data: { challengeId: string; code: string }) => data)
    .handler(async ({ data }): Promise<ActionResult<EmailLoginVerificationActionValue>> => {
       const result = await actionApiData(
          api.auth.authControllerVerifyEmailLogin(

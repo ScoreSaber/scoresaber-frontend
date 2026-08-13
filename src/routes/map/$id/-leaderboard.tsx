@@ -41,7 +41,7 @@ type MapLeaderboardRouteInput = {
 };
 
 export const getMapLeaderboardPageData = createServerFn({ method: 'GET' })
-   .inputValidator((data: MapLeaderboardRouteInput) => data)
+   .validator((data: MapLeaderboardRouteInput) => data)
    .handler(async ({ data }) => {
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
       const token = readAuthCookie();
@@ -80,7 +80,11 @@ export function buildMapLeaderboardLocation({
       return linkOptions({ to: '/map/$id', params: { id: mapId }, search: routeSearch });
    }
 
-   return linkOptions({ to: '/map/$id/difficulty/$leaderboardId', params: { id: mapId, leaderboardId }, search: routeSearch });
+   return linkOptions({
+      to: '/map/$id/difficulty/$leaderboardId',
+      params: { id: mapId, leaderboardId },
+      search: routeSearch
+   });
 }
 
 function normalizeMapLeaderboardLocationSearch(search?: LeaderboardSearchParams) {

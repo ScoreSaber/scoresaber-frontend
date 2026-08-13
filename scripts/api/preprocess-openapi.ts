@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-import { readFileSync, writeFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
-const INPUT = resolve(import.meta.dir, 'openapi.json');
-const OUTPUT = resolve(import.meta.dir, 'openapi.processed.json');
+const INPUT = resolve(import.meta.dirname, 'openapi.json');
+const OUTPUT = resolve(import.meta.dirname, 'openapi.processed.json');
 
 // Map new tag names back to the old module-name convention (singular, no spaces/colons)
 const TAG_MAP: Record<string, string> = {

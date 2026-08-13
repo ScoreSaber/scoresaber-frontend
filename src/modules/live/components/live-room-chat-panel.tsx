@@ -20,12 +20,12 @@ type LiveRoomChatPanelProps = {
    messages: LudusChatMessage[];
    disabled?: boolean;
    className?: string;
-   onSendAction(message: string): boolean;
+   onSendAction: (message: string) => boolean;
 };
 
 type LiveRoomChatSheetProps = LiveRoomChatPanelProps & {
    open: boolean;
-   onOpenChangeAction(open: boolean): void;
+   onOpenChangeAction: (open: boolean) => void;
 };
 
 export function LiveRoomChatSheet({ open, onOpenChangeAction, messages, disabled, onSendAction }: LiveRoomChatSheetProps) {

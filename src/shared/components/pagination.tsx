@@ -68,7 +68,7 @@ export function Pagination<TLocation>({
                      onNavigate={(page) => {
                         const location = getPageLocation(page);
                         setPendingPage({ value: page, type: 'number' });
-                        navigateToRoute(router, location, { resetScroll: scroll });
+                        void navigateToRoute(router, location, { resetScroll: scroll });
                      }}
                   />
                );

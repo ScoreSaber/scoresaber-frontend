@@ -80,7 +80,7 @@ type PlayerProfileSectionId = (typeof DEFAULT_PROFILE_SECTION_ORDER)[number];
 const REQUIRED_PROFILE_SECTION_IDS: readonly PlayerProfileSectionId[] = ['scores'];
 
 const getPlayerProfilePageData = createServerFn({ method: 'GET' })
-   .inputValidator((data: PlayerProfileRouteInput) => data)
+   .validator((data: PlayerProfileRouteInput) => data)
    .handler(async ({ data }) => {
       const token = readAuthCookie();
       const profileApi = token ? api : publicApi;

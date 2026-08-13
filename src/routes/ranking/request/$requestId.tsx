@@ -6,7 +6,7 @@ import { publicApi } from '@/shared/api/server-api';
 import { optionalApiData } from '@/shared/result/api';
 
 const getRankRequestRedirect = createServerFn({ method: 'GET' })
-   .inputValidator((data: { requestId?: string }) => data)
+   .validator((data: { requestId?: string }) => data)
    .handler(async ({ data }) => {
       const id = parseLegacyRouteId(data.requestId);
       if (!id) return { name: 'rankRequests' } as const;
@@ -29,7 +29,12 @@ export const Route = createFileRoute('/ranking/request/$requestId')({
       }
 
       if (target.name === 'map') {
-         throw redirect({ to: '/map/$id', params: { id: target.id }, search: { page: 1, tab: 'rank-request' }, statusCode: 301 });
+         throw redirect({
+            to: '/map/$id',
+            params: { id: target.id },
+            search: { page: 1, tab: 'rank-request' },
+            statusCode: 301
+         });
       }
 
       throw redirect({

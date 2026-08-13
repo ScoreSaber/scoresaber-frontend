@@ -4,19 +4,19 @@ import { api } from '@/shared/api/server-api';
 import { actionResultVoid } from '@/shared/result/action';
 
 const qatVoteFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { difficultyId: number; vote: 'UPVOTE' | 'DOWNVOTE' | 'NEUTRAL' }) => data)
+   .validator((data: { difficultyId: number; vote: 'UPVOTE' | 'DOWNVOTE' | 'NEUTRAL' }) => data)
    .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerQatVote({ id: data.difficultyId }, { vote: data.vote })));
 
 const qatCommentFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { difficultyId: number; comment: string }) => data)
+   .validator((data: { difficultyId: number; comment: string }) => data)
    .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerQatComment({ id: data.difficultyId }, { comment: data.comment })));
 
 const qatDeleteCommentFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { difficultyId: number; commentId: number }) => data)
+   .validator((data: { difficultyId: number; commentId: number }) => data)
    .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerQatDeleteComment({ id: data.difficultyId, commentId: data.commentId })));
 
 const qatEditCommentFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { difficultyId: number; commentId: number; comment: string }) => data)
+   .validator((data: { difficultyId: number; commentId: number; comment: string }) => data)
    .handler(({ data }) =>
       actionResultVoid(api.ranking.rankingControllerQatEditComment({ id: data.difficultyId, commentId: data.commentId }, { comment: data.comment }))
    );

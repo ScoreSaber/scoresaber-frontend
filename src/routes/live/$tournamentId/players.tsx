@@ -10,7 +10,7 @@ import { buildNoindexHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const getLivePlayersData = createServerFn({ method: 'GET' })
-   .inputValidator((data: { tournamentId: string }) => data)
+   .validator((data: { tournamentId: string }) => data)
    .handler(async ({ data }) => {
       const tournamentId = data.tournamentId;
       const [settings, authorizedPlayers, teams] = await Promise.all([

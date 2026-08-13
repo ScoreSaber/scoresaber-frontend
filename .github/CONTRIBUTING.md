@@ -6,16 +6,15 @@ For local setup, start with [SETUP.md](SETUP.md)
 
 ## Package Management
 
-Use Bun for package work:
+Use Vite+ for package work. It manages the pinned pnpm version for the project:
 
 ```sh
-bun i
-bun add <package>
-bun remove <package>
-bunx shadcn@latest add <component>
+vp install
+vp add <package>
+vp remove <package>
 ```
 
-Do not use npm, pnpm, or yarn in this repo
+Direct pnpm also works without a global Vite+ install. Use the version pinned in `package.json`, run `pnpm install`, then invoke built-in Vite+ commands through `pnpm exec vp`. Do not use npm, Bun or yarn to install dependencies
 
 ## Code Style
 
@@ -56,10 +55,18 @@ Do not use npm, pnpm, or yarn in this repo
 Do not manually edit generated client files. After API contract changes, regenerate the client:
 
 ```sh
-bun run api:generate
+vp run api:generate
 ```
 
-Use `bun run api:regen` only when the local API is running and you need to fetch a fresh OpenAPI spec
+Use `vp run api:regen` only when the local API is running and you need to fetch a fresh OpenAPI spec
+
+## Checks
+
+Run the full check before committing:
+
+```sh
+vp run verify
+```
 
 ## Commits
 

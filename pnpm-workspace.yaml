@@ -1,0 +1,23 @@
+packages: []
+allowBuilds:
+   unrs-resolver: true
+catalog:
+   vite: npm:@voidzero-dev/vite-plus-core@0.2.8
+   vite-plus: 0.2.8
+overrides:
+   defu: 6.1.7
+   fast-uri: 3.1.2
+   flatted: 3.4.2
+   js-yaml: 4.1.1
+   picomatch: 4.0.4
+   postcss: 8.5.14
+   vite: 'catalog:'
+patchedDependencies:
+   better-result@2.8.2: patches/better-result@2.8.2.patch
+   portless@0.15.4: patches/portless@0.15.4.patch
+minimumReleaseAge: 10080
+peerDependencyRules:
+   allowAny:
+      - vite
+   allowedVersions:
+      vite: '*'

@@ -49,7 +49,7 @@ type MapsRouteInput = {
 };
 
 const getMapsPageData = createServerFn({ method: 'GET' })
-   .inputValidator((data: MapsRouteInput) => data)
+   .validator((data: MapsRouteInput) => data)
    .handler(async ({ data }) => {
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
       const effectiveSearchParams = await applyPersistedSearchParams<MapsSearchParams>({

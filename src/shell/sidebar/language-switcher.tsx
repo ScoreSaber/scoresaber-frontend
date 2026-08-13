@@ -34,7 +34,7 @@ export function LanguageSwitcher({ className, contentClassName, open, onOpenChan
    function handleChange(value: string) {
       startTransition(async () => {
          await setLocaleAction({ data: value });
-         router.invalidate();
+         await router.invalidate();
       });
    }
 

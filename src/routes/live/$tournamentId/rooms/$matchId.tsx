@@ -9,7 +9,7 @@ import { buildNoindexHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const getLiveRoomData = createServerFn({ method: 'GET' })
-   .inputValidator((data: { tournamentId: string; matchId: string }) => data)
+   .validator((data: { tournamentId: string; matchId: string }) => data)
    .handler(async ({ data }) => {
       const { tournamentId, matchId } = data;
       return optionalApiData(api.livePlatform.liveMatchRoomControllerGetRoomView({ tournamentId, matchId }));

@@ -92,25 +92,20 @@ function getDefaultFetchCache(init?: RequestInit) {
 }
 
 function createServerFetch(credentials: RequestCredentials) {
-   return Object.assign(
-      (input: RequestInfo | URL, init?: RequestInit) => {
-         const headers = new Headers(init?.headers);
-         if (env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET) {
-            headers.set('CF-Access-Client-Id', env.CF_ACCESS_CLIENT_ID);
-            headers.set('CF-Access-Client-Secret', env.CF_ACCESS_CLIENT_SECRET);
-         }
-
-         return fetch(input, {
-            ...init,
-            headers,
-            credentials,
-            ...getDefaultFetchCache(init)
-         });
-      },
-      {
-         preconnect: (...args: Parameters<typeof fetch.preconnect>) => fetch.preconnect(...args)
+   return (input: RequestInfo | URL, init?: RequestInit) => {
+      const headers = new Headers(init?.headers);
+      if (env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET) {
+         headers.set('CF-Access-Client-Id', env.CF_ACCESS_CLIENT_ID);
+         headers.set('CF-Access-Client-Secret', env.CF_ACCESS_CLIENT_SECRET);
       }
-   );
+
+      return fetch(input, {
+         ...init,
+         headers,
+         credentials,
+         ...getDefaultFetchCache(init)
+      });
+   };
 }
 
 const authenticatedFetch = createServerFetch(authenticatedCredentials);

@@ -47,7 +47,7 @@ type RankingsRouteInput = {
 };
 
 const getRankingsPageData = createServerFn({ method: 'GET' })
-   .inputValidator((data: RankingsRouteInput) => data)
+   .validator((data: RankingsRouteInput) => data)
    .handler(async ({ data }) => {
       const token = readAuthCookie();
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);

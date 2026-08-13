@@ -10,7 +10,6 @@ import type {
 } from '@/modules/live/ludus/packets/protobuf';
 
 export type LudusStatus = 'idle' | 'connecting' | 'connected' | 'closed' | 'error';
-export type LudusErrorCode = 'not-configured' | 'socket-error';
 export type LudusPacketBytes = Uint8Array<ArrayBuffer>;
 
 export type LudusState = {
@@ -21,7 +20,7 @@ export type LudusState = {
    roomContext: LudusRoomContext | null;
    tournamentId: string;
    currentMatchId: string;
-   error: LudusErrorCode | string | null;
+   error: string | null;
    rooms: LudusRoomState[];
    scores: LudusReplayScore[];
    roomCountdowns: LudusStartMapCommand[];
