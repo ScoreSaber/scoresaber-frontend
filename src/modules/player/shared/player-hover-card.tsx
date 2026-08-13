@@ -72,7 +72,7 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
       <HoverCard open={open} onOpenChange={handleOpenChange} openDelay={700} closeDelay={150}>
          <HoverCardTrigger asChild>
             <span
-               className="inline-flex min-w-0 items-center overflow-hidden"
+               className="inline-flex min-w-0 flex-1 items-center overflow-hidden"
                onPointerDown={cancelPendingOpen}
                onClick={cancelPendingOpen}
                onPointerLeave={resetPendingOpenCancel}

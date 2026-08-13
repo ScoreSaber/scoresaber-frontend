@@ -36,7 +36,7 @@ export function PlayerLink({ player, outLink, className, withPFP, showLivePresen
 
    const link = outLink ? (
       <a
-         className="group/link text-foreground flex items-center overflow-hidden font-semibold"
+         className="group/link text-foreground flex min-w-0 flex-1 items-center overflow-hidden font-semibold"
          target="_blank"
          href={playerSummary.steamHref ?? ''}
          rel="external noopener noreferrer"
@@ -49,7 +49,10 @@ export function PlayerLink({ player, outLink, className, withPFP, showLivePresen
          />
       </a>
    ) : (
-      <playerRoute.Link className="group/link text-foreground flex items-center overflow-hidden font-semibold" params={{ playerId: player.id }}>
+      <playerRoute.Link
+         className="group/link text-foreground flex min-w-0 flex-1 items-center overflow-hidden font-semibold"
+         params={{ playerId: player.id }}
+      >
          <CountryImage country={player.country} className="shrink-0" />
          <PlayerHoverCard playerId={player.id}>
             <PlayerName
@@ -62,7 +65,7 @@ export function PlayerLink({ player, outLink, className, withPFP, showLivePresen
    );
 
    return (
-      <div className="flex min-w-0 items-center">
+      <div className="flex w-full min-w-0 items-center">
          {withPFP && (
             <span className="relative inline-flex shrink-0">
                <PlayerAvatar
@@ -76,7 +79,7 @@ export function PlayerLink({ player, outLink, className, withPFP, showLivePresen
                {showLivePresence && <PlayerListLivePresenceIndicator playerId={player.id} className="absolute -bottom-0.5 left-[70%] z-10" />}
             </span>
          )}
-         <div className={cn('flex min-w-0 overflow-hidden', withPFP && 'ml-2')}>{link}</div>
+         <div className={cn('flex min-w-0 flex-1 overflow-hidden', withPFP && 'ml-2')}>{link}</div>
          {isInactive && (
             <Tooltip>
                <TooltipTrigger asChild>
