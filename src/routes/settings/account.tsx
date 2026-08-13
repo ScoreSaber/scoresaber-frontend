@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { AccountSection } from '@/modules/settings/sections/account-section';
 import { SecuritySection } from '@/modules/settings/sections/security-section';
 import { SettingsShell } from '@/modules/settings/settings-shell';
+import { getClientRequestHeaders } from '@/shared/api/client-request.server';
 import { api } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
 import { buildNoindexHead } from '@/shared/seo/metadata';
@@ -20,7 +21,7 @@ const accountSettingsSearchSchema = z.object({
 
 const getAccountSettingsData = createServerFn({ method: 'GET' }).handler(async () => {
    const [countryReset, connections, passkeys, credential, vanity] = await Promise.all([
-      optionalApi(api.user.userControllerCanResetCountry().then((r) => r.data)),
+      optionalApi(api.user.userControllerCanResetCountry({ headers: getClientRequestHeaders() }).then((r) => r.data)),
       optionalApi(api.user.userControllerGetConnections().then((r) => r.data)),
       optionalApi(api.auth.passkeyControllerListPasskeys().then((r) => r.data.passkeys)),
       optionalApi(api.auth.passwordAuthControllerGetPasswordCredential().then((r) => r.data)),

@@ -1259,7 +1259,6 @@
          "countryResetQueued": "Redefinir país",
          "countryResetFailed": "Falha ao redefinir o país",
          "resetCountryDialogDesc": "Isso recalcula o país do seu perfil a partir da sua localização atual. Depois que ele for bem-sucedido, a redefinição do país será bloqueado por {days} dias",
-         "resetCountryHelper": "Use isso somente quando estiver no país onde você deseja que seja exibido no ScoreSaber, e certifique-se de que você não está usando uma VPN ou proxy",
          "resetCountryAvailableAt": "Você já redefiniu seu país recentemente. Você pode redefini-lo novamente em <date></date>",
          "resetCountryConfirmText": "REDEFINIR"
       },

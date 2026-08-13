@@ -1259,7 +1259,6 @@
          "countryResetQueued": "Resetta nazione",
          "countryResetFailed": "Errore nel reset della nazione",
          "resetCountryDialogDesc": "Questa azione ricalcolerà la nazione del tuo profilo in base alla tua posizione attuale. Dopo che l'azione avrà successo, il reset della nazione sarà bloccato per {days} giorni",
-         "resetCountryHelper": "Utilizza questa funzione solo quando ti trovi nella nazione che vuoi visualizzare sul tuo profilo ScoreSaber e accertati di non star usando una VPN o proxy",
          "resetCountryAvailableAt": "Hai già resettato la nazione recentemente. Puoi resettarla nuovamente il <date></date>",
          "resetCountryConfirmText": "RESETTA"
       },

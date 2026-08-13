@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'use-intl';
@@ -55,6 +55,7 @@ export function ConfirmDialog({
    const t = useTranslations();
    const textInputId = useId();
    const confirmationInputId = useId();
+   const confirmationInputRef = useRef<HTMLInputElement>(null);
    const [confirmationValue, setConfirmationValue] = useState('');
    const resolvedConfirmLabel = confirmLabel ?? t('common.confirm');
    const needsConfirmationText = confirmationText != null && confirmationText.length > 0;
@@ -77,7 +78,14 @@ export function ConfirmDialog({
 
    return (
       <Dialog open={open} onOpenChange={onOpenChangeAction}>
-         <DialogContent className="h-dvh max-h-dvh max-w-none overflow-hidden rounded-none border-0 p-0 sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:max-w-lg sm:rounded-lg sm:border">
+         <DialogContent
+            className="h-dvh max-h-dvh max-w-none overflow-hidden rounded-none border-0 p-0 sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:max-w-lg sm:rounded-lg sm:border"
+            onOpenAutoFocus={(event) => {
+               if (!needsConfirmationText) return;
+               event.preventDefault();
+               confirmationInputRef.current?.focus();
+            }}
+         >
             <form
                className="flex h-full min-h-0 flex-col sm:max-h-[calc(100dvh-2rem)]"
                onSubmit={(event) => {
@@ -114,6 +122,7 @@ export function ConfirmDialog({
                      <div className="flex flex-col gap-1.5">
                         <Label htmlFor={confirmationInputId}>{t('common.typeToConfirm', { value: confirmationText })}</Label>
                         <Input
+                           ref={confirmationInputRef}
                            id={confirmationInputId}
                            value={confirmationValue}
                            onChange={(event) => setConfirmationValue(event.target.value)}

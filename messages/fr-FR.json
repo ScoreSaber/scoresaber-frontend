@@ -1259,7 +1259,6 @@
          "countryResetQueued": "Réinitialisation du pays",
          "countryResetFailed": "Échec de la réinitialisation du pays",
          "resetCountryDialogDesc": "Cela recalcule le pays de votre profil à partir de votre emplacement actuel. Une fois effectuée, la réinitialisation du pays est verrouillée pendant {days} jours",
-         "resetCountryHelper": "Utilisez ceci uniquement lorsque vous êtes dans le pays que vous souhaitez afficher sur ScoreSaber et assurez-vous de ne pas utiliser de VPN ni de proxy",
          "resetCountryAvailableAt": "Vous avez déjà réinitialisé votre pays récemment. Vous pourrez le réinitialiser à nouveau le <date></date>",
          "resetCountryConfirmText": "RÉINITIALISER"
       },

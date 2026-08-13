@@ -1316,7 +1316,9 @@
          "countryResetQueued": "Country reset",
          "countryResetFailed": "Failed to reset country",
          "resetCountryDialogDesc": "This recalculates your profile country from your current location. After it succeeds, country reset is locked for {days} days",
-         "resetCountryHelper": "Use this only when you are in the country you want displayed on ScoreSaber, and make sure you are not using a VPN or proxy",
+         "resetCountryPreview": "Your country will change to",
+         "resetCountryNotRight": "Not right?",
+         "resetCountryLocationHelp": "If this is incorrect, disconnect your VPN or proxy then refresh the page",
          "resetCountryAvailableAt": "You already reset your country recently. You can reset it again on <date></date>",
          "resetCountryConfirmText": "RESET"
       },

@@ -1259,7 +1259,6 @@
          "countryResetQueued": "국가 초기화",
          "countryResetFailed": "국가 초기화를 사용할 수 없습니다",
          "resetCountryDialogDesc": "현재 위치를 기준으로 프로필 국가를 다시 계산합니다. 성공하면 {days}일 동안 국가 초기화를 사용할 수 없습니다",
-         "resetCountryHelper": "ScoreSaber에 표시하려는 국가에 있을 때만 사용하세요. VPN이나 프록시를 사용 중이 아닌지도 확인하세요",
          "resetCountryAvailableAt": "최근에 이미 국가를 초기화했습니다. <date></date>에 다시 초기화할 수 있습니다",
          "resetCountryConfirmText": "초기화"
       },

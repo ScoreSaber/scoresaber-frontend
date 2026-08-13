@@ -1259,7 +1259,6 @@
          "countryResetQueued": "Reset kraju",
          "countryResetFailed": "Reset kraju nie powiódł się",
          "resetCountryDialogDesc": "To działanie ustawia kraj Twojego konta na podstawie Twojego obecnego położenia. Po pomyślnym ustawieniu, funkcja resetu kraju zostanie zablokowana na {days} dni",
-         "resetCountryHelper": "Korzystaj z tego tylko wtedy, kiedy jesteś w kraju, który chcesz wyświetlać na ScoreSaber. Upewnij się, że nie korzystasz z VPN lub proxy",
          "resetCountryAvailableAt": "Już resetowałeś swój kraj. Możesz zresetować go ponownie <date></date>",
          "resetCountryConfirmText": "RESETUJ"
       },

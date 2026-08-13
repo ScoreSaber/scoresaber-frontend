@@ -33449,6 +33449,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * @response `200` `{
     canReset: boolean,
     lastReset: string | null,
+    country: string,
 
 }` Country reset eligibility status
  * @response `401` `{
@@ -33464,6 +33465,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             {
                canReset: boolean;
                lastReset: string | null;
+               country: string;
             },
             {
                statusCode: 401;

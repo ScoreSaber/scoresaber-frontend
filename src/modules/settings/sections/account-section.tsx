@@ -23,10 +23,12 @@ import { claimVanity } from '@/modules/settings/actions/vanity';
 import type { UserControllerCanResetCountryResponse, UserControllerGetVanityResponse } from '@/shared/api/generated/ApiParams';
 import { ConditionalOverlay } from '@/shared/components/conditional-overlay';
 import { ConfirmDialog } from '@/shared/components/confirm-dialog';
+import { CountryImage } from '@/shared/components/country-image';
 import { dynamic } from '@/shared/components/dynamic';
 import { SupporterFeatureLock } from '@/shared/components/supporter-feature-lock';
 import { SupporterRequiredOverlay } from '@/shared/components/supporter-required-overlay';
 import { Time } from '@/shared/components/time';
+import { getCountryName } from '@/shared/country-region/countries';
 import { cn } from '@/shared/format/helpers';
 import Permissions from '@/shared/permissions';
 
@@ -58,6 +60,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
    const [avatarFile, setAvatarFile] = useState<File | null>(null);
    const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
    const [countryResetOpen, setCountryResetOpen] = useState(false);
+   const [countryResetHelpOpen, setCountryResetHelpOpen] = useState(false);
    const [bioOpen, setBioOpen] = useState(false);
    const [bioEditorMounted, setBioEditorMounted] = useState(false);
    const [vanityInfoOpen, setVanityInfoOpen] = useState(false);
@@ -168,13 +171,19 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
 
       setAvatarFile(file);
    };
+   const changeCountryResetOpen = (open: boolean) => {
+      setCountryResetOpen(open);
+      if (!open) {
+         setCountryResetHelpOpen(false);
+      }
+   };
    const resetCountry = () => {
       mutation.runKeyed(
          'country-reset',
          requestCountryReset,
          t('settings.account.countryResetQueued'),
          t('settings.account.countryResetFailed'),
-         () => setCountryResetOpen(false)
+         () => changeCountryResetOpen(false)
       );
    };
    const changeBioOpen = (open: boolean) => {
@@ -501,7 +510,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
                         type="button"
                         variant="outline"
                         disabled={mutation.isPending}
-                        onClick={() => setCountryResetOpen(true)}
+                        onClick={() => changeCountryResetOpen(true)}
                         className="border-destructive/45 text-destructive hover:bg-destructive/10 hover:text-destructive w-fit"
                      >
                         {t('settings.account.reset')}
@@ -513,7 +522,7 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
 
          <ConfirmDialog
             open={countryResetOpen}
-            onOpenChangeAction={setCountryResetOpen}
+            onOpenChangeAction={changeCountryResetOpen}
             title={t('settings.account.resetCountry')}
             description={t('settings.account.resetCountryDialogDesc', { days: countryResetCooldownDays })}
             confirmLabel={t('settings.account.resetCountry')}
@@ -523,13 +532,41 @@ export function AccountSection({ countryReset, vanity, patreonConnected, beforeA
             disabled={countryReset?.canReset === false}
             onConfirmAction={resetCountry}
          >
-            <p className="text-muted-foreground text-sm text-pretty">
-               {countryResetAvailableAt
-                  ? t.rich('settings.account.resetCountryAvailableAt', {
-                       date: () => <Time date={countryResetAvailableAt} dateStyle="medium" />
-                    })
-                  : t('settings.account.resetCountryHelper', { days: countryResetCooldownDays })}
-            </p>
+            {countryReset && (
+               <div className="border-border/70 bg-muted/30 flex items-center gap-3 rounded-md border p-3">
+                  <CountryImage country={countryReset.country} size={32} className="shrink-0" />
+                  <div className="min-w-0 flex-1">
+                     <p className="text-muted-foreground text-xs">{t('settings.account.resetCountryPreview')}</p>
+                     <p className="font-semibold">{getCountryName(countryReset.country)}</p>
+                  </div>
+                  <Tooltip open={countryResetHelpOpen} onOpenChange={setCountryResetHelpOpen}>
+                     <TooltipTrigger asChild>
+                        <button
+                           type="button"
+                           className="text-muted-foreground hover:text-foreground shrink-0 cursor-help text-xs underline underline-offset-4"
+                           onPointerDown={(event) => {
+                              if (event.pointerType !== 'touch') return;
+                              event.preventDefault();
+                              setCountryResetHelpOpen((open) => !open);
+                           }}
+                           onClick={(event) => event.preventDefault()}
+                        >
+                           {t('settings.account.resetCountryNotRight')}
+                        </button>
+                     </TooltipTrigger>
+                     <TooltipContent side="top" sideOffset={4} className="max-w-72 text-center">
+                        <p>{t('settings.account.resetCountryLocationHelp')}</p>
+                     </TooltipContent>
+                  </Tooltip>
+               </div>
+            )}
+            {countryResetAvailableAt && (
+               <p className="text-muted-foreground text-sm text-pretty">
+                  {t.rich('settings.account.resetCountryAvailableAt', {
+                     date: () => <Time date={countryResetAvailableAt} dateStyle="medium" />
+                  })}
+               </p>
+            )}
          </ConfirmDialog>
       </>
    );
