@@ -651,6 +651,13 @@
    "player": {
       "followers": "Followers",
       "following": "Following",
+      "platformFriends": "Platform friends",
+      "relationshipsTitle": "{name}'s followers and following",
+      "relationshipsLoadFailed": "Couldn't load this list",
+      "noFollowers": "No followers yet",
+      "noFollowing": "Not following anyone yet",
+      "noPlatformFriends": "No platform friends yet",
+      "loadingMore": "Loading more…",
       "viewSteamProfile": "View Steam profile",
       "livePresence": {
          "live": "In game",
@@ -690,6 +697,7 @@
       "writeBio": "Write your bio...",
       "bioUpdated": "Bio updated",
       "follow": "Follow",
+      "followBack": "Follow back",
       "unfollow": "Unfollow",
       "mutual": "Mutual",
       "followingStatus": "Following",

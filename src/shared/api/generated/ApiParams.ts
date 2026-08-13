@@ -49,6 +49,13 @@ export const PLAYER_CONTROLLER_GET_PLAYER_SCORES_SORT = ['top', 'recent', 'oldes
 >[];
 export type PlayerControllerGetPlayerScoresSort = (typeof PLAYER_CONTROLLER_GET_PLAYER_SCORES_SORT)[number];
 
+export const PLAYER_RELATIONSHIP_CONTROLLER_GET_RELATIONSHIPS_TYPE = [
+   'followers',
+   'following',
+   'platform-friends'
+] as const satisfies readonly NonNullable<ApiTypes.PlayerRelationshipControllerGetRelationshipsParams['type']>[];
+export type PlayerRelationshipControllerGetRelationshipsType = (typeof PLAYER_RELATIONSHIP_CONTROLLER_GET_RELATIONSHIPS_TYPE)[number];
+
 export const LEADERBOARD_CONTROLLER_GET_LEADERBOARD_LISTINGS_STATUS = [
    'UNRANKED',
    'RANKED',
@@ -217,6 +224,9 @@ export type PlayerAliasControllerGetAliasesItem = PlayerAliasControllerGetAliase
 export type PlayerAliasControllerDisableAliasResponse = _R<_PlayerAlias['playerAliasControllerDisableAlias']>;
 
 export type PlayerAliasControllerDisableAllAliasesResponse = _R<_PlayerAlias['playerAliasControllerDisableAllAliases']>;
+
+export type PlayerRelationshipControllerGetRelationshipsResponse = _R<_Player['playerRelationshipControllerGetRelationships']>;
+export type PlayerRelationshipControllerGetRelationshipsDataItem = PlayerRelationshipControllerGetRelationshipsResponse['data'][number];
 
 export type PlayerRelationshipControllerFollowPlayerResponse = _R<_Player['playerRelationshipControllerFollowPlayer']>;
 
@@ -435,6 +445,12 @@ export type AdminBadgeControllerUpdateBadgeResponse = _R<_AdminBadge['adminBadge
 
 export type AdminBadgeControllerDeleteBadgeResponse = _R<_AdminBadge['adminBadgeControllerDeleteBadge']>;
 
+export type AdminBadgeControllerGetPlayerBadgesResponse = _R<_AdminBadge['adminBadgeControllerGetPlayerBadges']>;
+export type AdminBadgeControllerGetPlayerBadgesItem = AdminBadgeControllerGetPlayerBadgesResponse[number];
+
+export type AdminBadgeControllerReplacePlayerBadgesResponse = _R<_AdminBadge['adminBadgeControllerReplacePlayerBadges']>;
+export type AdminBadgeControllerReplacePlayerBadgesItem = AdminBadgeControllerReplacePlayerBadgesResponse[number];
+
 export type AdminBadgeControllerAssignBadgeResponse = _R<_AdminBadge['adminBadgeControllerAssignBadge']>;
 
 export type AdminBadgeControllerUnassignBadgeResponse = _R<_AdminBadge['adminBadgeControllerUnassignBadge']>;
@@ -558,9 +574,3 @@ export type UserControllerGetAccountMergeChallengeResponse = _R<_User['userContr
 export type UserControllerConfirmAccountMergeResponse = _R<_User['userControllerConfirmAccountMerge']>;
 
 export type UserControllerRemoveConnectionResponse = _R<_User['userControllerRemoveConnection']>;
-
-export type AdminBadgeControllerGetPlayerBadgesResponse = _R<_AdminBadge['adminBadgeControllerGetPlayerBadges']>;
-export type AdminBadgeControllerGetPlayerBadgesItem = AdminBadgeControllerGetPlayerBadgesResponse[number];
-
-export type AdminBadgeControllerReplacePlayerBadgesResponse = _R<_AdminBadge['adminBadgeControllerReplacePlayerBadges']>;
-export type AdminBadgeControllerReplacePlayerBadgesItem = AdminBadgeControllerReplacePlayerBadgesResponse[number];

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { FaUserCheck, FaUserFriends, FaUserPlus } from 'react-icons/fa';
 import { toast } from 'sonner';
@@ -15,31 +16,26 @@ import { useAuth } from '@/modules/auth';
 import { followPlayer, unfollowPlayer } from '@/modules/player/actions/user/member';
 import { cn } from '@/shared/format/helpers';
 
-type FollowState = 'none' | 'following' | 'mutual';
+type FollowState = 'none' | 'follower' | 'following' | 'mutual';
 
 interface PlayerFollowButtonProps {
    playerId: string;
    compact?: boolean;
+   followsViewer?: boolean;
 }
 
-export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProps) {
+export function PlayerFollowButton({ playerId, compact, followsViewer = false }: PlayerFollowButtonProps) {
    const t = useTranslations();
    const { user } = useAuth();
    const [hovered, setHovered] = useState(false);
+   const [stateOverride, setStateOverride] = useState<{ playerId: string; state: FollowState }>();
    const action = useActionMutation();
+   const queryClient = useQueryClient();
 
-   const resolved = resolveFollowState(user, playerId);
-   const [state, setState] = useState<FollowState>(resolved.state);
-   const [isPlatformFriend, setIsPlatformFriend] = useState(resolved.platformFriend);
+   const resolvedState = resolveFollowState(user, playerId, followsViewer);
+   const state = stateOverride?.playerId === playerId ? stateOverride.state : resolvedState.state;
+   const isPlatformFriend = resolvedState.platformFriend;
 
-   // re-sync after router.refresh()
-   useEffect(() => {
-      const fresh = resolveFollowState(user, playerId);
-      setState(fresh.state);
-      setIsPlatformFriend(fresh.platformFriend);
-   }, [user, playerId]);
-
-   // don't render on own profile or when logged out
    if (!user || user.id === playerId) return null;
 
    const pending = action.isPending;
@@ -50,11 +46,16 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
       if (isPlatformFriend) return;
 
       const mutate = isFollowing ? () => unfollowPlayer(playerId) : () => followPlayer(playerId);
-      const nextState = isFollowing ? 'none' : 'following';
       const errorMessage = isFollowing ? t('player.failedToUnfollow') : t('player.failedToFollow');
 
       action.mutate(mutate, {
-         onSuccess: () => setState(nextState),
+         onSuccess: () => {
+            const nextState = isFollowing ? (state === 'mutual' ? 'follower' : 'none') : state === 'follower' ? 'mutual' : 'following';
+
+            setHovered(false);
+            setStateOverride({ playerId, state: nextState });
+            void queryClient.invalidateQueries({ queryKey: ['playerRelationships'] });
+         },
          onError: () => toast.error(errorMessage)
       });
    }
@@ -65,7 +66,9 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
         ? t('player.mutual')
         : state === 'following'
           ? t('player.followingStatus')
-          : t('player.follow');
+          : state === 'follower'
+            ? t('player.followBack')
+            : t('player.follow');
    const compactIconClass = compact ? 'size-2.5' : undefined;
    const accentSolidStyle: CSSProperties = {
       borderColor: 'var(--profile-accent, var(--primary))',
@@ -96,7 +99,6 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
       <FaUserPlus className={compactIconClass} />
    );
 
-   // platform friend -- disabled with tooltip
    if (isPlatformFriend) {
       return (
          <Tooltip>
@@ -121,7 +123,7 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
 
    const button = (
       <Button
-         variant={compact ? 'outline' : state === 'none' ? 'default' : 'secondary'}
+         variant={compact ? 'outline' : state === 'none' || state === 'follower' ? 'default' : 'secondary'}
          size={compact ? 'icon' : 'xs'}
          className={cn(
             'cursor-pointer transition-[background-color,color,border-color]',
@@ -140,7 +142,6 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
       </Button>
    );
 
-   // compact mode gets a tooltip since there's no text label
    if (compact) {
       return (
          <Tooltip>
@@ -155,14 +156,18 @@ export function PlayerFollowButton({ playerId, compact }: PlayerFollowButtonProp
    return button;
 }
 
-function resolveFollowState(user: ReturnType<typeof useAuth>['user'], playerId: string): { state: FollowState; platformFriend: boolean } {
-   if (!user?.relationships) return { state: 'none', platformFriend: false };
+function resolveFollowState(
+   user: ReturnType<typeof useAuth>['user'],
+   playerId: string,
+   followsViewer: boolean
+): { state: FollowState; platformFriend: boolean } {
+   if (!user) return { state: 'none', platformFriend: false };
 
-   const mutual = user.relationships.mutuals?.find((m) => m.id === playerId);
+   const mutual = user.relationships.mutuals.find((relationship) => relationship.id === playerId);
    if (mutual) return { state: 'mutual', platformFriend: mutual.relation === 'platform-friend' };
 
-   const following = user.relationships.following?.find((f) => f.id === playerId);
+   const following = user.relationships.following.find((relationship) => relationship.id === playerId);
    if (following) return { state: 'following', platformFriend: following.relation === 'platform-friend' };
 
-   return { state: 'none', platformFriend: false };
+   return { state: followsViewer ? 'follower' : 'none', platformFriend: false };
 }

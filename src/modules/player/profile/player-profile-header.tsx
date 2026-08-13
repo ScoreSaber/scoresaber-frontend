@@ -32,6 +32,7 @@ import { PlayerAliases } from '@/modules/player/profile/player-aliases';
 import { PlayerBadges } from '@/modules/player/profile/player-badges';
 import { PlayerLivePresenceIndicator } from '@/modules/player/profile/player-live-presence-indicator';
 import { getProfileAccentProperties } from '@/modules/player/profile/player-profile-accent';
+import { PlayerRelationships } from '@/modules/player/profile/player-relationships';
 import { PlayerAvatar } from '@/modules/player/shared/player-avatar';
 import { PlayerLink } from '@/modules/player/shared/player-link';
 import { WeeklyRankChange } from '@/modules/player/shared/weekly-rank-change';
@@ -248,18 +249,7 @@ export function PlayerProfileHeader({ player, aliases, actions, customization, p
                   <Runaway enabled={denyahMode} className="hidden sm:block">
                      <PlayerFollowButton playerId={player.id} />
                   </Runaway>
-                  {!player.banned && (
-                     <div className="text-muted-foreground flex items-center gap-3 text-[11px]">
-                        <span>
-                           <span className="text-foreground font-semibold tabular-nums">{formatNumber(player.followers)}</span>{' '}
-                           {t('player.followers')}
-                        </span>
-                        <span>
-                           <span className="text-foreground font-semibold tabular-nums">{formatNumber(player.following)}</span>{' '}
-                           {t('player.following')}
-                        </span>
-                     </div>
-                  )}
+                  {!player.banned && <PlayerRelationships player={player} />}
                </div>
 
                <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5 sm:items-start">

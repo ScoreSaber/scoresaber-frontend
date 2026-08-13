@@ -100,7 +100,7 @@ export function PlayerHoverCard({ playerId, children }: PlayerHoverCardProps) {
 }
 
 function hasOpenChildOverlay() {
-   return !!document.querySelector('[data-slot="dropdown-menu-content"], [data-slot="select-content"], [data-slot="dialog-overlay"]');
+   return !!document.querySelector('[data-slot="dropdown-menu-content"], [data-slot="select-content"]');
 }
 
 function HoverCardBody({ player, onClose }: { player: PlayerControllerGetPlayerResponse; onClose: () => void }) {

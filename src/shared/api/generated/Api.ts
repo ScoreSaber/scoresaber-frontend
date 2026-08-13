@@ -239,6 +239,24 @@ export interface PlayerAliasControllerDisableAllAliasesParams {
    id: string;
 }
 
+export interface PlayerRelationshipControllerGetRelationshipsParams {
+   type: 'followers' | 'following' | 'platform-friends';
+   /**
+    * Page number
+    * @exclusiveMin true
+    * @default 1
+    */
+   page?: number;
+   /**
+    * Items per page (max: 50)
+    * @min 1
+    * @max 50
+    * @default 20
+    */
+   limit?: number;
+   id: string;
+}
+
 export interface PlayerRelationshipControllerFollowPlayerParams {
    id: string;
 }
@@ -1911,6 +1929,24 @@ export interface AdminBadgeControllerDeleteBadgeParams {
    id: number;
 }
 
+export interface AdminBadgeControllerGetPlayerBadgesParams {
+   playerId: string;
+}
+
+export interface AdminBadgeControllerReplacePlayerBadgesPayload {
+   /** @maxItems 1000 */
+   badges: {
+      /** @exclusiveMin true */
+      badgeId: number;
+      /** @maxLength 256 */
+      descriptionOverride: string | null;
+   }[];
+}
+
+export interface AdminBadgeControllerReplacePlayerBadgesParams {
+   playerId: string;
+}
+
 export interface AdminBadgeControllerAssignBadgeParams {
    /**
     * Badge description override
@@ -2358,24 +2394,6 @@ export interface UserControllerConfirmAccountMergeParams {
 
 export interface UserControllerRemoveConnectionParams {
    provider: 'STEAM' | 'OCULUS' | 'PATREON' | 'DISCORD';
-}
-
-export interface AdminBadgeControllerGetPlayerBadgesParams {
-   playerId: string;
-}
-
-export interface AdminBadgeControllerReplacePlayerBadgesPayload {
-   /** @maxItems 1000 */
-   badges: {
-      /** @exclusiveMin true */
-      badgeId: number;
-      /** @maxLength 256 */
-      descriptionOverride: string | null;
-   }[];
-}
-
-export interface AdminBadgeControllerReplacePlayerBadgesParams {
-   playerId: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -3570,7 +3588,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     lastSeenAt: string,
     badges: ({
     id: number,
+  /** @maxLength 32 *\/
     image: string,
+  /** @maxLength 128 *\/
     description: string,
 
 })[],
@@ -3663,6 +3683,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 })[],
     followers: number,
     following: number,
+    platformFriends: number,
+    recentFollowers: ({
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+
+})[],
+    recentFollowing: ({
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+
+})[],
 
 }` Player profile resolved by vanity slug
  * @response `400` `({
@@ -3785,7 +3826,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                lastSeenAt: string;
                badges: {
                   id: number;
+                  /** @maxLength 32 */
                   image: string;
+                  /** @maxLength 128 */
                   description: string;
                }[];
                pinnedScores: {
@@ -3868,6 +3911,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                }[];
                followers: number;
                following: number;
+               platformFriends: number;
+               recentFollowers: {
+                  id: string;
+                  name: string;
+                  playerNameInGame: string;
+                  country: string;
+                  role: string | null;
+                  avatar: string;
+                  avatarVersion: number;
+               }[];
+               recentFollowing: {
+                  id: string;
+                  name: string;
+                  playerNameInGame: string;
+                  country: string;
+                  role: string | null;
+                  avatar: string;
+                  avatarVersion: number;
+               }[];
             },
             | (
                  | {
@@ -3992,7 +4054,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     lastSeenAt: string,
     badges: ({
     id: number,
+  /** @maxLength 32 *\/
     image: string,
+  /** @maxLength 128 *\/
     description: string,
 
 })[],
@@ -4085,6 +4149,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 })[],
     followers: number,
     following: number,
+    platformFriends: number,
+    recentFollowers: ({
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+
+})[],
+    recentFollowing: ({
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+
+})[],
 
 }` Player profile
  * @response `400` `({
@@ -4207,7 +4292,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                lastSeenAt: string;
                badges: {
                   id: number;
+                  /** @maxLength 32 */
                   image: string;
+                  /** @maxLength 128 */
                   description: string;
                }[];
                pinnedScores: {
@@ -4290,6 +4377,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                }[];
                followers: number;
                following: number;
+               platformFriends: number;
+               recentFollowers: {
+                  id: string;
+                  name: string;
+                  playerNameInGame: string;
+                  country: string;
+                  role: string | null;
+                  avatar: string;
+                  avatarVersion: number;
+               }[];
+               recentFollowing: {
+                  id: string;
+                  name: string;
+                  playerNameInGame: string;
+                  country: string;
+                  role: string | null;
+                  avatar: string;
+                  avatarVersion: number;
+               }[];
             },
             | (
                  | {
@@ -4415,7 +4521,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     lastSeenAt: string,
     badges: ({
     id: number,
+  /** @maxLength 32 *\/
     image: string,
+  /** @maxLength 128 *\/
     description: string,
 
 })[],
@@ -4508,6 +4616,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 })[],
     followers: number,
     following: number,
+    platformFriends: number,
+    recentFollowers: ({
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+
+})[],
+    recentFollowing: ({
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+
+})[],
 
 },
     history: ({
@@ -4676,7 +4805,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   lastSeenAt: string;
                   badges: {
                      id: number;
+                     /** @maxLength 32 */
                      image: string;
+                     /** @maxLength 128 */
                      description: string;
                   }[];
                   pinnedScores: {
@@ -4759,6 +4890,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                   }[];
                   followers: number;
                   following: number;
+                  platformFriends: number;
+                  recentFollowers: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                  }[];
+                  recentFollowing: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                  }[];
                };
                history: {
                   rank: number;
@@ -5837,6 +5987,201 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
               }
          >({
             path: `/api/v2/players/${id}/scores`,
+            method: 'GET',
+            query: query,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags Player
+ * @name PlayerRelationshipControllerGetRelationships
+ * @request GET:/api/v2/player/{id}/relationships
+ * @response `200` `{
+    data: ({
+    player: {
+    id: string,
+    name: string,
+    playerNameInGame: string,
+    country: string,
+    role: string | null,
+    avatar: string,
+    avatarVersion: number,
+    permissions: number,
+
+},
+    relation: "platform-friend" | "follow",
+
+})[],
+    metadata: {
+    page: number,
+    itemsPerPage: number,
+    totalItems: number,
+    totalPages: number,
+
+},
+
+}` Player followers, following or platform friends. Platform-friend identities are owner-only
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `403` `{
+    statusCode: 403,
+    error: "Forbidden",
+    code: "FORBIDDEN",
+    message: string,
+    details?: {
+    reason: string,
+
+},
+
+}` Forbidden
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      playerRelationshipControllerGetRelationships: (
+         { id, ...query }: PlayerRelationshipControllerGetRelationshipsParams,
+         params: RequestParams = {}
+      ) =>
+         this.request<
+            {
+               data: {
+                  player: {
+                     id: string;
+                     name: string;
+                     playerNameInGame: string;
+                     country: string;
+                     role: string | null;
+                     avatar: string;
+                     avatarVersion: number;
+                     permissions: number;
+                  };
+                  relation: 'platform-friend' | 'follow';
+               }[];
+               metadata: {
+                  page: number;
+                  itemsPerPage: number;
+                  totalItems: number;
+                  totalPages: number;
+               };
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 403;
+                 error: 'Forbidden';
+                 code: 'FORBIDDEN';
+                 message: string;
+                 details?: {
+                    reason: string;
+                 };
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/player/${id}/relationships`,
             method: 'GET',
             query: query,
             format: 'json',
@@ -27145,324 +27490,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
  * No description
  *
  * @tags AdminBadge
- * @name AdminBadgeControllerAssignBadge
- * @request POST:/api/v2/admin/badges/{id}/assign/{playerId}
- * @response `200` `{
-    success: boolean,
-
-}` Badge assignment result
- * @response `400` `({
-    statusCode: 400,
-    error: "Bad Request",
-    code: "VALIDATION_ERROR",
-    message: string,
-    details?: {
-    field?: string,
-
-},
-
-} | {
-    statusCode: 400,
-    error: "Bad Request",
-    code: "REQUEST_VALIDATION_ERROR",
-    message: string,
-    details: {
-    errors: ({
-    path: string,
-    message: string,
-
-})[],
-
-},
-
-} | {
-    statusCode: 400,
-    error: "Bad Request",
-    code: "INVALID_PATH_PARAMETER",
-    message: string,
-    details: {
-    errors: ({
-    path: string,
-    message: string,
-
-})[],
-
-},
-
-})` Bad Request Bad Request
- * @response `401` `{
-    statusCode: 401,
-    error: "Unauthorized",
-    code: "UNAUTHORIZED",
-    message: string,
-
-}` Unauthorized
- * @response `404` `{
-    statusCode: 404,
-    error: "Not Found",
-    code: "NOT_FOUND",
-    message: string,
-    details?: {
-    resource: string,
-    id?: (string | number),
-
-},
-
-}` Not Found
- * @response `500` `({
-    statusCode: 500,
-    error: "Internal Server Error",
-    code: "EXTERNAL_SERVICE_ERROR",
-    message: string,
-    details: {
-    service: string,
-
-},
-
-} | {
-    statusCode: 500,
-    error: "Internal Server Error",
-    code: "DATABASE_WRITE_ERROR",
-    message: string,
-    details: {
-    operation: string,
-
-},
-
-} | {
-    statusCode: 500,
-    error: "Internal Server Error",
-    code: "INTERNAL_SERVER_ERROR",
-    message: string,
-
-})` Internal Server Error
- */
-      adminBadgeControllerAssignBadge: ({ id, playerId, ...query }: AdminBadgeControllerAssignBadgeParams, params: RequestParams = {}) =>
-         this.request<
-            {
-               success: boolean;
-            },
-            | (
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'VALIDATION_ERROR';
-                      message: string;
-                      details?: {
-                         field?: string;
-                      };
-                   }
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'REQUEST_VALIDATION_ERROR';
-                      message: string;
-                      details: {
-                         errors: {
-                            path: string;
-                            message: string;
-                         }[];
-                      };
-                   }
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'INVALID_PATH_PARAMETER';
-                      message: string;
-                      details: {
-                         errors: {
-                            path: string;
-                            message: string;
-                         }[];
-                      };
-                   }
-              )
-            | {
-                 statusCode: 401;
-                 error: 'Unauthorized';
-                 code: 'UNAUTHORIZED';
-                 message: string;
-              }
-            | {
-                 statusCode: 404;
-                 error: 'Not Found';
-                 code: 'NOT_FOUND';
-                 message: string;
-                 details?: {
-                    resource: string;
-                    id?: string | number;
-                 };
-              }
-            | (
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'EXTERNAL_SERVICE_ERROR';
-                      message: string;
-                      details: {
-                         service: string;
-                      };
-                   }
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'DATABASE_WRITE_ERROR';
-                      message: string;
-                      details: {
-                         operation: string;
-                      };
-                   }
-                 | {
-                      statusCode: 500;
-                      error: 'Internal Server Error';
-                      code: 'INTERNAL_SERVER_ERROR';
-                      message: string;
-                   }
-              )
-         >({
-            path: `/api/v2/admin/badges/${id}/assign/${playerId}`,
-            method: 'POST',
-            query: query,
-            format: 'json',
-            ...params
-         }),
-
-      /**
- * No description
- *
- * @tags AdminBadge
- * @name AdminBadgeControllerUnassignBadge
- * @request DELETE:/api/v2/admin/badges/{id}/assign/{playerId}
- * @response `200` `{
-    success: boolean,
-
-}` Badge removal result
- * @response `400` `({
-    statusCode: 400,
-    error: "Bad Request",
-    code: "VALIDATION_ERROR",
-    message: string,
-    details?: {
-    field?: string,
-
-},
-
-} | {
-    statusCode: 400,
-    error: "Bad Request",
-    code: "REQUEST_VALIDATION_ERROR",
-    message: string,
-    details: {
-    errors: ({
-    path: string,
-    message: string,
-
-})[],
-
-},
-
-} | {
-    statusCode: 400,
-    error: "Bad Request",
-    code: "INVALID_PATH_PARAMETER",
-    message: string,
-    details: {
-    errors: ({
-    path: string,
-    message: string,
-
-})[],
-
-},
-
-})` Bad Request
- * @response `401` `{
-    statusCode: 401,
-    error: "Unauthorized",
-    code: "UNAUTHORIZED",
-    message: string,
-
-}` Unauthorized
- * @response `404` `{
-    statusCode: 404,
-    error: "Not Found",
-    code: "NOT_FOUND",
-    message: string,
-    details?: {
-    resource: string,
-    id?: (string | number),
-
-},
-
-}` Not Found
- */
-      adminBadgeControllerUnassignBadge: ({ id, playerId }: AdminBadgeControllerUnassignBadgeParams, params: RequestParams = {}) =>
-         this.request<
-            {
-               success: boolean;
-            },
-            | (
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'VALIDATION_ERROR';
-                      message: string;
-                      details?: {
-                         field?: string;
-                      };
-                   }
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'REQUEST_VALIDATION_ERROR';
-                      message: string;
-                      details: {
-                         errors: {
-                            path: string;
-                            message: string;
-                         }[];
-                      };
-                   }
-                 | {
-                      statusCode: 400;
-                      error: 'Bad Request';
-                      code: 'INVALID_PATH_PARAMETER';
-                      message: string;
-                      details: {
-                         errors: {
-                            path: string;
-                            message: string;
-                         }[];
-                      };
-                   }
-              )
-            | {
-                 statusCode: 401;
-                 error: 'Unauthorized';
-                 code: 'UNAUTHORIZED';
-                 message: string;
-              }
-            | {
-                 statusCode: 404;
-                 error: 'Not Found';
-                 code: 'NOT_FOUND';
-                 message: string;
-                 details?: {
-                    resource: string;
-                    id?: string | number;
-                 };
-              }
-         >({
-            path: `/api/v2/admin/badges/${id}/assign/${playerId}`,
-            method: 'DELETE',
-            format: 'json',
-            ...params
-         }),
-
-      /**
- * No description
- *
- * @tags AdminBadge
  * @name AdminBadgeControllerGetPlayerBadges
  * @request GET:/api/v2/admin/badges/player/{playerId}
  * @response `200` `({
@@ -27786,6 +27813,324 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             method: 'PUT',
             body: data,
             type: ContentType.Json,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags AdminBadge
+ * @name AdminBadgeControllerAssignBadge
+ * @request POST:/api/v2/admin/badges/{id}/assign/{playerId}
+ * @response `200` `{
+    success: boolean,
+
+}` Badge assignment result
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ * @response `500` `({
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "EXTERNAL_SERVICE_ERROR",
+    message: string,
+    details: {
+    service: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "DATABASE_WRITE_ERROR",
+    message: string,
+    details: {
+    operation: string,
+
+},
+
+} | {
+    statusCode: 500,
+    error: "Internal Server Error",
+    code: "INTERNAL_SERVER_ERROR",
+    message: string,
+
+})` Internal Server Error
+ */
+      adminBadgeControllerAssignBadge: ({ id, playerId, ...query }: AdminBadgeControllerAssignBadgeParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+            | (
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'EXTERNAL_SERVICE_ERROR';
+                      message: string;
+                      details: {
+                         service: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'DATABASE_WRITE_ERROR';
+                      message: string;
+                      details: {
+                         operation: string;
+                      };
+                   }
+                 | {
+                      statusCode: 500;
+                      error: 'Internal Server Error';
+                      code: 'INTERNAL_SERVER_ERROR';
+                      message: string;
+                   }
+              )
+         >({
+            path: `/api/v2/admin/badges/${id}/assign/${playerId}`,
+            method: 'POST',
+            query: query,
+            format: 'json',
+            ...params
+         }),
+
+      /**
+ * No description
+ *
+ * @tags AdminBadge
+ * @name AdminBadgeControllerUnassignBadge
+ * @request DELETE:/api/v2/admin/badges/{id}/assign/{playerId}
+ * @response `200` `{
+    success: boolean,
+
+}` Badge removal result
+ * @response `400` `({
+    statusCode: 400,
+    error: "Bad Request",
+    code: "VALIDATION_ERROR",
+    message: string,
+    details?: {
+    field?: string,
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "REQUEST_VALIDATION_ERROR",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+} | {
+    statusCode: 400,
+    error: "Bad Request",
+    code: "INVALID_PATH_PARAMETER",
+    message: string,
+    details: {
+    errors: ({
+    path: string,
+    message: string,
+
+})[],
+
+},
+
+})` Bad Request
+ * @response `401` `{
+    statusCode: 401,
+    error: "Unauthorized",
+    code: "UNAUTHORIZED",
+    message: string,
+
+}` Unauthorized
+ * @response `404` `{
+    statusCode: 404,
+    error: "Not Found",
+    code: "NOT_FOUND",
+    message: string,
+    details?: {
+    resource: string,
+    id?: (string | number),
+
+},
+
+}` Not Found
+ */
+      adminBadgeControllerUnassignBadge: ({ id, playerId }: AdminBadgeControllerUnassignBadgeParams, params: RequestParams = {}) =>
+         this.request<
+            {
+               success: boolean;
+            },
+            | (
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'VALIDATION_ERROR';
+                      message: string;
+                      details?: {
+                         field?: string;
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'REQUEST_VALIDATION_ERROR';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+                 | {
+                      statusCode: 400;
+                      error: 'Bad Request';
+                      code: 'INVALID_PATH_PARAMETER';
+                      message: string;
+                      details: {
+                         errors: {
+                            path: string;
+                            message: string;
+                         }[];
+                      };
+                   }
+              )
+            | {
+                 statusCode: 401;
+                 error: 'Unauthorized';
+                 code: 'UNAUTHORIZED';
+                 message: string;
+              }
+            | {
+                 statusCode: 404;
+                 error: 'Not Found';
+                 code: 'NOT_FOUND';
+                 message: string;
+                 details?: {
+                    resource: string;
+                    id?: string | number;
+                 };
+              }
+         >({
+            path: `/api/v2/admin/badges/${id}/assign/${playerId}`,
+            method: 'DELETE',
             format: 'json',
             ...params
          })
