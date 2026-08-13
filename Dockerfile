@@ -8,6 +8,7 @@ FROM ghcr.io/voidzero-dev/vite-plus:${VITE_PLUS_VERSION} AS builder
 WORKDIR /app
 
 COPY --chown=vp:vp package.json pnpm-lock.yaml pnpm-workspace.yaml .node-version ./
+COPY --chown=vp:vp patches ./patches
 RUN vp install --frozen-lockfile
 
 COPY --chown=vp:vp . .
