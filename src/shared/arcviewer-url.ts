@@ -13,7 +13,7 @@ export function getReplayArcviewerUrl(params: Record<string, string>) {
    const arcviewerUrl = new URL(env.NEXT_PUBLIC_ARCVIEWER_URL);
    const searchParams = new URLSearchParams(params);
 
-   if (arcviewerUrl.protocol === 'http:' && localArcviewerHostnames.has(arcviewerUrl.hostname)) {
+   if (arcviewerUrl.protocol === 'http:' && (localArcviewerHostnames.has(arcviewerUrl.hostname) || arcviewerUrl.hostname.endsWith('.localhost'))) {
       return `/watch/index.html?${searchParams.toString()}`;
    }
 

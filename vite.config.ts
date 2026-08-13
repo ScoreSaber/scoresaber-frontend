@@ -24,7 +24,7 @@ function getLocalArcviewerUrl(arcviewerUrl: string | undefined) {
    if (!arcviewerUrl || !URL.canParse(arcviewerUrl)) return null;
 
    const url = new URL(arcviewerUrl);
-   if (url.protocol !== 'http:' || !localHostnames.has(url.hostname)) return null;
+   if (url.protocol !== 'http:' || (!localHostnames.has(url.hostname) && !url.hostname.endsWith('.localhost'))) return null;
 
    return arcviewerUrl.replace(/\/$/, '');
 }
@@ -32,12 +32,16 @@ function getLocalArcviewerUrl(arcviewerUrl: string | undefined) {
 export default defineConfig(({ mode }) => {
    const env = loadEnv(mode, process.cwd(), '');
    const localArcviewerUrl = getLocalArcviewerUrl(env.NEXT_PUBLIC_ARCVIEWER_URL);
+   const allowedHosts = ['scoresaber.local', '.scoresaber.local', '.localhost'];
+   if (env.NEXT_PUBLIC_SITE_URL && URL.canParse(env.NEXT_PUBLIC_SITE_URL)) {
+      allowedHosts.push(new URL(env.NEXT_PUBLIC_SITE_URL).hostname);
+   }
 
    return {
       customLogger: logger,
       envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
       server: {
-         allowedHosts: ['scoresaber.local', '.scoresaber.local'],
+         allowedHosts,
          sourcemapIgnoreList: (sourcePath) => sourcePath.includes('/node_modules/'),
          ...(localArcviewerUrl
             ? {

@@ -5,8 +5,11 @@ export function getSiteAuthCookieDomain(hostname: string) {
       return '.scoresaber.com';
    }
 
-   if (process.env.NODE_ENV !== 'production' && (hostname === 'scoresaber.local' || hostname.endsWith('.scoresaber.local'))) {
-      return '.scoresaber.local';
+   if (process.env.NODE_ENV !== 'production') {
+      if (hostname === 'scoresaber.local' || hostname.endsWith('.scoresaber.local')) return '.scoresaber.local';
+      if (hostname === 'scoresaber.localhost' || hostname.endsWith('.scoresaber.localhost')) {
+         return '.scoresaber.localhost';
+      }
    }
 
    return undefined;
