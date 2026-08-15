@@ -106,7 +106,7 @@ export function PlayerRelationships({ player }: { player: PlayerControllerGetPla
                <DialogHeader className="p-6 pb-3">
                   <DialogTitle>{t('relationshipsTitle', { name: player.name })}</DialogTitle>
                </DialogHeader>
-               <Tabs value={type} onValueChange={selectType} className="min-h-0 max-sm:gap-0">
+               <Tabs value={type} onValueChange={selectType} className="min-h-0 min-w-0 overflow-hidden max-sm:gap-0">
                   <TabsList variant="line" className="w-full rounded-none px-6">
                      <TabsTrigger value="followers">
                         {t('followers')}
@@ -184,9 +184,9 @@ function RelationshipList({
    const t = useTranslations('player');
 
    return (
-      <div className="flex min-h-0 flex-1 flex-col sm:h-[min(60dvh,28rem)] sm:flex-none">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden sm:h-[min(60dvh,28rem)] sm:flex-none">
          <div
-            className="min-h-0 flex-1 overflow-y-auto"
+            className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto"
             onScroll={(event) => {
                const list = event.currentTarget;
 
@@ -210,11 +210,11 @@ function RelationshipList({
                </Empty>
             ) : data.length ? (
                data.map((relationship, index) => (
-                  <div key={relationship.player.id}>
+                  <div key={relationship.player.id} className="min-w-0">
                      {index > 0 && <Separator />}
-                     <div className="flex items-center gap-3 px-6 py-3">
+                     <div className="flex min-w-0 items-center gap-3 overflow-hidden px-6 py-3">
                         <div className="min-w-0 flex-1">
-                           <PlayerLink player={relationship.player} withPFP />
+                           <PlayerLink player={relationship.player} withPFP showHoverCard={false} />
                         </div>
                         <PlayerFollowButton playerId={relationship.player.id} followsViewer={isOwner && type === 'followers'} />
                      </div>

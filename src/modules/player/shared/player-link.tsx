@@ -22,11 +22,21 @@ type PlayerLinkProps = {
    className?: string;
    withPFP?: boolean;
    showLivePresence?: boolean;
+   showHoverCard?: boolean;
    variant?: 'link' | 'inline';
    isInactive?: boolean;
 };
 
-export function PlayerLink({ player, outLink, className, withPFP, showLivePresence, variant = 'link', isInactive }: PlayerLinkProps) {
+export function PlayerLink({
+   player,
+   outLink,
+   className,
+   withPFP,
+   showLivePresence,
+   showHoverCard = true,
+   variant = 'link',
+   isInactive
+}: PlayerLinkProps) {
    const t = useTranslations();
    const playerSummary = buildPlayerSummary(player);
 
@@ -54,13 +64,21 @@ export function PlayerLink({ player, outLink, className, withPFP, showLivePresen
          params={{ playerId: player.id }}
       >
          <CountryImage country={player.country} className="shrink-0" />
-         <PlayerHoverCard playerId={player.id}>
+         {showHoverCard ? (
+            <PlayerHoverCard playerId={player.id}>
+               <PlayerName
+                  player={player}
+                  className={cn('ml-2 truncate', isInactive && 'opacity-50', className)}
+                  playerStyle={playerSummary.roleClassName}
+               />
+            </PlayerHoverCard>
+         ) : (
             <PlayerName
                player={player}
                className={cn('ml-2 truncate', isInactive && 'opacity-50', className)}
                playerStyle={playerSummary.roleClassName}
             />
-         </PlayerHoverCard>
+         )}
       </playerRoute.Link>
    );
 
