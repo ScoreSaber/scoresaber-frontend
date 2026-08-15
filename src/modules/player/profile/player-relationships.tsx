@@ -68,6 +68,7 @@ export function PlayerRelationships({ player }: { player: PlayerControllerGetPla
 
    const relationshipItems = relationships.data?.pages.flatMap((page) => page.data) ?? [];
    const websiteFollowerCount = player.followers - player.platformFriends;
+   const websiteFollowingCount = player.following - player.platformFriends;
 
    return (
       <>
@@ -113,7 +114,7 @@ export function PlayerRelationships({ player }: { player: PlayerControllerGetPla
                      </TabsTrigger>
                      <TabsTrigger value="following">
                         {t('following')}
-                        <span className="tabular-nums">{formatNumber(player.following)}</span>
+                        <span className="tabular-nums">{formatNumber(websiteFollowingCount)}</span>
                      </TabsTrigger>
                      <TabsTrigger value="platform-friends" disabled={!isOwner}>
                         {t('platformFriends')}
