@@ -42,9 +42,10 @@ function PrivacyPolicyPage() {
                   <a href="https://cloud.scoresaber.com/">cloud.scoresaber.com</a>, and related services.
                </p>
                <p>
-                  ScoreSaber is operated from Melbourne, Australia. Production servers are hosted with Hetzner in Finland and Germany. Replay, avatar,
-                  cover, and generated media storage uses Cloudflare R2 with the storage location set to Western Europe (WEUR). ScoreSaber Wiki is a
-                  public documentation and wiki site hosted on GitHub Pages.
+                  Stratheca Pty Ltd (ACN 701 710 081), trading as ScoreSaber, operates the services described in this policy from Melbourne,
+                  Australia. Production servers are hosted with Hetzner in Finland and Germany. Replay, avatar, cover, and generated media storage
+                  uses Cloudflare R2 with the storage location set to Western Europe (WEUR). ScoreSaber Wiki is a public documentation and wiki site
+                  hosted on GitHub Pages.
                </p>
                <p>
                   ScoreSaber Cloud at <a href="https://cloud.scoresaber.com/">cloud.scoresaber.com</a> is a Nextcloud-based team storage service for
@@ -53,7 +54,7 @@ function PrivacyPolicyPage() {
                   user replay uploads and is not a general cloud storage service for ScoreSaber users.
                </p>
                <p>
-                  For the services we operate, ScoreSaber is the controller of the personal information described in this policy. Contact us at{' '}
+                  For the services we operate, Stratheca Pty Ltd is the controller of the personal information described in this policy. Contact us at{' '}
                   <a href="mailto:privacy@scoresaber.com">privacy@scoresaber.com</a> with privacy questions or requests.
                </p>
                <p>
@@ -222,8 +223,8 @@ function PrivacyPolicyPage() {
 
                <h2>Overseas storage and transfers</h2>
                <p>
-                  ScoreSaber is operated from Australia, but the service is global. Your information may be stored or processed in Australia, Finland,
-                  Germany, Western Europe, the United States, or other countries where our providers operate.
+                  Stratheca Pty Ltd operates ScoreSaber from Australia, but the service is global. Your information may be stored or processed in
+                  Australia, Finland, Germany, Western Europe, the United States, or other countries where our providers operate.
                </p>
                <p>
                   For transfers from the EEA, UK, or other places with transfer rules, we rely on provider safeguards, regional storage settings where

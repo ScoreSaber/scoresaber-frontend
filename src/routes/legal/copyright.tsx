@@ -36,7 +36,8 @@ function CopyrightTakedownPolicyPage() {
 
                <p>
                   This Copyright Takedown Policy explains how to report copyright concerns involving ScoreSaber websites, leaderboards, map pages,
-                  replay features, APIs, and related services. ScoreSaber is operated from Melbourne, Australia.
+                  replay features, APIs, and related services. Stratheca Pty Ltd (ACN 701 710 081), trading as ScoreSaber, operates these services
+                  from Melbourne, Australia.
                </p>
                <p>
                   ScoreSaber primarily stores cover art and related display media for maps and leaderboards. ScoreSaber does not host BeatSaver

@@ -35,9 +35,9 @@ function BrowserStoragePolicyPage() {
                </header>
 
                <p>
-                  This Cookies Policy explains how ScoreSaber uses cookies, local storage, session storage, and similar browser storage on ScoreSaber
-                  websites and related web services, including ScoreSaber Hub, ScoreSaber Wiki, and ScoreSaber Cloud at{' '}
-                  <a href="https://cloud.scoresaber.com/">cloud.scoresaber.com</a>. It should be read with our{' '}
+                  This Cookies Policy explains how Stratheca Pty Ltd (ACN 701 710 081), trading as ScoreSaber, uses cookies, local storage, session
+                  storage, and similar browser storage on ScoreSaber websites and related web services, including ScoreSaber Hub, ScoreSaber Wiki, and
+                  ScoreSaber Cloud at <a href="https://cloud.scoresaber.com/">cloud.scoresaber.com</a>. It should be read with our{' '}
                   <privacyRoute.Link>Privacy Policy</privacyRoute.Link>.
                </p>
                <p>
