@@ -4,7 +4,7 @@ import { api } from '@/shared/api/server-api';
 import { actionResultVoid } from '@/shared/result/action';
 
 const approveRequestFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { requestId: number; leaderboardId?: number }) => data)
+   .validator((data: { requestId: number; leaderboardId?: number }) => data)
    .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerApprove({ id: data.requestId }, { leaderboardId: data.leaderboardId })));
 
 export async function approveRequest(requestId: number, leaderboardId?: number) {

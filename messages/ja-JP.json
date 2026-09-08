@@ -86,6 +86,16 @@
          "patreon": "ぜひ Patreon での ScoreSaber のサポートをご検討ください ❤️",
          "patreonPerks": "カスタムプロフィール Bio、特別なリーダーボードの色、バッジ、役割を取得できます",
          "sourceCode": "ソースコード"
+      },
+      "pairing": {
+         "title": "",
+         "signedOutDescription": "",
+         "signedInDescription": "",
+         "loginAction": "ログイン",
+         "signupAction": "",
+         "loading": "",
+         "copied": "",
+         "claimedDescription": ""
       }
    },
    "nav": {
@@ -101,7 +111,8 @@
       "livePlatform": "",
       "apiDocs": "APIドキュメント",
       "questInstaller": "Questインストーラー",
-      "team": "チーム"
+      "team": "チーム",
+      "support": ""
    },
    "home": {
       "hero": {
@@ -124,12 +135,17 @@
       "sections": {
          "news": "",
          "topPlayers": "",
-         "rankings": "",
+         "rankings": "ランキング",
          "trendingMaps": "",
          "browse": ""
       },
       "news": {
-         "readMore": ""
+         "allNews": "",
+         "readMore": "",
+         "repostedBy": "",
+         "imageLabel": "",
+         "videoLabel": "",
+         "playVideoOnX": ""
       },
       "rankedBatch": {
          "eyebrow": "",
@@ -145,9 +161,9 @@
          "versus": "",
          "noMatch": "",
          "infoAction": "",
-         "scheduleAction": "",
-         "twitchAction": "",
-         "twitchFollowAction": "",
+         "scheduleAction": "スケジュール",
+         "twitchAction": "Twitch で視聴する",
+         "twitchFollowAction": "Twitchでフォローする",
          "twitchEmbedTitle": "",
          "poweredBy": "",
          "liveNotice": {
@@ -156,9 +172,9 @@
          },
          "countdown": {
             "days": "",
-            "hours": "",
-            "minutes": "",
-            "seconds": ""
+            "hours": "時",
+            "minutes": "分",
+            "seconds": "秒"
          }
       },
       "install": {
@@ -185,13 +201,99 @@
    },
    "supporterGate": {
       "title": "サポーター特典",
-      "connectDescription": "Patreon を連携すると、カスタム Bio などのプロフィール特典を利用できます",
-      "subscribeDescription": "Patreon での登録により、カスタム Bio などのプロフィール特典をアンロックできます",
+      "connectDescription": "Patreonアカウントを連携すると、自己紹介のカスタマイズなどのプロフィール特典を利用できます",
+      "subscribeDescription": "Patreonで支援すると、自己紹介のカスタマイズなどのプロフィール特典が利用できるようになります",
       "connect": "Patreon を連携",
       "subscribe": "Patreon に登録",
-      "supportUs": "Support us on Patreon",
-      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
-      "connectSupporterLink": "here"
+      "supportUs": "",
+      "connectSupporterText": "",
+      "connectSupporterLink": ""
+   },
+   "support": {
+      "title": "",
+      "subtitle": "",
+      "logoAlt": "",
+      "supportCta": "",
+      "connect": {
+         "text": "",
+         "link": ""
+      },
+      "why": {
+         "title": "",
+         "platform": {
+            "title": "",
+            "description": ""
+         },
+         "servers": {
+            "title": "",
+            "description": ""
+         },
+         "replays": {
+            "title": "",
+            "description": ""
+         }
+      },
+      "tiers": {
+         "title": "",
+         "subtitle": "",
+         "everythingIn": "",
+         "moreSoon": "",
+         "supporter": {
+            "name": "",
+            "price": ""
+         },
+         "ppFarmer": {
+            "name": "",
+            "price": ""
+         }
+      },
+      "perks": {
+         "adFree": {
+            "title": "",
+            "description": ""
+         },
+         "bio": {
+            "title": ""
+         },
+         "vanity": {
+            "title": "",
+            "description": ""
+         },
+         "nameColor": {
+            "title": "",
+            "description": ""
+         },
+         "replays5k": {
+            "title": "",
+            "description": ""
+         },
+         "supporterRole": {
+            "title": "",
+            "description": ""
+         },
+         "replays20k": {
+            "title": "",
+            "description": ""
+         },
+         "background": {
+            "title": ""
+         },
+         "accent": {
+            "title": ""
+         },
+         "pinned": {
+            "title": "ピン留めしたスコア",
+            "description": ""
+         },
+         "customization": {
+            "title": "",
+            "description": ""
+         },
+         "ppFarmerBadge": {
+            "title": "",
+            "description": ""
+         }
+      }
    },
    "login": {
       "titlePrefix": "サインイン",
@@ -238,33 +340,33 @@
          "submit": "サインイン",
          "forgot": "パスワードをお忘れですか？",
          "newPasswordLabel": "新しいパスワード",
-         "passwordHelp": "",
+         "passwordHelp": "10-128 文字で設定してください",
          "resetDescription": "",
-         "resetSubmit": "",
+         "resetSubmit": "パスワードの再設定",
          "backToLogin": "",
          "failedToast": "サインインに失敗しました",
-         "resetFailedToast": ""
+         "resetFailedToast": "パスワードのリセットに失敗しました"
       },
       "passkey": {
          "method": "パスキーでサインイン",
          "failedToast": "パスキーでのサインインに失敗しました"
       },
       "signup": {
-         "title": "",
+         "title": "アカウントを新規作成します。",
          "returningPlayerTitle": "",
          "returningPlayerDescription": "",
          "newPlayerLead": "",
          "newPlayerDescription": "",
-         "sentToast": "",
+         "sentToast": "メールを確認してください",
          "sentDescription": "",
-         "displayNameLabel": "",
+         "displayNameLabel": "表示される名前",
          "displayNameHelp": "",
-         "submit": "",
+         "submit": "アカウントを作成する",
          "failedToast": "サインアップに失敗しました",
-         "emailCallToAction": ""
+         "emailCallToAction": "新しいアカウントを作成する"
       },
       "subtitle": "",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Metaでサインイン"
    },
    "sidebar": {
       "activeRealm": "アクティブレルム",
@@ -303,12 +405,12 @@
       "goHome": "ホームに戻る",
       "searchPlaceholder": "検索…",
       "clearSearch": "検索をクリア",
-      "openInNewTab": "",
+      "openInNewTab": "新しいタブでひらく",
       "filters": "絞り込み",
       "hideFilters": "フィルターを非表示",
       "showFilters": "フィルターを表示",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "プライバシーポリシー",
+      "cookiesPolicy": "Cookieポリシー",
       "global": "グローバル",
       "friends": "フレンド",
       "aroundMe": "自分の周囲",
@@ -326,8 +428,8 @@
       "justNow": "たった今",
       "performancePoints": "パフォーマンスポイント",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "精度",
+      "misses": "ミス",
       "totalPlays": "総プレイ回数",
       "actions": "操作",
       "rankRequestActions": "ランク申請の操作",
@@ -391,27 +493,65 @@
       "ranked": "ランク",
       "averageRankedAccuracy": "ランク平均精度",
       "acc": "精度",
-      "live": ""
+      "live": "",
+      "liveLoading": "",
+      "liveUnavailable": ""
    },
    "score": {
+      "share": {
+         "title": "",
+         "description": "",
+         "shareRow": "",
+         "width": "",
+         "padding": "",
+         "addBackground": "",
+         "selectAll": "全て選択",
+         "rows": "",
+         "emptyPreview": "",
+         "copy": "",
+         "copied": "",
+         "copyFailed": "",
+         "save": "",
+         "saveFailed": ""
+      },
       "legacyAccuracy": "最高スコア変更前に記録されたスコア",
       "weighted": "加重 {weightedPercent}",
+      "accuracyPreview": "",
+      "resetAccuracyPreview": "",
       "score": "スコア",
+      "mods": "",
       "watchReplay": "リプレイを見る",
       "noReplayAvailable": "リプレイが見つかりません",
       "hideDetails": "詳細を非表示",
       "showDetails": "詳細を表示",
       "scoreDetails": "スコア詳細",
       "noDetailsAvailable": "詳細が見つかりません",
-      "collapseLeaderboard": "ランキングを折りたたむ",
-      "expandLeaderboard": "リーダーボードを展開",
+      "detailsTab": "",
+      "leaderboardTab": "",
+      "scoreHistory": "",
+      "showHistory": "",
+      "hideHistory": "",
+      "noScoreHistory": "",
+      "historyFilterClears": "",
+      "historyFilterRestarts": "",
+      "historyFilterQuits": "",
+      "historyFilterFails": "",
+      "totalPlays": "",
+      "replayViews": "",
+      "outcomeFailAt": "",
+      "outcomeQuitAt": "",
+      "outcomeRestartAt": "",
       "replayViewer": "リプレイビューアー",
       "openReplayNewTab": "新しいタブでリプレイビューアーをひらく",
       "gridAccuracy": "グリッド精度",
+      "jumpDistance": "",
+      "pauses": "",
+      "paused": "",
       "badCuts": "バッドカット",
       "bombs": "ボム",
       "streak115": "115 ストリーク",
-      "estFCAccuracy": "推定FC精度",
+      "estFCAccuracy": "",
+      "estFCPP": "",
       "timeDependenceShort": "TD",
       "leftShort": "左",
       "rightShort": "右",
@@ -454,6 +594,17 @@
       "playsCount": "{count} 再生",
       "leaderboard": "リーダーボード",
       "rankRequest": "ランク申請",
+      "insights": "",
+      "insightsTimeline": "",
+      "insightsComingSoon": "",
+      "insightsSuccessRate": "",
+      "insightsNoStats": "",
+      "insightsNoStatsHint": "",
+      "insightsNoOutcomeData": "",
+      "insightsNoneSelected": "",
+      "insightsTooltipCount": "",
+      "insightsUnknownTime": "",
+      "insightsDataSince": "",
       "noScoresFound": "スコアが見つかりません",
       "noScoresYet": "まだスコアがありません",
       "adjustFilters": "フィルター条件を変えてみてください",
@@ -463,9 +614,18 @@
       "totalScores": "総スコア",
       "scoresToday": "今日のスコア",
       "activeRankRequest": "アクティブなランク申請",
+      "version": "",
+      "currentVersion": "",
       "difficulty": "難易度",
       "gameMode": "ゲームモード",
       "starRatingRange": "難易度範囲",
+      "downloadPlaylist": "",
+      "downloadPlaylistAction": "",
+      "playlistDownloadDescription": "",
+      "playlistTitle": "",
+      "playlistDescription": "",
+      "playlistMapLimit": "",
+      "playlistMapLimitValue": "",
       "copyShareLink": "共有リンクのコピー",
       "shareLinkCopyFailed": "共有リンクのコピーに失敗しました",
       "copyMapHash": "",
@@ -493,6 +653,8 @@
       "rankedPlays": "ランクプレイ回数",
       "rankedScore": "ランクスコア合計",
       "rankedAcc": "ランク平均精度",
+      "plusOnePP": "",
+      "plusOnePPHint": "",
       "totalScore": "スコア合計",
       "joined": "登録日",
       "replayViews": "リプレイ再生回数",
@@ -517,6 +679,21 @@
       "platformFriendsTooltip": "プラットフォーム上のフレンド管理はここではできません。指定されたプラットフォーム上で管理してください",
       "failedToFollow": "フォローに失敗しました",
       "failedToUnfollow": "フォロー解除に失敗しました",
+      "reportProfile": "",
+      "reportProfileDesc": "",
+      "submitReport": "",
+      "reportReason": "",
+      "reportDetails": "",
+      "reportDetailsPlaceholder": "",
+      "reportSubmitted": "",
+      "failedToReport": "",
+      "reportReasons": {
+         "inappropriateProfile": "",
+         "impersonation": "",
+         "harassment": "",
+         "cheating": "",
+         "other": ""
+      },
       "playerActions": "",
       "unbanPlayer": "プレイヤーのBANを解除",
       "banPlayer": "プレイヤーをBANする",
@@ -550,6 +727,7 @@
       "hideEstimatedData": "推定データを非表示",
       "showEstimatedData": "推定データを表示",
       "peakRecorded": "記録された最高値",
+      "weeklyRankChangeTooltip": "",
       "previousNames": "以前の名前",
       "viewPreviousNames": "以前の名前を表示",
       "aliasRemoved": "別名削除済み",
@@ -578,22 +756,110 @@
       "chartTimeAll": "全て",
       "chartLastNDays": "過去{days}日",
       "chartNow": "現在",
-      "chartToday": "今日",
-      "chartYesterday": "昨日",
-      "chartDaysAgo": "{days} 日前",
-      "chartDaysAgoShort": "{days} 日前",
-      "chartOneWeekAgo": "1週間前",
-      "chartTwoWeeksAgo": "2週間前",
-      "chartWeeksAgoShort": "{weeks} 週間前",
-      "chartOneMonthAgo": "1ヶ月前",
-      "chartMonthsAgoShort": "{months} ヶ月前",
       "chartAvgPerDay": "平均/日",
       "chartEstimatedSuffix": "（推定）",
       "chartTooltipRank": "ランク: #{rank}",
       "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "平均精度: {acc}%",
       "chartTooltipPlays": "プレイ数: {plays}",
-      "chartTimeRange": "時間範囲"
+      "chartTimeRange": "時間範囲",
+      "customization": {
+         "title": "",
+         "description": "",
+         "open": "",
+         "unsaved": "",
+         "noChanges": "",
+         "saved": "",
+         "saveFailed": "",
+         "tabs": {
+            "account": "",
+            "style": "",
+            "layout": "",
+            "pinnedScores": "",
+            "badges": ""
+         },
+         "account": {
+            "title": "",
+            "description": "",
+            "open": ""
+         },
+         "pinnedScores": {
+            "title": "",
+            "profileTitle": "",
+            "description": "",
+            "lockTitle": "",
+            "lockDescription": "",
+            "selected": "",
+            "selectedCount": "",
+            "emptySelected": "",
+            "pinScore": "",
+            "editPinnedScore": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         },
+         "badges": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "empty": "",
+            "position": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": ""
+         },
+         "layout": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "sectionsTitle": "",
+            "sectionsDescription": "",
+            "statsTitle": "",
+            "statsDescription": "",
+            "chartMetricsTitle": "",
+            "chartMetricsDescription": "",
+            "sectionCharts": "",
+            "sectionBio": "",
+            "sectionPinnedScores": "",
+            "sectionScores": "",
+            "position": "",
+            "moveUp": "",
+            "moveDown": ""
+         },
+         "style": {
+            "accentLockTitle": "",
+            "accentLockDescription": "",
+            "backgroundImage": "",
+            "backgroundDescription": "",
+            "backgroundUpload": "",
+            "backgroundSelected": "",
+            "backgroundTooLarge": "",
+            "resetBackground": "",
+            "accentColor": "",
+            "accentForeground": "",
+            "accentForegroundActive": "",
+            "hexColorInput": "",
+            "accentDescription": "",
+            "useAccent": "",
+            "resetAccent": "",
+            "nameColor": "",
+            "nameColorDescription": "",
+            "supporterNameColor": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         }
+      }
    },
    "comments": {
       "edited": "（編集済み）",
@@ -681,7 +947,10 @@
       "noCommentsOrNotes": "この難易度にはコメントやメモはありません",
       "noRequestsFound": "リクエストが見つかりません",
       "upNext": "次に",
-      "openRequests": "キュー内"
+      "openRequests": "キュー内",
+      "queueIndicatorReady": "",
+      "queueIndicatorNeedsVotes": "",
+      "queueIndicatorDownvoted": ""
    },
    "leaderboard": {
       "admin": "アドミン",
@@ -813,12 +1082,20 @@
       "roomName": "",
       "roomCode": "",
       "roomMode": "",
+      "participation": "",
+      "active": "",
+      "inactive": "",
+      "activeInactiveSummary": "",
       "playerAlreadyInRoom": "",
       "noRoomPlayers": "",
       "addRoomPlayer": "",
       "addRoomTeam": "",
       "manageRoom": "",
       "roomPlayersSaved": "",
+      "playerMarkedActive": "",
+      "playerMarkedInactive": "",
+      "markPlayerActive": "",
+      "markPlayerInactive": "",
       "teamMode": "",
       "flatMode": "",
       "state": "",
@@ -831,8 +1108,8 @@
       "reopenRoom": "",
       "roomReopened": "",
       "roomReopenFailed": "",
-      "deleteRoom": "",
-      "deleteRoomDescription": "",
+      "deleteRoom": "ルームを削除する",
+      "deleteRoomDescription": "{room}を削除しますか? メンバリストも削除されます。",
       "roomDeleted": "",
       "roomDeleteFailed": "",
       "invalidRoom": "",
@@ -982,7 +1259,6 @@
          "countryResetQueued": "",
          "countryResetFailed": "",
          "resetCountryDialogDesc": "",
-         "resetCountryHelper": "",
          "resetCountryAvailableAt": "",
          "resetCountryConfirmText": "リセット"
       },
@@ -1082,9 +1358,9 @@
          },
          "vanity": {
             "title": "",
-            "description": "",
             "loadFailed": "",
             "current": "",
+            "infoLabel": "",
             "changeLabel": "",
             "claimLabel": "",
             "placeholder": "",
@@ -1093,7 +1369,9 @@
             "claimed": "",
             "claimFailed": "",
             "cooldown": "",
-            "rules": ""
+            "rules": "",
+            "lockTitle": "",
+            "lockDescription": ""
          }
       },
       "security": {

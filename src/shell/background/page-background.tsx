@@ -5,6 +5,7 @@ import { useCallback, useEffect, useReducer } from 'react';
 import { analyzeImage, type ScoredImage } from './analyze-background';
 
 import { Image } from '@/shared/components/image';
+import { cn } from '@/shared/format/helpers';
 import { BackgroundDebugPanel } from '@/shell/background/page-background-debug';
 
 const BASE_OPACITY = 0.2;
@@ -23,6 +24,8 @@ interface Layer {
 interface PageBackgroundProps {
    src: string;
    candidates?: string[];
+   invertImage?: boolean;
+   reducedBlur?: boolean;
    debugPanel: boolean;
 }
 
@@ -50,7 +53,7 @@ const initialState: PageBackgroundState = {
 // persistent blurred background image with crossfade transitions.
 // lives in the layout so it survives page navigations. pages set
 // the src via SetPageBackground from page-background-provider.
-export function PageBackground({ src, candidates, debugPanel }: PageBackgroundProps) {
+export function PageBackground({ src, candidates, invertImage, reducedBlur, debugPanel }: PageBackgroundProps) {
    const [{ layers, debugResults }, dispatch] = useReducer(pageBackgroundReducer, initialState);
    const requestKey = JSON.stringify([src, debugPanel ? (candidates ?? []) : []]);
 
@@ -121,12 +124,12 @@ export function PageBackground({ src, candidates, debugPanel }: PageBackgroundPr
                   src={layer.src}
                   alt=""
                   fill
-                  className="scale-110 object-cover blur-3xl"
+                  className={cn('scale-110 object-cover', reducedBlur ? 'blur-sm' : 'blur-3xl', invertImage && 'invert')}
                   sizes="100vw"
                   onLoad={() => handleLoad(layer.src)}
                   style={{
                      opacity: layer.opacity * BASE_OPACITY * layer.intensity,
-                     transition: `opacity ${FADE_MS}ms ease-in-out`
+                     transition: `opacity ${FADE_MS}ms ease-in-out, filter 500ms ease-in-out`
                   }}
                />
             ))}

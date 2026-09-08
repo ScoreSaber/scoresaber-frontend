@@ -51,7 +51,7 @@ const SCORESABER_PLAYLIST_IMAGE =
 const MAP_LISTING_API_LIMIT = 100;
 
 const downloadMapPlaylistFn = createServerFn({ method: 'POST' })
-   .inputValidator((input: PlaylistInput) => playlistInputSchema.parse(input))
+   .validator((input: PlaylistInput) => playlistInputSchema.parse(input))
    .handler(async ({ data }) => {
       const search = data.search?.trim();
       const identifierSearch = search ? isMapIdentifierSearch(search) : false;

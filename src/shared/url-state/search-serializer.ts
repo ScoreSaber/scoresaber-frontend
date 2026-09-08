@@ -32,7 +32,12 @@ export function normalizeSearchRecord(search: Record<string, unknown>) {
       if (Array.isArray(value)) {
          params[key] = value.length > 0 ? String(value[value.length - 1]) : undefined;
       } else if (value != null) {
-         params[key] = typeof value === 'object' ? formatObjectSearchValue(value) : String(value);
+         params[key] =
+            typeof value === 'object'
+               ? formatObjectSearchValue(value)
+               : typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint'
+                 ? String(value)
+                 : undefined;
       }
    }
 

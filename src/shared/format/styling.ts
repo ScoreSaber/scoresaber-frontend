@@ -1,8 +1,4 @@
-import type {
-   LeaderboardControllerGetLeaderboardByIdResponse,
-   MapControllerGetMapByIdResponse,
-   MapControllerGetMapListingsDataItem
-} from '@/shared/api/generated/ApiParams';
+import type { MapControllerGetMapByIdResponse, MapControllerGetMapListingsDataItem } from '@/shared/api/generated/ApiParams';
 import Permissions from '@/shared/permissions';
 
 type MapLeaderboard = MapControllerGetMapListingsDataItem['leaderboards'][number] | MapControllerGetMapByIdResponse['leaderboards'][number];
@@ -68,7 +64,7 @@ export function getStatusLabel(status: LeaderboardStatus) {
    return STATUS_LABEL[status] ?? 'Unranked';
 }
 
-export function isLeaderboardRanked(leaderboard: LeaderboardControllerGetLeaderboardByIdResponse) {
+export function isLeaderboardRanked(leaderboard: { realm: { leaderboardStatus: LeaderboardStatus } }) {
    return leaderboard.realm.leaderboardStatus === 'RANKED';
 }
 

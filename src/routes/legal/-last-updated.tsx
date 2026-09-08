@@ -1,6 +1,6 @@
 import { useLocale, useTranslations } from 'use-intl';
 
-const LEGAL_LAST_UPDATED_DATE = new Date(Date.UTC(2026, 4, 30));
+const LEGAL_LAST_UPDATED_DATE = new Date(Date.UTC(2026, 7, 25));
 const LEGAL_LAST_UPDATED_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
    year: 'numeric',
    month: 'long',

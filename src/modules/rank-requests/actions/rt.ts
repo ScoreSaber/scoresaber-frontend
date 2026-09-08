@@ -4,23 +4,23 @@ import { api } from '@/shared/api/server-api';
 import { actionResultVoid } from '@/shared/result/action';
 
 const rtVoteFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { difficultyId: number; vote: 'UPVOTE' | 'DOWNVOTE' }) => data)
+   .validator((data: { difficultyId: number; vote: 'UPVOTE' | 'DOWNVOTE' }) => data)
    .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerRtVote({ id: data.difficultyId }, { vote: data.vote })));
 
 const rtCommentFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { difficultyId: number; comment: string }) => data)
+   .validator((data: { difficultyId: number; comment: string }) => data)
    .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerRtComment({ id: data.difficultyId }, { comment: data.comment })));
 
 const createRankRequestFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { mapId: number; description: string; leaderboardIds: number[] }) => data)
+   .validator((data: { mapId: number; description: string; leaderboardIds: number[] }) => data)
    .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerCreateRequest(data)));
 
 const rtDeleteCommentFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { difficultyId: number; commentId: number }) => data)
+   .validator((data: { difficultyId: number; commentId: number }) => data)
    .handler(({ data }) => actionResultVoid(api.ranking.rankingControllerRtDeleteComment({ id: data.difficultyId, commentId: data.commentId })));
 
 const rtEditCommentFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { difficultyId: number; commentId: number; comment: string }) => data)
+   .validator((data: { difficultyId: number; commentId: number; comment: string }) => data)
    .handler(({ data }) =>
       actionResultVoid(api.ranking.rankingControllerRtEditComment({ id: data.difficultyId, commentId: data.commentId }, { comment: data.comment }))
    );

@@ -86,6 +86,16 @@
          "patreon": "请考虑在Patreon上支持ScoreSaber❤️",
          "patreonPerks": "你可以获得可自定义的自我介绍，更炫酷的排行榜颜色，徽章以及角色",
          "sourceCode": "源代码"
+      },
+      "pairing": {
+         "title": "在Quest一体机上配对ScoreSaber",
+         "signedOutDescription": "登录或注册以获取配对码",
+         "signedInDescription": "{name}已登录。将此配对码输入Quest一体机版中",
+         "loginAction": "登录",
+         "signupAction": "注册",
+         "loading": "获取配对码",
+         "copied": "已复制",
+         "claimedDescription": "你现在可以回到Beat Saber"
       }
    },
    "nav": {
@@ -98,10 +108,11 @@
       "requests": "申请",
       "wiki": "Wiki",
       "feedbackHub": "反馈中心",
-      "livePlatform": "",
+      "livePlatform": "直播",
       "apiDocs": "API 文档",
       "questInstaller": "安装Quest Mod",
-      "team": "团队"
+      "team": "团队",
+      "support": ""
    },
    "home": {
       "hero": {
@@ -129,7 +140,12 @@
          "browse": "浏览"
       },
       "news": {
-         "readMore": "了解更多……"
+         "allNews": "",
+         "readMore": "了解更多……",
+         "repostedBy": "",
+         "imageLabel": "",
+         "videoLabel": "",
+         "playVideoOnX": ""
       },
       "rankedBatch": {
          "eyebrow": "最新一批的排名谱",
@@ -140,18 +156,18 @@
       },
       "bswc": {
          "description": "",
-         "liveNow": "",
+         "liveNow": "正在直播！",
          "nextUp": "",
          "versus": "",
          "noMatch": "",
          "infoAction": "",
          "scheduleAction": "",
-         "twitchAction": "",
-         "twitchFollowAction": "",
+         "twitchAction": "在 Twitch 查看",
+         "twitchFollowAction": "在Twitch上关注",
          "twitchEmbedTitle": "",
          "poweredBy": "",
          "liveNotice": {
-            "watch": "",
+            "watch": "观看",
             "dismiss": ""
          },
          "countdown": {
@@ -189,9 +205,95 @@
       "subscribeDescription": "在 Patreon 上支持我们，即可解锁个人主页特权，例如自定义自我介绍",
       "connect": "绑定 Patreon",
       "subscribe": "在Patreon上订阅",
-      "supportUs": "Support us on Patreon",
-      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
-      "connectSupporterLink": "here"
+      "supportUs": "",
+      "connectSupporterText": "",
+      "connectSupporterLink": ""
+   },
+   "support": {
+      "title": "",
+      "subtitle": "",
+      "logoAlt": "",
+      "supportCta": "",
+      "connect": {
+         "text": "",
+         "link": ""
+      },
+      "why": {
+         "title": "",
+         "platform": {
+            "title": "",
+            "description": ""
+         },
+         "servers": {
+            "title": "",
+            "description": ""
+         },
+         "replays": {
+            "title": "",
+            "description": ""
+         }
+      },
+      "tiers": {
+         "title": "",
+         "subtitle": "",
+         "everythingIn": "",
+         "moreSoon": "",
+         "supporter": {
+            "name": "",
+            "price": ""
+         },
+         "ppFarmer": {
+            "name": "",
+            "price": ""
+         }
+      },
+      "perks": {
+         "adFree": {
+            "title": "",
+            "description": ""
+         },
+         "bio": {
+            "title": ""
+         },
+         "vanity": {
+            "title": "",
+            "description": ""
+         },
+         "nameColor": {
+            "title": "",
+            "description": ""
+         },
+         "replays5k": {
+            "title": "",
+            "description": ""
+         },
+         "supporterRole": {
+            "title": "",
+            "description": ""
+         },
+         "replays20k": {
+            "title": "",
+            "description": ""
+         },
+         "background": {
+            "title": ""
+         },
+         "accent": {
+            "title": ""
+         },
+         "pinned": {
+            "title": "",
+            "description": ""
+         },
+         "customization": {
+            "title": "",
+            "description": ""
+         },
+         "ppFarmerBadge": {
+            "title": "",
+            "description": ""
+         }
+      }
    },
    "login": {
       "titlePrefix": "登录",
@@ -264,7 +366,7 @@
          "emailCallToAction": "新用户注册"
       },
       "subtitle": "登录或创建一个ScoreSaber账户",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "使用 Meta 登录"
    },
    "sidebar": {
       "activeRealm": "当前分区",
@@ -303,12 +405,12 @@
       "goHome": "返回首页",
       "searchPlaceholder": "搜索……",
       "clearSearch": "清空搜索内容",
-      "openInNewTab": "",
+      "openInNewTab": "在新标签页中打开",
       "filters": "筛选",
       "hideFilters": "隐藏筛选条件",
       "showFilters": "显示筛选条件",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "隐私政策",
+      "cookiesPolicy": "Cookie 政策",
       "global": "全球",
       "friends": "我的好友",
       "aroundMe": "在我周围",
@@ -325,9 +427,9 @@
       "unknownDate": "未知日期",
       "justNow": "刚刚",
       "performancePoints": "PP点数",
-      "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "pp": "PP",
+      "accuracy": "精准度",
+      "misses": "未砍中",
       "totalPlays": "总游玩次数",
       "actions": "操作",
       "rankRequestActions": "排名申请操作",
@@ -391,27 +493,65 @@
       "ranked": "已排名的",
       "averageRankedAccuracy": "排名谱平均准度",
       "acc": "精准度",
-      "live": ""
+      "live": "",
+      "liveLoading": "",
+      "liveUnavailable": ""
    },
    "score": {
+      "share": {
+         "title": "",
+         "description": "",
+         "shareRow": "",
+         "width": "",
+         "padding": "",
+         "addBackground": "",
+         "selectAll": "",
+         "rows": "",
+         "emptyPreview": "",
+         "copy": "",
+         "copied": "",
+         "copyFailed": "",
+         "save": "",
+         "saveFailed": ""
+      },
       "legacyAccuracy": "该成绩是在得分机制修改之前提交的",
       "weighted": "权重{weightedPercent}",
+      "accuracyPreview": "",
+      "resetAccuracyPreview": "",
       "score": "分数",
+      "mods": "",
       "watchReplay": "观看回放",
       "noReplayAvailable": "没有可用的回放",
       "hideDetails": "隐藏详细信息",
       "showDetails": "显示详细信息",
       "scoreDetails": "成绩详细信息",
       "noDetailsAvailable": "无详细信息可用",
-      "collapseLeaderboard": "折叠排行榜",
-      "expandLeaderboard": "展开排行榜",
+      "detailsTab": "",
+      "leaderboardTab": "",
+      "scoreHistory": "",
+      "showHistory": "",
+      "hideHistory": "",
+      "noScoreHistory": "",
+      "historyFilterClears": "",
+      "historyFilterRestarts": "",
+      "historyFilterQuits": "",
+      "historyFilterFails": "",
+      "totalPlays": "",
+      "replayViews": "",
+      "outcomeFailAt": "",
+      "outcomeQuitAt": "",
+      "outcomeRestartAt": "",
       "replayViewer": "回放查看器",
       "openReplayNewTab": "在新标签页中打开回放查看器",
       "gridAccuracy": "精准度网格",
+      "jumpDistance": "",
+      "pauses": "",
+      "paused": "",
       "badCuts": "错误挥砍",
       "bombs": "炸弹",
       "streak115": "115 连击",
-      "estFCAccuracy": "预估全连精准度",
+      "estFCAccuracy": "",
+      "estFCPP": "",
       "timeDependenceShort": "TD",
       "leftShort": "左",
       "rightShort": "右",
@@ -454,6 +594,17 @@
       "playsCount": "{count} 次游玩",
       "leaderboard": "排行榜",
       "rankRequest": "排位申请",
+      "insights": "",
+      "insightsTimeline": "",
+      "insightsComingSoon": "",
+      "insightsSuccessRate": "",
+      "insightsNoStats": "",
+      "insightsNoStatsHint": "",
+      "insightsNoOutcomeData": "",
+      "insightsNoneSelected": "",
+      "insightsTooltipCount": "",
+      "insightsUnknownTime": "",
+      "insightsDataSince": "",
       "noScoresFound": "未找到成绩",
       "noScoresYet": "还没有成绩",
       "adjustFilters": "尝试调整您的筛选条件",
@@ -463,9 +614,18 @@
       "totalScores": "总分",
       "scoresToday": "今天得分",
       "activeRankRequest": "进行中的排位请求",
+      "version": "",
+      "currentVersion": "",
       "difficulty": "难度",
       "gameMode": "游戏模式",
       "starRatingRange": "星级范围",
+      "downloadPlaylist": "",
+      "downloadPlaylistAction": "",
+      "playlistDownloadDescription": "",
+      "playlistTitle": "",
+      "playlistDescription": "",
+      "playlistMapLimit": "",
+      "playlistMapLimitValue": "",
       "copyShareLink": "复制分享链接",
       "shareLinkCopyFailed": "分享链接复制失败",
       "copyMapHash": "",
@@ -493,6 +653,8 @@
       "rankedPlays": "排位谱游玩数",
       "rankedScore": "排位谱分数",
       "rankedAcc": "排位谱准度",
+      "plusOnePP": "",
+      "plusOnePPHint": "",
       "totalScore": "总得分",
       "joined": "加入时间",
       "replayViews": "回放被观看次数",
@@ -517,6 +679,21 @@
       "platformFriendsTooltip": "平台好友无法在这里管理，请前往指定平台管理",
       "failedToFollow": "关注失败",
       "failedToUnfollow": "取消关注失败",
+      "reportProfile": "",
+      "reportProfileDesc": "",
+      "submitReport": "",
+      "reportReason": "",
+      "reportDetails": "",
+      "reportDetailsPlaceholder": "",
+      "reportSubmitted": "",
+      "failedToReport": "",
+      "reportReasons": {
+         "inappropriateProfile": "",
+         "impersonation": "",
+         "harassment": "",
+         "cheating": "",
+         "other": ""
+      },
       "playerActions": "玩家操作",
       "unbanPlayer": "取消封禁",
       "banPlayer": "封禁玩家",
@@ -550,6 +727,7 @@
       "hideEstimatedData": "隐藏估计值",
       "showEstimatedData": "显示估计值",
       "peakRecorded": "最高纪录",
+      "weeklyRankChangeTooltip": "",
       "previousNames": "曾用名",
       "viewPreviousNames": "查看曾用名",
       "aliasRemoved": "别名已移除",
@@ -578,22 +756,110 @@
       "chartTimeAll": "全部",
       "chartLastNDays": "前 {days} 天",
       "chartNow": "现在",
-      "chartToday": "今天",
-      "chartYesterday": "昨天",
-      "chartDaysAgo": "{days}天前",
-      "chartDaysAgoShort": "{days}天前",
-      "chartOneWeekAgo": "一星期前",
-      "chartTwoWeeksAgo": "两星期前",
-      "chartWeeksAgoShort": "{weeks}星期前",
-      "chartOneMonthAgo": "一个月前",
-      "chartMonthsAgoShort": "{months}个月前",
       "chartAvgPerDay": "平均变化/天",
       "chartEstimatedSuffix": " (估计值)",
       "chartTooltipRank": "排名: #{rank}",
       "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "平均精度: {acc}%",
       "chartTooltipPlays": "游玩次数: {plays}",
-      "chartTimeRange": "统计时间范围"
+      "chartTimeRange": "统计时间范围",
+      "customization": {
+         "title": "",
+         "description": "",
+         "open": "",
+         "unsaved": "",
+         "noChanges": "",
+         "saved": "",
+         "saveFailed": "",
+         "tabs": {
+            "account": "账号",
+            "style": "",
+            "layout": "",
+            "pinnedScores": "",
+            "badges": ""
+         },
+         "account": {
+            "title": "",
+            "description": "",
+            "open": ""
+         },
+         "pinnedScores": {
+            "title": "",
+            "profileTitle": "",
+            "description": "",
+            "lockTitle": "",
+            "lockDescription": "",
+            "selected": "",
+            "selectedCount": "",
+            "emptySelected": "",
+            "pinScore": "",
+            "editPinnedScore": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         },
+         "badges": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "empty": "",
+            "position": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": ""
+         },
+         "layout": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "sectionsTitle": "",
+            "sectionsDescription": "",
+            "statsTitle": "",
+            "statsDescription": "",
+            "chartMetricsTitle": "",
+            "chartMetricsDescription": "",
+            "sectionCharts": "",
+            "sectionBio": "",
+            "sectionPinnedScores": "",
+            "sectionScores": "",
+            "position": "",
+            "moveUp": "",
+            "moveDown": ""
+         },
+         "style": {
+            "accentLockTitle": "",
+            "accentLockDescription": "",
+            "backgroundImage": "",
+            "backgroundDescription": "",
+            "backgroundUpload": "",
+            "backgroundSelected": "",
+            "backgroundTooLarge": "",
+            "resetBackground": "",
+            "accentColor": "",
+            "accentForeground": "",
+            "accentForegroundActive": "",
+            "hexColorInput": "",
+            "accentDescription": "",
+            "useAccent": "",
+            "resetAccent": "",
+            "nameColor": "",
+            "nameColorDescription": "",
+            "supporterNameColor": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         }
+      }
    },
    "comments": {
       "edited": "（已编辑）",
@@ -681,7 +947,10 @@
       "noCommentsOrNotes": "没有此难度的评论或者注释",
       "noRequestsFound": "未找到请求",
       "upNext": "即将处理",
-      "openRequests": "排队中"
+      "openRequests": "排队中",
+      "queueIndicatorReady": "",
+      "queueIndicatorNeedsVotes": "",
+      "queueIndicatorDownvoted": ""
    },
    "leaderboard": {
       "admin": "管理员",
@@ -813,12 +1082,20 @@
       "roomName": "",
       "roomCode": "",
       "roomMode": "",
+      "participation": "",
+      "active": "",
+      "inactive": "",
+      "activeInactiveSummary": "",
       "playerAlreadyInRoom": "",
       "noRoomPlayers": "",
       "addRoomPlayer": "",
       "addRoomTeam": "",
       "manageRoom": "",
       "roomPlayersSaved": "",
+      "playerMarkedActive": "",
+      "playerMarkedInactive": "",
+      "markPlayerActive": "",
+      "markPlayerInactive": "",
       "teamMode": "",
       "flatMode": "",
       "state": "",
@@ -982,7 +1259,6 @@
          "countryResetQueued": "重置国家/地区",
          "countryResetFailed": "重置国家/地区失败",
          "resetCountryDialogDesc": "这将从您的当前位置重新推算您所在的国家/地区。操作成功后，{days} 天内不能再使用重置国家/地区功能",
-         "resetCountryHelper": "使用时，请确保您当前位于您所希望在个人主页上展示的国家/地区，并确保未启用VPN或者代理",
          "resetCountryAvailableAt": "您最近重置过您的国家/地区。您可在 <date></date> 再次重置",
          "resetCountryConfirmText": "重置"
       },
@@ -1082,9 +1358,9 @@
          },
          "vanity": {
             "title": "个人资料链接",
-            "description": "设置自定义个人资料链接",
             "loadFailed": "无法加载您的个人资料链接",
             "current": "个人资料链接",
+            "infoLabel": "",
             "changeLabel": "设置新个人资料链接",
             "claimLabel": "输入自定义个人资料链接",
             "placeholder": "你的名字",
@@ -1093,7 +1369,9 @@
             "claimed": "已设置链接",
             "claimFailed": "链接设置失败",
             "cooldown": "您可以于 <date></date> 重新设定个人资料链接",
-            "rules": "3-32个字符，只能包含小写字母、数字、连字符。必须至少包含一个字母。每180天可更改一次"
+            "rules": "3-32个字符，只能包含小写字母、数字、连字符。必须至少包含一个字母。每180天可更改一次",
+            "lockTitle": "",
+            "lockDescription": ""
          }
       },
       "security": {
@@ -1240,7 +1518,7 @@
          "necessaryTitle": "必需的Cookie",
          "necessaryDescription": "这些 Cookies 对于登录、安全、速率限制，语言、主题、筛选的设置，网站核心功能是必需的。它们永远是启用的。"
       },
-      "lastUpdated": ""
+      "lastUpdated": "最后更新：{date}"
    },
    "oauth": {
       "consent": {

@@ -5,7 +5,7 @@ import type { Messages } from 'use-intl';
 
 import { Icons } from '@/shared/components/icons';
 
-type NavKey = string & keyof Messages['nav'];
+type NavKey = keyof Messages['nav'];
 export type AppNavRoute = 'home' | 'maps' | 'rankings' | 'rankRequests' | 'live' | 'questInstaller' | 'team' | 'support';
 type AppRouteId = RouteIds<RegisteredRouter['routeTree']>;
 type NavItem = { key: NavKey; shortKey: NavKey; icon: React.ReactNode; route: AppNavRoute; disabled?: boolean };
@@ -15,8 +15,18 @@ type ExternalSecondaryItem = { key: NavKey; icon: React.ReactNode; href: string;
 
 export const navItems: NavItem[] = [
    { key: 'home', shortKey: 'home', icon: <Home data-icon className="size-4" aria-hidden="true" />, route: 'home' },
-   { key: 'maps', shortKey: 'maps', icon: <FaMap data-icon className="size-4 fill-current" aria-hidden="true" />, route: 'maps' },
-   { key: 'rankings', shortKey: 'rankings', icon: <FaMedal data-icon className="size-4 fill-current" aria-hidden="true" />, route: 'rankings' },
+   {
+      key: 'maps',
+      shortKey: 'maps',
+      icon: <FaMap data-icon className="size-4 fill-current" aria-hidden="true" />,
+      route: 'maps'
+   },
+   {
+      key: 'rankings',
+      shortKey: 'rankings',
+      icon: <FaMedal data-icon className="size-4 fill-current" aria-hidden="true" />,
+      route: 'rankings'
+   },
    {
       key: 'rankRequests',
       shortKey: 'requests',
@@ -34,9 +44,24 @@ export const navItems: NavItem[] = [
 // bottom bar uses search instead of being in the main nav
 export const bottomBarItems: (NavItem | SearchNavItem)[] = [
    { key: 'home', shortKey: 'home', icon: <Home data-icon className="size-4" aria-hidden="true" />, route: 'home' },
-   { key: 'search', shortKey: 'search', icon: <Search data-icon className="size-4" aria-hidden="true" />, action: 'search' },
-   { key: 'maps', shortKey: 'maps', icon: <FaMap data-icon className="size-4 fill-current" aria-hidden="true" />, route: 'maps' },
-   { key: 'rankings', shortKey: 'rankings', icon: <FaMedal data-icon className="size-4 fill-current" aria-hidden="true" />, route: 'rankings' },
+   {
+      key: 'search',
+      shortKey: 'search',
+      icon: <Search data-icon className="size-4" aria-hidden="true" />,
+      action: 'search'
+   },
+   {
+      key: 'maps',
+      shortKey: 'maps',
+      icon: <FaMap data-icon className="size-4 fill-current" aria-hidden="true" />,
+      route: 'maps'
+   },
+   {
+      key: 'rankings',
+      shortKey: 'rankings',
+      icon: <FaMedal data-icon className="size-4 fill-current" aria-hidden="true" />,
+      route: 'rankings'
+   },
    {
       key: 'rankRequests',
       shortKey: 'requests',
@@ -46,7 +71,12 @@ export const bottomBarItems: (NavItem | SearchNavItem)[] = [
 ];
 
 export const secondaryItems: (InternalSecondaryItem | ExternalSecondaryItem)[] = [
-   { key: 'wiki', icon: <BookOpen data-icon className="size-4" aria-hidden="true" />, href: 'https://wiki.scoresaber.com', external: true },
+   {
+      key: 'wiki',
+      icon: <BookOpen data-icon className="size-4" aria-hidden="true" />,
+      href: 'https://wiki.scoresaber.com',
+      external: true
+   },
    {
       key: 'feedbackHub',
       icon: <MessageSquareText data-icon className="size-4" aria-hidden="true" />,
@@ -60,7 +90,12 @@ export const secondaryItems: (InternalSecondaryItem | ExternalSecondaryItem)[] =
       external: false
    },
    { key: 'team', icon: <Users data-icon className="size-4" aria-hidden="true" />, route: 'team', external: false },
-   { key: 'support', icon: <Heart data-icon className="size-4" aria-hidden="true" />, route: 'support', external: false }
+   {
+      key: 'support',
+      icon: <Heart data-icon className="size-4" aria-hidden="true" />,
+      route: 'support',
+      external: false
+   }
 ];
 
 export const socialLinks = [

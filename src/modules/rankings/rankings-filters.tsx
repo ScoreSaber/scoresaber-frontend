@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useAuth } from '@/modules/auth';
+import { useLivePlayersState } from '@/modules/player/profile/player-live-presence-indicator';
 import type {
    PlayerControllerGetPlayersPivot,
    PlayerControllerGetPlayersSort,
@@ -21,6 +22,7 @@ import { CountryRegionFilter } from '@/shared/components/country-region-filter';
 import { DebouncedSearchInput } from '@/shared/components/debounced-search-input';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { FilterPill } from '@/shared/components/filter-pill';
+import { Icons } from '@/shared/components/icons';
 import { PaginationArrow } from '@/shared/components/pagination';
 import { formatCountryRegionParam, parseCountryRegionParam, type CountryRegionFilterValue } from '@/shared/country-region';
 import { cn } from '@/shared/format/helpers';
@@ -50,7 +52,6 @@ interface RankingsFiltersProps<TLocation> {
    totalPages: number;
    includeInactive: boolean;
    live: boolean;
-   showLiveFilter: boolean;
    search: RankingsFiltersSearch;
    buildLocation: RouteLocationBuilder<RankingsFiltersSearch, TLocation>;
    parseSearch: (search: SearchParamsRecord) => RankingsFiltersSearch | null;
@@ -62,7 +63,6 @@ export function RankingsFilters<TLocation>({
    totalPages,
    includeInactive,
    live,
-   showLiveFilter,
    search,
    buildLocation,
    parseSearch,
@@ -70,6 +70,8 @@ export function RankingsFilters<TLocation>({
 }: RankingsFiltersProps<TLocation>) {
    const { user } = useAuth();
    const t = useTranslations();
+   const livePlayers = useLivePlayersState();
+   const liveAvailable = livePlayers === 'available' || live;
    const { navigate, preload, preloadClearAll, cancelPreload, loadStorage, saveStorage } = usePersistedParams({
       storageKey: rankingFilterPreferences.storageKey,
       search,
@@ -296,7 +298,7 @@ export function RankingsFilters<TLocation>({
                      </FilterPill>
 
                      {/* live */}
-                     {showLiveFilter && (
+                     {liveAvailable ? (
                         <FilterPill
                            className="cursor-pointer"
                            active={live}
@@ -306,6 +308,22 @@ export function RankingsFilters<TLocation>({
                         >
                            {t('rankings.live')}
                         </FilterPill>
+                     ) : (
+                        <Tooltip>
+                           <TooltipTrigger asChild>
+                              <span className="inline-flex" tabIndex={0}>
+                                 <FilterPill disabled>
+                                    {livePlayers === 'loading' ? (
+                                       <Icons.spinner className="size-2.5 animate-spin sm:size-3" />
+                                    ) : (
+                                       <FaBroadcastTower className="size-2.5 sm:size-3" />
+                                    )}
+                                    {t('rankings.live')}
+                                 </FilterPill>
+                              </span>
+                           </TooltipTrigger>
+                           <TooltipContent>{livePlayers === 'loading' ? t('rankings.liveLoading') : t('rankings.liveUnavailable')}</TooltipContent>
+                        </Tooltip>
                      )}
 
                      {/* country */}

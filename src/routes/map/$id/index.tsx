@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
-import { buildMapLeaderboardHead, getMapLeaderboardPageData, leaderboardSearchSchema, MapLeaderboardRouteContent } from './-leaderboard';
+import { buildMapLeaderboardHead, getMapLeaderboardPageData, leaderboardSearchSchema } from './-leaderboard';
+import { MapLeaderboardRouteContent } from './-leaderboard-content';
 
 import { isNumber, validateRequest } from '@/shared/url-state/params';
 

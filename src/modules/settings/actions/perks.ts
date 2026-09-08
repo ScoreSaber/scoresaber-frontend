@@ -4,11 +4,11 @@ import { api } from '@/shared/api/server-api';
 import { actionResultVoid } from '@/shared/result/action';
 
 const claimReplaySlotFn = createServerFn({ method: 'POST' })
-   .inputValidator((scoreId: number) => scoreId)
+   .validator((scoreId: number) => scoreId)
    .handler(({ data }) => actionResultVoid(api.user.userControllerClaimReplaySlot({ scoreId: data })));
 
 const releaseReplaySlotFn = createServerFn({ method: 'POST' })
-   .inputValidator((scoreId: number) => scoreId)
+   .validator((scoreId: number) => scoreId)
    .handler(({ data }) => actionResultVoid(api.user.userControllerReleaseReplaySlot({ scoreId: data })));
 
 export async function claimReplaySlot(scoreId: number) {

@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from 'react';
 
 import type { IconType } from 'react-icons';
-import { FaBan, FaFlag, FaGlobe, FaIdBadge, FaLock, FaUndoAlt, FaUsersCog } from 'react-icons/fa';
+import { FaBan, FaCodeBranch, FaFlag, FaGlobe, FaIdBadge, FaMedal, FaLock, FaUndoAlt, FaUsersCog } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSepa
 import { useActionMutation } from '@/hooks/use-action-mutation';
 import { useAuth } from '@/modules/auth';
 import { type PlayerAdminOperation, PlayerAdminOperations } from '@/modules/player/operations/admin/player-admin-operations';
+import type { AdminMergeTarget } from '@/modules/player/operations/admin/player-merge-dialog';
 import { PlayerReportDialog } from '@/modules/player/operations/member/player-report-dialog';
 import Permissions from '@/shared/permissions';
 
@@ -39,11 +40,20 @@ interface PlayerActionsProps {
    playerBanned: boolean;
    playerPermissions: number;
    playerRole: string | null;
+   mergeTarget?: AdminMergeTarget;
    compact?: boolean;
    extraActions?: PlayerExtraAction[];
 }
 
-export function PlayerActions({ playerId, playerBanned, playerPermissions, playerRole, compact = false, extraActions = [] }: PlayerActionsProps) {
+export function PlayerActions({
+   playerId,
+   playerBanned,
+   playerPermissions,
+   playerRole,
+   mergeTarget,
+   compact = false,
+   extraActions = []
+}: PlayerActionsProps) {
    const t = useTranslations();
    const { user } = useAuth();
    const isOwnProfile = user?.id === playerId;
@@ -85,6 +95,20 @@ export function PlayerActions({ playerId, playerBanned, playerPermissions, playe
          visible: canBan && !isOwnProfile && !playerBanned,
          icon: FaBan,
          label: t('player.banPlayer')
+      },
+      {
+         id: 'badges',
+         group: 'primary',
+         visible: isAdmin,
+         icon: FaMedal,
+         label: t('player.badges.manage')
+      },
+      {
+         id: 'merge',
+         group: 'primary',
+         visible: isAdmin && mergeTarget != null,
+         icon: FaCodeBranch,
+         label: t('player.merge.title')
       },
       {
          id: 'permissions',
@@ -160,6 +184,7 @@ export function PlayerActions({ playerId, playerBanned, playerPermissions, playe
             playerBanned={playerBanned}
             playerPermissions={playerPermissions}
             playerRole={playerRole}
+            mergeTarget={mergeTarget}
             currentUserPermissions={userPerms}
             isOwnProfile={isOwnProfile}
             action={action}

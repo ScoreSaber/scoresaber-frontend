@@ -1,6 +1,6 @@
 {
    "compilerOptions": {
-      "target": "es2020",
+      "target": "es2024",
       "rootDir": ".",
       "lib": ["dom", "dom.iterable", "esnext"],
       "allowJs": true,
@@ -20,6 +20,6 @@
          "@/*": ["./src/*"]
       }
    },
-   "include": ["**/*.ts", "**/*.tsx", "environment.d.ts"],
-   "exclude": ["node_modules", "dist", ".next", "scoresaber-frontend-legacy", "scripts"]
+   "include": ["src/**/*.ts", "src/**/*.tsx", "scripts/**/*.ts", "vite.config.ts"],
+   "exclude": ["node_modules", ".output"]
 }

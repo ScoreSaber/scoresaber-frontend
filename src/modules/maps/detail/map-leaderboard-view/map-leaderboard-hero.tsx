@@ -9,12 +9,12 @@ import { useTranslations } from 'use-intl';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import type { LeaderboardSearchParams } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
+import type { LeaderboardSearchParams, MapLeaderboard } from '@/modules/maps/detail/map-leaderboard-view/map-leaderboard-view-types';
 import { MapReuploadVersionSelection } from '@/modules/maps/detail/map-reupload-version-selection';
 import { BeatSaverKeyPill } from '@/modules/maps/shared/beatsaver-key-pill';
 import { ReplayDialog } from '@/modules/scores/replay-dialog';
 import { LinkedNames } from '@/modules/search/search-link';
-import type { LeaderboardControllerGetLeaderboardByIdResponse, MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
+import type { MapControllerGetMapByIdResponse } from '@/shared/api/generated/ApiParams';
 import { CopyButton } from '@/shared/components/copy-button';
 import { FadeInImage } from '@/shared/components/fade-in-image';
 import { Stat } from '@/shared/components/stat';
@@ -24,9 +24,9 @@ import { getNoSoloGameModeLabel } from '@/shared/format/strings';
 import { getStatusAccentClass } from '@/shared/format/styling';
 import { isLeaderboardPersonalizationParam } from '@/shared/url-state/persisted-filter-preferences';
 
-export function MapLeaderboardHero({ mapInfo, leaderboardInfo, linkSearchParams }: MapLeaderboardHeroProps) {
+export function MapLeaderboardHero({ mapInfo, leaderboard, linkSearchParams }: MapLeaderboardHeroProps) {
    const tc = useTranslations();
-   const status = leaderboardInfo.realm.leaderboardStatus;
+   const status = leaderboard.realm.leaderboardStatus;
 
    return (
       <div className="flex flex-col gap-1.5">
@@ -36,6 +36,7 @@ export function MapLeaderboardHero({ mapInfo, leaderboardInfo, linkSearchParams 
                alt={mapInfo.songName}
                width={96}
                height={96}
+               priority
                className="h-20 w-20 shrink-0 rounded-md object-cover shadow-md outline outline-1 outline-black/10 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:outline-white/10"
             />
 
@@ -60,7 +61,7 @@ export function MapLeaderboardHero({ mapInfo, leaderboardInfo, linkSearchParams 
                   <CopyMapHashButton hash={mapInfo.hash} />
                   <MapReuploadVersionSelection
                      mapInfo={mapInfo}
-                     activeLeaderboardId={leaderboardInfo.id}
+                     activeLeaderboardId={leaderboard.id}
                      linkSearchParams={linkSearchParams}
                      triggerVariant="icon"
                   />
@@ -219,6 +220,6 @@ function MapViewer({ mapKey, difficulty, gameMode }: { mapKey?: string | null; d
 
 interface MapLeaderboardHeroProps {
    mapInfo: MapControllerGetMapByIdResponse;
-   leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboard: MapLeaderboard;
    linkSearchParams?: LeaderboardSearchParams;
 }

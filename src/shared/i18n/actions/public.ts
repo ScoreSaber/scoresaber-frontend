@@ -4,7 +4,7 @@ import { setCookie } from '@tanstack/react-start/server';
 import { parseLocale } from '@/i18n/config';
 
 export const setLocale = createServerFn({ method: 'POST' })
-   .inputValidator((locale: string) => parseLocale(locale))
+   .validator((locale: string) => parseLocale(locale))
    .handler(({ data: locale }) => {
       setCookie('locale', locale, {
          path: '/',

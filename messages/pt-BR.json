@@ -86,6 +86,16 @@
          "patreon": "Por favor, considere apoiar o ScoreSaber no Patreon ❤️",
          "patreonPerks": "Você pode obter bios de perfil personalizadas, uma elegante cor no placar, uma medalha e um cargo",
          "sourceCode": "Código Fonte"
+      },
+      "pairing": {
+         "title": "",
+         "signedOutDescription": "",
+         "signedInDescription": "",
+         "loginAction": "",
+         "signupAction": "",
+         "loading": "",
+         "copied": "",
+         "claimedDescription": ""
       }
    },
    "nav": {
@@ -101,7 +111,8 @@
       "livePlatform": "",
       "apiDocs": "Documentos da API",
       "questInstaller": "Instalador do Quest",
-      "team": "Equipe"
+      "team": "Equipe",
+      "support": ""
    },
    "home": {
       "hero": {
@@ -129,7 +140,12 @@
          "browse": ""
       },
       "news": {
-         "readMore": ""
+         "allNews": "",
+         "readMore": "",
+         "repostedBy": "",
+         "imageLabel": "",
+         "videoLabel": "",
+         "playVideoOnX": ""
       },
       "rankedBatch": {
          "eyebrow": "",
@@ -189,9 +205,95 @@
       "subscribeDescription": "Inscreva-se no Patreon para desbloquear vantagens de perfil como bios personalizadas",
       "connect": "Conectar ao Patreon",
       "subscribe": "Inscreva-se no Patreon",
-      "supportUs": "Support us on Patreon",
-      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
-      "connectSupporterLink": "here"
+      "supportUs": "",
+      "connectSupporterText": "",
+      "connectSupporterLink": ""
+   },
+   "support": {
+      "title": "",
+      "subtitle": "",
+      "logoAlt": "",
+      "supportCta": "",
+      "connect": {
+         "text": "",
+         "link": ""
+      },
+      "why": {
+         "title": "",
+         "platform": {
+            "title": "",
+            "description": ""
+         },
+         "servers": {
+            "title": "",
+            "description": ""
+         },
+         "replays": {
+            "title": "",
+            "description": ""
+         }
+      },
+      "tiers": {
+         "title": "",
+         "subtitle": "",
+         "everythingIn": "",
+         "moreSoon": "",
+         "supporter": {
+            "name": "",
+            "price": ""
+         },
+         "ppFarmer": {
+            "name": "",
+            "price": ""
+         }
+      },
+      "perks": {
+         "adFree": {
+            "title": "",
+            "description": ""
+         },
+         "bio": {
+            "title": ""
+         },
+         "vanity": {
+            "title": "",
+            "description": ""
+         },
+         "nameColor": {
+            "title": "",
+            "description": ""
+         },
+         "replays5k": {
+            "title": "",
+            "description": ""
+         },
+         "supporterRole": {
+            "title": "",
+            "description": ""
+         },
+         "replays20k": {
+            "title": "",
+            "description": ""
+         },
+         "background": {
+            "title": ""
+         },
+         "accent": {
+            "title": ""
+         },
+         "pinned": {
+            "title": "",
+            "description": ""
+         },
+         "customization": {
+            "title": "",
+            "description": ""
+         },
+         "ppFarmerBadge": {
+            "title": "",
+            "description": ""
+         }
+      }
    },
    "login": {
       "titlePrefix": "Iniciar sessão em",
@@ -264,7 +366,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Entrar com Meta"
    },
    "sidebar": {
       "activeRealm": "Realm ativo",
@@ -303,12 +405,12 @@
       "goHome": "Ir para a página inicial",
       "searchPlaceholder": "Pesquisar...",
       "clearSearch": "Limpar pesquisa",
-      "openInNewTab": "",
+      "openInNewTab": "Abrir em uma nova aba",
       "filters": "Filtros",
       "hideFilters": "Ocultar Filtros",
       "showFilters": "Mostrar filtros",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "Política de Privacidade",
+      "cookiesPolicy": "Política de cookies",
       "global": "Global",
       "friends": "Amigos",
       "aroundMe": "Ao Meu Redor",
@@ -326,8 +428,8 @@
       "justNow": "Agora mesmo",
       "performancePoints": "Pontos de Desempenho",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "Precisão",
+      "misses": "Erros",
       "totalPlays": "Jogadas totais",
       "actions": "Ações",
       "rankRequestActions": "Ações de pedido de classificação",
@@ -391,27 +493,65 @@
       "ranked": "Ranqueado",
       "averageRankedAccuracy": "Média de Precisão Ranqueada",
       "acc": "Precisão",
-      "live": ""
+      "live": "",
+      "liveLoading": "",
+      "liveUnavailable": ""
    },
    "score": {
+      "share": {
+         "title": "",
+         "description": "",
+         "shareRow": "",
+         "width": "",
+         "padding": "",
+         "addBackground": "",
+         "selectAll": "",
+         "rows": "",
+         "emptyPreview": "",
+         "copy": "",
+         "copied": "",
+         "copyFailed": "",
+         "save": "",
+         "saveFailed": ""
+      },
       "legacyAccuracy": "A pontuação foi definida antes da alteração da pontuação máxima",
       "weighted": "Pesado {weightedPercent}",
+      "accuracyPreview": "",
+      "resetAccuracyPreview": "",
       "score": "Pontuação",
+      "mods": "",
       "watchReplay": "Assistir ao Replay",
       "noReplayAvailable": "Nenhum replay disponível",
       "hideDetails": "Ocultar detalhes",
       "showDetails": "Mostrar detalhes",
       "scoreDetails": "Detalhes da pontuação",
       "noDetailsAvailable": "Nenhum detalhe disponível",
-      "collapseLeaderboard": "Recolher tabela de classificação",
-      "expandLeaderboard": "Expandir tabela de classificação",
+      "detailsTab": "",
+      "leaderboardTab": "",
+      "scoreHistory": "",
+      "showHistory": "",
+      "hideHistory": "",
+      "noScoreHistory": "",
+      "historyFilterClears": "",
+      "historyFilterRestarts": "",
+      "historyFilterQuits": "",
+      "historyFilterFails": "",
+      "totalPlays": "",
+      "replayViews": "",
+      "outcomeFailAt": "",
+      "outcomeQuitAt": "",
+      "outcomeRestartAt": "",
       "replayViewer": "Visualizador de Replays",
       "openReplayNewTab": "Abrir o visualizador de replay em uma nova aba",
       "gridAccuracy": "Precisão em grade",
+      "jumpDistance": "",
+      "pauses": "",
+      "paused": "",
       "badCuts": "Cortes ruins",
       "bombs": "Bombas",
       "streak115": "115 Streak",
-      "estFCAccuracy": "Est. FC Accuracy",
+      "estFCAccuracy": "",
+      "estFCPP": "",
       "timeDependenceShort": "TD",
       "leftShort": "L",
       "rightShort": "R",
@@ -454,6 +594,17 @@
       "playsCount": "{count} jogadas",
       "leaderboard": "Tabela de Classificação",
       "rankRequest": "Solicitações de Classificações",
+      "insights": "",
+      "insightsTimeline": "",
+      "insightsComingSoon": "",
+      "insightsSuccessRate": "",
+      "insightsNoStats": "",
+      "insightsNoStatsHint": "",
+      "insightsNoOutcomeData": "",
+      "insightsNoneSelected": "",
+      "insightsTooltipCount": "",
+      "insightsUnknownTime": "",
+      "insightsDataSince": "",
       "noScoresFound": "Nenhuma pontuação encontrada.",
       "noScoresYet": "Ainda não há pontuação",
       "adjustFilters": "Tente ajustar seus filtros",
@@ -463,9 +614,18 @@
       "totalScores": "Jogadas Totais",
       "scoresToday": "Pontuações de hoje",
       "activeRankRequest": "Solicitação de rank ativo",
+      "version": "",
+      "currentVersion": "",
       "difficulty": "Dificuldade",
       "gameMode": "Modo de Jogo",
       "starRatingRange": "Faixa de classificação por estrelas",
+      "downloadPlaylist": "",
+      "downloadPlaylistAction": "",
+      "playlistDownloadDescription": "",
+      "playlistTitle": "",
+      "playlistDescription": "",
+      "playlistMapLimit": "",
+      "playlistMapLimitValue": "",
       "copyShareLink": "Copiar link de compartilhamento",
       "shareLinkCopyFailed": "Falha ao copiar o link de compartilhamento",
       "copyMapHash": "",
@@ -493,6 +653,8 @@
       "rankedPlays": "Partidas ranqueadas jogadas",
       "rankedScore": "Pontuação Ranqueada",
       "rankedAcc": "Precisão Ranqueada",
+      "plusOnePP": "",
+      "plusOnePPHint": "",
       "totalScore": "Pontuação Total",
       "joined": "Entrou",
       "replayViews": "Visualizações de Replay",
@@ -517,6 +679,21 @@
       "platformFriendsTooltip": "Os amigos da plataforma não podem ser gerenciados aqui. Por favor, gerencie-os na plataforma designada",
       "failedToFollow": "Falha ao seguir",
       "failedToUnfollow": "Falhou ao deixar de seguir",
+      "reportProfile": "",
+      "reportProfileDesc": "",
+      "submitReport": "",
+      "reportReason": "",
+      "reportDetails": "",
+      "reportDetailsPlaceholder": "",
+      "reportSubmitted": "",
+      "failedToReport": "",
+      "reportReasons": {
+         "inappropriateProfile": "",
+         "impersonation": "",
+         "harassment": "",
+         "cheating": "",
+         "other": ""
+      },
       "playerActions": "Ações do jogador",
       "unbanPlayer": "Desbanir jogador",
       "banPlayer": "Banir Jogador",
@@ -550,6 +727,7 @@
       "hideEstimatedData": "Ocultar dados estimados",
       "showEstimatedData": "Mostrar dados estimados",
       "peakRecorded": "Pico Gravado",
+      "weeklyRankChangeTooltip": "",
       "previousNames": "Nomes anteriores",
       "viewPreviousNames": "Ver nomes anteriores",
       "aliasRemoved": "Apelido removido",
@@ -578,22 +756,110 @@
       "chartTimeAll": "Todos",
       "chartLastNDays": "Últimos dias de {days}",
       "chartNow": "Agora",
-      "chartToday": "Hoje",
-      "chartYesterday": "Ontem",
-      "chartDaysAgo": "{days} dias atrás",
-      "chartDaysAgoShort": "há {days}d",
-      "chartOneWeekAgo": "1 semana atrás",
-      "chartTwoWeeksAgo": "2 semanas atrás",
-      "chartWeeksAgoShort": "{weeks}s ago",
-      "chartOneMonthAgo": "1 mês atrás",
-      "chartMonthsAgoShort": "{months}meses atrás",
       "chartAvgPerDay": "Média/dia",
       "chartEstimatedSuffix": "(estimado)",
       "chartTooltipRank": "Classificação: #{rank}",
       "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "Média da Precisão: {acc}%",
       "chartTooltipPlays": "Jogadas: {plays}",
-      "chartTimeRange": "Intervalo de tempo"
+      "chartTimeRange": "Intervalo de tempo",
+      "customization": {
+         "title": "",
+         "description": "",
+         "open": "",
+         "unsaved": "",
+         "noChanges": "",
+         "saved": "",
+         "saveFailed": "",
+         "tabs": {
+            "account": "",
+            "style": "",
+            "layout": "",
+            "pinnedScores": "",
+            "badges": ""
+         },
+         "account": {
+            "title": "",
+            "description": "",
+            "open": ""
+         },
+         "pinnedScores": {
+            "title": "",
+            "profileTitle": "",
+            "description": "",
+            "lockTitle": "",
+            "lockDescription": "",
+            "selected": "",
+            "selectedCount": "",
+            "emptySelected": "",
+            "pinScore": "",
+            "editPinnedScore": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         },
+         "badges": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "empty": "",
+            "position": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": ""
+         },
+         "layout": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "sectionsTitle": "",
+            "sectionsDescription": "",
+            "statsTitle": "",
+            "statsDescription": "",
+            "chartMetricsTitle": "",
+            "chartMetricsDescription": "",
+            "sectionCharts": "",
+            "sectionBio": "",
+            "sectionPinnedScores": "",
+            "sectionScores": "",
+            "position": "",
+            "moveUp": "",
+            "moveDown": ""
+         },
+         "style": {
+            "accentLockTitle": "",
+            "accentLockDescription": "",
+            "backgroundImage": "",
+            "backgroundDescription": "",
+            "backgroundUpload": "",
+            "backgroundSelected": "",
+            "backgroundTooLarge": "",
+            "resetBackground": "",
+            "accentColor": "",
+            "accentForeground": "",
+            "accentForegroundActive": "",
+            "hexColorInput": "",
+            "accentDescription": "",
+            "useAccent": "",
+            "resetAccent": "",
+            "nameColor": "",
+            "nameColorDescription": "",
+            "supporterNameColor": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         }
+      }
    },
    "comments": {
       "edited": "(editado)",
@@ -681,7 +947,10 @@
       "noCommentsOrNotes": "Não há comentários ou notas para esta dificuldade",
       "noRequestsFound": "Nenhuma solicitação encontrada",
       "upNext": "A seguir",
-      "openRequests": "Na fila"
+      "openRequests": "Na fila",
+      "queueIndicatorReady": "",
+      "queueIndicatorNeedsVotes": "",
+      "queueIndicatorDownvoted": ""
    },
    "leaderboard": {
       "admin": "Administrador",
@@ -813,12 +1082,20 @@
       "roomName": "",
       "roomCode": "",
       "roomMode": "",
+      "participation": "",
+      "active": "",
+      "inactive": "",
+      "activeInactiveSummary": "",
       "playerAlreadyInRoom": "",
       "noRoomPlayers": "",
       "addRoomPlayer": "",
       "addRoomTeam": "",
       "manageRoom": "",
       "roomPlayersSaved": "",
+      "playerMarkedActive": "",
+      "playerMarkedInactive": "",
+      "markPlayerActive": "",
+      "markPlayerInactive": "",
       "teamMode": "",
       "flatMode": "",
       "state": "",
@@ -982,7 +1259,6 @@
          "countryResetQueued": "Redefinir país",
          "countryResetFailed": "Falha ao redefinir o país",
          "resetCountryDialogDesc": "Isso recalcula o país do seu perfil a partir da sua localização atual. Depois que ele for bem-sucedido, a redefinição do país será bloqueado por {days} dias",
-         "resetCountryHelper": "Use isso somente quando estiver no país onde você deseja que seja exibido no ScoreSaber, e certifique-se de que você não está usando uma VPN ou proxy",
          "resetCountryAvailableAt": "Você já redefiniu seu país recentemente. Você pode redefini-lo novamente em <date></date>",
          "resetCountryConfirmText": "REDEFINIR"
       },
@@ -1082,9 +1358,9 @@
          },
          "vanity": {
             "title": "",
-            "description": "",
             "loadFailed": "",
             "current": "",
+            "infoLabel": "",
             "changeLabel": "",
             "claimLabel": "",
             "placeholder": "",
@@ -1093,7 +1369,9 @@
             "claimed": "",
             "claimFailed": "",
             "cooldown": "",
-            "rules": ""
+            "rules": "",
+            "lockTitle": "",
+            "lockDescription": ""
          }
       },
       "security": {
@@ -1240,7 +1518,7 @@
          "necessaryTitle": "Cookies necessários",
          "necessaryDescription": "Necessário para iniciar sessão, segurança, limitação de taxas, idioma, tema, filtros salvos e recursos principais do site. Estes são sempre ativos."
       },
-      "lastUpdated": ""
+      "lastUpdated": "Última atualização: {date}"
    },
    "oauth": {
       "consent": {

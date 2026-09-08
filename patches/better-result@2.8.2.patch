@@ -1,0 +1,5 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -3 +2,0 @@
+-//# sourceMappingURL=index.mjs.map

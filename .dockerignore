@@ -1,11 +1,9 @@
 .git
 .gitignore
-.next
 node_modules
+.output
 .env*
-!.env.example
 coverage
-dist
 Dockerfile*
 .dockerignore
 README.md
@@ -18,5 +16,4 @@ README.md
 *.pfx
 *.crt
 *.cer
-orbis-openapi-processed.json
-.legacy
+scripts/api/openapi.processed.json

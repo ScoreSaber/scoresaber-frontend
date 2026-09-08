@@ -186,6 +186,10 @@ function resolveTouchByHmd(hmd: string): { left: string; right: string } {
 }
 
 export function getControllerImage(name: string, side: 'left' | 'right', hmd?: string) {
+   if (hmd === 'PSVR2') {
+      return `${BASE}/controller_psvr2_sense_${side}.png`;
+   }
+
    if (name === 'Touch') {
       const entry = resolveTouchByHmd(hmd ?? '');
       return `${BASE}/${side === 'left' ? entry.left : entry.right}`;

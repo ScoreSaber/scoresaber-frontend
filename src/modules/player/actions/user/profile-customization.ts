@@ -14,7 +14,7 @@ interface UpdatePinnedScoresInput {
 const backgroundMaxSize = 10 * 1024 * 1024;
 
 const updatePinnedScoresFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: UpdatePinnedScoresInput) => data)
+   .validator((data: UpdatePinnedScoresInput) => data)
    .handler(({ data }) =>
       actionResultVoid(
          api.user.userControllerUpdatePinnedScores({
@@ -24,11 +24,11 @@ const updatePinnedScoresFn = createServerFn({ method: 'POST' })
    );
 
 const updateProfileCustomizationFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: UserControllerUpdateProfileCustomizationPayload) => data)
+   .validator((data: UserControllerUpdateProfileCustomizationPayload) => data)
    .handler(({ data }) => actionApiData(api.user.userControllerUpdateProfileCustomization(data)));
 
 const uploadProfileBackgroundFn = createServerFn({ method: 'POST' })
-   .inputValidator((formData: FormData) => formData)
+   .validator((formData: FormData) => formData)
    .handler(({ data }) => uploadProfileBackgroundData(data));
 
 const resetProfileBackgroundFn = createServerFn({ method: 'POST' }).handler(() =>

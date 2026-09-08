@@ -8,6 +8,7 @@ import { useTranslations } from 'use-intl';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+import { useDenyahMode } from '@/modules/player/denyah/denyah-mode-context';
 import { ScoreCardActions } from '@/modules/scores/score-card-actions';
 import { ScoreCardSurface } from '@/modules/scores/score-card-surface';
 import { ScoreDetailsInline } from '@/modules/scores/score-details-inline';
@@ -34,6 +35,7 @@ interface PlayerPinnedScoresSectionProps {
 
 export function PlayerPinnedScoresSection({ pinnedScores, showSeparator = true }: PlayerPinnedScoresSectionProps) {
    const t = useTranslations();
+   const denyahMode = useDenyahMode();
    const [activeScorePanel, setActiveScorePanel] = useState<{ scoreId: number; panel: PinnedScorePanel } | null>(null);
    const visiblePinnedScores = activeScorePanel
       ? pinnedScores.filter((pinnedScore) => pinnedScore.score.score.id === activeScorePanel.scoreId)
@@ -77,6 +79,13 @@ export function PlayerPinnedScoresSection({ pinnedScores, showSeparator = true }
                );
             })}
          </div>
+         {denyahMode && (
+            <div className="mt-2 grid grid-cols-1 md:grid-cols-6">
+               <div className="min-w-0 md:col-span-2 md:col-start-3">
+                  <FadeInImage src="/images/denyah-men.png" alt="" width={538} height={130} className="h-auto w-full rounded-md" />
+               </div>
+            </div>
+         )}
       </div>
    );
 }
@@ -183,13 +192,14 @@ function PinnedScoreCard({
                onToggleDetailsAction={() => onTogglePanelAction('details')}
                tooltipSide="left"
                replayTooltipSide="left"
+               deleteContext={{ mapName: leaderboard.map.songName }}
                className={isExpanded ? 'right-3' : 'right-2'}
             />
          </div>
          {activePanel && (
             <div className="mt-2 md:mx-4">
                {showDetails && <ScoreDetailsInline score={score} fcPPContext={fcPPContext} leaderboard={leaderboard} />}
-               {showHistory && <ScoreHistory scoreId={score.id} leaderboard={leaderboard} />}
+               {showHistory && <ScoreHistory scoreId={score.id} leaderboard={leaderboard} mapName={leaderboard.map.songName} />}
             </div>
          )}
       </div>

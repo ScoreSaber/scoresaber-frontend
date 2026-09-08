@@ -9,6 +9,12 @@ import { optionalApiData } from '@/shared/result/api';
 import { buildNoindexHead } from '@/shared/seo/metadata';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
+const REPLAY_SCORE_DETAIL_CACHE_MS = 5 * 60 * 1000;
+const MAX_CACHED_REPLAY_SCORE_DETAILS = 100;
+
+const cachedScoreDetails = new Map<number, { expiresAt: number; score: ScoreControllerGetScoreResponse }>();
+const pendingScoreDetails = new Map<number, Promise<ScoreControllerGetScoreResponse | null>>();
+
 const getPerksReplaysData = createServerFn({ method: 'GET' }).handler(async () => {
    const replaySlots = await optionalApiData(api.user.userControllerGetReplaySlots());
    let scoreDetails: Record<number, ScoreControllerGetScoreResponse | null> = {};
@@ -42,6 +48,27 @@ function SettingsPerksReplaysRoute() {
 }
 
 async function loadScoreDetailEntry(id: number) {
-   const score = await optionalApiData(api.score.scoreControllerGetScore({ id, includeScoreStats: 'false' }));
+   const cached = cachedScoreDetails.get(id);
+   if (cached && cached.expiresAt > Date.now()) return [id, cached.score] as const;
+   if (cached) cachedScoreDetails.delete(id);
+
+   let pending = pendingScoreDetails.get(id);
+   if (!pending) {
+      pending = optionalApiData(api.score.scoreControllerGetScore({ id, includeScoreStats: 'false' }))
+         .then((score) => {
+            if (score) {
+               if (cachedScoreDetails.size >= MAX_CACHED_REPLAY_SCORE_DETAILS) {
+                  const oldestId = cachedScoreDetails.keys().next().value;
+                  if (oldestId != null) cachedScoreDetails.delete(oldestId);
+               }
+               cachedScoreDetails.set(id, { expiresAt: Date.now() + REPLAY_SCORE_DETAIL_CACHE_MS, score });
+            }
+            return score;
+         })
+         .finally(() => pendingScoreDetails.delete(id));
+      pendingScoreDetails.set(id, pending);
+   }
+
+   const score = await pending;
    return [id, score] as const;
 }

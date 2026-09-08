@@ -1,13 +1,13 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useMemo } from 'react';
 
 import { useLocale, useTranslations } from 'use-intl';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { cn } from '@/shared/format/helpers';
+import { createRelativeTimeFormatters } from '@/shared/format/relative-time';
 
 type TimeProps = {
    date: Date | string | number | null | undefined;
@@ -30,7 +30,8 @@ const RELATIVE_UNITS: { seconds: number; unit: Intl.RelativeTimeFormatUnit }[] =
 
 const LONG_SHORT_TIME_LENGTH = 11;
 const MIN_SHORT_TIME_SCALE = 0.65;
-const SHORT_RELATIVE_TIME_LOCALES = ['fr', 'ru'];
+type TimeFormatters = ReturnType<typeof createTimeFormatters>;
+const timeFormattersByLocale = new Map<string, TimeFormatters>();
 
 export function Time({
    date,
@@ -45,7 +46,7 @@ export function Time({
    const dateObj = date == null ? null : new Date(date);
    const locale = useLocale();
    const t = useTranslations('common');
-   const formatters = useMemo(() => createTimeFormatters(locale), [locale]);
+   const formatters = getTimeFormatters(locale);
 
    if (!dateObj || isNaN(dateObj.getTime())) {
       return <span className={className}>{t('unknownDate')}</span>;
@@ -113,14 +114,18 @@ function timeAgo(date: Date, isShort: boolean, formatters: TimeFormatters, justN
    return justNow;
 }
 
-type TimeFormatters = ReturnType<typeof createTimeFormatters>;
+function getTimeFormatters(locale: string) {
+   const cached = timeFormattersByLocale.get(locale);
+   if (cached) return cached;
+
+   const formatters = createTimeFormatters(locale);
+   timeFormattersByLocale.set(locale, formatters);
+   return formatters;
+}
 
 function createTimeFormatters(locale: string) {
-   const shortRelativeStyle: Intl.RelativeTimeFormatStyle = usesShortRelativeTime(locale) ? 'short' : 'narrow';
-
    return {
-      relativeLong: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'long' }),
-      relativeShort: new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: shortRelativeStyle }),
+      ...createRelativeTimeFormatters(locale),
       fullDate: new Intl.DateTimeFormat(locale, {
          weekday: 'long',
          year: 'numeric',
@@ -146,9 +151,4 @@ function createTimeFormatters(locale: string) {
          dateStyle: 'long'
       })
    };
-}
-
-function usesShortRelativeTime(locale: string) {
-   const normalizedLocale = locale.toLowerCase();
-   return SHORT_RELATIVE_TIME_LOCALES.some((shortLocale) => normalizedLocale === shortLocale || normalizedLocale.startsWith(`${shortLocale}-`));
 }

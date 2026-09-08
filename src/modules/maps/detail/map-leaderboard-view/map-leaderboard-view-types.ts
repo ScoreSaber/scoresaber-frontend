@@ -1,5 +1,4 @@
 import type {
-   LeaderboardControllerGetLeaderboardByIdResponse,
    LeaderboardControllerGetLeaderboardScoresByIdPivot,
    LeaderboardControllerGetLeaderboardScoresByIdResponse,
    MapControllerGetMapByIdResponse
@@ -9,6 +8,8 @@ import type { RouteLocationBuilder } from '@/shared/url-state/route-location';
 import type { SearchParamsRecord } from '@/shared/url-state/search-params';
 
 type RankRequest = NonNullable<MapControllerGetMapByIdResponse['rankRequest']>;
+
+type MapLeaderboard = MapControllerGetMapByIdResponse['leaderboards'][number];
 
 type LeaderboardScores = LeaderboardControllerGetLeaderboardScoresByIdResponse | null;
 
@@ -28,7 +29,7 @@ type LeaderboardSearchParams = SearchParamsRecord & {
 interface MapLeaderboardViewProps<TLocation> {
    routeName: MapLeaderboardRouteName;
    mapInfo: MapControllerGetMapByIdResponse;
-   leaderboardInfo: LeaderboardControllerGetLeaderboardByIdResponse;
+   leaderboard: MapLeaderboard;
    leaderboardScores: LeaderboardScores;
    search: LeaderboardSearchParams;
    currentPage: number;
@@ -43,6 +44,7 @@ interface MapLeaderboardViewProps<TLocation> {
 export type {
    LeaderboardScores,
    LeaderboardSearchParams,
+   MapLeaderboard,
    MapLeaderboardRouteName,
    MapLeaderboardTab,
    MapLeaderboardViewProps,

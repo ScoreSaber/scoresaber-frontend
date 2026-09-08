@@ -18,7 +18,7 @@ export function AuthProvider({ initialUser, children }: { initialUser: UserContr
 
    useEffect(() => {
       if (prevUser.current?.id !== initialUser?.id) {
-         router.invalidate();
+         void router.invalidate();
       }
       prevUser.current = initialUser;
    }, [initialUser, router]);

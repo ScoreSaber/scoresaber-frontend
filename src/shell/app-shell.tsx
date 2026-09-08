@@ -28,8 +28,8 @@ export function AppShell({
    initialUser,
    messages,
    visibleLocales,
-   initialSeenHome,
    initialSidebarCollapsed,
+   isMac,
    queryClient,
    debugBreakpoints,
    debugPageBackground,
@@ -38,8 +38,8 @@ export function AppShell({
    initialUser: UserControllerGetMeResponse | null;
    messages: TranslationMessages;
    visibleLocales: Locale[];
-   initialSeenHome: boolean;
    initialSidebarCollapsed: boolean | null;
+   isMac: boolean;
    queryClient: QueryClient;
    debugBreakpoints: boolean;
    debugPageBackground: boolean;
@@ -53,11 +53,7 @@ export function AppShell({
                <TooltipProvider>
                   <OmniSearchProvider>
                      <RouteTopLoader />
-                     <SidebarProvider
-                        visibleLocales={visibleLocales}
-                        initialSeenHome={initialSeenHome}
-                        initialSidebarCollapsed={initialSidebarCollapsed}
-                     >
+                     <SidebarProvider visibleLocales={visibleLocales} initialSidebarCollapsed={initialSidebarCollapsed} isMac={isMac}>
                         <Sidebar />
                         <MobileTopBar />
                         <TranslationContextHighlighter messages={messages} />

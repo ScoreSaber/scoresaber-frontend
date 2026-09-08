@@ -1,0 +1,92 @@
+diff --git a/dist/chunk-JSJUKQRJ.js b/dist/chunk-JSJUKQRJ.js
+index 3b470962526a26cb45aea9f5c938ae4c266577f8..10c76bf395750867382b6288f03c84d04124e71d 100644
+--- a/dist/chunk-JSJUKQRJ.js
++++ b/dist/chunk-JSJUKQRJ.js
+@@ -345,6 +345,8 @@ var HOP_BY_HOP_HEADERS = /* @__PURE__ */ new Set([
+   "transfer-encoding",
+   "upgrade"
+ ]);
++var MAX_UPSTREAM_SOCKETS = 64;
++var REPLAYABLE_METHODS = /* @__PURE__ */ new Set(["GET", "HEAD", "OPTIONS"]);
+ function getRequestHost(req) {
+   const authority = req.headers[":authority"];
+   if (typeof authority === "string" && authority) return authority;
+@@ -396,7 +398,10 @@ function createProxyServer(options) {
+   } = options;
+   const tldSuffixes = [...new Set(tlds.length > 0 ? tlds : [tld])].map((value) => `.${value}`);
+   const primaryTldSuffix = tldSuffixes[0] ?? ".localhost";
+-  const handleRequest = (req, res) => {
++  const upstreamAgent = new http.Agent({ keepAlive: true, maxSockets: MAX_UPSTREAM_SOCKETS });
++  // Dial via createLoopbackConnection so ::1-only backends work too.
++  upstreamAgent.createConnection = (options) => createLoopbackConnection(options.port);
++  const handleRequest = (req, res, isReplay = false) => {
+     const reqTls = isEncrypted(req);
+     res.setHeader(PORTLESS_HEADER, "1");
+     const routes = getRoutes();
+@@ -451,7 +456,7 @@ function createProxyServer(options) {
+     }
+     proxyReqHeaders[PORTLESS_HOPS_HEADER] = String(hops + 1);
+     for (const key of Object.keys(proxyReqHeaders)) {
+-      if (key.startsWith(":")) {
++      if (key.startsWith(":") || key === "connection") {
+         delete proxyReqHeaders[key];
+       }
+     }
+@@ -460,8 +465,8 @@ function createProxyServer(options) {
+     }
+     const proxyReq = http.request(
+       {
+-        // Dial via createLoopbackConnection so ::1-only backends work too.
+-        createConnection: () => createLoopbackConnection(route.port),
++        agent: upstreamAgent,
++        port: route.port,
+         path: req.url,
+         method: req.method,
+         headers: proxyReqHeaders
+@@ -486,9 +491,17 @@ function createProxyServer(options) {
+       }
+     );
+     proxyReq.on("error", (err) => {
++      const errWithCode = err;
++      // backend closed the pooled socket as we yoinked it.
++      // replay once instead of a 502, but only when there was no body since the
++      // first pipe already ate it
++      if (!isReplay && proxyReq.reusedSocket && errWithCode.code === "ECONNRESET" && !res.headersSent && REPLAYABLE_METHODS.has(req.method || "") && !req.headers["transfer-encoding"] && !Number(req.headers["content-length"])) {
++        req.unpipe(proxyReq);
++        handleRequest(req, res, true);
++        return;
++      }
+       onError(`Proxy error for ${getRequestHost(req)}: ${err.message}`);
+       if (!res.headersSent) {
+-        const errWithCode = err;
+         const detail = errWithCode.code === "ECONNREFUSED" ? "The target app is not responding. It may have crashed." : "The target app may not be running.";
+         res.writeHead(502, { "Content-Type": "text/html" });
+         res.end(
+@@ -510,7 +523,11 @@ function createProxyServer(options) {
+         proxyReq.destroy();
+       }
+     });
+-    req.pipe(proxyReq);
++    if (isReplay) {
++      proxyReq.end();
++    } else {
++      req.pipe(proxyReq);
++    }
+   };
+   const handleUpgrade = (req, socket, head) => {
+     socket.on("error", () => socket.destroy());
+@@ -658,12 +675,14 @@ function createProxyServer(options) {
+     wrapper.close = function(cb) {
+       h2Server.close();
+       plainServer.close();
++      upstreamAgent.destroy();
+       return origClose(cb);
+     };
+     return wrapper;
+   }
+   const httpServer = http.createServer(handleRequest);
+   httpServer.on("upgrade", handleUpgrade);
++  httpServer.on("close", () => upstreamAgent.destroy());
+   return httpServer;
+ }
+ function createHttpRedirectServer(httpsPort) {

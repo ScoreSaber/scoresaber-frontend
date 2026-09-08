@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { spawnSync } from 'node:child_process';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 
@@ -7,9 +8,10 @@ type Messages = { [key: string]: string | Messages };
 const messagesSchema: z.ZodType<Messages> = z.lazy(() => z.record(z.string(), z.union([z.string(), messagesSchema])));
 
 const options = new Map<string, string>();
-for (let index = 2; index < Bun.argv.length; index += 1) {
-   const arg = Bun.argv[index];
-   if (arg.startsWith('--')) options.set(arg, Bun.argv[index + 1]);
+const args = process.argv.slice(2);
+for (let index = 0; index < args.length; index += 1) {
+   const arg = args[index];
+   if (arg?.startsWith('--')) options.set(arg, args[index + 1] ?? '');
 }
 
 const baseRef = options.get('--base') ?? 'origin/l10n/crowdin';
@@ -19,11 +21,11 @@ const outputDirectoryFromRoot = relative(process.cwd(), outputDirectory).replace
 const basePathFromConfig = (relative(outputDirectory, process.cwd()) || '.').replaceAll('\\', '/');
 
 const git = (args: string[]) => {
-   const result = Bun.spawnSync(['git', ...args], { stdout: 'pipe', stderr: 'pipe' });
-   if (result.exitCode === 0) return result.stdout.toString().trimEnd();
+   const result = spawnSync('git', args, { encoding: 'utf8' });
+   if (result.status === 0) return result.stdout.trimEnd();
 
-   console.error(result.stderr.toString());
-   process.exit(result.exitCode);
+   console.error(result.stderr);
+   process.exit(result.status ?? 1);
 };
 
 const changedFiles = git(['diff', '--name-only', `${baseRef}..${headRef}`, '--', 'messages/*.json'])

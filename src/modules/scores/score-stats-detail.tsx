@@ -3,11 +3,11 @@
 import { type ReactNode, type TouchEvent as ReactTouchEvent, useEffect, useRef, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { Bomb, Clock, Grid3X3, Loader2, Pause, Ruler, Scissors, Star, Target, Zap } from 'lucide-react';
+import { Bomb, Clock, Loader2, Pause, Ruler, Scissors, Star, Target, Zap } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { HandAccuracyRing } from './hand-accuracy-ring';
-import { HitScoreValue } from './hit-score-value';
+import { ScoreSliceGrid } from './score-slice-grid';
 
 import { Button } from '@/components/ui/button';
 
@@ -172,12 +172,6 @@ interface ScoreStatsDetailProps {
    onLoadedAction?: () => void;
 }
 
-const GRID_ROWS = [
-   [0, 1, 2, 3],
-   [4, 5, 6, 7],
-   [8, 9, 10, 11]
-];
-
 type ChartView = 'basic' | 'advanced' | 'distribution';
 
 const SWIPE_THRESHOLD = 40;
@@ -230,60 +224,6 @@ function formatPauseDuration(seconds: number) {
    return `${minutes}:${paddedSeconds}`;
 }
 
-function GridAccuracy({ grid }: { grid: ScoreControllerGetScoreStatsResponse['gridCutDetails']['grid'] }) {
-   const t = useTranslations();
-   if (grid.length < 12) return null;
-
-   const scores = grid
-      .slice(0, 12)
-      .filter((c) => c.count > 0)
-      .map((c) => c.avgScore);
-   if (scores.length === 0) return null;
-
-   const min = Math.min(...scores);
-   const max = Math.max(...scores);
-   const range = max - min || 1;
-
-   return (
-      <div className="flex flex-col items-center gap-1.5">
-         <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
-            <Grid3X3 className="size-3" />
-            <span>{t('score.gridAccuracy')}</span>
-         </div>
-         <div className="grid grid-cols-4 gap-1 rounded-md sm:gap-0.5">
-            {GRID_ROWS.map((row) =>
-               row.map((gridIndex) => {
-                  const cell = grid[gridIndex];
-                  if (cell.count === 0) {
-                     return (
-                        <div key={gridIndex} className="flex h-8 w-11 items-center justify-center rounded-sm text-[10px] opacity-30 sm:h-7 sm:w-9">
-                           --
-                        </div>
-                     );
-                  }
-                  const t = (cell.avgScore - min) / range;
-                  const r = Math.round(180 - t * 130);
-                  const g = Math.round(80 + t * 120);
-                  const b = Math.round(80 - t * 30);
-                  return (
-                     <div
-                        key={gridIndex}
-                        className="flex h-8 w-11 items-center justify-center rounded-sm text-[10px] font-semibold sm:h-7 sm:w-9"
-                        style={{
-                           backgroundColor: `rgba(${r}, ${g}, ${b}, 0.15)`,
-                           color: `rgb(${r}, ${g}, ${b})`
-                        }}
-                     >
-                        <HitScoreValue value={cell.avgScore} decimals={1} className="size-full rounded-sm" />
-                     </div>
-                  );
-               })
-            )}
-         </div>
-      </div>
-   );
-}
-
 function ScoreAccuracyOverview({
    stats,
    fullCombo,
@@ -325,7 +265,7 @@ function ScoreAccuracyOverview({
             </div>
 
             <div className="flex flex-col items-center gap-2 sm:order-1">
-               <GridAccuracy grid={stats.gridCutDetails.grid} />
+               <ScoreSliceGrid grid={stats.gridCutDetails.grid} />
             </div>
          </div>
 

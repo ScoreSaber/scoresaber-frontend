@@ -86,6 +86,16 @@
          "patreon": "Patreon을 통해 ScoreSaber를 후원해 주세요 ❤️",
          "patreonPerks": "맞춤 프로필 소개글, 특별한 리더보드 색상, 배지와 역할을 받을 수 있습니다",
          "sourceCode": "소스 코드"
+      },
+      "pairing": {
+         "title": "Quest Standalone에서 ScoreSaber 페어링",
+         "signedOutDescription": "로그인하거나 계정을 만들면, 페어링 코드와 함께 이 페이지로 바로 돌아옵니다",
+         "signedInDescription": "{name}(으)로 로그인되었습니다. Quest Standalone의 Beat Saber에서 이 코드를 입력하세요",
+         "loginAction": "로그인",
+         "signupAction": "계정 만들기",
+         "loading": "페어링 코드 가져오는 중",
+         "copied": "복사됨",
+         "claimedDescription": "이제 Beat Saber로 돌아가도 됩니다"
       }
    },
    "nav": {
@@ -98,89 +108,95 @@
       "requests": "랭킹",
       "wiki": "위키",
       "feedbackHub": "피드백 허브",
-      "livePlatform": "",
+      "livePlatform": "라이브",
       "apiDocs": "API 문서",
       "questInstaller": "Quest Installer",
-      "team": "팀"
+      "team": "팀",
+      "support": ""
    },
    "home": {
       "hero": {
-         "logoAlt": "",
-         "title": "",
-         "description": "",
-         "primaryAction": "",
-         "secondaryAction": "",
-         "secondaryActionSignedIn": ""
+         "logoAlt": "ScoreSaber 로고",
+         "title": "<brand>ScoreSaber</brand>에 오신 것을 환영합니다",
+         "description": "경쟁 Beat Saber의 중심지입니다. 2018년 5월에 시작된 ScoreSaber는 Beat Saber 커스텀 곡을 위한 최대 규모의 리더보드 및 경쟁 시스템입니다",
+         "primaryAction": "ScoreSaber 받기",
+         "secondaryAction": "계정 만들기",
+         "secondaryActionSignedIn": "내 프로필 보기"
       },
       "stats": {
-         "playersValue": "",
-         "playersLabel": "",
-         "scoresValue": "",
-         "scoresLabel": "",
-         "leaderboardsValue": "",
-         "leaderboardsLabel": "",
-         "tickerAria": ""
+         "playersValue": "130만",
+         "playersLabel": "등록된 플레이어",
+         "scoresValue": "9천만",
+         "scoresLabel": "점수",
+         "leaderboardsValue": "30만",
+         "leaderboardsLabel": "리더보드",
+         "tickerAria": "{label}: {value}"
       },
       "sections": {
-         "news": "",
-         "topPlayers": "",
-         "rankings": "",
-         "trendingMaps": "",
-         "browse": ""
+         "news": "뉴스",
+         "topPlayers": "상위 플레이어",
+         "rankings": "랭킹",
+         "trendingMaps": "트렌딩 맵",
+         "browse": "둘러보기"
       },
       "news": {
-         "readMore": ""
+         "allNews": "",
+         "readMore": "더 보기...",
+         "repostedBy": "",
+         "imageLabel": "",
+         "videoLabel": "",
+         "playVideoOnX": ""
       },
       "rankedBatch": {
-         "eyebrow": "",
-         "title": "",
-         "description": "",
-         "watchAction": "",
-         "reweightsAction": ""
+         "eyebrow": "최신 랭크 배치",
+         "title": "랭크 배치 개요",
+         "description": "매달 새로운 맵이 랭크됩니다. 배치 개요를 확인한 뒤, 랭크 후 스타 레이팅이 조정되면서 반영되는 재가중치를 확인해 보세요",
+         "watchAction": "YouTube에서 보기",
+         "reweightsAction": "재가중치 보기"
       },
       "bswc": {
-         "description": "",
-         "liveNow": "",
-         "nextUp": "",
-         "versus": "",
-         "noMatch": "",
-         "infoAction": "",
-         "scheduleAction": "",
-         "twitchAction": "",
-         "twitchFollowAction": "",
-         "twitchEmbedTitle": "",
-         "poweredBy": "",
+         "description": "다음 경기를 라이브로 시청하고, 토너먼트 정보를 둘러보거나 전체 일정을 확인하세요. Cube Community Twitch에서도 시청할 수 있습니다",
+         "liveNow": "지금 라이브 중!",
+         "nextUp": "다음 경기",
+         "versus": "vs",
+         "noMatch": "예정된 다음 경기가 아직 없습니다",
+         "infoAction": "토너먼트 정보",
+         "scheduleAction": "일정",
+         "twitchAction": "Twitch에서 보기",
+         "twitchFollowAction": "Twitch 팔로우하기",
+         "twitchEmbedTitle": "Cube Community Twitch 스트림",
+         "poweredBy": "ScoreSaber Ludus Tournament Client 제공",
          "liveNotice": {
-            "watch": "",
-            "dismiss": ""
+            "watch": "보기",
+            "dismiss": "BSWC 라이브 안내 닫기"
          },
          "countdown": {
-            "days": "",
-            "hours": "",
-            "minutes": "",
-            "seconds": ""
+            "days": "일",
+            "hours": "시간",
+            "minutes": "분",
+            "seconds": "초"
          }
       },
       "install": {
-         "title": "",
-         "description": "",
+         "title": "경쟁할 준비 되었나요?",
+         "description": "사용하는 플랫폼에 ScoreSaber를 설치하면 점수가 바로 리더보드에 집계됩니다",
          "quest": {
-            "title": "",
-            "action": ""
+            "title": "Meta Quest Standalone",
+            "action": "Quest Standalone에 설치"
          },
          "bsmanager": {
-            "title": "",
-            "action": ""
+            "title": "PC (BSManager)",
+            "action": "BSManager 다운로드"
          },
          "beatmods": {
-            "title": "",
-            "action": ""
+            "title": "PC (BeatMods)",
+            "action": "BeatMods에서 다운로드"
          }
       },
       "empty": {
-         "players": "",
-         "maps": "",
-         "news": ""
+         "players": "현재 상위 플레이어를 불러올 수 없습니다",
+         "maps": "현재 트렌딩 맵을 불러올 수 없습니다",
+         "news": "현재 뉴스를 불러올 수 없습니다"
       }
    },
    "supporterGate": {
@@ -189,9 +205,95 @@
       "subscribeDescription": "맞춤 프로필 소개글 같은 프로필 혜택을 이용하려면 Patreon을 구독하세요",
       "connect": "Patreon 연결",
       "subscribe": "Patreon 구독하기",
-      "supportUs": "Support us on Patreon",
-      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
-      "connectSupporterLink": "here"
+      "supportUs": "Patreon에서 후원하기",
+      "connectSupporterText": "이미 ScoreSaber를 후원 중인가요? Patreon을 연결하세요",
+      "connectSupporterLink": "여기"
+   },
+   "support": {
+      "title": "",
+      "subtitle": "",
+      "logoAlt": "",
+      "supportCta": "",
+      "connect": {
+         "text": "",
+         "link": ""
+      },
+      "why": {
+         "title": "",
+         "platform": {
+            "title": "",
+            "description": ""
+         },
+         "servers": {
+            "title": "",
+            "description": ""
+         },
+         "replays": {
+            "title": "",
+            "description": ""
+         }
+      },
+      "tiers": {
+         "title": "",
+         "subtitle": "",
+         "everythingIn": "",
+         "moreSoon": "",
+         "supporter": {
+            "name": "",
+            "price": ""
+         },
+         "ppFarmer": {
+            "name": "",
+            "price": ""
+         }
+      },
+      "perks": {
+         "adFree": {
+            "title": "",
+            "description": ""
+         },
+         "bio": {
+            "title": ""
+         },
+         "vanity": {
+            "title": "",
+            "description": ""
+         },
+         "nameColor": {
+            "title": "",
+            "description": ""
+         },
+         "replays5k": {
+            "title": "",
+            "description": ""
+         },
+         "supporterRole": {
+            "title": "",
+            "description": ""
+         },
+         "replays20k": {
+            "title": "",
+            "description": ""
+         },
+         "background": {
+            "title": ""
+         },
+         "accent": {
+            "title": ""
+         },
+         "pinned": {
+            "title": "",
+            "description": ""
+         },
+         "customization": {
+            "title": "",
+            "description": ""
+         },
+         "ppFarmerBadge": {
+            "title": "",
+            "description": ""
+         }
+      }
    },
    "login": {
       "titlePrefix": "로그인하기",
@@ -225,14 +327,14 @@
          "supportTitle": "지원팀 확인이 필요합니다",
          "supportDescription": "이 이메일은 여러 계정 또는 보호된 계정과 일치합니다",
          "metaInfo": {
-            "title": "",
-            "pcOnly": "",
-            "newPc": "",
-            "quest": ""
+            "title": "Meta PC 전용",
+            "pcOnly": "Beat Saber의 <strong>PC</strong> Meta Store 버전에서 <strong>실제로</strong> 점수를 제출하는 경우에만 사용하세요",
+            "newPc": "새로운 <strong>PC</strong> Meta 플레이어는 ScoreSaber를 설치하고, 게임 내 아무 리더보드나 연 뒤 여기에서 로그인하세요",
+            "quest": "새로운 <strong>Quest Standalone</strong> 플레이어는 먼저 <signupLink>여기</signupLink>에서 계정을 만든 뒤 Quest Installer 안내를 따르세요"
          }
       },
       "password": {
-         "title": "",
+         "title": "비밀번호로 로그인",
          "description": "",
          "passwordLabel": "",
          "submit": "",
@@ -264,7 +366,7 @@
          "emailCallToAction": ""
       },
       "subtitle": "",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Meta로 로그인"
    },
    "sidebar": {
       "activeRealm": "활성 렐름",
@@ -303,12 +405,12 @@
       "goHome": "홈으로",
       "searchPlaceholder": "검색...",
       "clearSearch": "검색 초기화",
-      "openInNewTab": "",
+      "openInNewTab": "새 탭에서 열기",
       "filters": "필터",
       "hideFilters": "필터 숨기기",
       "showFilters": "필터 표시",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "개인정보 처리방침",
+      "cookiesPolicy": "쿠키 정책",
       "global": "전체",
       "friends": "친구",
       "aroundMe": "내 주변",
@@ -326,8 +428,8 @@
       "justNow": "방금",
       "performancePoints": "Performance Points",
       "pp": "",
-      "accuracy": "",
-      "misses": "",
+      "accuracy": "정확도",
+      "misses": "미스",
       "totalPlays": "총 플레이 수",
       "actions": "Actions",
       "rankRequestActions": "랭크 요청 작업",
@@ -391,27 +493,65 @@
       "ranked": "랭크",
       "averageRankedAccuracy": "랭크 맵 평균 정확도",
       "acc": "정확도",
-      "live": ""
+      "live": "",
+      "liveLoading": "",
+      "liveUnavailable": ""
    },
    "score": {
+      "share": {
+         "title": "",
+         "description": "",
+         "shareRow": "",
+         "width": "",
+         "padding": "",
+         "addBackground": "",
+         "selectAll": "",
+         "rows": "",
+         "emptyPreview": "",
+         "copy": "",
+         "copied": "",
+         "copyFailed": "",
+         "save": "",
+         "saveFailed": ""
+      },
       "legacyAccuracy": "최대 점수 변경 전에 등록된 점수입니다",
       "weighted": "가중치 {weightedPercent}",
+      "accuracyPreview": "",
+      "resetAccuracyPreview": "",
       "score": "점수",
+      "mods": "",
       "watchReplay": "리플레이 보기",
       "noReplayAvailable": "사용 가능한 리플레이 없음",
       "hideDetails": "세부 정보 숨기기",
       "showDetails": "세부 정보 보기",
       "scoreDetails": "점수 세부 정보",
       "noDetailsAvailable": "세부 정보 없음",
-      "collapseLeaderboard": "리더보드 접기",
-      "expandLeaderboard": "리더보드 펼치기",
+      "detailsTab": "",
+      "leaderboardTab": "",
+      "scoreHistory": "",
+      "showHistory": "",
+      "hideHistory": "",
+      "noScoreHistory": "",
+      "historyFilterClears": "",
+      "historyFilterRestarts": "",
+      "historyFilterQuits": "",
+      "historyFilterFails": "",
+      "totalPlays": "",
+      "replayViews": "",
+      "outcomeFailAt": "",
+      "outcomeQuitAt": "",
+      "outcomeRestartAt": "",
       "replayViewer": "리플레이 뷰어",
       "openReplayNewTab": "리플레이 뷰어를 새 탭에서 열기",
       "gridAccuracy": "그리드 정확도",
+      "jumpDistance": "",
+      "pauses": "",
+      "paused": "",
       "badCuts": "배드 컷",
       "bombs": "폭탄",
       "streak115": "115콤보",
-      "estFCAccuracy": "예상 풀콤보 정확도",
+      "estFCAccuracy": "",
+      "estFCPP": "",
       "timeDependenceShort": "TD",
       "leftShort": "좌",
       "rightShort": "우",
@@ -454,6 +594,17 @@
       "playsCount": "{count}회 플레이",
       "leaderboard": "리더보드",
       "rankRequest": "랭크 요청",
+      "insights": "",
+      "insightsTimeline": "",
+      "insightsComingSoon": "",
+      "insightsSuccessRate": "",
+      "insightsNoStats": "",
+      "insightsNoStatsHint": "",
+      "insightsNoOutcomeData": "",
+      "insightsNoneSelected": "",
+      "insightsTooltipCount": "",
+      "insightsUnknownTime": "",
+      "insightsDataSince": "",
       "noScoresFound": "점수를 찾을 수 없습니다",
       "noScoresYet": "아직 기록된 점수가 없습니다",
       "adjustFilters": "필터를 조정해 보세요",
@@ -463,9 +614,18 @@
       "totalScores": "총 점수 수",
       "scoresToday": "오늘 기록된 점수",
       "activeRankRequest": "진행 중인 랭크 요청",
+      "version": "",
+      "currentVersion": "",
       "difficulty": "난이도",
       "gameMode": "게임 모드",
       "starRatingRange": "별 레이팅 범위",
+      "downloadPlaylist": "",
+      "downloadPlaylistAction": "",
+      "playlistDownloadDescription": "",
+      "playlistTitle": "",
+      "playlistDescription": "",
+      "playlistMapLimit": "",
+      "playlistMapLimitValue": "",
       "copyShareLink": "공류 링크 복사",
       "shareLinkCopyFailed": "공유 링크 복사에 실패했습니다",
       "copyMapHash": "",
@@ -493,6 +653,8 @@
       "rankedPlays": "랭크 맵 플레이 수",
       "rankedScore": "랭크 맵 점수",
       "rankedAcc": "랭크 맵 정확도",
+      "plusOnePP": "",
+      "plusOnePPHint": "",
       "totalScore": "총 점수",
       "joined": "가입일",
       "replayViews": "리플레이 조회수",
@@ -517,6 +679,21 @@
       "platformFriendsTooltip": "플랫폼 친구는 여기에서 관리할 수 없습니다. 해당 플랫폼에서 관리하세요",
       "failedToFollow": "팔로우하지 못했습니다",
       "failedToUnfollow": "팔로우 해제에 실패했습니다",
+      "reportProfile": "",
+      "reportProfileDesc": "",
+      "submitReport": "",
+      "reportReason": "",
+      "reportDetails": "",
+      "reportDetailsPlaceholder": "",
+      "reportSubmitted": "",
+      "failedToReport": "",
+      "reportReasons": {
+         "inappropriateProfile": "",
+         "impersonation": "",
+         "harassment": "",
+         "cheating": "",
+         "other": ""
+      },
       "playerActions": "플레이어 작업",
       "unbanPlayer": "플레이어 차단 해제",
       "banPlayer": "플레이어 차단",
@@ -550,6 +727,7 @@
       "hideEstimatedData": "예상 데이터 숨기기",
       "showEstimatedData": "예상 데이터 보기",
       "peakRecorded": "최고 기록",
+      "weeklyRankChangeTooltip": "",
       "previousNames": "이전 이름",
       "viewPreviousNames": "이전 이름 보기",
       "aliasRemoved": "별칭이 제거되었습니다",
@@ -578,22 +756,110 @@
       "chartTimeAll": "전체",
       "chartLastNDays": "최근 {days}일",
       "chartNow": "지금",
-      "chartToday": "오늘",
-      "chartYesterday": "어제",
-      "chartDaysAgo": "{days}일 전",
-      "chartDaysAgoShort": "{days}일 전",
-      "chartOneWeekAgo": "1주 전",
-      "chartTwoWeeksAgo": "2주 전",
-      "chartWeeksAgoShort": "{weeks}주 전",
-      "chartOneMonthAgo": "1개월 전",
-      "chartMonthsAgoShort": "{months}개월 전",
       "chartAvgPerDay": "일평균",
       "chartEstimatedSuffix": " (추정)",
       "chartTooltipRank": "순위: #{rank}",
       "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "평균 정확도: {acc}%",
       "chartTooltipPlays": "플레이 수: {plays}",
-      "chartTimeRange": "기간"
+      "chartTimeRange": "기간",
+      "customization": {
+         "title": "",
+         "description": "",
+         "open": "",
+         "unsaved": "",
+         "noChanges": "",
+         "saved": "",
+         "saveFailed": "",
+         "tabs": {
+            "account": "",
+            "style": "",
+            "layout": "",
+            "pinnedScores": "",
+            "badges": ""
+         },
+         "account": {
+            "title": "",
+            "description": "",
+            "open": ""
+         },
+         "pinnedScores": {
+            "title": "",
+            "profileTitle": "",
+            "description": "",
+            "lockTitle": "",
+            "lockDescription": "",
+            "selected": "",
+            "selectedCount": "",
+            "emptySelected": "",
+            "pinScore": "",
+            "editPinnedScore": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         },
+         "badges": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "empty": "",
+            "position": "",
+            "commentPlaceholder": "",
+            "commentLabel": "",
+            "commentCount": "",
+            "moveUp": "",
+            "moveDown": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": ""
+         },
+         "layout": {
+            "lockTitle": "",
+            "lockDescription": "",
+            "sectionsTitle": "",
+            "sectionsDescription": "",
+            "statsTitle": "",
+            "statsDescription": "",
+            "chartMetricsTitle": "",
+            "chartMetricsDescription": "",
+            "sectionCharts": "",
+            "sectionBio": "",
+            "sectionPinnedScores": "",
+            "sectionScores": "",
+            "position": "",
+            "moveUp": "",
+            "moveDown": ""
+         },
+         "style": {
+            "accentLockTitle": "",
+            "accentLockDescription": "",
+            "backgroundImage": "",
+            "backgroundDescription": "",
+            "backgroundUpload": "",
+            "backgroundSelected": "",
+            "backgroundTooLarge": "",
+            "resetBackground": "",
+            "accentColor": "",
+            "accentForeground": "",
+            "accentForegroundActive": "",
+            "hexColorInput": "",
+            "accentDescription": "",
+            "useAccent": "",
+            "resetAccent": "",
+            "nameColor": "",
+            "nameColorDescription": "",
+            "supporterNameColor": "",
+            "unsaved": "",
+            "noChanges": "",
+            "saved": "",
+            "saveFailed": ""
+         }
+      }
    },
    "comments": {
       "edited": "(수정됨)",
@@ -681,7 +947,10 @@
       "noCommentsOrNotes": "이 난이도에는 댓글이나 메모가 없습니다",
       "noRequestsFound": "요청을 찾을 수 없습니다",
       "upNext": "다음 순서",
-      "openRequests": "대기열"
+      "openRequests": "대기열",
+      "queueIndicatorReady": "",
+      "queueIndicatorNeedsVotes": "",
+      "queueIndicatorDownvoted": ""
    },
    "leaderboard": {
       "admin": "관리자",
@@ -813,12 +1082,20 @@
       "roomName": "",
       "roomCode": "",
       "roomMode": "",
+      "participation": "",
+      "active": "",
+      "inactive": "",
+      "activeInactiveSummary": "",
       "playerAlreadyInRoom": "",
       "noRoomPlayers": "",
       "addRoomPlayer": "",
       "addRoomTeam": "",
       "manageRoom": "",
       "roomPlayersSaved": "",
+      "playerMarkedActive": "",
+      "playerMarkedInactive": "",
+      "markPlayerActive": "",
+      "markPlayerInactive": "",
       "teamMode": "",
       "flatMode": "",
       "state": "",
@@ -982,7 +1259,6 @@
          "countryResetQueued": "국가 초기화",
          "countryResetFailed": "국가 초기화를 사용할 수 없습니다",
          "resetCountryDialogDesc": "현재 위치를 기준으로 프로필 국가를 다시 계산합니다. 성공하면 {days}일 동안 국가 초기화를 사용할 수 없습니다",
-         "resetCountryHelper": "ScoreSaber에 표시하려는 국가에 있을 때만 사용하세요. VPN이나 프록시를 사용 중이 아닌지도 확인하세요",
          "resetCountryAvailableAt": "최근에 이미 국가를 초기화했습니다. <date></date>에 다시 초기화할 수 있습니다",
          "resetCountryConfirmText": "초기화"
       },
@@ -1082,9 +1358,9 @@
          },
          "vanity": {
             "title": "",
-            "description": "",
             "loadFailed": "",
             "current": "",
+            "infoLabel": "",
             "changeLabel": "",
             "claimLabel": "",
             "placeholder": "",
@@ -1093,7 +1369,9 @@
             "claimed": "",
             "claimFailed": "",
             "cooldown": "",
-            "rules": ""
+            "rules": "",
+            "lockTitle": "",
+            "lockDescription": ""
          }
       },
       "security": {
@@ -1240,7 +1518,7 @@
          "necessaryTitle": "필수 쿠키",
          "necessaryDescription": "로그인, 보안, 요청 제한, 언어, 테마, 저장된 필터 및 핵심 사이트 기능에 필요합니다. 이 항목은 항상 활성화되어 있습니다."
       },
-      "lastUpdated": ""
+      "lastUpdated": "마지막 업데이트: {date}"
    },
    "oauth": {
       "consent": {

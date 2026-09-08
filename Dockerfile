@@ -1,26 +1,18 @@
 # syntax=docker/dockerfile:1.7
 
-ARG BUN_VERSION=1.3.13
+ARG VITE_PLUS_VERSION=0.2.8
 ARG NODE_VERSION=24.15.0
-ARG BUILD_CACHE_SCOPE=shared
 
-FROM oven/bun:${BUN_VERSION}-alpine AS deps
-
-WORKDIR /app
-
-ARG BUILD_CACHE_SCOPE
-
-COPY package.json bun.lock ./
-RUN --mount=type=cache,id=scoresaber-website-${BUILD_CACHE_SCOPE}-bun,target=/root/.bun/install/cache,sharing=locked \
-    bun install --frozen-lockfile
-
-FROM deps AS builder
+FROM ghcr.io/voidzero-dev/vite-plus:${VITE_PLUS_VERSION} AS builder
 
 WORKDIR /app
 
-COPY . .
+COPY --chown=vp:vp package.json pnpm-lock.yaml pnpm-workspace.yaml .node-version ./
+COPY --chown=vp:vp patches ./patches
+RUN vp install --frozen-lockfile
 
-ARG BUILD_CACHE_SCOPE
+COPY --chown=vp:vp . .
+
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_SITE_URL
 ARG NEXT_PUBLIC_ARCVIEWER_URL
@@ -40,10 +32,9 @@ ENV DEBUG_PAGE_BACKGROUND=${DEBUG_PAGE_BACKGROUND}
 ENV API_URL=${API_URL}
 ENV NODE_ENV=production
 
-RUN --mount=type=cache,id=scoresaber-website-${BUILD_CACHE_SCOPE}-vite,target=/app/node_modules/.vite,sharing=locked \
-    bun run build
+RUN vp build
 
-FROM node:${NODE_VERSION}-alpine AS runner
+FROM node:${NODE_VERSION}-bookworm-slim AS runner
 
 WORKDIR /app
 
@@ -75,6 +66,6 @@ USER node
 EXPOSE 4000
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=20s --retries=5 \
-  CMD node -e "const url = 'http://127.0.0.1:' + (process.env.PORT || '4000') + '/health'; fetch(url).then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))"
+  CMD node -e "const socket = require('node:net').connect(process.env.PORT || 4000, '127.0.0.1'); socket.setTimeout(2000); socket.on('connect', () => { socket.destroy(); process.exit(0) }); socket.on('timeout', () => { console.error('listener timed out'); socket.destroy(); process.exit(1) }); socket.on('error', (error) => { console.error(error.message); process.exit(1) })"
 
 CMD ["node", ".output/server/index.mjs"]

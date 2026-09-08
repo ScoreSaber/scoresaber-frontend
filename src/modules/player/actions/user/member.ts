@@ -8,25 +8,25 @@ import { toInt64PathParam } from '@/shared/url-state/params';
 type PlayerReportReason = PlayerReportControllerSubmitProfileReportPayload['reason'];
 
 const disableAliasFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { playerId: string; aliasId: number }) => data)
+   .validator((data: { playerId: string; aliasId: number }) => data)
    .handler(({ data }) =>
       actionResultVoid(api.playerAlias.playerAliasControllerDisableAlias({ id: toInt64PathParam(data.playerId), aliasId: data.aliasId }))
    );
 
 const disableAllAliasesFn = createServerFn({ method: 'POST' })
-   .inputValidator((playerId: string) => playerId)
+   .validator((playerId: string) => playerId)
    .handler(({ data }) => actionResultVoid(api.playerAlias.playerAliasControllerDisableAllAliases({ id: toInt64PathParam(data) })));
 
 const followPlayerFn = createServerFn({ method: 'POST' })
-   .inputValidator((playerId: string) => playerId)
+   .validator((playerId: string) => playerId)
    .handler(({ data }) => actionResultVoid(api.player.playerRelationshipControllerFollowPlayer({ id: toInt64PathParam(data) })));
 
 const unfollowPlayerFn = createServerFn({ method: 'POST' })
-   .inputValidator((playerId: string) => playerId)
+   .validator((playerId: string) => playerId)
    .handler(({ data }) => actionResultVoid(api.player.playerRelationshipControllerUnfollowPlayer({ id: toInt64PathParam(data) })));
 
 const reportPlayerFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { playerId: string; reason: PlayerReportReason; details?: string }) => data)
+   .validator((data: { playerId: string; reason: PlayerReportReason; details?: string }) => data)
    .handler(({ data }) =>
       actionResultVoid(
          api.player.playerReportControllerSubmitProfileReport(

@@ -17,27 +17,32 @@ import { api } from '@/shared/api/server-api';
 import { actionApiData, actionFailure, actionSuccess } from '@/shared/result/action';
 
 const createLiveTournamentFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: LiveTournamentControllerCreateTournamentPayload) => data)
+   .validator((data: LiveTournamentControllerCreateTournamentPayload) => data)
    .handler(({ data }) => actionApiData(api.livePlatform.liveTournamentControllerCreateTournament(data)));
 
 const upsertLiveSettingsFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; payload: LiveTournamentControllerUpsertSettingsPayload }) => data)
+   .validator((data: { tournamentId: string; payload: LiveTournamentControllerUpsertSettingsPayload }) => data)
    .handler(({ data }) => actionApiData(api.livePlatform.liveTournamentControllerUpsertSettings({ tournamentId: data.tournamentId }, data.payload)));
 
 const upsertLiveRoleFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; payload: LiveTournamentRosterControllerUpsertRolePayload }) => data)
+   .validator((data: { tournamentId: string; payload: LiveTournamentRosterControllerUpsertRolePayload }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveTournamentRosterControllerUpsertRole({ tournamentId: data.tournamentId }, data.payload))
    );
 
 const deleteLiveRoleFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; roleId: number }) => data)
+   .validator((data: { tournamentId: string; roleId: number }) => data)
    .handler(({ data }) =>
-      actionApiData(api.livePlatform.liveTournamentRosterControllerDeleteRole({ tournamentId: data.tournamentId, roleId: data.roleId }))
+      actionApiData(
+         api.livePlatform.liveTournamentRosterControllerDeleteRole({
+            tournamentId: data.tournamentId,
+            roleId: data.roleId
+         })
+      )
    );
 
 const assignLiveRoleFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; roleId: number; playerId: string }) => data)
+   .validator((data: { tournamentId: string; roleId: number; playerId: string }) => data)
    .handler(({ data }) =>
       actionApiData(
          api.livePlatform.liveTournamentRosterControllerAssignRole(
@@ -48,7 +53,7 @@ const assignLiveRoleFn = createServerFn({ method: 'POST' })
    );
 
 const unassignLiveRoleFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; roleId: number; playerId: string }) => data)
+   .validator((data: { tournamentId: string; roleId: number; playerId: string }) => data)
    .handler(({ data }) =>
       actionApiData(
          api.livePlatform.liveTournamentRosterControllerUnassignRole({
@@ -60,73 +65,81 @@ const unassignLiveRoleFn = createServerFn({ method: 'POST' })
    );
 
 const upsertLiveTeamFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; payload: LiveTournamentRosterControllerUpsertTeamPayload }) => data)
+   .validator((data: { tournamentId: string; payload: LiveTournamentRosterControllerUpsertTeamPayload }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveTournamentRosterControllerUpsertTeam({ tournamentId: data.tournamentId }, data.payload))
    );
 
 const deleteLiveTeamFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; teamId: number }) => data)
+   .validator((data: { tournamentId: string; teamId: number }) => data)
    .handler(({ data }) =>
-      actionApiData(api.livePlatform.liveTournamentRosterControllerDeleteTeam({ tournamentId: data.tournamentId, teamId: data.teamId }))
+      actionApiData(
+         api.livePlatform.liveTournamentRosterControllerDeleteTeam({
+            tournamentId: data.tournamentId,
+            teamId: data.teamId
+         })
+      )
    );
 
 const syncLiveAuthorizedPlayersFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; payload: LiveTournamentRosterControllerSyncAuthorizedPlayersPayload }) => data)
+   .validator((data: { tournamentId: string; payload: LiveTournamentRosterControllerSyncAuthorizedPlayersPayload }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveTournamentRosterControllerSyncAuthorizedPlayers({ tournamentId: data.tournamentId }, data.payload))
    );
 
 const upsertLiveRoomFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; payload: LiveMatchRoomControllerUpsertRoomPayload }) => data)
+   .validator((data: { tournamentId: string; payload: LiveMatchRoomControllerUpsertRoomPayload }) => data)
    .handler(({ data }) => actionApiData(api.livePlatform.liveMatchRoomControllerUpsertRoom({ tournamentId: data.tournamentId }, data.payload)));
 
 const setLiveRoomMembersFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string; payload: LiveMatchRoomControllerSetRoomMembersPayload }) => data)
+   .validator((data: { tournamentId: string; matchId: string; payload: LiveMatchRoomControllerSetRoomMembersPayload }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveMatchRoomControllerSetRoomMembers({ tournamentId: data.tournamentId, matchId: data.matchId }, data.payload))
    );
 
 const setLiveRoomSongFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string; payload: LiveMatchRoomControllerSetRoomSongPayload }) => data)
+   .validator((data: { tournamentId: string; matchId: string; payload: LiveMatchRoomControllerSetRoomSongPayload }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveMatchRoomControllerSetRoomSong({ tournamentId: data.tournamentId, matchId: data.matchId }, data.payload))
    );
 
 const closeLiveRoomFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string }) => data)
+   .validator((data: { tournamentId: string; matchId: string }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveMatchRoomControllerCloseRoom({ tournamentId: data.tournamentId, matchId: data.matchId }))
    );
 
 const deleteLiveRoomFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string }) => data)
+   .validator((data: { tournamentId: string; matchId: string }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveMatchRoomControllerDeleteRoom({ tournamentId: data.tournamentId, matchId: data.matchId }))
    );
 
 const startLiveRoomMapFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string; payload: LiveMatchCommandControllerStartMapPayload }) => data)
+   .validator((data: { tournamentId: string; matchId: string; payload: LiveMatchCommandControllerStartMapPayload }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveMatchCommandControllerStartMap({ tournamentId: data.tournamentId, matchId: data.matchId }, data.payload))
    );
 
 const returnLiveRoomToMenuFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string }) => data)
+   .validator((data: { tournamentId: string; matchId: string }) => data)
    .handler(({ data }) =>
-      actionApiData(api.livePlatform.liveMatchCommandControllerReturnToMenu({ tournamentId: data.tournamentId, matchId: data.matchId }))
+      actionApiData(
+         api.livePlatform.liveMatchCommandControllerReturnToMenu({
+            tournamentId: data.tournamentId,
+            matchId: data.matchId
+         })
+      )
    );
 
 const promptLiveRoomFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string; payload: LiveMatchCommandControllerPromptPayload }) => data)
+   .validator((data: { tournamentId: string; matchId: string; payload: LiveMatchCommandControllerPromptPayload }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveMatchCommandControllerPrompt({ tournamentId: data.tournamentId, matchId: data.matchId }, data.payload))
    );
 
 const bottifyLivePlayerFn = createServerFn({ method: 'POST' })
-   .inputValidator(
-      (data: { tournamentId: string; matchId: string; playerId: string; payload: LiveMatchCommandControllerBottifyPlayerPayload }) => data
-   )
+   .validator((data: { tournamentId: string; matchId: string; playerId: string; payload: LiveMatchCommandControllerBottifyPlayerPayload }) => data)
    .handler(({ data }) =>
       actionApiData(
          api.livePlatform.liveMatchCommandControllerBottifyPlayer(
@@ -137,9 +150,7 @@ const bottifyLivePlayerFn = createServerFn({ method: 'POST' })
    );
 
 const bottifyLivePlayersFn = createServerFn({ method: 'POST' })
-   .inputValidator(
-      (data: { tournamentId: string; matchId: string; playerIds: string[]; payload: LiveMatchCommandControllerBottifyPlayerPayload }) => data
-   )
+   .validator((data: { tournamentId: string; matchId: string; playerIds: string[]; payload: LiveMatchCommandControllerBottifyPlayerPayload }) => data)
    .handler(async ({ data }) => {
       const playerIds = [...new Set(data.playerIds)];
       if (playerIds.length === 0) return actionFailure('No players to bottify');
@@ -159,7 +170,7 @@ const bottifyLivePlayersFn = createServerFn({ method: 'POST' })
    });
 
 const unbottifyLivePlayerFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string; playerId: string }) => data)
+   .validator((data: { tournamentId: string; matchId: string; playerId: string }) => data)
    .handler(({ data }) =>
       actionApiData(
          api.livePlatform.liveMatchCommandControllerUnbottifyPlayer({
@@ -171,7 +182,7 @@ const unbottifyLivePlayerFn = createServerFn({ method: 'POST' })
    );
 
 const followLiveRoomFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { tournamentId: string; matchId: string }) => data)
+   .validator((data: { tournamentId: string; matchId: string }) => data)
    .handler(({ data }) =>
       actionApiData(api.livePlatform.liveMatchCommandControllerFollowRoom({ tournamentId: data.tournamentId }, { matchId: data.matchId }))
    );

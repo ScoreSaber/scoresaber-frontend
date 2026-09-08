@@ -57,6 +57,7 @@ export function MapDifficultyChip({ mapId, leaderboard, isExpanded, isDimmed, on
             params={{ id: mapId, leaderboardId: leaderboard.id }}
             search={linkSearch}
             aria-label={chipLabel}
+            data-route-top-loader-skip={!isExpanded ? '' : undefined}
             onPointerDown={(event) => {
                hadPointerDown.current = true;
                pointerTypeRef.current = event.pointerType;
@@ -72,8 +73,6 @@ export function MapDifficultyChip({ mapId, leaderboard, isExpanded, isDimmed, on
             onClick={(event) => {
                if (!isExpanded && pointerTypeRef.current === 'touch') {
                   event.preventDefault();
-                  // stop the route loader's document click listener from starting early
-                  event.nativeEvent.stopImmediatePropagation();
                   onExpandAction();
                }
             }}

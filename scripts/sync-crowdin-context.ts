@@ -3,6 +3,7 @@ import ts from 'typescript';
 import { z } from 'zod';
 
 import { readdirSync, readFileSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
 
 type Viewport = 'desktop' | 'mobile';
@@ -73,8 +74,9 @@ const contextBlockStart = '[scoresaber-context:start]';
 const contextBlockEnd = '[scoresaber-context:end]';
 const sourceRoot = resolve('src');
 const sourceStrings = flattenMessages(messagesSchema.parse(JSON.parse(readFileSync(resolve('messages/en.json'), 'utf8'))));
-const shouldApply = Bun.argv.includes('--apply');
-const shouldUseRemote = shouldApply || Bun.argv.includes('--remote');
+const args = process.argv.slice(2);
+const shouldApply = args.includes('--apply');
+const shouldUseRemote = shouldApply || args.includes('--remote');
 const crowdinProjectId = process.env.CROWDIN_PROJECT_ID ?? '';
 const crowdinPersonalToken = process.env.CROWDIN_PERSONAL_TOKEN ?? '';
 const crowdinApiBaseUrl = process.env.CROWDIN_API_BASE_URL ?? 'https://api.crowdin.com/api/v2';
@@ -127,7 +129,7 @@ if (shouldUseRemote) {
    const syncPlan = syncPlanResult.value;
 
    if (outputPath) {
-      await Bun.write(outputPath, `${JSON.stringify(syncPlan, null, 3)}\n`);
+      await writeFile(outputPath, `${JSON.stringify(syncPlan, null, 3)}\n`);
    }
 
    console.log(
@@ -150,15 +152,15 @@ if (shouldUseRemote) {
       console.log(`updated ${applyResult.value} Crowdin string contexts`);
    }
 } else if (outputPath) {
-   await Bun.write(outputPath, `${JSON.stringify(contexts, null, 3)}\n`);
+   await writeFile(outputPath, `${JSON.stringify(contexts, null, 3)}\n`);
    console.log(`wrote ${contexts.length} context entries to ${outputPath}`);
 } else {
    console.log(JSON.stringify(contexts, null, 3));
 }
 
 function getOutputPath() {
-   const index = Bun.argv.indexOf('--out');
-   const value = index === -1 ? null : Bun.argv[index + 1];
+   const index = args.indexOf('--out');
+   const value = index === -1 ? null : args[index + 1];
    return value ? resolve(value) : null;
 }
 

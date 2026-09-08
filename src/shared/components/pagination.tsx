@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Icons } from '@/shared/components/icons';
 import { generateNavigationOptions } from '@/shared/components/pagination-options';
 import { cn, formatNumber } from '@/shared/format/helpers';
-import { navigateToRoute, type RouteLocation } from '@/shared/url-state/route-location';
+import { isRouterClick, navigateToRoute, type RouteLocation } from '@/shared/url-state/route-location';
 import { useRouteHrefPreload } from '@/shared/url-state/use-route-href-preload';
 
 type PaginationProps<TLocation> = {
@@ -58,7 +58,7 @@ export function Pagination<TLocation>({
    if (totalPages <= 1) return null;
 
    return (
-      <div className="flex flex-row items-center gap-1">
+      <div data-pagination className="flex flex-row items-center gap-1">
          {options.map((option) => {
             if (option.type === 'symbol' && option.symbol === 'ELLIPSIS') {
                return (
@@ -68,7 +68,7 @@ export function Pagination<TLocation>({
                      onNavigate={(page) => {
                         const location = getPageLocation(page);
                         setPendingPage({ value: page, type: 'number' });
-                        navigateToRoute(router, location, { resetScroll: scroll });
+                        void navigateToRoute(router, location, { resetScroll: scroll });
                      }}
                   />
                );
@@ -78,7 +78,7 @@ export function Pagination<TLocation>({
             const atBounds =
                option.type === 'symbol' &&
                ((option.symbol === 'NEXT_PAGE' && currentPage >= totalPages) || (option.symbol === 'PREVIOUS_PAGE' && currentPage <= 1));
-            const disabled = isLoading || atBounds;
+            const disabled = atBounds;
             const label = option.type === 'number' ? formatNumber(option.value!) : option.symbol === 'PREVIOUS_PAGE' ? '<' : '>';
             const active = option.type === 'number' && option.value === currentPage;
             const loading = isLoading && pendingPage?.value === option.value && pendingPage?.type === option.type;
@@ -252,16 +252,3 @@ type PaginationArrowsProps<TLocation> = {
    totalPages: number;
    getPageLocation: (page: number) => RouteLocation<TLocation>;
 };
-
-function isRouterClick(event: MouseEvent<HTMLAnchorElement>) {
-   const target = event.currentTarget.getAttribute('target');
-   return (
-      !event.defaultPrevented &&
-      event.button === 0 &&
-      !event.metaKey &&
-      !event.altKey &&
-      !event.ctrlKey &&
-      !event.shiftKey &&
-      (!target || target === '_self')
-   );
-}

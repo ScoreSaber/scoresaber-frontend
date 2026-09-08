@@ -12,7 +12,7 @@ export interface AuthorizeRequest {
 }
 
 const getAuthorizeInfoFn = createServerFn({ method: 'GET' })
-   .inputValidator((params: AuthorizeRequest) => params)
+   .validator((params: AuthorizeRequest) => params)
    .handler(({ data }) => actionApiData(api.oAuth.oAuthControllerGetAuthorizeInfo(data, { cache: 'no-store' })));
 
 export async function getAuthorizeInfo(params: AuthorizeRequest) {
@@ -20,7 +20,7 @@ export async function getAuthorizeInfo(params: AuthorizeRequest) {
 }
 
 const approveAuthorizationFn = createServerFn({ method: 'POST' })
-   .inputValidator((payload: AuthorizeRequest & { state?: string }) => payload)
+   .validator((payload: AuthorizeRequest & { state?: string }) => payload)
    .handler(({ data }) => actionApiData(api.oAuth.oAuthControllerApproveAuthorization(data, { cache: 'no-store' })));
 
 export async function approveAuthorization(payload: AuthorizeRequest & { state?: string }) {

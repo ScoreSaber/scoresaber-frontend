@@ -1,7 +1,8 @@
-import { Fragment, useEffect, type ReactNode } from 'react';
+import { Fragment, useEffect, useRef, type ReactNode } from 'react';
 
 import { createFileRoute, linkOptions } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { Result } from 'better-result';
 import { FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 import { z } from 'zod';
@@ -11,6 +12,12 @@ import { Separator } from '@/components/ui/separator';
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
 import type { MetricKey } from '@/modules/player/chart/chart-types';
 import { PlayerChartLazy as PlayerChart } from '@/modules/player/chart/player-chart-lazy';
+import { getSortedPlayerHistory } from '@/modules/player/chart/player-chart-model';
+import { computeDenyahSections } from '@/modules/player/chart/use-denyah-overlay';
+import { isDenyah } from '@/modules/player/denyah/denyah';
+import { DenyahCursorTrail } from '@/modules/player/denyah/denyah-cursor-trail';
+import { DenyahModeProvider } from '@/modules/player/denyah/denyah-mode-context';
+import { DenyahPageEffects } from '@/modules/player/denyah/denyah-page-effects';
 import { PlayerActions } from '@/modules/player/operations/player-actions';
 import { PlayerBioSection } from '@/modules/player/profile/player-bio-section';
 import { PlayerPinnedScoresSection } from '@/modules/player/profile/player-pinned-scores-section';
@@ -22,6 +29,7 @@ import { PlayerScoresList } from '@/modules/player/profile/player-scores-list';
 import { PlayerScoresToolbar } from '@/modules/player/profile/player-scores-toolbar';
 import { versionedImageUrl } from '@/modules/player/shared/player-avatar';
 import type {
+   AdminUserControllerGetActiveBanResponse,
    PlayerControllerGetPlayerResponse,
    PlayerControllerGetPlayerScoresDataItem,
    PlayerControllerGetPlayerScoresSort
@@ -29,9 +37,9 @@ import type {
 import { api, publicApi } from '@/shared/api/server-api';
 import { NotFoundCard } from '@/shared/components/error/not-found-card';
 import { PageError } from '@/shared/components/error/page-error';
+import { Time } from '@/shared/components/time';
 import { cn, formatAccuracy, formatNumber, formatPP } from '@/shared/format/helpers';
-import { calculateRawPPForTotalPPGain } from '@/shared/format/weighted-pp';
-import { optionalApi, optionalApiData, pageApiData } from '@/shared/result/api';
+import { apiResult, optionalApi, optionalApiData, pageApiData } from '@/shared/result/api';
 import { hasRichTextContent, sanitizeRichTextHtml } from '@/shared/rich-text/server';
 import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber, isPlayerId, isVanitySlug, ScoreEnum, validateRequest } from '@/shared/url-state/params';
@@ -62,81 +70,68 @@ type PlayerProfileRouteInput = {
 
 type ParsePlayerSearch = (search: SearchParamsRecord) => PlayerProfileSearch | null;
 
-const PLUS_ONE_PP_SCORE_LIMIT = 100;
+type BanMetadataAccess = { visible: false } | { visible: true; record: AdminUserControllerGetActiveBanResponse };
+
+const hiddenBanMetadata: BanMetadataAccess = { visible: false };
+
 const DEFAULT_PROFILE_SECTION_ORDER = ['charts', 'bio', 'pinnedScores', 'scores'] as const;
 
 type PlayerProfileSectionId = (typeof DEFAULT_PROFILE_SECTION_ORDER)[number];
 const REQUIRED_PROFILE_SECTION_IDS: readonly PlayerProfileSectionId[] = ['scores'];
 
 const getPlayerProfilePageData = createServerFn({ method: 'GET' })
-   .inputValidator((data: PlayerProfileRouteInput) => data)
+   .validator((data: PlayerProfileRouteInput) => data)
    .handler(async ({ data }) => {
-      const numericId = isPlayerId.safeParse(data.playerId);
       const token = readAuthCookie();
-      const aliasApi = token ? api : publicApi;
-      const playerResult = numericId.success
-         ? await pageApiData(publicApi.player.playerControllerGetPlayer({ id: numericId.data.toString() }))
-         : await pageApiData(publicApi.player.playerControllerGetPlayerByVanity({ slug: data.playerId.toLowerCase() }));
+      const profileApi = token ? api : publicApi;
+      const playerId = isPlayerId.safeParse(data.playerId).success ? data.playerId : data.playerId.toLowerCase();
 
-      if (!playerResult.ok) {
-         return {
-            result: playerResult,
-            scores: null,
-            history: null,
-            aliases: [],
-            patreonConnected: false,
-            plusOneRawPP: null,
-            sanitizedBio: '',
-            hasBioContent: false
-         };
-      }
-
-      const apiPlayerId = playerResult.data.id;
-      const bio = playerResult.data.bio ?? '';
-      const sanitizedBio = sanitizeRichTextHtml(bio);
-      const apiPlusOnePP = playerResult.data.stats.plusOnePP;
-
-      const [scores, plusOneScores, history, aliases, connections] = await Promise.all([
+      const [profileResult, scores, connections] = await Promise.all([
+         pageApiData(profileApi.player.playerControllerGetPlayerProfile({ id: playerId })),
          optionalApiData(
             publicApi.player.playerControllerGetPlayerScores({
-               id: apiPlayerId,
+               id: playerId,
                limit: 8,
                page: data.search.page ?? 1,
                sort: data.search.sort ?? 'top',
                search: data.search.search
             })
          ),
-         apiPlusOnePP == null
-            ? optionalApiData(
-                 publicApi.player.playerControllerGetPlayerScores({
-                    id: apiPlayerId,
-                    limit: PLUS_ONE_PP_SCORE_LIMIT,
-                    page: 1,
-                    sort: 'top'
-                 })
-              )
-            : null,
-         optionalApiData(publicApi.player.playerControllerGetPlayerHistory({ id: apiPlayerId })),
-         optionalApiData(aliasApi.playerAlias.playerAliasControllerGetAliases({ id: apiPlayerId })),
          token ? optionalApi(api.user.userControllerGetConnections().then((r) => r.data)) : null
       ]);
-      const plusOneRawPP =
-         apiPlusOnePP ??
-         calculateRawPPForTotalPPGain({
-            scores: plusOneScores?.data.map(({ score }) => ({ pp: score.pp, weight: score.weight })) ?? [],
-            totalPP: playerResult.data.stats.totalPP,
-            totalRankedScores: playerResult.data.stats.totalPlayedRankedLeaderboards
-         });
+
+      if (!profileResult.ok) {
+         return {
+            result: profileResult,
+            scores: null,
+            history: null,
+            aliases: [],
+            patreonConnected: false,
+            plusOneRawPP: null,
+            sanitizedBio: '',
+            hasBioContent: false,
+            banMetadata: hiddenBanMetadata
+         };
+      }
+
+      const { player, history, aliases } = profileResult.data;
+      const sanitizedBio = sanitizeRichTextHtml(player.bio ?? '');
+      let banMetadata: BanMetadataAccess = hiddenBanMetadata;
+      if (token && player.banned) {
+         const result = await apiResult(api.adminUser.adminUserControllerGetActiveBan({ id: player.id }, { cache: 'no-store' }));
+         if (Result.isOk(result)) banMetadata = { visible: true, record: result.value.data };
+      }
 
       return {
-         result: playerResult,
+         result: { ok: true as const, data: player },
          scores,
          history,
-         aliases: aliases ?? [],
+         aliases,
          patreonConnected: connections?.some((connection) => connection.provider === 'PATREON' && connection.state === 'CONNECTED') ?? false,
-         plusOneRawPP,
+         plusOneRawPP: player.stats.plusOnePP,
          sanitizedBio,
-         hasBioContent: hasRichTextContent(sanitizedBio)
+         hasBioContent: hasRichTextContent(sanitizedBio),
+         banMetadata
       };
    });
 
@@ -188,75 +183,149 @@ function PlayerProfileRouteContent({
    parseSearch: ParsePlayerSearch;
    data: Awaited<ReturnType<typeof getPlayerProfilePageData>>;
 }) {
-   const { result, scores, history, aliases, patreonConnected, plusOneRawPP, sanitizedBio, hasBioContent } = data;
+   const { result, scores, history, aliases, patreonConnected, plusOneRawPP, sanitizedBio, hasBioContent, banMetadata } = data;
+   const t = useTranslations();
+   const denyahContainerRef = useRef<HTMLDivElement | null>(null);
 
    useVanityBrowserUrl(result.ok ? result.data.vanity : null);
 
    if (!result.ok) return <PageError status={result.status} />;
 
    const player = result.data;
+   const denyahMode = isDenyah(player.id);
+   const currentDenyahSection =
+      denyahMode && history?.length ? computeDenyahSections(getSortedPlayerHistory(history).map((entry) => entry.rank)).at(-1) : undefined;
+   const denyahBackgroundImage = currentDenyahSection ? `/images/denyah-${currentDenyahSection.isGood ? 'good' : 'bad'}.png` : undefined;
 
    return (
-      <div className="relative flex-1 overflow-hidden">
-         <div className="app-container relative z-10 p-4 md:p-8">
-            <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
-               {({ extraActions, profileCustomization, renderScoreAction }) => {
-                  const profileBackgroundImage = profileCustomization.backgroundImage
-                     ? versionedImageUrl(profileCustomization.backgroundImage, profileCustomization.backgroundImageVersion)
-                     : null;
-                  const profileSections = player.banned
-                     ? []
-                     : buildProfileSections({
-                          player,
-                          history,
-                          scores,
-                          input,
-                          parseSearch,
-                          sanitizedBio,
-                          hasBioContent,
-                          chartMetricIds: profileCustomization.chartMetricIds,
-                          profileCustomization,
-                          sectionOrder: profileCustomization.sectionOrder,
-                          renderScoreAction
-                       });
+      <DenyahModeProvider value={denyahMode}>
+         <div className="relative flex-1 overflow-hidden">
+            <div
+               ref={denyahContainerRef}
+               className="app-container relative z-10 p-4 md:p-8"
+               style={
+                  denyahMode
+                     ? {
+                          fontFamily: '"Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive',
+                          rotate: '2deg',
+                          cursor: 'wait',
+                          filter: 'hue-rotate(180deg) blur(0.4px) saturate(0.85) contrast(1.06)',
+                          imageRendering: 'pixelated',
+                          WebkitFontSmoothing: 'none'
+                       }
+                     : undefined
+               }
+            >
+               {denyahMode && <DenyahPageEffects targetRef={denyahContainerRef} backgroundImage={denyahBackgroundImage ?? player.avatar} />}
+               <PlayerProfileCustomization player={player} patreonConnected={patreonConnected}>
+                  {({ extraActions, profileCustomization, renderScoreAction }) => {
+                     const profileBackgroundImage = profileCustomization.backgroundImage
+                        ? versionedImageUrl(profileCustomization.backgroundImage, profileCustomization.backgroundImageVersion)
+                        : null;
+                     const profileSections = player.banned
+                        ? []
+                        : buildProfileSections({
+                             player,
+                             history,
+                             scores,
+                             input,
+                             parseSearch,
+                             sanitizedBio,
+                             hasBioContent,
+                             chartMetricIds: profileCustomization.chartMetricIds,
+                             profileCustomization,
+                             sectionOrder: profileCustomization.sectionOrder,
+                             renderScoreAction
+                          });
 
-                  return (
-                     <PlayerProfileAccentScope customization={profileCustomization}>
-                        <SetPageBackground
-                           src={profileBackgroundImage ?? player.avatar}
-                           candidates={profileBackgroundImage ? [profileBackgroundImage, player.avatar] : [player.avatar]}
-                        />
-                        <PlayerProfileHeader
-                           player={player}
-                           aliases={aliases}
-                           customization={profileCustomization}
-                           plusOneRawPP={plusOneRawPP}
-                           actions={
-                              <PlayerActions
-                                 playerId={player.id}
-                                 playerBanned={player.banned}
-                                 playerPermissions={player.permissions}
-                                 playerRole={player.role}
-                                 extraActions={extraActions}
+                     return (
+                        <PlayerProfileAccentScope customization={profileCustomization}>
+                           {denyahMode && <DenyahCursorTrail />}
+                           {!denyahMode && (
+                              <SetPageBackground
+                                 src={profileBackgroundImage ?? player.avatar}
+                                 candidates={profileBackgroundImage ? [profileBackgroundImage, player.avatar] : [player.avatar]}
                               />
-                           }
-                        >
-                           {player.banned ? (
-                              <div className="py-6 text-center">
-                                 <Separator variant="gradient" className="via-destructive/15 mb-4" />
-                                 <p className="text-muted-foreground text-sm">This player&apos;s profile is not available.</p>
-                              </div>
-                           ) : null}
+                           )}
+                           <PlayerProfileHeader
+                              player={player}
+                              aliases={aliases}
+                              customization={profileCustomization}
+                              plusOneRawPP={plusOneRawPP}
+                              actions={
+                                 <PlayerActions
+                                    playerId={player.id}
+                                    playerBanned={player.banned}
+                                    playerPermissions={player.permissions}
+                                    playerRole={player.role}
+                                    mergeTarget={{
+                                       id: player.id,
+                                       name: player.name,
+                                       avatar: player.avatar,
+                                       avatarVersion: player.avatarVersion,
+                                       country: player.country
+                                    }}
+                                    extraActions={extraActions}
+                                 />
+                              }
+                           >
+                              {player.banned ? (
+                                 <div className="py-6 text-center">
+                                    <Separator variant="gradient" className="via-destructive/15 mb-4" />
+                                    <p className="text-muted-foreground text-sm">{t('player.bannedProfileUnavailable')}</p>
+                                    {banMetadata.visible && (
+                                       <div className="border-destructive/25 bg-destructive/5 mx-auto mt-4 max-w-2xl rounded-md border p-4 text-left">
+                                          {banMetadata.record ? (
+                                             <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+                                                <BanMetadata label={t('player.reason')}>{banMetadata.record.reason}</BanMetadata>
+                                                <BanMetadata label={t('player.banMetadata.created')}>
+                                                   <Time date={banMetadata.record.createdAt} />
+                                                </BanMetadata>
+                                                <BanMetadata label={t('player.internalNotes')}>
+                                                   {banMetadata.record.notes || t('player.banMetadata.none')}
+                                                </BanMetadata>
+                                                <BanMetadata label={t('player.banMetadata.automaticUnban')}>
+                                                   {banMetadata.record.autoUnban && banMetadata.record.autoUnbansAt ? (
+                                                      <Time date={banMetadata.record.autoUnbansAt} />
+                                                   ) : (
+                                                      t('player.banMetadata.disabled')
+                                                   )}
+                                                </BanMetadata>
+                                                <BanMetadata label={t('player.earliestAppealDate')}>
+                                                   {banMetadata.record.earliestAppealDate ? (
+                                                      <Time date={banMetadata.record.earliestAppealDate} />
+                                                   ) : (
+                                                      t('player.banMetadata.none')
+                                                   )}
+                                                </BanMetadata>
+                                             </dl>
+                                          ) : (
+                                             <p className="text-muted-foreground text-sm">{t('player.banMetadata.legacy')}</p>
+                                          )}
+                                       </div>
+                                    )}
+                                 </div>
+                              ) : null}
 
-                           {profileSections.map((section, index) => (
-                              <Fragment key={section.id}>{section.render(index > 0)}</Fragment>
-                           ))}
-                        </PlayerProfileHeader>
-                     </PlayerProfileAccentScope>
-                  );
-               }}
-            </PlayerProfileCustomization>
+                              {profileSections.map((section, index) => (
+                                 <Fragment key={section.id}>{section.render(index > 0)}</Fragment>
+                              ))}
+                           </PlayerProfileHeader>
+                        </PlayerProfileAccentScope>
+                     );
+                  }}
+               </PlayerProfileCustomization>
+            </div>
          </div>
+      </DenyahModeProvider>
+   );
+}
+
+function BanMetadata({ label, children }: { label: string; children: ReactNode }) {
+   return (
+      <div className="min-w-0">
+         <dt className="text-muted-foreground text-xs font-medium">{label}</dt>
+         <dd className="mt-0.5 break-words">{children}</dd>
       </div>
    );
 }

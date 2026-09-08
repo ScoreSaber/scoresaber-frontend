@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 
-import { getEmailLoginHeaders, setAuthCookie } from '@/modules/auth/actions/session.server';
+import { setAuthCookie } from '@/modules/auth/actions/session.server';
+import { getClientRequestHeaders } from '@/shared/api/client-request.server';
 import type { PasswordAuthControllerGetPasswordCredentialResponse } from '@/shared/api/generated/ApiParams';
 import { api } from '@/shared/api/server-api';
 import { actionApiData, actionSuccess, type ActionResult } from '@/shared/result/action';
@@ -11,7 +12,7 @@ export type PasswordCredentialSummary = PasswordAuthControllerGetPasswordCredent
 type CredentialAuthResponse = Awaited<ReturnType<typeof api.auth.passwordAuthControllerCompleteSignup>>['data'];
 
 function requestOptions() {
-   return { cache: 'no-store' as const, headers: getEmailLoginHeaders() };
+   return { cache: 'no-store' as const, headers: getClientRequestHeaders() };
 }
 
 function finishAuth(result: ActionResult<CredentialAuthResponse>): ActionResult<CredentialAuthActionValue> {
@@ -26,7 +27,7 @@ function finishAuth(result: ActionResult<CredentialAuthResponse>): ActionResult<
 }
 
 const startSignupFn = createServerFn({ method: 'POST' })
-   .inputValidator((email: string) => email)
+   .validator((email: string) => email)
    .handler(({ data: email }) => actionApiData(api.auth.passwordAuthControllerStartSignup({ email }, requestOptions())));
 
 export async function startSignup(email: string) {
@@ -34,7 +35,7 @@ export async function startSignup(email: string) {
 }
 
 const completeSignupFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { email: string; challengeId: string; code: string; password: string; displayName: string }) => data)
+   .validator((data: { email: string; challengeId: string; code: string; password: string; displayName: string }) => data)
    .handler(async ({ data }) => finishAuth(await actionApiData(api.auth.passwordAuthControllerCompleteSignup(data, requestOptions()))));
 
 export async function completeSignup(data: { email: string; challengeId: string; code: string; password: string; displayName: string }) {
@@ -42,7 +43,7 @@ export async function completeSignup(data: { email: string; challengeId: string;
 }
 
 const loginWithPasswordFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { email: string; password: string }) => data)
+   .validator((data: { email: string; password: string }) => data)
    .handler(async ({ data }) => finishAuth(await actionApiData(api.auth.passwordAuthControllerLoginWithPassword(data, requestOptions()))));
 
 export async function loginWithPassword(data: { email: string; password: string }) {
@@ -50,7 +51,7 @@ export async function loginWithPassword(data: { email: string; password: string 
 }
 
 const startPasswordResetFn = createServerFn({ method: 'POST' })
-   .inputValidator((email: string) => email)
+   .validator((email: string) => email)
    .handler(({ data: email }) => actionApiData(api.auth.passwordAuthControllerStartPasswordReset({ email }, requestOptions())));
 
 export async function startPasswordReset(email: string) {
@@ -58,7 +59,7 @@ export async function startPasswordReset(email: string) {
 }
 
 const completePasswordResetFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { email: string; challengeId: string; code: string; password: string }) => data)
+   .validator((data: { email: string; challengeId: string; code: string; password: string }) => data)
    .handler(async ({ data }) => finishAuth(await actionApiData(api.auth.passwordAuthControllerCompletePasswordReset(data, requestOptions()))));
 
 export async function completePasswordReset(data: { email: string; challengeId: string; code: string; password: string }) {
@@ -74,7 +75,7 @@ export async function getPasswordCredential() {
 }
 
 const startPasswordSetupFn = createServerFn({ method: 'POST' })
-   .inputValidator((email: string) => email)
+   .validator((email: string) => email)
    .handler(({ data: email }) => actionApiData(api.auth.passwordAuthControllerStartPasswordSetup({ email }, requestOptions())));
 
 export async function startPasswordSetup(email: string) {
@@ -82,7 +83,7 @@ export async function startPasswordSetup(email: string) {
 }
 
 const completePasswordSetupFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { email: string; challengeId: string; code: string; password: string }) => data)
+   .validator((data: { email: string; challengeId: string; code: string; password: string }) => data)
    .handler(async ({ data }) => {
       const result = await actionApiData(api.auth.passwordAuthControllerCompletePasswordSetup(data, requestOptions()));
 
@@ -99,7 +100,7 @@ export async function completePasswordSetup(data: { email: string; challengeId: 
 }
 
 const changePasswordFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { currentPassword: string; newPassword: string }) => data)
+   .validator((data: { currentPassword: string; newPassword: string }) => data)
    .handler(async ({ data }) => {
       const result = await actionApiData(api.auth.passwordAuthControllerChangePassword(data, requestOptions()));
 

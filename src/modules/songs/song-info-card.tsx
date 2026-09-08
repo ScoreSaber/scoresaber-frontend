@@ -7,6 +7,7 @@ import { DifficultyPill } from './difficulty-pill';
 
 import { LinkedNames } from '@/modules/search/search-link';
 import { FadeInImage } from '@/shared/components/fade-in-image';
+import { NAV_CARD_ABOVE_OVERLAY, NAV_CARD_PRESS, NavCardOverlay } from '@/shared/components/nav-card';
 import { Time } from '@/shared/components/time';
 import { cn } from '@/shared/format/helpers';
 import { usePersistedLeaderboardSearch } from '@/shared/url-state/persisted/use-persisted-leaderboard-search';
@@ -36,6 +37,7 @@ interface SongInfoCardProps {
    showCreatedDate?: boolean;
    className?: string;
    useContainerQueries?: boolean;
+   tapTarget?: boolean;
 }
 
 export function SongInfoCard({
@@ -56,12 +58,14 @@ export function SongInfoCard({
    showMapper = true,
    showCreatedDate = true,
    className,
-   useContainerQueries = false
+   useContainerQueries = false,
+   tapTarget = false
 }: SongInfoCardProps) {
    const tc = useTranslations();
    const linkSearch = usePersistedLeaderboardSearch();
    const compact = variant === 'compact';
    const cq = useContainerQueries;
+   const linkParams = { id: mapId, leaderboardId };
 
    return (
       <div
@@ -72,9 +76,11 @@ export function SongInfoCard({
                (cq
                   ? '@min-[600px]/scorecard:flex-row @min-[600px]/scorecard:items-center @min-[600px]/scorecard:gap-4'
                   : 'lg:flex-row lg:items-center lg:gap-4'),
+            tapTarget && cn('relative', NAV_CARD_PRESS),
             className
          )}
       >
+         {tapTarget && <NavCardOverlay location={{ to: '/map/$id/difficulty/$leaderboardId', params: linkParams, search: linkSearch }} />}
          {showCover && (
             <div className={cn('relative flex justify-center', !compact && 'translate-y-0.5')}>
                <figure className="relative">
@@ -104,8 +110,8 @@ export function SongInfoCard({
             {compact ? (
                <div className="text-muted-foreground flex min-w-0 items-baseline text-sm leading-tight">
                   <mapDifficultyRoute.Link
-                     className="text-foreground mr-1 min-w-0 truncate font-semibold transition-colors"
-                     params={{ id: mapId, leaderboardId }}
+                     className={cn('text-foreground mr-1 min-w-0 truncate font-semibold transition-colors', NAV_CARD_ABOVE_OVERLAY)}
+                     params={linkParams}
                      search={linkSearch}
                   >
                      {songName}
@@ -113,7 +119,11 @@ export function SongInfoCard({
                   {showSongAuthor && (
                      <>
                         <span className="shrink-0">{tc('common.by')}</span>
-                        <LinkedNames className="ml-1 min-w-0 truncate" linkClassName="truncate text-foreground font-normal" name={songAuthorName} />
+                        <LinkedNames
+                           className={cn('ml-1 min-w-0 truncate', NAV_CARD_ABOVE_OVERLAY)}
+                           linkClassName="truncate text-foreground font-normal"
+                           name={songAuthorName}
+                        />
                      </>
                   )}
                </div>
@@ -125,8 +135,8 @@ export function SongInfoCard({
                   )}
                >
                   <mapDifficultyRoute.Link
-                     className="text-foreground mr-1 text-lg font-semibold transition-colors"
-                     params={{ id: mapId, leaderboardId }}
+                     className={cn('text-foreground mr-1 text-lg font-semibold transition-colors', NAV_CARD_ABOVE_OVERLAY)}
+                     params={linkParams}
                      search={linkSearch}
                   >
                      {songName}
@@ -134,7 +144,11 @@ export function SongInfoCard({
                   {showSongAuthor && (
                      <>
                         <span>{tc('common.by')}</span>
-                        <LinkedNames className="ml-1" linkClassName="text-foreground font-normal" name={songAuthorName} />
+                        <LinkedNames
+                           className={cn('ml-1', NAV_CARD_ABOVE_OVERLAY)}
+                           linkClassName="text-foreground font-normal"
+                           name={songAuthorName}
+                        />
                      </>
                   )}
                </div>
@@ -149,7 +163,7 @@ export function SongInfoCard({
                >
                   <span className="capitalize">{tc('common.mappedBy')}</span>
                   <LinkedNames
-                     className="mr-1 ml-1"
+                     className={cn('mr-1 ml-1', NAV_CARD_ABOVE_OVERLAY)}
                      linkClassName={cn('text-foreground font-normal', compact && 'text-[11px]')}
                      name={levelAuthorName}
                      splitCommas

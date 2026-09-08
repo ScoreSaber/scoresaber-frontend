@@ -1,9 +1,28 @@
 import { type RefObject, useEffect } from 'react';
 
 import type { MetricKey } from '@/modules/player/chart/chart-types';
+import { isDenyah } from '@/modules/player/denyah/denyah';
 
-const DENYAH_ID = '76561198064659288';
 const DENYAH_SECTIONS = 10;
+
+export function computeDenyahSections(rankDataValues: number[]) {
+   const sectionSize = rankDataValues.length / DENYAH_SECTIONS;
+   const nums: number[] = [];
+   for (let i = 0; i < rankDataValues.length; i += sectionSize) {
+      let sum = 0;
+      for (let x = i; x < i + sectionSize; x++) {
+         sum += rankDataValues[Math.floor(x)] ?? 0;
+      }
+      nums.push(sum / sectionSize);
+   }
+
+   const average = nums.reduce((sum, value) => sum + value, 0) / nums.length;
+
+   return nums.map((value, i) => ({
+      isGood: i === 0 ? value < average : nums[i - 1] > value,
+      posPercent: (i / (nums.length - 1)) * 100
+   }));
+}
 
 export function useDenyahOverlay(
    playerId: string,
@@ -11,11 +30,11 @@ export function useDenyahOverlay(
    rankDataValues: number[],
    overlayRef: RefObject<HTMLDivElement | null>
 ) {
-   const isDenyah = playerId === DENYAH_ID;
+   const denyahMode = isDenyah(playerId);
 
    useEffect(() => {
       const overlay = overlayRef.current;
-      if (!overlay || !isDenyah) return;
+      if (!overlay || !denyahMode) return;
 
       if (!activeMetrics.has('rank')) {
          overlay.style.backgroundImage = '';
@@ -23,33 +42,13 @@ export function useDenyahOverlay(
          return;
       }
 
-      const sectionSize = rankDataValues.length / DENYAH_SECTIONS;
-      const nums: number[] = [];
-      for (let i = 0; i < rankDataValues.length; i += sectionSize) {
-         let sum = 0;
-         for (let x = i; x < i + sectionSize; x++) {
-            sum += rankDataValues[Math.floor(x)] ?? 0;
-         }
-         nums.push(sum / sectionSize);
-      }
-
-      let totalSum = 0;
-      for (let i = 0; i < nums.length; i++) {
-         totalSum += nums[i];
-      }
-      const trueAverage = totalSum / nums.length;
-
-      const denyahs: string[] = [];
-      const backgroundPositions: string[] = [];
-      const backgroundWidth = 100 / nums.length;
-      for (let i = 0; i < nums.length; i++) {
-         const isGood = i === 0 ? nums[i] < trueAverage : nums[i - 1] > nums[i];
-         denyahs.push(isGood ? 'url(/images/denyah-good.png)' : 'url(/images/denyah-bad.png)');
-         backgroundPositions.push(`${(i / (nums.length - 1)) * 100}%`);
-      }
-      overlay.style.backgroundImage = denyahs.join(', ');
+      const sections = computeDenyahSections(rankDataValues);
+      const backgroundWidth = 100 / sections.length;
+      overlay.style.backgroundImage = sections
+         .map((section) => (section.isGood ? 'url(/images/denyah-good.png)' : 'url(/images/denyah-bad.png)'))
+         .join(', ');
       overlay.style.backgroundRepeat = 'no-repeat';
-      overlay.style.backgroundPositionX = backgroundPositions.join(', ');
+      overlay.style.backgroundPositionX = sections.map((section) => `${section.posPercent}%`).join(', ');
       overlay.style.backgroundSize = `${backgroundWidth + 1}% 100%`;
       overlay.style.borderRadius = '5px';
       overlay.style.opacity = '0.1';
@@ -58,5 +57,5 @@ export function useDenyahOverlay(
          overlay.style.backgroundImage = '';
          overlay.style.opacity = '0';
       };
-   }, [isDenyah, activeMetrics, rankDataValues, overlayRef]);
+   }, [denyahMode, activeMetrics, rankDataValues, overlayRef]);
 }

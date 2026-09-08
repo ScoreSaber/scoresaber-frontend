@@ -1,3 +1,5 @@
+export const BSWC_PROMO_ENABLED = false;
+
 export type HomeBswcTeam = {
    name: string;
    imageUrl: string | null;

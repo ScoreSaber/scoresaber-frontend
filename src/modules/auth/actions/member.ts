@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 
-import { clearAuthCookie, getEmailLoginHeaders, setAuthCookie } from '@/modules/auth/actions/session.server';
+import { clearAuthCookie, setAuthCookie } from '@/modules/auth/actions/session.server';
+import { getClientRequestHeaders } from '@/shared/api/client-request.server';
 import { api } from '@/shared/api/server-api';
 import { actionApiData, actionSuccess, type ActionResult } from '@/shared/result/action';
 import { apiResult } from '@/shared/result/api';
@@ -22,14 +23,14 @@ export async function logout() {
 }
 
 const startEmailLoginFn = createServerFn({ method: 'POST' })
-   .inputValidator((email: string) => email)
+   .validator((email: string) => email)
    .handler(async ({ data: email }) =>
       actionApiData(
          api.auth.authControllerStartEmailLogin(
             { email },
             {
                cache: 'no-store',
-               headers: getEmailLoginHeaders()
+               headers: getClientRequestHeaders()
             }
          )
       )
@@ -40,14 +41,14 @@ export async function startEmailLogin(email: string) {
 }
 
 const verifyEmailLoginFn = createServerFn({ method: 'POST' })
-   .inputValidator((data: { challengeId: string; code: string }) => data)
+   .validator((data: { challengeId: string; code: string }) => data)
    .handler(async ({ data }): Promise<ActionResult<EmailLoginVerificationActionValue>> => {
       const result = await actionApiData(
          api.auth.authControllerVerifyEmailLogin(
             { challengeId: data.challengeId, code: data.code },
             {
                cache: 'no-store',
-               headers: getEmailLoginHeaders()
+               headers: getClientRequestHeaders()
             }
          )
       );

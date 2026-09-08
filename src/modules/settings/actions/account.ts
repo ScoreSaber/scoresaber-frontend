@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start';
 
+import { getClientRequestHeaders } from '@/shared/api/client-request.server';
 import { api } from '@/shared/api/server-api';
 import { actionFailure, actionResultVoid } from '@/shared/result/action';
 import { sanitizeRichTextHtml } from '@/shared/rich-text/server';
@@ -8,18 +9,20 @@ const bioMaxLength = 4096;
 const avatarMaxSize = 10 * 1024 * 1024;
 
 const uploadAvatarFn = createServerFn({ method: 'POST' })
-   .inputValidator((formData: FormData) => formData)
+   .validator((formData: FormData) => formData)
    .handler(({ data }) => uploadAvatarData(data));
 
 const updateBioFn = createServerFn({ method: 'POST' })
-   .inputValidator((bio: string) => bio)
+   .validator((bio: string) => bio)
    .handler(({ data }) => updateBioData(data));
 
 const updateNameFn = createServerFn({ method: 'POST' })
-   .inputValidator((name: string) => name)
+   .validator((name: string) => name)
    .handler(({ data }) => actionResultVoid(api.user.userControllerUpdateName({ name: data })));
 
-const requestCountryResetFn = createServerFn({ method: 'POST' }).handler(() => actionResultVoid(api.user.userControllerResetCountry()));
+const requestCountryResetFn = createServerFn({ method: 'POST' }).handler(() =>
+   actionResultVoid(api.user.userControllerResetCountry({ headers: getClientRequestHeaders() }))
+);
 
 function uploadAvatarData(formData: FormData) {
    const avatar = formData.get('avatar');

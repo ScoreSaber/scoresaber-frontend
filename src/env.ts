@@ -20,7 +20,7 @@ const publicBrowserUrlSchema = z.url().refine(
    (value) => {
       const url = new URL(value);
       if (url.protocol === 'https:') return true;
-      return url.protocol === 'http:' && localHostnames.has(url.hostname);
+      return url.protocol === 'http:' && (localHostnames.has(url.hostname) || url.hostname.endsWith('.localhost'));
    },
    { message: 'must be https, or localhost http' }
 );

@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { getRouteApi, useLocation } from '@tanstack/react-router';
 import { ChevronLeft, ChevronRight, CircleEllipsis, LogIn, Search } from 'lucide-react';
 import { useTranslations } from 'use-intl';
@@ -174,13 +172,9 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
 
 function ExpandedSidebar({ onCollapse }: { onCollapse: () => void }) {
    const tSidebar = useTranslations();
-   const [isMac, setIsMac] = useState<boolean | null>(null);
+   const { isMac } = useSidebar();
 
-   useEffect(() => {
-      setIsMac(/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent));
-   }, []);
-
-   const shortcut = isMac === false ? 'Ctrl+Shift+S' : '⌘⇧S';
+   const shortcut = isMac ? '⌘⇧S' : 'Ctrl+Shift+S';
 
    return (
       <>

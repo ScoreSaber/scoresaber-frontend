@@ -10,7 +10,7 @@ export async function getVanity() {
 }
 
 const claimVanityFn = createServerFn({ method: 'POST' })
-   .inputValidator((slug: string) => slug)
+   .validator((slug: string) => slug)
    .handler(({ data }) => actionApiData(api.user.userControllerClaimVanity({ slug: data })));
 
 export async function claimVanity(slug: string) {

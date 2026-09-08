@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { useTranslations } from 'use-intl';
 import { z } from 'zod';
 
-import type { HomeBswcPromo } from '@/modules/home/actions/bswc';
+import { BSWC_PROMO_ENABLED, type HomeBswcPromo } from '@/modules/home/actions/bswc';
 import { getHomeBswcPromo } from '@/modules/home/actions/bswc.server';
 import type { HomeNewsFeed } from '@/modules/home/actions/news';
 import { getHomeNewsFeed } from '@/modules/home/actions/news.server';
@@ -13,7 +13,7 @@ import { HeroSection } from '@/modules/home/hero-section';
 import { HomeColumn, HomeColumnLink } from '@/modules/home/home-column';
 import { HOME_TRENDING_MAP_SEARCH, TOP_PLAYER_COUNT, TRENDING_MAP_COUNT } from '@/modules/home/home-constants';
 import { InstallSection } from '@/modules/home/install-section';
-import { NewsColumn, NewsSocialLinks } from '@/modules/home/news-column';
+import { NewsColumn, NewsColumnActions } from '@/modules/home/news-column';
 import { RankedBatchSection } from '@/modules/home/ranked-batch-section';
 import { TopPlayersColumn } from '@/modules/home/top-players-column';
 import { TrendingMapsColumn } from '@/modules/home/trending-maps-column';
@@ -21,12 +21,16 @@ import type { MapControllerGetMapListingsDataItem, PlayerControllerGetPlayersDat
 import { publicApi } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
+import { optionalSearchParamString } from '@/shared/url-state/params';
 
-const optionalSearchString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
+const BSWC_PROMO_PRIORITY_WINDOW_MS = 24 * 60 * 60 * 1000;
+const RANKED_BATCH_PRIORITY_WINDOW_MS = 48 * 60 * 60 * 1000;
+const HOME_AGGREGATES_CACHE_MS = 60 * 1000;
+const HOME_AGGREGATES_RETRY_MS = 15 * 1000;
 
 const homeSearchSchema = z.object({
-   accountMergeChallengeId: optionalSearchString,
-   bswcLive: optionalSearchString
+   accountMergeChallengeId: optionalSearchParamString,
+   bswcLive: optionalSearchParamString
 });
 
 type HomePageData = {
@@ -34,10 +38,45 @@ type HomePageData = {
    trendingMaps: MapControllerGetMapListingsDataItem[];
    news: HomeNewsFeed;
    bswc: HomeBswcPromo | null;
+   prioritizeBswc: boolean;
+   prioritizeRankedBatch: boolean;
 };
 
+type HomeAggregates = Pick<HomePageData, 'topPlayers' | 'trendingMaps'>;
+
+let cachedHomeAggregates: { expiresAt: number; data: HomeAggregates } | null = null;
+let pendingHomeAggregatesRefresh: Promise<HomeAggregates> | null = null;
+
 const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Promise<HomePageData> => {
-   const [playersResponse, mapsResponse, news, bswc] = await Promise.all([
+   const [aggregates, news, bswc] = await Promise.all([getHomeAggregates(), getHomeNewsFeed(), BSWC_PROMO_ENABLED ? getHomeBswcPromo() : null]);
+   const now = Date.now();
+
+   return {
+      ...aggregates,
+      news,
+      bswc,
+      prioritizeBswc:
+         bswc?.liveMatch != null || (bswc?.nextMatch != null && Date.parse(bswc.nextMatch.startsAt) <= now + BSWC_PROMO_PRIORITY_WINDOW_MS),
+      prioritizeRankedBatch:
+         news.latestRankedBatchVideo != null && Date.parse(news.latestRankedBatchVideo.publishedAt) >= now - RANKED_BATCH_PRIORITY_WINDOW_MS
+   };
+});
+
+async function getHomeAggregates() {
+   if (cachedHomeAggregates && cachedHomeAggregates.expiresAt > Date.now()) return cachedHomeAggregates.data;
+
+   if (!pendingHomeAggregatesRefresh) {
+      pendingHomeAggregatesRefresh = refreshHomeAggregates().finally(() => {
+         pendingHomeAggregatesRefresh = null;
+      });
+   }
+
+   // retain stale data during refresh, but let the first request populate the page normally
+   return cachedHomeAggregates?.data ?? pendingHomeAggregatesRefresh;
+}
+
+async function refreshHomeAggregates(): Promise<HomeAggregates> {
+   const [playersResponse, mapsResponse] = await Promise.all([
       optionalApi(
          publicApi.player
             .playerControllerGetPlayers({
@@ -60,18 +99,20 @@ const getHomePageData = createServerFn({ method: 'GET' }).handler(async (): Prom
                sortDirection: HOME_TRENDING_MAP_SEARCH.sortDirection
             })
             .then((response) => response.data)
-      ),
-      getHomeNewsFeed(),
-      getHomeBswcPromo()
+      )
    ]);
-
-   return {
+   const data = {
       topPlayers: playersResponse?.data ?? [],
-      trendingMaps: mapsResponse?.data ?? [],
-      news,
-      bswc
+      trendingMaps: mapsResponse?.data ?? []
    };
-});
+
+   cachedHomeAggregates = {
+      expiresAt: Date.now() + (playersResponse || mapsResponse ? HOME_AGGREGATES_CACHE_MS : HOME_AGGREGATES_RETRY_MS),
+      data
+   };
+
+   return data;
+}
 
 export const Route = createFileRoute('/')({
    validateSearch: (search) => homeSearchSchema.parse(search),
@@ -105,6 +146,7 @@ function HomeRoute() {
    const search = Route.useSearch();
    const t = useTranslations('home');
    const previewBswcLive = search.bswcLive === '1';
+   const showBswcFirst = BSWC_PROMO_ENABLED && (previewBswcLive || data.prioritizeBswc);
 
    return (
       <div className="dark bg-background text-foreground relative flex-1 overflow-hidden">
@@ -113,12 +155,20 @@ function HomeRoute() {
          <HeroSection />
 
          <div className="relative z-10 mx-auto flex w-full max-w-[1180px] flex-col gap-14 px-4 pt-0 pb-16 sm:px-6 lg:px-10">
-            <section>
-               <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
-            </section>
+            {data.prioritizeRankedBatch && (
+               <section>
+                  <RankedBatchSection video={data.news.latestRankedBatchVideo} />
+               </section>
+            )}
+
+            {showBswcFirst && (
+               <section>
+                  <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
+               </section>
+            )}
 
             <section className="grid items-stretch gap-4 lg:grid-cols-[minmax(18rem,1.45fr)_minmax(0,1fr)_minmax(19rem,1.08fr)]">
-               <HomeColumn title={t('sections.news')} action={<NewsSocialLinks />}>
+               <HomeColumn title={t('sections.news')} action={<NewsColumnActions posts={data.news.posts} />}>
                   <NewsColumn posts={data.news.posts} />
                </HomeColumn>
 
@@ -145,9 +195,17 @@ function HomeRoute() {
                </HomeColumn>
             </section>
 
-            <section>
-               <RankedBatchSection video={data.news.latestRankedBatchVideo} />
-            </section>
+            {BSWC_PROMO_ENABLED && !showBswcFirst && (
+               <section>
+                  <BswcPromoSection promo={data.bswc} previewLive={previewBswcLive} />
+               </section>
+            )}
+
+            {!data.prioritizeRankedBatch && (
+               <section>
+                  <RankedBatchSection video={data.news.latestRankedBatchVideo} />
+               </section>
+            )}
 
             <InstallSection />
          </div>

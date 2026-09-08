@@ -3,11 +3,14 @@
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
 
+import { useLocation } from '@tanstack/react-router';
 import { FaClock, FaTrophy } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
 
+import { useDenyahMode } from '@/modules/player/denyah/denyah-mode-context';
+import { Runaway } from '@/modules/player/denyah/runaway';
 import { getProfileAccentProperties, type PlayerProfileCustomizationStyle } from '@/modules/player/profile/player-profile-accent';
 import type { PlayerControllerGetPlayerScoresSort } from '@/shared/api/generated/ApiParams';
 import { DebouncedSearchInput } from '@/shared/components/debounced-search-input';
@@ -21,6 +24,12 @@ type PlayerScoresSearch = SearchParamsRecord & {
    page?: number;
    sort?: PlayerControllerGetPlayerScoresSort;
    search?: string;
+};
+
+type PendingSort = {
+   sort: PlayerControllerGetPlayerScoresSort;
+   fromSort: PlayerControllerGetPlayerScoresSort;
+   fromPathname: string;
 };
 
 export function PlayerScoresToolbar<TLocation>({
@@ -38,20 +47,26 @@ export function PlayerScoresToolbar<TLocation>({
 }) {
    const t = useTranslations();
    const tc = useTranslations();
+   const denyahMode = useDenyahMode();
    const { navigate, preload, cancelPreload } = usePersistedParams({
       storageKey: 'player-scores-toolbar',
       search,
       buildLocation,
       parseSearch
    });
+   const pathname = useLocation({ select: (location) => location.pathname });
    const currentSort = search.sort ?? 'top';
    const currentSearch = search.search;
 
-   const [newSort, setNewSort] = useState<PlayerControllerGetPlayerScoresSort>(currentSort);
+   const [pendingSort, setPendingSort] = useState<PendingSort | null>(null);
 
-   const loading = newSort !== currentSort;
-   const topLoading = loading && newSort === 'top';
-   const recentLoading = loading && newSort === 'recent';
+   const settled = pendingSort != null && (pendingSort.fromSort !== currentSort || pendingSort.fromPathname !== pathname);
+   if (settled) setPendingSort(null);
+
+   const activeSort = settled ? null : pendingSort;
+   const loading = activeSort != null;
+   const topLoading = activeSort?.sort === 'top';
+   const recentLoading = activeSort?.sort === 'recent';
    const accentProperties = getProfileAccentProperties(customization);
    const activeSortStyle: CSSProperties = {
       backgroundColor: accentProperties?.['--profile-accent'] ?? 'var(--profile-accent, var(--primary))',
@@ -71,44 +86,48 @@ export function PlayerScoresToolbar<TLocation>({
    }
 
    function handleSort(sort: PlayerControllerGetPlayerScoresSort) {
-      setNewSort(sort);
+      setPendingSort({ sort, fromSort: currentSort, fromPathname: pathname });
       navigate({ sort }, { scroll: false });
    }
 
    return (
       <div className={cn('flex w-88 flex-col items-center gap-3 text-sm', className)}>
          <div className="flex gap-2">
-            <Button
-               disabled={loading}
-               onMouseEnter={() => preload({ sort: 'top' }, { scroll: false })}
-               onFocus={() => preload({ sort: 'top' }, { scroll: false })}
-               onMouseLeave={cancelPreload}
-               onBlur={cancelPreload}
-               onClick={() => handleSort('top')}
-               size="sm"
-               variant={currentSort === 'top' || topLoading ? 'default' : 'secondary'}
-               className="cursor-pointer"
-               style={currentSort === 'top' || topLoading ? activeSortStyle : inactiveSortStyle}
-            >
-               {!topLoading ? <FaTrophy data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
-               {t('player.topScores')}
-            </Button>
+            <Runaway enabled={denyahMode}>
+               <Button
+                  disabled={loading}
+                  onMouseEnter={() => preload({ sort: 'top' }, { scroll: false })}
+                  onFocus={() => preload({ sort: 'top' }, { scroll: false })}
+                  onMouseLeave={cancelPreload}
+                  onBlur={cancelPreload}
+                  onClick={() => handleSort('top')}
+                  size="sm"
+                  variant={currentSort === 'top' || topLoading ? 'default' : 'secondary'}
+                  className="cursor-pointer"
+                  style={currentSort === 'top' || topLoading ? activeSortStyle : inactiveSortStyle}
+               >
+                  {!topLoading ? <FaTrophy data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
+                  {t('player.topScores')}
+               </Button>
+            </Runaway>
 
-            <Button
-               disabled={loading}
-               onMouseEnter={() => preload({ sort: 'recent' }, { scroll: false })}
-               onFocus={() => preload({ sort: 'recent' }, { scroll: false })}
-               onMouseLeave={cancelPreload}
-               onBlur={cancelPreload}
-               onClick={() => handleSort('recent')}
-               size="sm"
-               variant={currentSort === 'recent' || recentLoading ? 'default' : 'secondary'}
-               className="cursor-pointer"
-               style={currentSort === 'recent' || recentLoading ? activeSortStyle : inactiveSortStyle}
-            >
-               {!recentLoading ? <FaClock data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
-               {t('player.recentScores')}
-            </Button>
+            <Runaway enabled={denyahMode}>
+               <Button
+                  disabled={loading}
+                  onMouseEnter={() => preload({ sort: 'recent' }, { scroll: false })}
+                  onFocus={() => preload({ sort: 'recent' }, { scroll: false })}
+                  onMouseLeave={cancelPreload}
+                  onBlur={cancelPreload}
+                  onClick={() => handleSort('recent')}
+                  size="sm"
+                  variant={currentSort === 'recent' || recentLoading ? 'default' : 'secondary'}
+                  className="cursor-pointer"
+                  style={currentSort === 'recent' || recentLoading ? activeSortStyle : inactiveSortStyle}
+               >
+                  {!recentLoading ? <FaClock data-icon="inline-start" /> : <Icons.spinner data-icon="inline-start" className="animate-spin" />}
+                  {t('player.recentScores')}
+               </Button>
+            </Runaway>
          </div>
 
          {/* search */}

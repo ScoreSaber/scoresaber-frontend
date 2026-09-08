@@ -18,10 +18,8 @@ import zhCnMessages from '../../messages/zh-CN.json';
 import zhTwMessages from '../../messages/zh-TW.json';
 
 import { defaultLocale, locales, parseLocale, type Locale } from '@/i18n/config';
+import { mergeMessages, type Messages } from '@/shared/i18n/messages';
 
-interface Messages {
-   [key: string]: string | Messages;
-}
 type AcceptedLocale = {
    value: string;
    quality: number;
@@ -67,15 +65,6 @@ export async function getMessages(): Promise<Messages> {
 
 export function getVisibleLocales(): Locale[] {
    return locales.filter((locale) => locale === defaultLocale || hasMessages(localeMessages[locale]));
-}
-
-function mergeMessages(base: Messages, override: Messages): Messages {
-   return Object.fromEntries(Object.entries(base).map(([key, value]) => [key, mergeMessage(value, override[key])]));
-}
-
-function mergeMessage(base: string | Messages, override: string | Messages | undefined) {
-   if (typeof base === 'string') return typeof override === 'string' && override.trim() ? override : base;
-   return mergeMessages(base, typeof override === 'string' ? {} : (override ?? {}));
 }
 
 function hasMessages(value: string | Messages): boolean {

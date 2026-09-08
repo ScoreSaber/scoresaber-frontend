@@ -86,6 +86,16 @@
          "patreon": "Пожалуйста, поддержите ScoreSaber на Patreon ❤️",
          "patreonPerks": "За поддержку вы получите цвет на таблице рекордов, бейджик, роль и возможность редактировать раздел \"обо мне\"",
          "sourceCode": "Исходный код"
+      },
+      "pairing": {
+         "title": "Связать ScoreSaber с Quest версией игры",
+         "signedOutDescription": "Войдите или создайте аккаунт, и после мы вернём вас на эту страницу для получения кода сопряжения",
+         "signedInDescription": "Вы вошли как {name}. Введите этот код в Beat Saber на Quest версии игры",
+         "loginAction": "Войти",
+         "signupAction": "Создать аккаунт",
+         "loading": "Получение вашего кода для сопряжения",
+         "copied": "Скопировано",
+         "claimedDescription": "Вы можете вернуться обратно в Beat Saber"
       }
    },
    "nav": {
@@ -101,13 +111,14 @@
       "livePlatform": "В эфире",
       "apiDocs": "API документация",
       "questInstaller": "Установка на Quest",
-      "team": "Команда"
+      "team": "Команда",
+      "support": "Поддержать ScoreSaber"
    },
    "home": {
       "hero": {
          "logoAlt": "Лого ScoreSaber",
          "title": "Добро пожаловать в <brand>ScoreSaber</brand>",
-         "description": "Главная площадка для соревновательного Beat Saber. Основанный в мае 2018-го, ScoreSaber является крупнейшей рейтинговой и соревновательной системой для пользовательских карт в Beat Saber",
+         "description": "Главная площадка для соревновательного Beat Saber. Основанный в мае 2018 года, ScoreSaber является крупнейшей рейтинговой и соревновательной системой для пользовательских карт в Beat Saber",
          "primaryAction": "Установить ScoreSaber",
          "secondaryAction": "Создать аккаунт",
          "secondaryActionSignedIn": "Мой профиль"
@@ -116,20 +127,25 @@
          "playersValue": "1.3 млн.",
          "playersLabel": "Зарегистрированных игроков",
          "scoresValue": "90 млн.",
-         "scoresLabel": "Рекорды",
+         "scoresLabel": "Рекордов",
          "leaderboardsValue": "300 тыс.",
-         "leaderboardsLabel": "Таблицы рекордов",
+         "leaderboardsLabel": "Таблиц рекордов",
          "tickerAria": "{label}: {value}"
       },
       "sections": {
          "news": "Новости",
-         "topPlayers": "Топ игроки",
+         "topPlayers": "Топ игроков",
          "rankings": "Рейтинг",
          "trendingMaps": "Популярные карты",
          "browse": "Обзор"
       },
       "news": {
-         "readMore": "Узнать больше..."
+         "allNews": "",
+         "readMore": "Узнать больше...",
+         "repostedBy": "{name} сделал репост",
+         "imageLabel": "Изображение {number} из {count}",
+         "videoLabel": "Видео от {name}",
+         "playVideoOnX": "Воспроизвести видео через X"
       },
       "rankedBatch": {
          "eyebrow": "Последний рейтинговый батч",
@@ -139,31 +155,31 @@
          "reweightsAction": "Посмотреть ревейты"
       },
       "bswc": {
-         "description": "",
-         "liveNow": "",
-         "nextUp": "",
-         "versus": "",
-         "noMatch": "",
-         "infoAction": "",
-         "scheduleAction": "",
-         "twitchAction": "",
-         "twitchFollowAction": "",
-         "twitchEmbedTitle": "",
-         "poweredBy": "",
+         "description": "Смотрите следующий матч в прямом эфире, узнавайте больше о турнире, проверяйте полное расписание или подключайтесь к трансляциям на Twitch канале Cube Community",
+         "liveNow": "Сейчас в эфире!",
+         "nextUp": "Следующий матч",
+         "versus": "vs",
+         "noMatch": "Предстоящий матч ещё не запланирован",
+         "infoAction": "Информация о турнире",
+         "scheduleAction": "Расписание",
+         "twitchAction": "Смотреть на Twitch",
+         "twitchFollowAction": "Отслеживать на Twitch",
+         "twitchEmbedTitle": "Twitch трансляция от Cube Community",
+         "poweredBy": "При поддержке турнирного клиента Ludus от ScoreSaber",
          "liveNotice": {
-            "watch": "",
-            "dismiss": ""
+            "watch": "Смотреть",
+            "dismiss": "Скрыть уведомление о трансляции BSWC"
          },
          "countdown": {
-            "days": "",
-            "hours": "",
-            "minutes": "",
-            "seconds": ""
+            "days": "дн",
+            "hours": "ч",
+            "minutes": "мин",
+            "seconds": "с"
          }
       },
       "install": {
          "title": "Готовы соревноваться?",
-         "description": "Установите ScoreSaber на свою платформу и ваши рекорды начнут сразу загружаться на таблицы рекордов",
+         "description": "Установите ScoreSaber на свою платформу, и ваши результаты сразу начнут учитываться в таблицах рекордов",
          "quest": {
             "title": "Meta Quest версия игры",
             "action": "Установить на Quest версию игры"
@@ -178,20 +194,106 @@
          }
       },
       "empty": {
-         "players": "Топ игроки сейчас недоступны",
+         "players": "Топ игроков сейчас недоступен",
          "maps": "Популярные карты сейчас недоступны",
          "news": "Новости сейчас недоступны"
       }
    },
    "supporterGate": {
-      "title": "Бонусы для поддержавших",
+      "title": "Бонус для поддержавших",
       "connectDescription": "Добавьте аккаунт Patreon для бонусов по типу раздела \"обо мне\"",
       "subscribeDescription": "Подпишитесь на Patreon, чтобы открыть данную функцию",
       "connect": "Привязать Patreon",
       "subscribe": "Подписаться на Patreon",
-      "supportUs": "Support us on Patreon",
-      "connectSupporterText": "Already supporting ScoreSaber? Connect your Patreon",
-      "connectSupporterLink": "here"
+      "supportUs": "Поддержите нас на Patreon",
+      "connectSupporterText": "Уже поддерживаете ScoreSaber? Привяжите свой Patreon",
+      "connectSupporterLink": "здесь"
+   },
+   "support": {
+      "title": "Поддержите главную платформу соревновательного Beat Saber",
+      "subtitle": "Начиная с 2018 года ScoreSaber остается крупнейшей соревновательной платформой для Beat Saber, объединяя игроков со всего мира. Поддержка на Patreon помогает финансировать постоянную разработку и инфраструктуру, обслуживающую миллионы рекордов, а в благодарность открывает дополнительные возможности для подписчиков",
+      "logoAlt": "ScoreSaber",
+      "supportCta": "Поддержать на Patreon",
+      "connect": {
+         "text": "Уже поддерживаете нас?",
+         "link": "Подключите свой Patreon в настройках"
+      },
+      "why": {
+         "title": "На что идёт ваша поддержка",
+         "platform": {
+            "title": "Развитие",
+            "description": "ScoreSaber разрабатывается как полноценная соревновательная платформа, со своей системой организации турниров, которая вскоре будет доступна всем игрокам бесплатно"
+         },
+         "servers": {
+            "title": "Серверы и инфраструктура",
+            "description": "Таблицы рекордов, API и веб-сайт круглосуточно обслуживают миллионы рекордов. Ваша поддержка помогает им быть быстрыми и легкодоступными"
+         },
+         "replays": {
+            "title": "Хранение повторов",
+            "description": "Каждый рейтинговый рекорд сохраняется как повтор, который вы можете посмотреть в игре или на веб-сайте, и этот архив растёт каждый день"
+         }
+      },
+      "tiers": {
+         "title": "Бонусы для поддержавших",
+         "subtitle": "Бонусы - это наш способ сказать спасибо. Они становятся доступны сразу после оформления подписки и приостанавливаются, если она прекращается",
+         "everythingIn": "всё, что входит в Supporter, а также...",
+         "moreSoon": "скоро будет больше...",
+         "supporter": {
+            "name": "Supporter",
+            "price": "{price} / месяц"
+         },
+         "ppFarmer": {
+            "name": "PP Farmer",
+            "price": "{price} / месяц"
+         }
+      },
+      "perks": {
+         "adFree": {
+            "title": "Отсутствие рекламы",
+            "description": "Сейчас на ScoreSaber нет рекламы. Если в будущем мы будем проводить рекламные кампании с подходящими партнёрами, ваша подписка позволит вам их не видеть"
+         },
+         "bio": {
+            "title": "Редактирование раздела \"обо мне\""
+         },
+         "vanity": {
+            "title": "Персональный URL профиля",
+            "description": "Выберите персональный URL, например scoresaber.com/u/yourname"
+         },
+         "nameColor": {
+            "title": "Цветное имя на таблице рекордов",
+            "description": "Выделяйтесь благодаря цветному имени на каждой таблице рекордов"
+         },
+         "replays5k": {
+            "title": "5,000 слотов для повторов",
+            "description": "Защитите до 5,000 повторов сверх стандартного срока хранения"
+         },
+         "supporterRole": {
+            "title": "Роль Supporter",
+            "description": "Показывается в ScoreSaber и Discord"
+         },
+         "replays20k": {
+            "title": "20,000 слотов для повторов",
+            "description": "Защитите до 20,000 повторов сверх стандартного срока хранения"
+         },
+         "background": {
+            "title": "Фон профиля"
+         },
+         "accent": {
+            "title": "Персональные цвета профиля"
+         },
+         "pinned": {
+            "title": "Закреплённые рекорды",
+            "description": "Закрепляйте до 6 любимых рекордов в верхней части вашего профиля"
+         },
+         "customization": {
+            "title": "Управление бейджиками и оформлением профиля",
+            "description": "Изменяйте порядок своих значков, статистики и секций в профиле так, как вам нравится"
+         },
+         "ppFarmerBadge": {
+            "title": "Бейджик и роль PP Farmer",
+            "description": "Бейджик PP Farmer в ScoreSaber, а также роли Supporter и PP Farmer на сервере Discord"
+         }
+      }
    },
    "login": {
       "titlePrefix": "Вход в",
@@ -264,7 +366,7 @@
          "emailCallToAction": "Создать новую учётную запись"
       },
       "subtitle": "Войдите или создайте учётную запись с помощью ScoreSaber",
-      "metaProviderTooltip": ""
+      "metaProviderTooltip": "Meta"
    },
    "sidebar": {
       "activeRealm": "Активный реалм",
@@ -289,7 +391,7 @@
    },
    "common": {
       "language": "Язык",
-      "scoreSaber": "",
+      "scoreSaber": "ScoreSaber",
       "cancel": "Отменить",
       "back": "Назад",
       "confirm": "Подтвердить",
@@ -303,12 +405,12 @@
       "goHome": "Домой",
       "searchPlaceholder": "Поиск...",
       "clearSearch": "Очистить поиск",
-      "openInNewTab": "",
+      "openInNewTab": "Открыть в новой вкладке",
       "filters": "Фильтры",
       "hideFilters": "Скрыть фильтры",
       "showFilters": "Показать фильтры",
-      "privacyPolicy": "",
-      "cookiesPolicy": "",
+      "privacyPolicy": "Политика конфиденциальности",
+      "cookiesPolicy": "Политика cookie-файлов",
       "global": "Мир",
       "friends": "Друзья",
       "aroundMe": "Вокруг меня",
@@ -325,23 +427,23 @@
       "unknownDate": "Неизвестная дата",
       "justNow": "только что",
       "performancePoints": "Очки производительности",
-      "pp": "",
-      "accuracy": "",
-      "misses": "",
-      "totalPlays": "Всего сыграно",
+      "pp": "PP",
+      "accuracy": "Точность",
+      "misses": "Промахи",
+      "totalPlays": "Всего рекордов",
       "actions": "Действия",
       "rankRequestActions": "Действия по ранк реквесту",
-      "adminActions": "Действия админов",
+      "adminActions": "Действия админа",
       "scoreSaberLogo": "Лого ScoreSaber",
       "underConstruction": "в разработке",
       "edit": "Изменить",
       "copy": "Скопировать",
       "copyFailed": "Ошибка копирования",
       "providers": {
-         "STEAM": "",
-         "OCULUS": "",
-         "PATREON": "",
-         "DISCORD": ""
+         "STEAM": "Steam",
+         "OCULUS": "Meta",
+         "PATREON": "Patreon",
+         "DISCORD": "Discord"
       }
    },
    "error": {
@@ -391,27 +493,65 @@
       "ranked": "Рейт. игр",
       "averageRankedAccuracy": "Средн. рейт. точность",
       "acc": "Точн.",
-      "live": "В эфире"
+      "live": "В эфире",
+      "liveLoading": "",
+      "liveUnavailable": ""
    },
    "score": {
+      "share": {
+         "title": "Поделиться рекордами",
+         "description": "Выберите сколько рекордов показать, отрегулируйте размер, затем скопируйте или сохраните изображение",
+         "shareRow": "Поделиться этим рекордом",
+         "width": "Ширина",
+         "padding": "Отступ",
+         "addBackground": "Добавить фон (для сайтов типа X)",
+         "selectAll": "Выбрать все",
+         "rows": "{count, plural, =0 {Рекорды не выбраны} one {# рекорд выбран} other {# рекордов выбрано}}",
+         "emptyPreview": "Выберите хотя бы один рекорд для предпросмотра",
+         "copy": "Скопировать",
+         "copied": "Скопировано",
+         "copyFailed": "Не удалось скопировать изображение",
+         "save": "Сохранить в PNG",
+         "saveFailed": "Не удалось сохранить изображение"
+      },
       "legacyAccuracy": "Рекорд был поставлен до изменений максимальной точности",
       "weighted": "Взвешенный {weightedPercent}",
+      "accuracyPreview": "Предпросмотр точности",
+      "resetAccuracyPreview": "Сбросить предпросмотр",
       "score": "Очки",
+      "mods": "Модификаторы",
       "watchReplay": "Посмотреть повтор",
       "noReplayAvailable": "Повтор отсутствует",
       "hideDetails": "Скрыть подробности",
       "showDetails": "Показать подробности",
       "scoreDetails": "Подробности о рекорде",
       "noDetailsAvailable": "Подробности отсутствуют",
-      "collapseLeaderboard": "Свернуть таблицу рекордов",
-      "expandLeaderboard": "Развернуть таблицу рекордов",
-      "replayViewer": "Просмотр повторов",
+      "detailsTab": "Подробности",
+      "leaderboardTab": "Таблица рекордов",
+      "scoreHistory": "История рекорда",
+      "showHistory": "Показать историю рекорда",
+      "hideHistory": "Скрыть историю рекорда",
+      "noScoreHistory": "Предыдущие рекорды на карте отсутствуют",
+      "historyFilterClears": "Пройдено",
+      "historyFilterRestarts": "Перезапусков",
+      "historyFilterQuits": "Выходов",
+      "historyFilterFails": "Провалов",
+      "totalPlays": "{count, plural, one {# результат} other {# результатов}}",
+      "replayViews": "{count, plural, one {# просмотр} other {# просмотров}}",
+      "outcomeFailAt": "Провал на {time}",
+      "outcomeQuitAt": "Выход на {time}",
+      "outcomeRestartAt": "Перезапущено на {time}",
+      "replayViewer": "Просмотр повтора",
       "openReplayNewTab": "Открыть повтор в новой вкладке",
       "gridAccuracy": "Сетка точности",
+      "jumpDistance": "JD",
+      "pauses": "Пауз",
+      "paused": "В паузе",
       "badCuts": "Неправ. разрезы",
       "bombs": "Бомбы",
       "streak115": "115 подряд",
-      "estFCAccuracy": "Оценочная точность при полном комбо",
+      "estFCAccuracy": "Точность при FC",
+      "estFCPP": "FC PP",
       "timeDependenceShort": "TD",
       "leftShort": "Л",
       "rightShort": "П",
@@ -454,6 +594,17 @@
       "playsCount": "{count} сыграли",
       "leaderboard": "Таблица рекордов",
       "rankRequest": "Ранк реквест",
+      "insights": "Аналитика",
+      "insightsTimeline": "Хронология",
+      "insightsComingSoon": "скоро...",
+      "insightsSuccessRate": "Процент успешных прохождений",
+      "insightsNoStats": "Недостаточно недавних прохождений",
+      "insightsNoStatsHint": "Для этой карты пока недостаточно записанных результатов, чтобы построить график. Загляните завтра",
+      "insightsNoOutcomeData": "Записанных провалов, выходов или перезапусков ещё нет",
+      "insightsNoneSelected": "Выберите, какие результаты отображать на графике",
+      "insightsTooltipCount": "{label}: {count}",
+      "insightsUnknownTime": "{count, plural, one {# результат} other {# результатов}} без данных о времени не показаны",
+      "insightsDataSince": "В данную статистику учитываются только рекорды, установленные в версиях ScoreSaber вышедших после {date, date, medium}",
       "noScoresFound": "Рекорды не найдены",
       "noScoresYet": "Рекордов ещё нет",
       "adjustFilters": "Попробуйте изменить фильтры",
@@ -461,14 +612,23 @@
       "searchPlayersPlaceholder": "Найти игрока...",
       "created": "Создана",
       "totalScores": "Количество рекордов",
-      "scoresToday": "Рекорды сегодня",
+      "scoresToday": "Рекордов сегодня",
       "activeRankRequest": "Активный ранк реквест",
+      "version": "Версия",
+      "currentVersion": "Текущая",
       "difficulty": "Сложность",
       "gameMode": "Режим игры",
       "starRatingRange": "Диапазон звёзд",
+      "downloadPlaylist": "Скачать плейлист",
+      "downloadPlaylistAction": "Скачать",
+      "playlistDownloadDescription": "Экспортировать текущие фильтры карт в плейлист для Beat Saber",
+      "playlistTitle": "Название плейлиста",
+      "playlistDescription": "Описание",
+      "playlistMapLimit": "Лимит карт",
+      "playlistMapLimitValue": "{count} карт",
       "copyShareLink": "Скопировать ссылку",
       "shareLinkCopyFailed": "Не удалось скопировать ссылку",
-      "copyMapHash": "Копировать хэш карты",
+      "copyMapHash": "Скопировать хэш карты",
       "mapHashCopyFailed": "Не удалось скопировать хэш карты"
    },
    "player": {
@@ -484,7 +644,7 @@
          "openViewerNewTab": "Открыть просмотр эфира в новой вкладке",
          "loading": "Загрузка просмотра эфира"
       },
-      "inactiveTooltip": "Данный игроков не ставил никаких рекордов за последнее время",
+      "inactiveTooltip": "Этот игрок в последнее время не устанавливал новых рекордов",
       "inactive": "Неактивен",
       "bannedTooltip": "Этот игрок был забанен",
       "banned": "Забанен",
@@ -493,12 +653,14 @@
       "rankedPlays": "Рейтинговые рекорды",
       "rankedScore": "Рейтинговые очки",
       "rankedAcc": "Рейтинговая точн.",
+      "plusOnePP": "+1PP",
+      "plusOnePPHint": "Сколько нужно Raw PP для получения 1 целого PP",
       "totalScore": "Общие очки",
       "joined": "Присоединился",
       "replayViews": "Просмотры повторов",
       "role": "Роль",
-      "searchScores": "Найти рекорды",
-      "searchScoresPlaceholder": "Найти рекорды...",
+      "searchScores": "Поиск рекордов",
+      "searchScoresPlaceholder": "Поиск рекордов...",
       "topScores": "Лучшие",
       "recentScores": "Недавние",
       "noScoresFound": "Рекорды не найдены",
@@ -517,6 +679,21 @@
       "platformFriendsTooltip": "Управление списком друзей с других площадок недоступно. Пожалуйста, осуществляйте управление на указанной площадке",
       "failedToFollow": "Не удалось подписаться",
       "failedToUnfollow": "Не удалось отписаться",
+      "reportProfile": "Пожаловаться",
+      "reportProfileDesc": "Отправить этот профиль на рассмотрение команде ScoreSaber",
+      "submitReport": "Отправить жалобу",
+      "reportReason": "Причина жалобы",
+      "reportDetails": "Подробности (необязательно)",
+      "reportDetailsPlaceholder": "Добавьте любую информацию, которая поможет команде модерации...",
+      "reportSubmitted": "Жалоба отправлена",
+      "failedToReport": "Не удалось подать жалобу",
+      "reportReasons": {
+         "inappropriateProfile": "Неприемлемый профиль",
+         "impersonation": "Выдача себя за другого",
+         "harassment": "Оскорбление",
+         "cheating": "Читерство",
+         "other": "Другое"
+      },
       "playerActions": "Действия игрока",
       "unbanPlayer": "Разбанить игрока",
       "banPlayer": "Забанить игрока",
@@ -550,8 +727,9 @@
       "hideEstimatedData": "Скрыть примерные данные",
       "showEstimatedData": "Показать примерные данные",
       "peakRecorded": "Пиковый показатель",
+      "weeklyRankChangeTooltip": "Еженедельное изменение",
       "previousNames": "Предыдущие имена",
-      "viewPreviousNames": "Просмотреть предыдущие имена",
+      "viewPreviousNames": "Посмотреть предыдущие имена",
       "aliasRemoved": "Псевдоним удалён",
       "failedToRemoveAlias": "Не удалось удалить псевдоним",
       "removeAlias": "Удалить псевдоним",
@@ -559,7 +737,7 @@
       "clearAllAliases": "Очистить всё",
       "allAliasesCleared": "Все псевдонимы очищены",
       "failedToClearAliases": "Не удалось очистить псевдонимы",
-      "chartMultiSelectDesktop": "Нажмите или удерживайте <kbd>Shift</kbd> для выбора нескольких параметров сразу",
+      "chartMultiSelectDesktop": "<kbd>Shift</kbd> + щелчок или долгое нажатие для выбора нескольких параметров сразу",
       "chartMultiSelectMobile": "Зажмите для выбора нескольких параметров сразу",
       "refreshPermissionsList": "Обновить список прав",
       "permissionCount": "{count, plural, one {# разрешение} other {# разрешения}}",
@@ -578,22 +756,110 @@
       "chartTimeAll": "Все",
       "chartLastNDays": "За последние {days} дней",
       "chartNow": "Только что",
-      "chartToday": "Сегодня",
-      "chartYesterday": "Вчера",
-      "chartDaysAgo": "{days} дней назад",
-      "chartDaysAgoShort": "{days}дн. назад",
-      "chartOneWeekAgo": "Неделю назад",
-      "chartTwoWeeksAgo": "2 недели назад",
-      "chartWeeksAgoShort": "{weeks}н. назад",
-      "chartOneMonthAgo": "Месяц назад",
-      "chartMonthsAgoShort": "{months}мес. назад",
       "chartAvgPerDay": "Средн./в день",
       "chartEstimatedSuffix": " (примерно)",
       "chartTooltipRank": "Место: #{rank}",
       "chartTooltipPP": "PP: {pp}pp",
       "chartTooltipAcc": "Средн. точн.: {acc}%",
       "chartTooltipPlays": "Сыграно: {plays}",
-      "chartTimeRange": "Диапазон"
+      "chartTimeRange": "Диапазон",
+      "customization": {
+         "title": "Кастомизация профиля",
+         "description": "Управление настройками профиля и закреплёнными рекордами",
+         "open": "Кастомизировать профиль",
+         "unsaved": "Несохранённые изменения",
+         "noChanges": "Без изменений",
+         "saved": "Настройки кастомизации профиля сохранены",
+         "saveFailed": "Не удалось сохранить настройки кастомизации профиля",
+         "tabs": {
+            "account": "Аккаунт",
+            "style": "Стиль",
+            "layout": "Макет",
+            "pinnedScores": "Закреплённые рекорды",
+            "badges": "Бейджики"
+         },
+         "account": {
+            "title": "Настройки аккаунта",
+            "description": "Изображение профиля, раздел \"обо мне\", отображаемое имя и персональный URL можно изменить в настройках аккаунта",
+            "open": "Открыть настройки аккаунта"
+         },
+         "pinnedScores": {
+            "title": "Закреплённые рекорды",
+            "profileTitle": "Закреплённые рекорды",
+            "description": "Выберите до {max} рекордов для отображения в вашем профиле",
+            "lockTitle": "Бонус уровня \"PP Farmer\"",
+            "lockDescription": "Подпишитесь на уровень \"PP Farmer\" на Patreon, чтобы разблокировать функцию закрепления рекордов",
+            "selected": "Выбранные рекорды",
+            "selectedCount": "{count}/{max} выбрано",
+            "emptySelected": "Закрепите рекорд, чтобы он появился здесь",
+            "pinScore": "Закрепить рекорд",
+            "editPinnedScore": "Изменить закреплённый рекорд",
+            "commentPlaceholder": "Комментарий к закреплённому рекорду",
+            "commentLabel": "Комментарий к {score}",
+            "commentCount": "{count}/{max}",
+            "moveUp": "Переместить вверх",
+            "moveDown": "Переместить вниз",
+            "unsaved": "Несохранённые изменения",
+            "noChanges": "Без изменений",
+            "saved": "Закреплённые рекорды сохранены",
+            "saveFailed": "Не удалось сохранить закреплённые рекорды"
+         },
+         "badges": {
+            "lockTitle": "Бонус уровня \"PP Farmer\"",
+            "lockDescription": "Подпишитесь на уровень \"PP Farmer\" на Patreon, чтобы разблокировать функцию управления бейджиками",
+            "empty": "Нет бейджиков, которые можно кастомизировать",
+            "position": "Позиция {position}",
+            "commentPlaceholder": "Заметка бейджика",
+            "commentLabel": "Заметка к {badge}",
+            "commentCount": "{count}/{max}",
+            "moveUp": "Переместить вверх",
+            "moveDown": "Переместить вниз",
+            "unsaved": "Несохранённые изменения",
+            "noChanges": "Без изменений",
+            "saved": "Настройки кастомизации бейджика сохранены"
+         },
+         "layout": {
+            "lockTitle": "Бонус уровня \"PP Farmer\"",
+            "lockDescription": "Подпишитесь на уровень \"PP Farmer\" на Patreon, чтобы разблокировать функцию управления макетом профиля",
+            "sectionsTitle": "Разделы профиля",
+            "sectionsDescription": "Выберите, какие разделы показывать и в каком порядке",
+            "statsTitle": "Статистика в шапке",
+            "statsDescription": "Выберите, какую статистику будет видно под шапкой профиля",
+            "chartMetricsTitle": "Показатели графика",
+            "chartMetricsDescription": "Выберите, какие показатели будет видно в графике вашего профиля",
+            "sectionCharts": "Графики",
+            "sectionBio": "Обо мне",
+            "sectionPinnedScores": "Закреплённые рекорды",
+            "sectionScores": "Рекорды",
+            "position": "Позиция {position}",
+            "moveUp": "Переместить вверх",
+            "moveDown": "Переместить вниз"
+         },
+         "style": {
+            "accentLockTitle": "Бонус уровня \"PP Farmer\"",
+            "accentLockDescription": "Подпишитесь на уровень \"PP Farmer\" на Patreon, чтобы разблокировать функцию изменения акцентных цветов",
+            "backgroundImage": "Фон профиля",
+            "backgroundDescription": "Загрузите изображение, чтобы использовать его в качестве фона вашего профиля",
+            "backgroundUpload": "Загрузить изображение",
+            "backgroundSelected": "{name}",
+            "backgroundTooLarge": "Фоновое изображение должно быть 10 МБ или меньше",
+            "resetBackground": "Сбросить фон",
+            "accentColor": "Акцентный цвет",
+            "accentForeground": "Цвет акцентных элементов",
+            "accentForegroundActive": "Цвет активных элементов",
+            "hexColorInput": "HEX-значение {setting}",
+            "accentDescription": "Шаблоны:",
+            "useAccent": "Использовать {color} в качестве акцента профиля",
+            "resetAccent": "Сбросить акцент",
+            "nameColor": "Цвет имени",
+            "nameColorDescription": "Выберите, показывать ли цвет поддержавшего на вашем имени",
+            "supporterNameColor": "Использовать для имени цвет поддержавшего",
+            "unsaved": "Несохранённые изменения",
+            "noChanges": "Без изменений",
+            "saved": "Стиль профиля сохранён",
+            "saveFailed": "Не удалось сохранить стиль профиля"
+         }
+      }
    },
    "comments": {
       "edited": "(изменено)",
@@ -671,8 +937,8 @@
       "rankRequestDescription": "Описание ранк реквеста",
       "unrankRequest": "Реквест на анранк",
       "difficultyNotes": "Заметки к сложности",
-      "requestWasReplaced": "Этот реквест был заменен на",
-      "requestReplacedFrom": "Этот реквест был заменён",
+      "requestWasReplaced": "Этот реквест был заменён на",
+      "requestReplacedFrom": "Этот реквест заменил",
       "statusApproved": "Одобрена",
       "statusInProgress": "В процессе",
       "statusDenied": "Отклонена",
@@ -681,7 +947,10 @@
       "noCommentsOrNotes": "Нет комментариев или заметок для этой сложности",
       "noRequestsFound": "Реквесты не найдены",
       "upNext": "Следующие в очереди",
-      "openRequests": "В очереди"
+      "openRequests": "В очереди",
+      "queueIndicatorReady": "Готова к квалификации",
+      "queueIndicatorNeedsVotes": "{count, plural, one {Нужен ещё # положительный голос от RT} other {Нужно ещё # положительных голосов от RT}}",
+      "queueIndicatorDownvoted": "{count, plural, one {Имеет # отрицательный голос от RT} other {Имеет # отрицательных голосов от RT}}"
    },
    "leaderboard": {
       "admin": "Админ",
@@ -736,8 +1005,8 @@
       "name": "Название",
       "status": "Статус",
       "deniedMods": "Запрещённые моды",
-      "deniedModsDescription": "",
-      "deniedModsList": "",
+      "deniedModsDescription": "По одному названию мода в строке. Используйте * для замены любых символов.",
+      "deniedModsList": "Названия модов",
       "deniedModsPlaceholder": "камера какого-то мода*",
       "saveChanges": "Сохранить изменения",
       "settingsSaved": "Настройки сохранены",
@@ -779,10 +1048,10 @@
       "importCsv": "Импортировать CSV",
       "exportCsv": "Экспортировать CSV",
       "downloadCsv": "Скачать CSV",
-      "csvNoPlayers": "",
+      "csvNoPlayers": "Игроки из CSV не найдены",
       "playersCsvPlaceholder": "IDигрока,имяИгрока,команда",
       "roomCsvPlaceholder": "ID игрока,имя игрока",
-      "importPlayersCsv": "Импортировать CSV игрока",
+      "importPlayersCsv": "Импортировать игрока из CSV",
       "exportPlayersCsv": "Экспортировать CSV игрока",
       "noAuthorizedPlayers": "Авторизованные игроки отсутствуют",
       "color": "Цвет",
@@ -813,12 +1082,20 @@
       "roomName": "Название комнаты",
       "roomCode": "Код комнаты",
       "roomMode": "Режим",
+      "participation": "Участие",
+      "active": "Активен",
+      "inactive": "Неактивен",
+      "activeInactiveSummary": "{active} активен / {inactive} неактивен",
       "playerAlreadyInRoom": "Игрок уже в этой комнате",
       "noRoomPlayers": "Игроки не выбраны",
       "addRoomPlayer": "Добавить игрока в комнату",
       "addRoomTeam": "Добавить команду в комнату",
       "manageRoom": "Управление комнатой",
       "roomPlayersSaved": "Игроки комнаты сохранены",
+      "playerMarkedActive": "Игрок отмечен как активный",
+      "playerMarkedInactive": "Игрок отмечен как неактивный",
+      "markPlayerActive": "Отметить активным",
+      "markPlayerInactive": "Отметить неактивным",
       "teamMode": "Командный режим",
       "flatMode": "Плоский режим",
       "state": "Статус",
@@ -847,8 +1124,8 @@
       "songSearch": "Поиск песни",
       "songSearchPlaceholder": "Найдите карту или вставьте ScoreSaber URL",
       "songSearchHint": "Найдите карту, чтобы выбрать песню и сложность",
-      "songResolveHint": "",
-      "resolveSong": "",
+      "songResolveHint": "Разрешите эту карту или таблицу рекордов, чтобы выбрать песню",
+      "resolveSong": "Разрешить",
       "searchingSongs": "Поиск карт",
       "noSongs": "Карты не найдены",
       "songLookupFailed": "Не удалось загрузить карту",
@@ -902,10 +1179,10 @@
       "roomMenu": "Меню комнаты",
       "roomTableSettings": "Настройка таблицы комнаты",
       "roomStatusPlaying": "играет",
-      "roomStatusIdle": "",
+      "roomStatusIdle": "бездействие",
       "displayOptions": "Параметры отображения",
       "extraInfo": "Дополнительная информация",
-      "liveRankSort": "",
+      "liveRankSort": "Сортировка по текущему рейтингу",
       "recentResults": "Последние результаты",
       "syncingResults": "Синхронизация результатов",
       "roomChatAndLog": "Чат и логи комнаты",
@@ -946,8 +1223,8 @@
       "reportedAt": "Жалоба отправлена",
       "noRecentResults": "Результатов ещё нет",
       "unknownMap": "Неизвестная карта",
-      "liveServiceUnavailableDescription": "",
-      "liveSocketErrorDescription": "",
+      "liveServiceUnavailableDescription": "Подключение к онлайн-сервису ScoreSaber сейчас недоступно",
+      "liveSocketErrorDescription": "Браузеру не удалось установить websocket подключение к онлайн-сервису",
       "backToRooms": "Назад"
    },
    "settings": {
@@ -982,7 +1259,6 @@
          "countryResetQueued": "Сбросить страну",
          "countryResetFailed": "Не удалось сбросить страну",
          "resetCountryDialogDesc": "Это изменяет страну вашего профиля на основе текущего местоположения. После этого сброс страны будет доступен через {days} дней",
-         "resetCountryHelper": "Используйте это только тогда, когда вы находитесь в той стране, которую хотите отображать на ScoreSaber, и убедитесь, что вы не используете VPN или прокси",
          "resetCountryAvailableAt": "Вы уже недавно сбросили вашу страну. Вы сможете сбросить её снова <date></date>",
          "resetCountryConfirmText": "СБРОСИТЬ"
       },
@@ -1082,9 +1358,9 @@
          },
          "vanity": {
             "title": "URL вашего профиля",
-            "description": "Получить персональный URL профиля",
             "loadFailed": "Не удалось загрузить персональный URL",
             "current": "URL вашего профиля",
+            "infoLabel": "Подробности персонального URL",
             "changeLabel": "Новый персональный URL",
             "claimLabel": "Выберите персональный URL",
             "placeholder": "ваше-имя",
@@ -1093,7 +1369,9 @@
             "claimed": "Персональный URL установлен",
             "claimFailed": "Не удалось получить персональный URL",
             "cooldown": "Вы сможете снова сменить свой персональный URL <date></date>",
-            "rules": "От 3 до 32 символов: строчные буквы, цифры и дефисы. Должно содержать букву. Можно изменить один раз в 180 дней"
+            "rules": "От 3 до 32 символов: строчные буквы, цифры и дефисы. Должно содержать букву. Можно изменить один раз в 180 дней",
+            "lockTitle": "Персональный URL является бонусом для поддержавших",
+            "lockDescription": "Поддержите ScoreSaber на Patreon чтобы разблокировать функцию персонального URL"
          }
       },
       "security": {
@@ -1240,7 +1518,7 @@
          "necessaryTitle": "Необходимые cookies",
          "necessaryDescription": "Необходимо для входа, безопасности, ограничений по запросам, языка, темы, сохраненных фильтров и основных функций сайта. Это всегда включено."
       },
-      "lastUpdated": ""
+      "lastUpdated": "Последнее обновление: {date}"
    },
    "oauth": {
       "consent": {

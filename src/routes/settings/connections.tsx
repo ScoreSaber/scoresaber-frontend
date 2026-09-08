@@ -11,21 +11,15 @@ import { SettingsShell } from '@/modules/settings/settings-shell';
 import { api } from '@/shared/api/server-api';
 import { optionalApi } from '@/shared/result/api';
 import { buildNoindexHead } from '@/shared/seo/metadata';
-import { validateRequest } from '@/shared/url-state/params';
+import { optionalSearchParamEnum, optionalSearchParamString, validateRequest } from '@/shared/url-state/params';
 import { SetPageBackground } from '@/shell/background/page-background-provider';
 
 const connectionOAuthProviders = ['steam', 'patreon', 'discord'] as const;
 type ConnectionOAuthProvider = (typeof connectionOAuthProviders)[number];
 type SettingsConnectionsSearch = ReturnType<typeof settingsConnectionsSearchSchema.parse>;
 
-const searchParamString = z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.string().optional());
-
-function optionalSearchParamEnum<TValues extends readonly [string, ...string[]]>(values: TValues) {
-   return z.preprocess((val) => (Array.isArray(val) ? val[0] : val), z.enum(values).optional().catch(undefined));
-}
-
 const settingsConnectionsSearchSchema = z.object({
-   accountMergeChallengeId: searchParamString,
+   accountMergeChallengeId: optionalSearchParamString,
    steam: optionalSearchParamEnum(['connected', 'failed']),
    patreon: optionalSearchParamEnum(['connected', 'failed']),
    discord: optionalSearchParamEnum(['connected', 'failed'])

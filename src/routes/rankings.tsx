@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 
 import { readAuthCookie } from '@/modules/auth/actions/session.server';
+import { PlayerLivePresenceProvider } from '@/modules/player/profile/player-live-presence-indicator';
 import { versionedImageUrl } from '@/modules/player/shared/player-avatar';
 import { RankingsFilters } from '@/modules/rankings/rankings-filters';
 import { RankingsTable } from '@/modules/rankings/rankings-table';
@@ -16,7 +17,7 @@ import { PageError } from '@/shared/components/error/page-error';
 import { PaginationArrows } from '@/shared/components/pagination';
 import { countryRegionSearchSchema, formatCountryRegionParam } from '@/shared/country-region';
 import { isSteamPlayer } from '@/shared/format/helpers';
-import { optionalApiData, pageApiData } from '@/shared/result/api';
+import { pageApiData } from '@/shared/result/api';
 import { buildSeoHead } from '@/shared/seo/metadata';
 import { isPageNumber } from '@/shared/url-state/params';
 import { rankingFilterPreferences } from '@/shared/url-state/persisted-filter-preferences';
@@ -46,7 +47,7 @@ type RankingsRouteInput = {
 };
 
 const getRankingsPageData = createServerFn({ method: 'GET' })
-   .inputValidator((data: RankingsRouteInput) => data)
+   .validator((data: RankingsRouteInput) => data)
    .handler(async ({ data }) => {
       const token = readAuthCookie();
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
@@ -71,15 +72,9 @@ const getRankingsPageData = createServerFn({ method: 'GET' })
          includeInactive: searchParams.includeInactive ?? 'false',
          live: searchParams.live
       };
-      const liveCountQuery = {
-         includeInactive: searchParams.includeInactive ?? 'false',
-         live: 'true'
-      };
-      const liveCountRequest = searchParams.live === 'true' ? null : optionalApiData(publicApi.player.playerControllerGetPlayerCount(liveCountQuery));
-      const [result, liveCount] = await Promise.all([pageApiData(apiClient.player.playerControllerGetPlayers(playerQuery)), liveCountRequest]);
-      const liveAvailable = searchParams.live === 'true' || (liveCount?.count ?? 0) > 0;
+      const result = await pageApiData(apiClient.player.playerControllerGetPlayers(playerQuery));
 
-      return { result, searchParams, persistedStorage, liveAvailable };
+      return { result, searchParams, persistedStorage };
    });
 
 export const Route = createFileRoute('/rankings')({
@@ -97,7 +92,7 @@ export const Route = createFileRoute('/rankings')({
 
 function RankingsRoute() {
    const data = Route.useLoaderData();
-   const { result, searchParams, persistedStorage, liveAvailable } = data;
+   const { result, searchParams, persistedStorage } = data;
 
    if (!result.ok) return <PageError status={result.status} />;
 
@@ -112,29 +107,30 @@ function RankingsRoute() {
          {bgCandidates.length > 0 && <SetPageBackground src={bgCandidates[0]} candidates={bgCandidates} />}
 
          <div className="app-container relative z-10 flex flex-col gap-4 p-4 md:p-8">
-            <RankingsFilters
-               currentPage={searchParams.page}
-               totalPages={meta.totalPages}
-               includeInactive={searchParams.includeInactive === 'true'}
-               live={searchParams.live === 'true'}
-               showLiveFilter={liveAvailable}
-               search={searchParams}
-               buildLocation={buildRankingsLocation}
-               parseSearch={parseRankingsSearch}
-               initialFiltersOpen={persistedStorage.filtersOpen === 'true'}
-            />
+            <PlayerLivePresenceProvider enabled={players.length > 0}>
+               <RankingsFilters
+                  currentPage={searchParams.page}
+                  totalPages={meta.totalPages}
+                  includeInactive={searchParams.includeInactive === 'true'}
+                  live={searchParams.live === 'true'}
+                  search={searchParams}
+                  buildLocation={buildRankingsLocation}
+                  parseSearch={parseRankingsSearch}
+                  initialFiltersOpen={persistedStorage.filtersOpen === 'true'}
+               />
 
-            <RankingsTable
-               players={players}
-               countryFiltered={!!searchParams.countries}
-               currentSort={searchParams.sort}
-               currentSortDirection={searchParams.sortDirection}
-               currentPage={searchParams.page}
-               currentPivot={searchParams.pivot}
-               highlight={searchParams.highlight}
-               search={searchParams}
-               buildLocation={buildRankingsLocation}
-            />
+               <RankingsTable
+                  players={players}
+                  countryFiltered={!!searchParams.countries}
+                  currentSort={searchParams.sort}
+                  currentSortDirection={searchParams.sortDirection}
+                  currentPage={searchParams.page}
+                  currentPivot={searchParams.pivot}
+                  highlight={searchParams.highlight}
+                  search={searchParams}
+                  buildLocation={buildRankingsLocation}
+               />
+            </PlayerLivePresenceProvider>
 
             {meta.totalPages > 1 && searchParams.pivot !== 'player' && (
                <PaginationArrows currentPage={searchParams.page} totalPages={meta.totalPages} getPageLocation={getPageLocation} />

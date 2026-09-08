@@ -49,7 +49,7 @@ type MapsRouteInput = {
 };
 
 const getMapsPageData = createServerFn({ method: 'GET' })
-   .inputValidator((data: MapsRouteInput) => data)
+   .validator((data: MapsRouteInput) => data)
    .handler(async ({ data }) => {
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
       const effectiveSearchParams = await applyPersistedSearchParams<MapsSearchParams>({
@@ -131,8 +131,8 @@ function MapsRoute() {
             />
 
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-               {maps.map((map) => (
-                  <MapCard key={map.id} map={map} expandLowest={expandLowest} starRange={starRange} />
+               {maps.map((map, index) => (
+                  <MapCard key={map.id} map={map} expandLowest={expandLowest} starRange={starRange} coverPriority={index === 0} />
                ))}
             </div>
 

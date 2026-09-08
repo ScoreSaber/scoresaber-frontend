@@ -39,7 +39,7 @@ type RankRequestsRouteInput = {
 };
 
 const getRankRequestsPageData = createServerFn({ method: 'GET' })
-   .inputValidator((data: RankRequestsRouteInput) => data)
+   .validator((data: RankRequestsRouteInput) => data)
    .handler(async ({ data }) => {
       const rawSearchParams = normalizeSearchRecord(data.rawSearch);
       const effectiveSearchParams = await applyPersistedSearchParams<RankRequestsSearchParams>({

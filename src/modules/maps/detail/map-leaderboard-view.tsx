@@ -12,7 +12,7 @@ import Permissions from '@/shared/permissions';
 export function MapLeaderboardView<TLocation>({
    routeName,
    mapInfo,
-   leaderboardInfo,
+   leaderboard,
    leaderboardScores,
    search,
    currentPage,
@@ -25,7 +25,7 @@ export function MapLeaderboardView<TLocation>({
 }: MapLeaderboardViewProps<TLocation>) {
    const { user } = useAuth();
    const userPermissions = user?.permissions ?? 0;
-   const activeGameMode = getGameModeFromRawDifficulty(leaderboardInfo.difficulty.rawDifficulty);
+   const activeGameMode = getGameModeFromRawDifficulty(leaderboard.rawDifficulty);
    const hasMultipleGameModes = new Set(mapInfo.leaderboards.map((lb) => getGameModeFromRawDifficulty(lb.rawDifficulty))).size > 1;
 
    const hasRankRequest = rankRequest != null;
@@ -38,12 +38,12 @@ export function MapLeaderboardView<TLocation>({
    const canAdmin =
       Permissions.checkPermissionNumber(userPermissions, Permissions.security.ADMIN) ||
       Permissions.checkPermissionNumber(userPermissions, Permissions.security.PANDA);
-   const isRanked = isLeaderboardRanked(leaderboardInfo);
+   const isRanked = isLeaderboardRanked(leaderboard);
 
    const renderHeaderActions = (tab: typeof activeTab) => (
       <MapHeaderActions
          mapInfo={mapInfo}
-         leaderboardId={leaderboardInfo.id}
+         leaderboardId={leaderboard.id}
          isRanked={isRanked}
          hasRankRequest={hasRankRequest}
          requestId={rankRequest?.id}
@@ -59,13 +59,13 @@ export function MapLeaderboardView<TLocation>({
 
    return (
       <div className="flex flex-col gap-3">
-         <MapLeaderboardHero mapInfo={mapInfo} leaderboardInfo={leaderboardInfo} linkSearchParams={search} />
+         <MapLeaderboardHero mapInfo={mapInfo} leaderboard={leaderboard} linkSearchParams={search} />
 
          <div className="flex flex-col gap-3">
             <MapLeaderboardContent
                mapInfo={mapInfo}
                routeName={routeName}
-               leaderboardInfo={leaderboardInfo}
+               leaderboard={leaderboard}
                leaderboardScores={leaderboardScores}
                search={search}
                currentPage={currentPage}

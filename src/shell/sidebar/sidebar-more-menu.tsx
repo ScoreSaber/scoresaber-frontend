@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useTransition } from 'react';
 
-import { getRouteApi, useRouter } from '@tanstack/react-router';
-import { Book, ChevronRight, Cookie, Copyright, ExternalLink, Loader2, LogOut, Scale, Settings, Shield } from 'lucide-react';
+import { getRouteApi, Link, useRouter } from '@tanstack/react-router';
+import { Book, ChevronRight, Cookie, Copyright, ExternalLink, Loader2, LogOut, Scale, Settings, Shield, ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/modules/auth';
 import { logout } from '@/modules/auth/actions/member';
 import { cn } from '@/shared/format/helpers';
+import Permissions from '@/shared/permissions';
 import { githubLink } from '@/shell/nav-data';
 import { SidebarAppSettings } from '@/shell/sidebar/sidebar-app-settings';
 
@@ -38,6 +39,7 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
    const tNav = useTranslations();
    const tSidebar = useTranslations();
    const menuActionClass = 'h-8 w-full cursor-pointer justify-start rounded-md px-2.5 text-[13px]';
+   const isAdmin = !!user && Permissions.checkPermissionNumber(user.permissions, Permissions.security.ADMIN);
 
    useEffect(() => {
       setMounted(true);
@@ -156,6 +158,14 @@ export function SidebarMoreMenu({ trigger, side = 'top', align = 'end' }: Sideba
                <>
                   <Separator />
                   <div className="flex flex-col gap-1 p-2">
+                     {isAdmin && (
+                        <Button asChild variant="menu" size="sm" className={menuActionClass}>
+                           <Link to="/admin" onClick={() => setOpen(false)}>
+                              <ShieldCheck data-icon />
+                              {tSidebar('sidebar.administration')}
+                           </Link>
+                        </Button>
+                     )}
                      <Button asChild variant="menu" size="sm" className={menuActionClass}>
                         <settingsAccountRoute.Link onClick={() => setOpen(false)}>
                            <Settings data-icon />
