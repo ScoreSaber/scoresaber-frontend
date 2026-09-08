@@ -2,8 +2,7 @@
 
 import { useLocation } from '@tanstack/react-router';
 import { Check, Hash } from 'lucide-react';
-import { FaClock, FaDrum, FaLink, FaMusic } from 'react-icons/fa';
-import { FaPlay } from 'react-icons/fa6';
+import { FaClock, FaDrum, FaLink, FaMusic, FaPlay } from 'react-icons/fa';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '@/components/ui/button';
@@ -67,8 +66,8 @@ export function MapLeaderboardHero({ mapInfo, leaderboard, linkSearchParams }: M
                   />
                   <MapViewer
                      mapKey={mapInfo.bsid}
-                     difficulty={leaderboardInfo.difficulty.difficulty}
-                     gameMode={leaderboardInfo.difficulty.gameMode}
+                     difficulty={leaderboard.difficulty}
+                     gameMode={leaderboard.gameMode}
                   />
                </div>
 
